@@ -1,63 +1,36 @@
 package io.github.yzernik.squeakand.ui.home;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import io.github.yzernik.squeakand.MainActivity;
-import io.github.yzernik.squeakand.MyDatabase;
+import io.github.yzernik.squeakand.NewWordActivity;
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.RecyclerViewAdapter;
-import io.github.yzernik.squeakand.Todo;
-import io.github.yzernik.squeakand.TodoNoteActivity;
+import io.github.yzernik.squeakand.Word;
+import io.github.yzernik.squeakand.WordListAdapter;
 
 import static android.app.Activity.RESULT_OK;
 
-public class HomeFragment extends Fragment implements RecyclerViewAdapter.ClickListener, AdapterView.OnItemSelectedListener {
 
-    MyDatabase myDatabase;
-    RecyclerView recyclerView;
-    Spinner spinner;
-    RecyclerViewAdapter recyclerViewAdapter;
-    FloatingActionButton floatingActionButton;
-    private String[] categories = {
-            "All",
-            "Android",
-            "iOS",
-            "Kotlin",
-            "Swift"
-    };
+public class HomeFragment extends Fragment {
 
-    ArrayList<Todo> todoArrayList = new ArrayList<>();
-    ArrayList<String> spinnerList = new ArrayList<>(Arrays.asList(categories));
-
-    public static final int NEW_TODO_REQUEST_CODE = 200;
-    public static final int UPDATE_TODO_REQUEST_CODE = 300;
+    public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
 
     private HomeViewModel homeViewModel;
 
@@ -65,202 +38,59 @@ public class HomeFragment extends Fragment implements RecyclerViewAdapter.ClickL
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
-        final View root = inflater.inflate(R.layout.fragment_home, container, false);
+        View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        initViews(root);
-        myDatabase = Room.databaseBuilder(getActivity(), MyDatabase.class, MyDatabase.DB_NAME).fallbackToDestructiveMigration().build();
-        checkIfAppLaunchedFirstTime();
-
-        spinner.setOnItemSelectedListener(this);
-        spinner.setSelection(0);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+/*        final TextView textView = root.findViewById(R.id.text_home);
+        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), TodoNoteActivity.class), NEW_TODO_REQUEST_CODE);
+            public void onChanged(@Nullable String s) {
+                textView.setText(s);
+            }
+        });*/
+
+        RecyclerView recyclerView = root.findViewById(R.id.recyclerview);
+        final WordListAdapter adapter = new WordListAdapter(root.getContext());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+
+        // Get a new or existing ViewModel from the ViewModelProvider.
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+
+        // Add an observer on the LiveData returned by getAlphabetizedWords.
+        // The onChanged() method fires when the observed data changes and the activity is
+        // in the foreground.
+        homeViewModel.getAllWords().observe(getViewLifecycleOwner(), new Observer<List<Word>>() {
+            @Override
+            public void onChanged(@Nullable final List<Word> words) {
+                // Update the cached copy of the words in the adapter.
+                adapter.setWords(words);
+            }
+        });
+
+        FloatingActionButton fab = root.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), NewWordActivity.class);
+                startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE);
             }
         });
 
         return root;
     }
 
-
-    private void initViews(View root) {
-        floatingActionButton = root.findViewById(R.id.home_fab);
-        spinner = root.findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(root.getContext(), android.R.layout.simple_spinner_item, spinnerList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
-
-        recyclerView = root.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-        recyclerViewAdapter = new RecyclerViewAdapter(this);
-        recyclerView.setAdapter(recyclerViewAdapter);
-    }
-
-    @Override
-    public void launchIntent(int id) {
-        startActivityForResult(new Intent(getActivity(), TodoNoteActivity.class).putExtra("id", id), UPDATE_TODO_REQUEST_CODE);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (position == 0) {
-            loadAllTodos();
-        } else {
-            String string = parent.getItemAtPosition(position).toString();
-            loadFilteredTodos(string);
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-
-    @SuppressLint("StaticFieldLeak")
-    private void loadFilteredTodos(String category) {
-        new AsyncTask<String, Void, List<Todo>>() {
-            @Override
-            protected List<Todo> doInBackground(String... params) {
-                return myDatabase.daoAccess().fetchTodoListByCategory(params[0]);
-
-            }
-
-            @Override
-            protected void onPostExecute(List<Todo> todoList) {
-                recyclerViewAdapter.updateTodoList(todoList);
-            }
-        }.execute(category);
-
-    }
-
-
-    @SuppressLint("StaticFieldLeak")
-    private void fetchTodoByIdAndInsert(int id) {
-        new AsyncTask<Integer, Void, Todo>() {
-            @Override
-            protected Todo doInBackground(Integer... params) {
-                return myDatabase.daoAccess().fetchTodoListById(params[0]);
-
-            }
-
-            @Override
-            protected void onPostExecute(Todo todoList) {
-                recyclerViewAdapter.addRow(todoList);
-            }
-        }.execute(id);
-
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private void loadAllTodos() {
-        new AsyncTask<String, Void, List<Todo>>() {
-            @Override
-            protected List<Todo> doInBackground(String... params) {
-                return myDatabase.daoAccess().fetchAllTodos();
-            }
-
-            @Override
-            protected void onPostExecute(List<Todo> todoList) {
-                recyclerViewAdapter.updateTodoList(todoList);
-            }
-        }.execute();
-    }
-
-    private void buildDummyTodos() {
-        Todo todo = new Todo();
-        todo.name = "Android Retrofit Tutorial";
-        todo.description = "Cover a tutorial on the Retrofit networking library using a RecyclerView to show the data.";
-        todo.category = "Android";
-
-        todoArrayList.add(todo);
-
-        todo = new Todo();
-        todo.name = "iOS TableView Tutorial";
-        todo.description = "Covers the basics of TableViews in iOS using delegates.";
-        todo.category = "iOS";
-
-        todoArrayList.add(todo);
-
-        todo = new Todo();
-        todo.name = "Kotlin Arrays";
-        todo.description = "Cover the concepts of Arrays in Kotlin and how they differ from the Java ones.";
-        todo.category = "Kotlin";
-
-        todoArrayList.add(todo);
-
-        todo = new Todo();
-        todo.name = "Swift Arrays";
-        todo.description = "Cover the concepts of Arrays in Swift and how they differ from the Java and Kotlin ones.";
-        todo.category = "Swift";
-
-        todoArrayList.add(todo);
-        insertList(todoArrayList);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK) {
-
-            //reset spinners
-            spinner.setSelection(0);
-
-            if (requestCode == NEW_TODO_REQUEST_CODE) {
-                long id = data.getLongExtra("id", -1);
-                Toast.makeText(getActivity(), "Row inserted", Toast.LENGTH_SHORT).show();
-                fetchTodoByIdAndInsert((int) id);
-
-            } else if (requestCode == UPDATE_TODO_REQUEST_CODE) {
-
-                boolean isDeleted = data.getBooleanExtra("isDeleted", false);
-                int number = data.getIntExtra("number", -1);
-                if (isDeleted) {
-                    Toast.makeText(getActivity(), number + " rows deleted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), number + " rows updated", Toast.LENGTH_SHORT).show();
-                }
-
-                loadAllTodos();
-
-            }
-
-
+        if (requestCode == NEW_WORD_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Word word = new Word(data.getStringExtra(NewWordActivity.EXTRA_REPLY));
+            homeViewModel.insert(word);
         } else {
-            Toast.makeText(getActivity(), "No action done by user", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private void insertList(List<Todo> todoList) {
-        new AsyncTask<List<Todo>, Void, Void>() {
-            @Override
-            protected Void doInBackground(List<Todo>... params) {
-                myDatabase.daoAccess().insertTodoList(params[0]);
-
-                return null;
-
-            }
-
-            @Override
-            protected void onPostExecute(Void voids) {
-                super.onPostExecute(voids);
-            }
-        }.execute(todoList);
-
-    }
-
-    private void checkIfAppLaunchedFirstTime() {
-        final String PREFS_NAME = "SharedPrefs";
-
-        SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
-
-        if (settings.getBoolean("firstTime", true)) {
-            settings.edit().putBoolean("firstTime", false).apply();
-            buildDummyTodos();
+            Toast.makeText(
+                    getContext(),
+                    R.string.empty_not_saved,
+                    Toast.LENGTH_LONG).show();
         }
     }
 }
