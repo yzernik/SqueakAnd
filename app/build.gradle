@@ -52,4 +52,7 @@ dependencies {
 
     // Recyclerview dependency
     implementation "androidx.recyclerview:recyclerview:1.1.0"
+
+    // Coordinator layout
+    // implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
 }

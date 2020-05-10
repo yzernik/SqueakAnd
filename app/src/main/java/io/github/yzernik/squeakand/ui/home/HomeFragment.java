@@ -93,13 +93,9 @@ public class HomeFragment extends Fragment implements RecyclerViewAdapter.ClickL
 
     private void initViews(View root) {
         floatingActionButton = root.findViewById(R.id.home_fab);
-        System.out.println("floatingActionButton: " + floatingActionButton);
         spinner = root.findViewById(R.id.spinner);
-        System.out.println("spinner: " + spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(root.getContext(), android.R.layout.simple_spinner_item, spinnerList);
-        System.out.println("adapter: " + adapter);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        System.out.println("adapter after setDropDownViewResource: " + adapter);
         spinner.setAdapter(adapter);
 
 
