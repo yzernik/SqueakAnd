@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -30,11 +31,30 @@ import java.util.List;
 public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoViewHolder> {
 
     class TodoViewHolder extends RecyclerView.ViewHolder {
-        private final TextView todoItemView;
+        public TextView txtName;
+        public TextView txtNo;
+        public TextView txtDesc;
+        public TextView txtCategory;
+        public CardView cardView;
 
-        private TodoViewHolder(View itemView) {
-            super(itemView);
-            todoItemView = itemView.findViewById(R.id.textView);
+        public TodoViewHolder(View view) {
+            super(view);
+
+            txtNo = view.findViewById(R.id.txtNo);
+            txtName = view.findViewById(R.id.txtName);
+            txtDesc = view.findViewById(R.id.txtDesc);
+            txtCategory = view.findViewById(R.id.txtCategory);
+            cardView = view.findViewById(R.id.cardView);
+
+            // TODO: uncomment
+/*
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickListener.launchIntent(todoList.get(getAdapterPosition()).todo_id);
+                }
+            });
+*/
         }
     }
 
@@ -47,7 +67,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoVi
 
     @Override
     public TodoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.recyclerview_item, parent, false);
+        View itemView = mInflater.inflate(R.layout.recyclerview_item_layout, parent, false);
         return new TodoViewHolder(itemView);
     }
 
@@ -55,10 +75,13 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoVi
     public void onBindViewHolder(TodoViewHolder holder, int position) {
         if (mTodos != null) {
             Todo current = mTodos.get(position);
-            holder.todoItemView.setText(current.name);
+            holder.txtName.setText(current.name);
+            holder.txtNo.setText("#" + String.valueOf(current.todo_id));
+            holder.txtDesc.setText(current.description);
+            holder.txtCategory.setText(current.category);
         } else {
             // Covers the case of data not being ready yet.
-            holder.todoItemView.setText("No todo");
+            holder.txtName.setText("No todo");
         }
     }
 

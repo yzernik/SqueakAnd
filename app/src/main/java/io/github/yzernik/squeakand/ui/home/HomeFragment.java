@@ -39,7 +39,7 @@ public class HomeFragment extends Fragment {
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        final RecyclerView recyclerView = root.findViewById(R.id.recyclerview);
+        final RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
         final TodoListAdapter adapter = new TodoListAdapter(root.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
