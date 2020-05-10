@@ -1,20 +1,5 @@
 package io.github.yzernik.squeakand;
 
-/*
- * Copyright (C) 2017 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 import android.content.Context;
 
@@ -24,6 +9,8 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,23 +20,26 @@ import java.util.concurrent.Executors;
  * app, consider exporting the schema to help you with migrations.
  */
 
-@Database(entities = {Word.class}, version = 1, exportSchema = false)
-abstract class WordRoomDatabase extends RoomDatabase {
+@Database(entities = {Todo.class}, version = 1, exportSchema = false)
+abstract class TodoRoomDatabase extends RoomDatabase {
 
-    abstract WordDao wordDao();
+    public static final String DB_NAME = "app_db";
+    public static final String TABLE_NAME_TODO = "todo";
+
+    abstract TodoDao todoDao();
 
     // marking the instance as volatile to ensure atomic access to the variable
-    private static volatile WordRoomDatabase INSTANCE;
+    private static volatile TodoRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
     static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-    static WordRoomDatabase getDatabase(final Context context) {
+    static TodoRoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
-            synchronized (WordRoomDatabase.class) {
+            synchronized (TodoRoomDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            WordRoomDatabase.class, "word_database")
+                            TodoRoomDatabase.class, DB_NAME)
                             .addCallback(sRoomDatabaseCallback)
                             .build();
                 }
@@ -74,15 +64,47 @@ abstract class WordRoomDatabase extends RoomDatabase {
             // comment out the following block
             databaseWriteExecutor.execute(() -> {
                 // Populate the database in the background.
-                // If you want to start with more words, just add them.
-                WordDao dao = INSTANCE.wordDao();
+                // If you want to start with more todos, just add them.
+                TodoDao dao = INSTANCE.todoDao();
                 dao.deleteAll();
 
-                Word word = new Word("Hello");
-                dao.insert(word);
-                word = new Word("World");
-                dao.insert(word);
+                for (Todo todo: INSTANCE.buildDummyTodos()) {
+                    dao.insert(todo);
+                }
             });
         }
     };
+
+    private List<Todo> buildDummyTodos() {
+        List<Todo> todoArrayList = new ArrayList<>();
+        Todo todo = new Todo();
+        todo.name = "Android Retrofit Tutorial";
+        todo.description = "Cover a tutorial on the Retrofit networking library using a RecyclerView to show the data.";
+        todo.category = "Android";
+
+        todoArrayList.add(todo);
+
+        todo = new Todo();
+        todo.name = "iOS TableView Tutorial";
+        todo.description = "Covers the basics of TableViews in iOS using delegates.";
+        todo.category = "iOS";
+
+        todoArrayList.add(todo);
+
+        todo = new Todo();
+        todo.name = "Kotlin Arrays";
+        todo.description = "Cover the concepts of Arrays in Kotlin and how they differ from the Java ones.";
+        todo.category = "Kotlin";
+
+        todoArrayList.add(todo);
+
+        todo = new Todo();
+        todo.name = "Swift Arrays";
+        todo.description = "Cover the concepts of Arrays in Swift and how they differ from the Java and Kotlin ones.";
+        todo.category = "Swift";
+
+        todoArrayList.add(todo);
+
+        return todoArrayList;
+    }
 }

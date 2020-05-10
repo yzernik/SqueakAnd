@@ -41,24 +41,24 @@ import static junit.framework.Assert.assertTrue;
  */
 
 @RunWith(AndroidJUnit4.class)
-public class WordDaoTest {
+public class TodoDaoTest {
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
-    private WordDao mWordDao;
-    private WordRoomDatabase mDb;
+    private TodoDao mTodoDao;
+    private TodoRoomDatabase mDb;
 
     @Before
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
         // Using an in-memory database because the information stored here disappears when the
         // process is killed.
-        mDb = Room.inMemoryDatabaseBuilder(context, WordRoomDatabase.class)
+        mDb = Room.inMemoryDatabaseBuilder(context, TodoRoomDatabase.class)
                 // Allowing main thread queries, just for testing.
                 .allowMainThreadQueries()
                 .build();
-        mWordDao = mDb.wordDao();
+        mTodoDao = mDb.todoDao();
     }
 
     @After
@@ -67,32 +67,32 @@ public class WordDaoTest {
     }
 
     @Test
-    public void insertAndGetWord() throws Exception {
-        Word word = new Word("word");
-        mWordDao.insert(word);
-        List<Word> allWords = LiveDataTestUtil.getValue(mWordDao.getAlphabetizedWords());
-        assertEquals(allWords.get(0).getWord(), word.getWord());
+    public void insertAndGetTodo() throws Exception {
+        Todo todo = new Todo("todo");
+        mTodoDao.insert(todo);
+        List<Todo> allTodos = LiveDataTestUtil.getValue(mTodoDao.getAlphabetizedTodos());
+        assertEquals(allTodos.get(0).getName(), todo.getName());
     }
 
     @Test
-    public void getAllWords() throws Exception {
-        Word word = new Word("aaa");
-        mWordDao.insert(word);
-        Word word2 = new Word("bbb");
-        mWordDao.insert(word2);
-        List<Word> allWords = LiveDataTestUtil.getValue(mWordDao.getAlphabetizedWords());
-        assertEquals(allWords.get(0).getWord(), word.getWord());
-        assertEquals(allWords.get(1).getWord(), word2.getWord());
+    public void getAllTodos() throws Exception {
+        Todo todo = new Todo("aaa");
+        mTodoDao.insert(todo);
+        Todo todo2 = new Todo("bbb");
+        mTodoDao.insert(todo2);
+        List<Todo> allTodos = LiveDataTestUtil.getValue(mTodoDao.getAlphabetizedTodos());
+        assertEquals(allTodos.get(0).getName(), todo.getName());
+        assertEquals(allTodos.get(1).getName(), todo2.getName());
     }
 
     @Test
     public void deleteAll() throws Exception {
-        Word word = new Word("word");
-        mWordDao.insert(word);
-        Word word2 = new Word("word2");
-        mWordDao.insert(word2);
-        mWordDao.deleteAll();
-        List<Word> allWords = LiveDataTestUtil.getValue(mWordDao.getAlphabetizedWords());
-        assertTrue(allWords.isEmpty());
+        Todo todo = new Todo("todo");
+        mTodoDao.insert(todo);
+        Todo todo2 = new Todo("todo2");
+        mTodoDao.insert(todo2);
+        mTodoDao.deleteAll();
+        List<Todo> allTodos = LiveDataTestUtil.getValue(mTodoDao.getAlphabetizedTodos());
+        assertTrue(allTodos.isEmpty());
     }
 }

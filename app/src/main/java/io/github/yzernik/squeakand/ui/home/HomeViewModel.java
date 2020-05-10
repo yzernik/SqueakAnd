@@ -4,33 +4,32 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
-import io.github.yzernik.squeakand.Word;
-import io.github.yzernik.squeakand.WordRepository;
+import io.github.yzernik.squeakand.Todo;
+import io.github.yzernik.squeakand.TodoRepository;
 
 public class HomeViewModel extends AndroidViewModel {
 
-    private WordRepository mRepository;
-    // Using LiveData and caching what getAlphabetizedWords returns has several benefits:
+    private TodoRepository mRepository;
+    // Using LiveData and caching what getAlphabetizedTodos returns has several benefits:
     // - We can put an observer on the data (instead of polling for changes) and only update the
     //   the UI when the data actually changes.
     // - Repository is completely separated from the UI through the ViewModel.
-    private LiveData<List<Word>> mAllWords;
+    private LiveData<List<Todo>> mAllTodos;
 
     public HomeViewModel(Application application) {
         super(application);
-        mRepository = new WordRepository(application);
-        mAllWords = mRepository.getAllWords();
+        mRepository = new TodoRepository(application);
+        mAllTodos = mRepository.getAllTodos();
     }
 
-    LiveData<List<Word>> getAllWords() {
-        return mAllWords;
+    LiveData<List<Todo>> getAllTodos() {
+        return mAllTodos;
     }
 
-    void insert(Word word) {
-        mRepository.insert(word);
+    void insert(Todo todo) {
+        mRepository.insert(todo);
     }
 }

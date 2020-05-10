@@ -29,27 +29,27 @@ import androidx.appcompat.app.AppCompatActivity;
  * Activity for entering a word.
  */
 
-public class NewWordActivity extends AppCompatActivity {
+public class NewTodoActivity extends AppCompatActivity {
 
-    public static final String EXTRA_REPLY = "com.example.android.wordlistsql.REPLY";
+    public static final String EXTRA_REPLY = "io.github.yzernik.squeakand.REPLY";
 
-    private EditText mEditWordView;
+    private EditText mEditTodoView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_word);
-        mEditWordView = findViewById(R.id.edit_word);
+        setContentView(R.layout.activity_todo_note);
+        mEditTodoView = findViewById(R.id.inTitle);
 
-        final Button button = findViewById(R.id.button_save);
+        final Button button = findViewById(R.id.btnDone);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 System.out.println("Button clicked");
                 Intent replyIntent = new Intent();
-                if (TextUtils.isEmpty(mEditWordView.getText())) {
+                if (TextUtils.isEmpty(mEditTodoView.getText())) {
                     setResult(RESULT_CANCELED, replyIntent);
                 } else {
-                    String word = mEditWordView.getText().toString();
+                    String word = mEditTodoView.getText().toString();
                     replyIntent.putExtra(EXTRA_REPLY, word);
                     setResult(RESULT_OK, replyIntent);
                 }
@@ -58,4 +58,3 @@ public class NewWordActivity extends AppCompatActivity {
         });
     }
 }
-
