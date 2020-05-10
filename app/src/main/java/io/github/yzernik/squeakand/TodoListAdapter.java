@@ -75,7 +75,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoVi
     public void onBindViewHolder(TodoViewHolder holder, int position) {
         if (mTodos != null) {
             Todo current = mTodos.get(position);
-            holder.txtName.setText(current.name);
+            holder.txtName.setText(current.getName());
             holder.txtNo.setText("#" + String.valueOf(current.todo_id));
             holder.txtDesc.setText(current.description);
             holder.txtCategory.setText(current.category);

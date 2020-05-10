@@ -30,4 +30,8 @@ public class Todo implements Serializable {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
 }
