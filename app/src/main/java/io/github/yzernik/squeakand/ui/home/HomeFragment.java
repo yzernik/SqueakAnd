@@ -66,13 +66,6 @@ public class HomeFragment extends Fragment implements RecyclerViewAdapter.ClickL
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         final View root = inflater.inflate(R.layout.fragment_home, container, false);
-/*        final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });*/
 
         initViews(root);
         myDatabase = Room.databaseBuilder(getActivity(), MyDatabase.class, MyDatabase.DB_NAME).fallbackToDestructiveMigration().build();
