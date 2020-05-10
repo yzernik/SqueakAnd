@@ -17,8 +17,6 @@ public class CreateSqueakActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
 
-        System.out.println("message: " + message);
-
         // Capture the layout's TextView and set the string as its text
         TextView textView = findViewById(R.id.createSqueakTextView);
         textView.setText(message);
