@@ -26,10 +26,12 @@ public class Todo implements Serializable {
     public Todo() {
     }
 
+    @Ignore
     public Todo(String name) {
         this.name = name;
     }
 
+    @Ignore
     public String getName() {
         return name;
     }

@@ -47,14 +47,13 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoVi
             cardView = view.findViewById(R.id.cardView);
 
             // TODO: uncomment
-/*
+            /*
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     clickListener.launchIntent(todoList.get(getAdapterPosition()).todo_id);
                 }
-            });
-*/
+            });*/
         }
     }
 
