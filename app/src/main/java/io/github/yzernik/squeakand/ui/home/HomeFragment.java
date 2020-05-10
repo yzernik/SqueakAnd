@@ -20,6 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.NewTodoActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.Todo;
 import io.github.yzernik.squeakand.TodoListAdapter;
@@ -58,32 +59,31 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        // TODO: uncomment
-/*        FloatingActionButton fab = root.findViewById(R.id.fab);
+        FloatingActionButton fab = root.findViewById(R.id.home_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), NewTodoActivity.class);
                 startActivityForResult(intent, NEW_TODO_ACTIVITY_REQUEST_CODE);
             }
-        });*/
+        });
 
         return root;
     }
 
-    // TODO: uncomment
-/*    @Override
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == NEW_TODO_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Todo todo = new Todo(data.getStringExtra(NewTodoActivity.EXTRA_REPLY));
-            homeViewModel.insert(todo);
-        } else {
-            Toast.makeText(
-                    getContext(),
-                    R.string.empty_not_saved,
-                    Toast.LENGTH_LONG).show();
+        if (resultCode == RESULT_OK) {
+
+            if (requestCode == NEW_TODO_ACTIVITY_REQUEST_CODE) {
+                String todoInput = data.getStringExtra(NewTodoActivity.EXTRA_REPLY);
+                Todo todo = new Todo(todoInput);
+                homeViewModel.insert(todo);
+            } else {
+                Toast.makeText(getActivity(), "No action done by user", Toast.LENGTH_SHORT).show();
+            }
         }
-    }*/
+    }
 }

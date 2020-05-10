@@ -23,4 +23,11 @@ public class Todo implements Serializable {
     @Ignore
     public String priority;
 
+    public Todo() {
+    }
+
+    public Todo(String name) {
+        this.name = name;
+    }
+
 }
