@@ -19,7 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewTodoActivity"></activity>
+        <activity
+            android:name=".NewTodoActivity"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>
