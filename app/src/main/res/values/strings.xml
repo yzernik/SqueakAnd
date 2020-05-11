@@ -12,6 +12,7 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="activity_create_todo">Create Todo</string>
+    <string name="activity_view_todo">Todo</string>
 
     <string name="home_second">Home Second</string>
 </resources>

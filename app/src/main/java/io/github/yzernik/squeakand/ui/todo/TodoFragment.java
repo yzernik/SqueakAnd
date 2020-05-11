@@ -47,13 +47,15 @@ public class TodoFragment extends Fragment {
 
         // Get a new or existing ViewModel from the ViewModelProvider.
         todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
-        View root = inflater.inflate(R.layout.recyclerview_item_layout, container, false);
+        View root = inflater.inflate(R.layout.fragment_show_todo, container, false);
 
         txtNo = root.findViewById(R.id.txtNo);
         txtName = root.findViewById(R.id.txtName);
         txtDesc = root.findViewById(R.id.txtDesc);
         txtCategory = root.findViewById(R.id.txtCategory);
         cardView = root.findViewById(R.id.cardView);
+
+        System.out.println("txtNo: " + txtNo);
 
         todoViewModel.getSingleTodo(todoId).observe(getViewLifecycleOwner(), new Observer<Todo>() {
             @Override
