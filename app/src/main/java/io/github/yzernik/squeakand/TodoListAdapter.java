@@ -54,7 +54,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoVi
                     System.out.println("Todo list item mTodos.get(getAdapterPosition()): " + mTodos.get(getAdapterPosition()));
                     System.out.println("Todo list item name: " + mTodos.get(getAdapterPosition()).name);
                     System.out.println("Todo list item todo_id: " + mTodos.get(getAdapterPosition()).todo_id);
-                    // clickListener.launchIntent(mTodos.get(getAdapterPosition()).todo_id);
+                    clickListener.handleItemClick(mTodos.get(getAdapterPosition()).todo_id);
                 }
             });
         }
@@ -64,7 +64,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoVi
     private List<Todo> mTodos; // Cached copy of todos
     private ClickListener clickListener;
 
-    public TodoListAdapter(Context context) {
+    public TodoListAdapter(Context context, ClickListener clickListener) {
         mInflater = LayoutInflater.from(context);
         this.clickListener = clickListener;
     }
@@ -104,7 +104,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoVi
     }
 
     public interface ClickListener {
-        void launchIntent(int id);
+        void handleItemClick(int id);
     }
 }
 

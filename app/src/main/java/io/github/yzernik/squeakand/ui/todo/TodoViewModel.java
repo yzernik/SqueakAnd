@@ -24,8 +24,9 @@ public class TodoViewModel extends AndroidViewModel {
         mSingleTodo = mRepository.getTodo(12345);
     }
 
-    LiveData<Todo> getSingleTodo() {
-        return mSingleTodo;
+    // TODO: get the id from the class variable, not a method parameter.
+    LiveData<Todo> getSingleTodo(int id) {
+        return mRepository.getTodo(id);
     }
 
 }

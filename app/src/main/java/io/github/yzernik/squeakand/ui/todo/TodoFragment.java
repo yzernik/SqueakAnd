@@ -43,9 +43,11 @@ public class TodoFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        int todoId = this.getArguments().getInt("todo_id");
+
         // Get a new or existing ViewModel from the ViewModelProvider.
         todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
-        View root = inflater.inflate(R.layout.activity_todo_note, container, false);
+        View root = inflater.inflate(R.layout.fragment_todo, container, false);
 
         spinner = root.findViewById(R.id.spinner);
         inTitle = root.findViewById(R.id.inTitle);
@@ -53,9 +55,16 @@ public class TodoFragment extends Fragment {
         btnDone = root.findViewById(R.id.btnDone);
         btnDelete = root.findViewById(R.id.btnDelete);
 
-        todoViewModel.getSingleTodo().observe(getViewLifecycleOwner(), new Observer<Todo>() {
+        todoViewModel.getSingleTodo(todoId).observe(getViewLifecycleOwner(), new Observer<Todo>() {
             @Override
             public void onChanged(@Nullable Todo todo) {
+                System.out.println("Handling onChanged: " + todo);
+                if (todo == null) {
+                    return;
+                }
+
+                System.out.println("Setting layout to show todo: " + todo);
+
                 inTitle.setText(todo.name);
                 inDesc.setText(todo.description);
                 spinner.setSelection(spinnerList.indexOf(todo.category));
