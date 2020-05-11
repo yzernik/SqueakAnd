@@ -43,6 +43,9 @@ public interface TodoDao {
     @Query("SELECT * from " + TodoRoomDatabase.TABLE_NAME_TODO + " ORDER BY name ASC")
     LiveData<List<Todo>> getAlphabetizedTodos();
 
+    @Query("SELECT * FROM " + TodoRoomDatabase.TABLE_NAME_TODO + " WHERE todo_id = :todoId")
+    LiveData<Todo> fetchTodoById(int todoId);
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Todo todo);
 

@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -24,11 +25,12 @@ import io.github.yzernik.squeakand.NewTodoActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.Todo;
 import io.github.yzernik.squeakand.TodoListAdapter;
+import io.github.yzernik.squeakand.ui.todo.TodoFragment;
 
 import static android.app.Activity.RESULT_OK;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements TodoListAdapter.ClickListener {
 
     public static final int NEW_TODO_ACTIVITY_REQUEST_CODE = 1;
 
@@ -41,7 +43,7 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         final RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
-        final TodoListAdapter adapter = new TodoListAdapter(root.getContext());
+        final TodoListAdapter adapter = new TodoListAdapter(root.getContext(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
@@ -85,5 +87,32 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getActivity(), "No action done by user", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void handleItemClick(int id) {
+        // startActivityForResult(new Intent(getActivity(), TodoFragment.class).putExtra("id", id), UPDATE_TODO_REQUEST_CODE);
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("todo_id", id);
+        // FragmentClass fragInfo = new FragmentClass();
+        //fragInfo.setArguments(bundle);
+        //transaction.replace(R.id.fragment_single, fragInfo);
+        //transaction.commit();
+
+        // Create new fragment and transaction
+        Fragment newFragment = new TodoFragment();
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        newFragment.setArguments(bundle);
+
+        int currentContainerViewId = ((ViewGroup)getView().getParent()).getId();
+        transaction.replace(currentContainerViewId, newFragment);
+        transaction.addToBackStack(null);
+
+// Commit the transaction
+        transaction.commit();
     }
 }

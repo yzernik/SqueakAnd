@@ -46,22 +46,27 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoVi
             txtCategory = view.findViewById(R.id.txtCategory);
             cardView = view.findViewById(R.id.cardView);
 
-            // TODO: uncomment
-            /*
+            // TODO: go to todo fragment on click.
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clickListener.launchIntent(todoList.get(getAdapterPosition()).todo_id);
+                    System.out.println("Todo list item getAdapterPosition(): " + getAdapterPosition());
+                    System.out.println("Todo list item mTodos.get(getAdapterPosition()): " + mTodos.get(getAdapterPosition()));
+                    System.out.println("Todo list item name: " + mTodos.get(getAdapterPosition()).name);
+                    System.out.println("Todo list item todo_id: " + mTodos.get(getAdapterPosition()).todo_id);
+                    clickListener.handleItemClick(mTodos.get(getAdapterPosition()).todo_id);
                 }
-            });*/
+            });
         }
     }
 
     private final LayoutInflater mInflater;
     private List<Todo> mTodos; // Cached copy of todos
+    private ClickListener clickListener;
 
-    public TodoListAdapter(Context context) {
+    public TodoListAdapter(Context context, ClickListener clickListener) {
         mInflater = LayoutInflater.from(context);
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -96,6 +101,10 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoVi
         if (mTodos != null)
             return mTodos.size();
         else return 0;
+    }
+
+    public interface ClickListener {
+        void handleItemClick(int id);
     }
 }
 
