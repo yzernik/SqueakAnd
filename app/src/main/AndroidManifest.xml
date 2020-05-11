@@ -21,7 +21,8 @@
         </activity>
         <activity
             android:name=".NewTodoActivity"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity"
+            android:label="@string/activity_create_todo"></activity>
     </application>
 
 </manifest>
