@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -21,12 +20,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
-import io.github.yzernik.squeakand.MainActivity;
 import io.github.yzernik.squeakand.NewTodoActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.Todo;
 import io.github.yzernik.squeakand.TodoListAdapter;
-import io.github.yzernik.squeakand.ViewTodoActivity;
+import io.github.yzernik.squeakand.ui.todo.ViewTodoActivity;
 
 import static android.app.Activity.RESULT_OK;
 

@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand;
+package io.github.yzernik.squeakand.ui.todo;
 
 /*
  * Copyright (C) 2017 Google Inc.
@@ -25,7 +25,9 @@ import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import io.github.yzernik.squeakand.TodoViewModel;
+import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.Todo;
+import io.github.yzernik.squeakand.ui.todo.TodoViewModel;
 
 /**
  * Activity for entering a word.
@@ -48,14 +50,9 @@ public class ViewTodoActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_todo);
-        // mEditTodoView = findViewById(R.id.inTitle);
 
         // Get the transferred data from source activity.
         int todoId = getIntent().getIntExtra("id", 0);
-
-        // int todoId = savedInstanceState.getInt("todo_id");
-        // int todoId = this.getArguments().getInt("todo_id");
-        System.out.println("todoId: " + todoId);
 
         // Get a new or existing ViewModel from the ViewModelProvider.
         todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
@@ -86,12 +83,9 @@ public class ViewTodoActivity extends AppCompatActivity {
         todoViewModel.getSingleTodo(todoId).observe(this, new Observer<Todo>() {
             @Override
             public void onChanged(@Nullable Todo todo) {
-                System.out.println("Handling onChanged: " + todo);
                 if (todo == null) {
                     return;
                 }
-
-                System.out.println("Setting layout to show todo: " + todo);
                 txtName.setText(todo.getName());
                 txtNo.setText("#" + String.valueOf(todo.todo_id));
                 txtDesc.setText(todo.description);
