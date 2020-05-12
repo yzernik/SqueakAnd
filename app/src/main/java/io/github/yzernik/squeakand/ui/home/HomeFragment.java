@@ -21,10 +21,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.MainActivity;
 import io.github.yzernik.squeakand.NewTodoActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.Todo;
 import io.github.yzernik.squeakand.TodoListAdapter;
+import io.github.yzernik.squeakand.ViewTodoActivity;
 import io.github.yzernik.squeakand.ui.todo.TodoFragment;
 
 import static android.app.Activity.RESULT_OK;
@@ -33,6 +35,7 @@ import static android.app.Activity.RESULT_OK;
 public class HomeFragment extends Fragment implements TodoListAdapter.ClickListener {
 
     public static final int NEW_TODO_ACTIVITY_REQUEST_CODE = 1;
+    public static final int UPDATE_TODO_REQUEST_CODE = 300;
 
     private HomeViewModel homeViewModel;
 
@@ -91,14 +94,11 @@ public class HomeFragment extends Fragment implements TodoListAdapter.ClickListe
 
     @Override
     public void handleItemClick(int id) {
+        startActivityForResult(new Intent(getActivity(), ViewTodoActivity.class).putExtra("id", id), UPDATE_TODO_REQUEST_CODE);
         // startActivityForResult(new Intent(getActivity(), TodoFragment.class).putExtra("id", id), UPDATE_TODO_REQUEST_CODE);
-
+/*
         Bundle bundle = new Bundle();
         bundle.putInt("todo_id", id);
-        // FragmentClass fragInfo = new FragmentClass();
-        //fragInfo.setArguments(bundle);
-        //transaction.replace(R.id.fragment_single, fragInfo);
-        //transaction.commit();
 
         // Create new fragment and transaction
         Fragment newFragment = new TodoFragment();
@@ -112,7 +112,7 @@ public class HomeFragment extends Fragment implements TodoListAdapter.ClickListe
         transaction.replace(currentContainerViewId, newFragment);
         transaction.addToBackStack(null);
 
-// Commit the transaction
-        transaction.commit();
+        // Commit the transaction
+        transaction.commit();*/
     }
 }

@@ -38,7 +38,7 @@ public class NewTodoActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_todo_note);
+        setContentView(R.layout.activity_new_todo);
         mEditTodoView = findViewById(R.id.inTitle);
 
         final Button button = findViewById(R.id.btnDone);

@@ -4,12 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,10 +24,11 @@ public class TodoFragment extends Fragment {
 
     public static final int NEW_TODO_ACTIVITY_REQUEST_CODE = 1;
 
-    Spinner spinner;
-    EditText inTitle, inDesc;
-    Button btnDone, btnDelete;
-    boolean isNewTodo = false;
+    TextView txtName;
+    TextView txtNo;
+    TextView txtDesc;
+    TextView txtCategory;
+    CardView cardView;
 
     private String[] categories = {
             "Android",
@@ -47,13 +47,15 @@ public class TodoFragment extends Fragment {
 
         // Get a new or existing ViewModel from the ViewModelProvider.
         todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_todo, container, false);
+        View root = inflater.inflate(R.layout.fragment_show_todo, container, false);
 
-        spinner = root.findViewById(R.id.spinner);
-        inTitle = root.findViewById(R.id.inTitle);
-        inDesc = root.findViewById(R.id.inDescription);
-        btnDone = root.findViewById(R.id.btnDone);
-        btnDelete = root.findViewById(R.id.btnDelete);
+        txtNo = root.findViewById(R.id.txtNo);
+        txtName = root.findViewById(R.id.txtName);
+        txtDesc = root.findViewById(R.id.txtDesc);
+        txtCategory = root.findViewById(R.id.txtCategory);
+        cardView = root.findViewById(R.id.cardView);
+
+        System.out.println("txtNo: " + txtNo);
 
         todoViewModel.getSingleTodo(todoId).observe(getViewLifecycleOwner(), new Observer<Todo>() {
             @Override
@@ -64,10 +66,10 @@ public class TodoFragment extends Fragment {
                 }
 
                 System.out.println("Setting layout to show todo: " + todo);
-
-                inTitle.setText(todo.name);
-                inDesc.setText(todo.description);
-                spinner.setSelection(spinnerList.indexOf(todo.category));
+                txtName.setText(todo.getName());
+                txtNo.setText("#" + String.valueOf(todo.todo_id));
+                txtDesc.setText(todo.description);
+                txtCategory.setText(todo.category);
             }
         });
 
