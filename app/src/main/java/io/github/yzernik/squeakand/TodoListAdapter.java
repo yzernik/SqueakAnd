@@ -46,14 +46,9 @@ public class TodoListAdapter extends RecyclerView.Adapter<TodoListAdapter.TodoVi
             txtCategory = view.findViewById(R.id.txtCategory);
             cardView = view.findViewById(R.id.cardView);
 
-            // TODO: go to todo fragment on click.
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("Todo list item getAdapterPosition(): " + getAdapterPosition());
-                    System.out.println("Todo list item mTodos.get(getAdapterPosition()): " + mTodos.get(getAdapterPosition()));
-                    System.out.println("Todo list item name: " + mTodos.get(getAdapterPosition()).name);
-                    System.out.println("Todo list item todo_id: " + mTodos.get(getAdapterPosition()).todo_id);
                     clickListener.handleItemClick(mTodos.get(getAdapterPosition()).todo_id);
                 }
             });
