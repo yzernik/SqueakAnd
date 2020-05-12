@@ -1,12 +1,9 @@
-package io.github.yzernik.squeakand.ui.todo;
+package io.github.yzernik.squeakand;
 
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-
-import io.github.yzernik.squeakand.Todo;
-import io.github.yzernik.squeakand.TodoRepository;
 
 public class TodoViewModel extends AndroidViewModel {
 
