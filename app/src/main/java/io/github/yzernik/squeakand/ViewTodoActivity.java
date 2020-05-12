@@ -16,12 +16,7 @@ package io.github.yzernik.squeakand;
  * limitations under the License.
  */
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -52,11 +47,11 @@ public class ViewTodoActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_todo_note);
+        setContentView(R.layout.activity_view_todo);
         // mEditTodoView = findViewById(R.id.inTitle);
 
         // Get the transferred data from source activity.
-        int todoId = getIntent().getIntExtra("todo_id", 0);
+        int todoId = getIntent().getIntExtra("id", 0);
 
         // int todoId = savedInstanceState.getInt("todo_id");
         // int todoId = this.getArguments().getInt("todo_id");
