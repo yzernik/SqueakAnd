@@ -95,24 +95,5 @@ public class HomeFragment extends Fragment implements TodoListAdapter.ClickListe
     @Override
     public void handleItemClick(int id) {
         startActivityForResult(new Intent(getActivity(), ViewTodoActivity.class).putExtra("id", id), UPDATE_TODO_REQUEST_CODE);
-        // startActivityForResult(new Intent(getActivity(), TodoFragment.class).putExtra("id", id), UPDATE_TODO_REQUEST_CODE);
-/*
-        Bundle bundle = new Bundle();
-        bundle.putInt("todo_id", id);
-
-        // Create new fragment and transaction
-        Fragment newFragment = new TodoFragment();
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        newFragment.setArguments(bundle);
-
-        int currentContainerViewId = ((ViewGroup)getView().getParent()).getId();
-        transaction.replace(currentContainerViewId, newFragment);
-        transaction.addToBackStack(null);
-
-        // Commit the transaction
-        transaction.commit();*/
     }
 }
