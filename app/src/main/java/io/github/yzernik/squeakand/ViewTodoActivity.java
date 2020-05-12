@@ -25,7 +25,7 @@ import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import io.github.yzernik.squeakand.ui.todo.TodoViewModel;
+import io.github.yzernik.squeakand.TodoViewModel;
 
 /**
  * Activity for entering a word.
