@@ -20,13 +20,16 @@ import java.util.concurrent.Executors;
  * app, consider exporting the schema to help you with migrations.
  */
 
-@Database(entities = {Todo.class}, version = 1, exportSchema = false)
+@Database(entities = {Todo.class, SqueakProfile.class}, version = 1, exportSchema = false)
 abstract class TodoRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";
     public static final String TABLE_NAME_TODO = "todo";
+    public static final String TABLE_NAME_PROFILE = "profile";
 
     abstract TodoDao todoDao();
+    abstract SqueakProfileDao squeakProfileDao();
+
 
     // marking the instance as volatile to ensure atomic access to the variable
     private static volatile TodoRoomDatabase INSTANCE;
@@ -71,6 +74,13 @@ abstract class TodoRoomDatabase extends RoomDatabase {
                 for (Todo todo: INSTANCE.buildDummyTodos()) {
                     dao.insert(todo);
                 }
+
+                SqueakProfileDao squeakProfileDao = INSTANCE.squeakProfileDao();
+                squeakProfileDao.deleteAll();
+
+                for (SqueakProfile squeakProfile: INSTANCE.buildDummySqueakProfiles()) {
+                    squeakProfileDao.insert(squeakProfile);
+                }
             });
         }
     };
@@ -107,4 +117,26 @@ abstract class TodoRoomDatabase extends RoomDatabase {
 
         return todoArrayList;
     }
+
+
+    private List<SqueakProfile> buildDummySqueakProfiles() {
+        List<SqueakProfile> squeakProfileArrayList = new ArrayList<>();
+        SqueakProfile squeakProfile = new SqueakProfile();
+        squeakProfile.name = "profile1";
+
+        squeakProfileArrayList.add(squeakProfile);
+
+        squeakProfile = new SqueakProfile();
+        squeakProfile.name = "profile2";
+
+        squeakProfileArrayList.add(squeakProfile);
+
+        squeakProfile = new SqueakProfile();
+        squeakProfile.name = "profile3";
+
+        squeakProfileArrayList.add(squeakProfile);
+
+        return squeakProfileArrayList;
+    }
+
 }
