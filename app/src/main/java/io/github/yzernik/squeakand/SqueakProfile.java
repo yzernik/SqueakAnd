@@ -28,4 +28,9 @@ public class SqueakProfile implements Serializable {
         return name;
     }
 
+    @Ignore
+    public int getProfileId() {
+        return profile_id;
+    }
+
 }
