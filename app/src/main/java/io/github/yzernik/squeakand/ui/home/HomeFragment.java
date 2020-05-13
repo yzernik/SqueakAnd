@@ -24,7 +24,7 @@ import io.github.yzernik.squeakand.NewTodoActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.Todo;
 import io.github.yzernik.squeakand.TodoListAdapter;
-import io.github.yzernik.squeakand.ui.todo.ViewTodoActivity;
+import io.github.yzernik.squeakand.ViewTodoActivity;
 
 import static android.app.Activity.RESULT_OK;
 
