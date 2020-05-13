@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.todo;
+package io.github.yzernik.squeakand;
 
 /*
  * Copyright (C) 2017 Google Inc.
@@ -17,17 +17,12 @@ package io.github.yzernik.squeakand.ui.todo;
  */
 
 import android.os.Bundle;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.Todo;
-import io.github.yzernik.squeakand.ui.todo.TodoViewModel;
+import io.github.yzernik.squeakand.ui.todo.ViewTodoFragment;
 
 /**
  * Activity for entering a word.
@@ -37,14 +32,14 @@ public class ViewTodoActivity extends AppCompatActivity {
 
     public static final String EXTRA_REPLY = "io.github.yzernik.squeakand.REPLY";
 
-    TextView txtName;
+/*    TextView txtName;
     TextView txtNo;
     TextView txtDesc;
     TextView txtCategory;
     CardView cardView;
 
     // private EditText mEditTodoView;
-    private TodoViewModel todoViewModel;
+    private TodoViewModel todoViewModel;*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,15 +48,16 @@ public class ViewTodoActivity extends AppCompatActivity {
 
         // Get the transferred data from source activity.
         int todoId = getIntent().getIntExtra("id", 0);
+        System.out.println("Starting ViewTodoActivity with id: " + todoId);
 
         // Get a new or existing ViewModel from the ViewModelProvider.
-        todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
+        // todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
 
-        txtNo = findViewById(R.id.txtNo);
+/*        txtNo = findViewById(R.id.txtNo);
         txtName = findViewById(R.id.txtName);
         txtDesc = findViewById(R.id.txtDesc);
         txtCategory = findViewById(R.id.txtCategory);
-        cardView = findViewById(R.id.cardView);
+        cardView = findViewById(R.id.cardView);*/
 
 
 /*        final Button button = findViewById(R.id.btnDone);
@@ -80,7 +76,7 @@ public class ViewTodoActivity extends AppCompatActivity {
             }
         });*/
 
-        todoViewModel.getSingleTodo(todoId).observe(this, new Observer<Todo>() {
+/*        todoViewModel.getSingleTodo(todoId).observe(this, new Observer<Todo>() {
             @Override
             public void onChanged(@Nullable Todo todo) {
                 if (todo == null) {
@@ -91,6 +87,26 @@ public class ViewTodoActivity extends AppCompatActivity {
                 txtDesc.setText(todo.description);
                 txtCategory.setText(todo.category);
             }
-        });
+        });*/
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("todo_id", todoId);
+
+        // Create new fragment and transaction
+        Fragment newFragment = new ViewTodoFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        newFragment.setArguments(bundle);
+        // int currentContainerViewId = ((ViewGroup) getView().getParent()).getId();
+        transaction.replace(R.id.view_todo_fragment, newFragment);
+        // transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
+
+        System.out.println("Finished setting fragment");
+
     }
 }
