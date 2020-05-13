@@ -27,7 +27,7 @@
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_view_todo"></activity>
         <activity
-            android:name=".ui.profile.SelectProfileActivity"
+            android:name=".SelectProfileActivity"
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_view_todo"></activity>
     </application>

@@ -29,7 +29,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import io.github.yzernik.squeakand.ui.profile.SelectProfileActivity;
 import io.github.yzernik.squeakand.ui.profile.SelectProfileModel;
 
 /**

@@ -1,38 +1,40 @@
 package io.github.yzernik.squeakand.ui.profile;
 
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
 
-public class SelectProfileActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class SelectProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private Button mSelectProfileButton;
     private TextView mSelectedProfileText;
 
     private SelectProfileModel selectProfileModel;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_profile);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+
         selectProfileModel =
                 ViewModelProviders.of(this).get(SelectProfileModel.class);
-        mSelectProfileButton = findViewById(R.id.select_profile_button);
-        mSelectedProfileText = findViewById(R.id.selected_profile_text);
+        View root = inflater.inflate(R.layout.fragment_select_profile, container, false);
 
-        selectProfileModel.getSelectedSqueakProfile().observe(this, new Observer<SqueakProfile>() {
+        mSelectProfileButton = root.findViewById(R.id.select_profile_button);
+        mSelectedProfileText = root.findViewById(R.id.selected_profile_text);
+
+        selectProfileModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
             @Override
             public void onChanged(@Nullable final SqueakProfile squeakProfile) {
                 // set the textview to show the currently selected profile.
@@ -42,6 +44,7 @@ public class SelectProfileActivity extends AppCompatActivity implements AdapterV
             }
         });
 
+        return root;
     }
 
     @Override
