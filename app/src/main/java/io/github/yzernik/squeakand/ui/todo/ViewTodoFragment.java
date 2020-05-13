@@ -34,20 +34,11 @@ public class ViewTodoFragment extends Fragment {
                 ViewModelProviders.of(this).get(TodoViewModel.class);
         View root = inflater.inflate(R.layout.fragment_view_todo, container, false);
 
-        System.out.println("Starting fragment...");
-        System.out.println("this.getArguments(): " + this.getArguments());
-
         int todoId = 0;
         Bundle arguments = getArguments();
         if (arguments != null) {
             todoId = this.getArguments().getInt("todo_id");
         }
-        // int todoId = 1;
-        System.out.println("Got todoId: " + todoId);
-
-        // Get the transferred data from source activity.
-        // int todoId = getIntent().getIntExtra("id", 0);
-        // int todoId = 1;
 
         // Get a new or existing ViewModel from the ViewModelProvider.
         todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
@@ -61,12 +52,10 @@ public class ViewTodoFragment extends Fragment {
         todoViewModel.getSingleTodo(todoId).observe(getViewLifecycleOwner(), new Observer<Todo>() {
             @Override
             public void onChanged(@Nullable Todo todo) {
-                System.out.println("Onchanged todo: " + todo);
                 if (todo == null) {
                     return;
                 }
 
-                System.out.println("Setting text: " + todo.getName());
                 txtName.setText(todo.getName());
                 txtNo.setText("#" + String.valueOf(todo.todo_id));
                 txtDesc.setText(todo.description);
@@ -76,6 +65,5 @@ public class ViewTodoFragment extends Fragment {
 
         return root;
     }
-
 
 }

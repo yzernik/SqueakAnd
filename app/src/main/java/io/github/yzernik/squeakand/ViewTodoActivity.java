@@ -32,14 +32,6 @@ public class ViewTodoActivity extends AppCompatActivity {
 
     public static final String EXTRA_REPLY = "io.github.yzernik.squeakand.REPLY";
 
-/*    TextView txtName;
-    TextView txtNo;
-    TextView txtDesc;
-    TextView txtCategory;
-    CardView cardView;
-
-    // private EditText mEditTodoView;
-    private TodoViewModel todoViewModel;*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,16 +40,6 @@ public class ViewTodoActivity extends AppCompatActivity {
 
         // Get the transferred data from source activity.
         int todoId = getIntent().getIntExtra("id", 0);
-        System.out.println("Starting ViewTodoActivity with id: " + todoId);
-
-        // Get a new or existing ViewModel from the ViewModelProvider.
-        // todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
-
-/*        txtNo = findViewById(R.id.txtNo);
-        txtName = findViewById(R.id.txtName);
-        txtDesc = findViewById(R.id.txtDesc);
-        txtCategory = findViewById(R.id.txtCategory);
-        cardView = findViewById(R.id.cardView);*/
 
 
 /*        final Button button = findViewById(R.id.btnDone);
@@ -76,37 +58,18 @@ public class ViewTodoActivity extends AppCompatActivity {
             }
         });*/
 
-/*        todoViewModel.getSingleTodo(todoId).observe(this, new Observer<Todo>() {
-            @Override
-            public void onChanged(@Nullable Todo todo) {
-                if (todo == null) {
-                    return;
-                }
-                txtName.setText(todo.getName());
-                txtNo.setText("#" + String.valueOf(todo.todo_id));
-                txtDesc.setText(todo.description);
-                txtCategory.setText(todo.category);
-            }
-        });*/
-
         Bundle bundle = new Bundle();
         bundle.putInt("todo_id", todoId);
-
         // Create new fragment and transaction
         Fragment newFragment = new ViewTodoFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack
         newFragment.setArguments(bundle);
         // int currentContainerViewId = ((ViewGroup) getView().getParent()).getId();
         transaction.replace(R.id.view_todo_fragment, newFragment);
         // transaction.addToBackStack(null);
-
         // Commit the transaction
         transaction.commit();
-
-        System.out.println("Finished setting fragment");
-
     }
 }
