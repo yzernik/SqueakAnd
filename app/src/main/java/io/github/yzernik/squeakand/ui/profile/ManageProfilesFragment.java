@@ -5,14 +5,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
@@ -20,6 +27,7 @@ import io.github.yzernik.squeakand.SqueakProfile;
 
 public class ManageProfilesFragment extends Fragment {
 
+    private Spinner mProfilesSpinner;
     private Button mCreateProfileButton;
 
     private SelectProfileModel selectProfileModel;
@@ -31,6 +39,7 @@ public class ManageProfilesFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_manage_profiles, container, false);
 
         mCreateProfileButton = root.findViewById(R.id.create_profile_button);
+        mProfilesSpinner = root.findViewById(R.id.profiles_spinner);
 
         mCreateProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +63,18 @@ public class ManageProfilesFragment extends Fragment {
                 // create and show the alert dialog
                 AlertDialog dialog = builder.create();
                 dialog.show();
+            }
+        });
+
+        selectProfileModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
+            @Override
+            public void onChanged(@Nullable final List<SqueakProfile> squeakProfiles) {
+                List<String> profileNames = squeakProfiles.stream()
+                        .map(SqueakProfile::getName)
+                        .collect(Collectors.toList());
+                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_spinner_item, profileNames);
+                mProfilesSpinner.setAdapter(spinnerArrayAdapter);
             }
         });
 
