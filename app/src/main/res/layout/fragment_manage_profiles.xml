@@ -18,6 +18,12 @@
             android:id="@+id/profiles_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/create_profile_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/manage_profiles_new_profile_button_button" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

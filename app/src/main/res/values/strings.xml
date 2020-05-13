@@ -14,4 +14,5 @@
     <string name="no_profile_selected_text">No profile selected</string>
     <string name="new_todo_select_profile_button_text">Select a profile</string>
     <string name="manage_profiles_button_text">Manage Profiles</string>
+    <string name="manage_profiles_new_profile_button_button">Create New Profile</string>
 </resources>

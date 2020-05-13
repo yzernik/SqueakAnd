@@ -13,6 +13,7 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileRepository;
+import io.github.yzernik.squeakand.Todo;
 
 public class SelectProfileModel extends AndroidViewModel {
 
@@ -71,6 +72,10 @@ public class SelectProfileModel extends AndroidViewModel {
             });
             return ret;
         });
+    }
+
+    void insert(SqueakProfile squeakProfile) {
+        mRepository.insert(squeakProfile);
     }
 
 }

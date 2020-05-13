@@ -26,7 +26,6 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
     private TextView mSelectedProfileText;
     private Button mManageProfilesButton;
 
-
     private SelectProfileModel selectProfileModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
