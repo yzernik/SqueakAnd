@@ -22,8 +22,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
+import io.github.yzernik.squeakand.ui.profile.SelectProfileActivity;
+import io.github.yzernik.squeakand.ui.profile.SelectProfileModel;
 
 /**
  * Activity for entering a word.
@@ -34,14 +41,43 @@ public class NewTodoActivity extends AppCompatActivity {
     public static final String EXTRA_REPLY = "io.github.yzernik.squeakand.REPLY";
 
     private EditText mEditTodoView;
+    private Button button;
+    private Button selectProfileButton;
+    private TextView currentProfileText;
+
+    private SelectProfileModel selectProfileModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_todo);
         mEditTodoView = findViewById(R.id.inTitle);
+        currentProfileText = findViewById(R.id.new_todo_current_profile_text);
+        button = findViewById(R.id.btnDone);
+        selectProfileButton = findViewById(R.id.new_todo_select_profile_button);
 
-        final Button button = findViewById(R.id.btnDone);
+        selectProfileModel =
+                ViewModelProviders.of(this).get(SelectProfileModel.class);
+
+        selectProfileModel.getSelectedSqueakProfile().observe(this, new Observer<SqueakProfile>() {
+            @Override
+            public void onChanged(@Nullable final SqueakProfile squeakProfile) {
+                // set the textview to show the currently selected profile.
+                if (squeakProfile != null) {
+                    currentProfileText.setText(squeakProfile.getName());
+                }
+            }
+        });
+
+        selectProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("Select profile button clicked");
+                Intent intent = new Intent(getApplication(), SelectProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 System.out.println("Button clicked");
