@@ -59,7 +59,7 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
                 mSelectProfileButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        System.out.println("Select profile button clicked");
+                        Log.i(getTag(),"Select profile button clicked");
 
                         // setup the alert builder
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -72,23 +72,15 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
                             displayValues.add(profile.getName());
                         }
 
-                        // ArrayAdapter<String> adapter = new ArrayAdapter(displayValues);
-                        builder.setSingleChoiceItems(displayValues.toArray(new String[displayValues.size()]), 0, new DialogInterface.OnClickListener() {
+                        String[] displayValuesArr = displayValues.toArray(new String[displayValues.size()]);
+
+                        builder.setItems(displayValuesArr, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SqueakProfile selectedProfile = profiles.get(which);
                                 selectProfileModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
                             }
                         });
-
-                        // add OK and Cancel buttons
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // user clicked OK
-                            }
-                        });
-                        builder.setNegativeButton("Cancel", null);
 
                         // create and show the alert dialog
                         AlertDialog dialog = builder.create();
@@ -103,7 +95,7 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
         selectProfileModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
             @Override
             public void onChanged(@Nullable final SqueakProfile squeakProfile) {
-                Log.e(getTag(),"Got selected from from observe: " + squeakProfile);
+                Log.i(getTag(),"Got selected from from observe: " + squeakProfile);
 
                 // set the textview to show the currently selected profile.
                 if (squeakProfile != null) {
