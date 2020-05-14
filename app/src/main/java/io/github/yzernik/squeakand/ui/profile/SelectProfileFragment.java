@@ -63,7 +63,7 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
 
                         // setup the alert builder
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle("Choose an animal");
+                        builder.setTitle("Choose a profile");
 
                         // add a list
                         // String[] animals = {"horse", "cow", "camel", "sheep", "goat"};
@@ -101,7 +101,7 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
                 if (squeakProfile != null) {
                     mSelectedProfileText.setText(squeakProfile.getName());
                     mSelectedProfileText2.setText(squeakProfile.getName());
-                    System.out.println("mSelectedProfileText2: " + mSelectedProfileText2.getText());
+                    Log.i(getTag(),"mSelectedProfileText2: " + mSelectedProfileText2.getText());
                 }
             }
 
