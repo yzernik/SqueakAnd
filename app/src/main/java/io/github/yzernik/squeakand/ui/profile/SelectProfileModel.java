@@ -13,6 +13,7 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileRepository;
+import io.github.yzernik.squeakand.Todo;
 
 public class SelectProfileModel extends AndroidViewModel {
 
@@ -42,13 +43,14 @@ public class SelectProfileModel extends AndroidViewModel {
 
     void setSelectedSqueakProfileId(int squeakProfileId) {
         this.mSelectedSqueakProfileId.setValue(squeakProfileId);
+        saveSelectedSqueakProfileId(squeakProfileId);
     }
 
     LiveData<Integer> getSelectedSqueakProfileId() {
         return mSelectedSqueakProfileId;
     }
 
-    void saveSelectedSqueakProfileId(int squeakProfileId) {
+    private void saveSelectedSqueakProfileId(int squeakProfileId) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(SELECTED_SQUEAK_PROFILE_ID_KEY, squeakProfileId);
         editor.commit();
@@ -62,6 +64,7 @@ public class SelectProfileModel extends AndroidViewModel {
     public LiveData<SqueakProfile> getSelectedSqueakProfile() {
         return Transformations.switchMap(mAllSqueakProfiles, profiles -> {
             LiveData<SqueakProfile> ret = Transformations.map(mSelectedSqueakProfileId, profileId -> {
+                System.out.println("Transformation with profileId: " + profileId);
                 for (SqueakProfile profile: profiles) {
                     if (profile.getProfileId() == profileId) {
                         return profile;
@@ -71,6 +74,10 @@ public class SelectProfileModel extends AndroidViewModel {
             });
             return ret;
         });
+    }
+
+    void insert(SqueakProfile squeakProfile) {
+        mRepository.insert(squeakProfile);
     }
 
 }

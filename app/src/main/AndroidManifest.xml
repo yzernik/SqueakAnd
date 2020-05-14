@@ -28,8 +28,12 @@
             android:label="@string/activity_view_todo"></activity>
         <activity
             android:name=".SelectProfileActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/activity_view_todo"></activity>
+            android:parentActivityName=".NewTodoActivity"
+            android:label="@string/activity_select_profile"></activity>
+        <activity
+            android:name=".ManageProfilesActivity"
+            android:parentActivityName=".SelectProfileActivity"
+            android:label="@string/activity_manage_profiles"></activity>
     </application>
 
 </manifest>
