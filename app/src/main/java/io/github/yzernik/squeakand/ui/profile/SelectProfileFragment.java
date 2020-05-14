@@ -1,23 +1,32 @@
 package io.github.yzernik.squeakand.ui.profile;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.github.yzernik.squeakand.ManageProfilesActivity;
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.SelectProfileActivity;
 import io.github.yzernik.squeakand.SqueakProfile;
 
 public class SelectProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
@@ -25,6 +34,8 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
     private Button mSelectProfileButton;
     private TextView mSelectedProfileText;
     private Button mManageProfilesButton;
+    private TextView mSelectedProfileText2;
+    private ArrayAdapter<SqueakProfile> adapter;
 
     private SelectProfileModel selectProfileModel;
 
@@ -37,16 +48,73 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
         mSelectProfileButton = root.findViewById(R.id.select_profile_button);
         mSelectedProfileText = root.findViewById(R.id.selected_profile_text);
         mManageProfilesButton = root.findViewById(R.id.manage_profiles_button);
+        mSelectedProfileText2 = root.findViewById(R.id.profile_name);
+
+        selectProfileModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
+            @Override
+            public void onChanged(@Nullable final List<SqueakProfile> profiles) {
+                // set the alert dialog to show all profiles.
+
+                // TODO: update the sharedpreferences when a profile is selected.
+                mSelectProfileButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        System.out.println("Select profile button clicked");
+
+                        // setup the alert builder
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Choose an animal");
+
+                        // add a list
+                        // String[] animals = {"horse", "cow", "camel", "sheep", "goat"};
+                        ArrayList<String> displayValues=new ArrayList<>();
+                        for (SqueakProfile profile : profiles) {
+                            displayValues.add(profile.getName());
+                        }
+
+                        // ArrayAdapter<String> adapter = new ArrayAdapter(displayValues);
+                        builder.setSingleChoiceItems(displayValues.toArray(new String[displayValues.size()]), 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SqueakProfile selectedProfile = profiles.get(which);
+                                selectProfileModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
+                            }
+                        });
+
+                        // add OK and Cancel buttons
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // user clicked OK
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", null);
+
+                        // create and show the alert dialog
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+
+                    }
+                });
+
+            }
+        });
 
         selectProfileModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
             @Override
             public void onChanged(@Nullable final SqueakProfile squeakProfile) {
+                Log.e(getTag(),"Got selected from from observe: " + squeakProfile);
+
                 // set the textview to show the currently selected profile.
                 if (squeakProfile != null) {
                     mSelectedProfileText.setText(squeakProfile.getName());
+                    mSelectedProfileText2.setText(squeakProfile.getName());
+                    System.out.println("mSelectedProfileText2: " + mSelectedProfileText2.getText());
                 }
             }
+
         });
+
 
         mManageProfilesButton.setOnClickListener(new View.OnClickListener() {
             @Override

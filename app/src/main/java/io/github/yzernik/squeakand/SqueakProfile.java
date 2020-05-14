@@ -33,4 +33,12 @@ public class SqueakProfile implements Serializable {
         return profile_id;
     }
 
+    @Override
+    public String toString() {
+        return "String("
+                + "name: " + name + ", "
+                + "profile_id: " + profile_id
+                + ")";
+    }
+
 }
