@@ -10,9 +10,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -60,20 +57,15 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
                     @Override
                     public void onClick(View v) {
                         Log.i(getTag(),"Select profile button clicked");
-
                         // setup the alert builder
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Choose a profile");
-
                         // add a list
-                        // String[] animals = {"horse", "cow", "camel", "sheep", "goat"};
                         ArrayList<String> displayValues=new ArrayList<>();
                         for (SqueakProfile profile : profiles) {
                             displayValues.add(profile.getName());
                         }
-
                         String[] displayValuesArr = displayValues.toArray(new String[displayValues.size()]);
-
                         builder.setItems(displayValuesArr, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -81,14 +73,12 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
                                 selectProfileModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
                             }
                         });
-
                         // create and show the alert dialog
                         AlertDialog dialog = builder.create();
                         dialog.show();
 
                     }
                 });
-
             }
         });
 
@@ -96,7 +86,6 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
             @Override
             public void onChanged(@Nullable final SqueakProfile squeakProfile) {
                 Log.i(getTag(),"Got selected from from observe: " + squeakProfile);
-
                 // set the textview to show the currently selected profile.
                 if (squeakProfile != null) {
                     mSelectedProfileText.setText(squeakProfile.getName());
@@ -104,7 +93,6 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
                     Log.i(getTag(),"mSelectedProfileText2: " + mSelectedProfileText2.getText());
                 }
             }
-
         });
 
 
