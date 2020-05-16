@@ -18,7 +18,7 @@ public class SelectProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_profile);
 
-        Bundle bundle = new Bundle();
+/*        Bundle bundle = new Bundle();
         // Create new fragment and transaction
         Fragment newFragment = new SelectProfileFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -29,7 +29,7 @@ public class SelectProfileActivity extends AppCompatActivity {
         transaction.replace(R.id.select_profile_fragment, newFragment);
         // transaction.addToBackStack(null);
         // Commit the transaction
-        transaction.commit();
+        transaction.commit();*/
     }
 
 }
