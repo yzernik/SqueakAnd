@@ -30,8 +30,6 @@ public class ViewTodoFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        todoViewModel =
-                ViewModelProviders.of(this).get(TodoViewModel.class);
         View root = inflater.inflate(R.layout.fragment_view_todo, container, false);
 
         int todoId = 0;
