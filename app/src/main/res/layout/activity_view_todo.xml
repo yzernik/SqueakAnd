@@ -6,12 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ViewTodoActivity">
 
-    <fragment android:name="io.github.yzernik.squeakand.ui.todo.ViewTodoFragment"
-        android:id="@+id/view_todo_fragment"
-        android:layout_weight="2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <FrameLayout
         android:id="@+id/view_todo_fragment_frame"
         android:layout_width="match_parent"

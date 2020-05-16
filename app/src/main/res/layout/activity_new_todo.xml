@@ -6,6 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".NewTodoActivity">
 
-    <include layout="@layout/content_todo_note" />
+    <FrameLayout
+        android:id="@+id/create_todo_fragment_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

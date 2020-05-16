@@ -16,19 +16,16 @@ package io.github.yzernik.squeakand;
  * limitations under the License.
  */
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import io.github.yzernik.squeakand.ui.createtodo.CreateTodoFragment;
 import io.github.yzernik.squeakand.ui.profile.SelectProfileModel;
 
 /**
@@ -50,46 +47,16 @@ public class NewTodoActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_todo);
-        mEditTodoView = findViewById(R.id.inTitle);
-        currentProfileText = findViewById(R.id.new_todo_current_profile_text);
-        button = findViewById(R.id.btnDone);
-        selectProfileButton = findViewById(R.id.new_todo_select_profile_button);
 
-        selectProfileModel =
-                ViewModelProviders.of(this).get(SelectProfileModel.class);
-
-        selectProfileModel.getSelectedSqueakProfile().observe(this, new Observer<SqueakProfile>() {
-            @Override
-            public void onChanged(@Nullable final SqueakProfile squeakProfile) {
-                // set the textview to show the currently selected profile.
-                if (squeakProfile != null) {
-                    currentProfileText.setText(squeakProfile.getName());
-                }
-            }
-        });
-
-        selectProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("Select profile button clicked");
-                Intent intent = new Intent(getApplication(), SelectProfileActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                System.out.println("Button clicked");
-                Intent replyIntent = new Intent();
-                if (TextUtils.isEmpty(mEditTodoView.getText())) {
-                    setResult(RESULT_CANCELED, replyIntent);
-                } else {
-                    String word = mEditTodoView.getText().toString();
-                    replyIntent.putExtra(EXTRA_REPLY, word);
-                    setResult(RESULT_OK, replyIntent);
-                }
-                finish();
-            }
-        });
+        // Create new fragment and transaction
+        Fragment newFragment = new CreateTodoFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        // int currentContainerViewId = ((ViewGroup) getView().getParent()).getId();
+        transaction.replace(R.id.create_todo_fragment_frame, newFragment);
+        // transaction.addToBackStack(null);
+        // Commit the transaction
+        transaction.commit();
     }
 }
