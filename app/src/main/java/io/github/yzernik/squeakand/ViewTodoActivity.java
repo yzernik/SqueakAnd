@@ -70,7 +70,7 @@ public class ViewTodoActivity extends AppCompatActivity {
         // and add the transaction to the back stack
         newFragment.setArguments(bundle);
         // int currentContainerViewId = ((ViewGroup) getView().getParent()).getId();
-        transaction.replace(R.id.your_placeholder, newFragment);
+        transaction.replace(R.id.view_todo_fragment_frame, newFragment);
         // transaction.addToBackStack(null);
         // Commit the transaction
         transaction.commit();
