@@ -17,6 +17,7 @@ package io.github.yzernik.squeakand;
  */
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -31,7 +32,6 @@ import io.github.yzernik.squeakand.ui.todo.ViewTodoFragment;
 public class ViewTodoActivity extends AppCompatActivity {
 
     public static final String EXTRA_REPLY = "io.github.yzernik.squeakand.REPLY";
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +58,9 @@ public class ViewTodoActivity extends AppCompatActivity {
             }
         });*/
 
+
+        Log.i(getCallingPackage(), "todoId in onCreate: " + todoId);
+
         Bundle bundle = new Bundle();
         bundle.putInt("todo_id", todoId);
         // Create new fragment and transaction
@@ -67,9 +70,10 @@ public class ViewTodoActivity extends AppCompatActivity {
         // and add the transaction to the back stack
         newFragment.setArguments(bundle);
         // int currentContainerViewId = ((ViewGroup) getView().getParent()).getId();
-        transaction.replace(R.id.view_todo_fragment, newFragment);
+        transaction.replace(R.id.view_todo_fragment_frame, newFragment);
         // transaction.addToBackStack(null);
         // Commit the transaction
         transaction.commit();
     }
+
 }
