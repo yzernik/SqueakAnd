@@ -13,6 +13,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.bitcoinj.core.ECKey;
+
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.ui.createtodo.GeneratePrivateKeyDialogFragment;
@@ -65,7 +67,8 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
 
     private void createProfileWithPrivateKey(String profileName) {
         Log.i(getTag(), "Generate private key here.");
-        SqueakProfile squeakProfile = new SqueakProfile(profileName);
+        ECKey ecKey = new ECKey();
+        SqueakProfile squeakProfile = new SqueakProfile(profileName, ecKey);
         selectProfileModel.insert(squeakProfile);
     }
 
