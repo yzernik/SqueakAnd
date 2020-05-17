@@ -34,6 +34,10 @@
             android:name=".ManageProfilesActivity"
             android:parentActivityName=".SelectProfileActivity"
             android:label="@string/activity_manage_profiles"></activity>
+        <activity
+            android:name=".NewProfileActivity"
+            android:parentActivityName=".ManageProfilesActivity"
+            android:label="@string/activity_create_profile"></activity>
     </application>
 
 </manifest>

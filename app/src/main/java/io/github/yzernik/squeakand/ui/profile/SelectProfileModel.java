@@ -76,7 +76,7 @@ public class SelectProfileModel extends AndroidViewModel {
         });
     }
 
-    void insert(SqueakProfile squeakProfile) {
+    public void insert(SqueakProfile squeakProfile) {
         mRepository.insert(squeakProfile);
     }
 
