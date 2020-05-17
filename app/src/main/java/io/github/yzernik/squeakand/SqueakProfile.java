@@ -52,7 +52,7 @@ public class SqueakProfile implements Serializable {
 
     @Ignore
     public String  getAddress() {
-        return getKeyPair().getPublicKey().getAddress(MainNetParams.get());
+        return getAddress(MainNetParams.get());
     }
 
     @Ignore
