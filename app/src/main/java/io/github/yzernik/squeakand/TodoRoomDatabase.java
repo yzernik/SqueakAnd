@@ -78,9 +78,9 @@ abstract class TodoRoomDatabase extends RoomDatabase {
                 SqueakProfileDao squeakProfileDao = INSTANCE.squeakProfileDao();
                 squeakProfileDao.deleteAll();
 
-                for (SqueakProfile squeakProfile: INSTANCE.buildDummySqueakProfiles()) {
+/*                for (SqueakProfile squeakProfile: INSTANCE.buildDummySqueakProfiles()) {
                     squeakProfileDao.insert(squeakProfile);
-                }
+                }*/
             });
         }
     };
