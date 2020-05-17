@@ -101,7 +101,7 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
      * @param squeakProfile
      */
     private void updateDisplayedProfile(SqueakProfile squeakProfile) {
-        Log.i(getTag(), "Updating display with profile: " + squeakProfile);
+        Log.i(getTag(), "Updating SelectProfileFragment display with profile: " + squeakProfile);
         mSelectedProfileText.setText(squeakProfile.getName());
         mSelectedProfileText2.setText(squeakProfile.getName());
     }

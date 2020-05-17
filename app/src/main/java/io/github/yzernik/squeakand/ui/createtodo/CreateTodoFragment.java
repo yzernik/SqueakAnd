@@ -46,12 +46,13 @@ public class CreateTodoFragment extends Fragment {
         selectProfileButton = root.findViewById(R.id.new_todo_select_profile_button);
 
         selectProfileModel =
-                ViewModelProviders.of(getActivity()).get(SelectProfileModel.class);
+                ViewModelProviders.of(this).get(SelectProfileModel.class);
 
 
         selectProfileModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
             @Override
             public void onChanged(@Nullable final SqueakProfile squeakProfile) {
+                Log.i(getTag(), "Updating CreateTodoFragment display with profile: " + squeakProfile);
                 // set the textview to show the currently selected profile.
                 if (squeakProfile != null) {
                     currentProfileText.setText(squeakProfile.getName());
