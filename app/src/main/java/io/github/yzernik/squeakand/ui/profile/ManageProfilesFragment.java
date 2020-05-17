@@ -89,7 +89,7 @@ public class ManageProfilesFragment extends Fragment {
 
     // do something with the data coming from the AlertDialog
     private void handleNewProfileDialogData(String data) {
-        Toast.makeText(getContext(), data, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), data, Toast.LENGTH_SHORT).show();
         //SqueakProfile squeakProfile = new SqueakProfile(data);
         //selectProfileModel.insert(squeakProfile);
 

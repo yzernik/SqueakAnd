@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -70,6 +71,7 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
         ECKey ecKey = new ECKey();
         SqueakProfile squeakProfile = new SqueakProfile(profileName, ecKey);
         selectProfileModel.insert(squeakProfile);
+        Toast.makeText(getContext(), "Created profile " + profileName, Toast.LENGTH_SHORT).show();
     }
 
     @Override

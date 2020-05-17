@@ -129,7 +129,7 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
             public void onClick(DialogInterface dialog, int which) {
                 SqueakProfile selectedProfile = profiles.get(which);
                 selectProfileModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
-                Toast.makeText(getContext(), "Selected profile: " + selectedProfile.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Selected profile " + selectedProfile.getName(), Toast.LENGTH_SHORT).show();
             }
         });
         // create and show the alert dialog
