@@ -3,6 +3,7 @@ package io.github.yzernik.squeakand.ui.createtodo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,7 @@ public class CreateTodoFragment extends Fragment {
         selectProfileButton = root.findViewById(R.id.new_todo_select_profile_button);
 
         selectProfileModel =
-                ViewModelProviders.of(this).get(SelectProfileModel.class);
+                ViewModelProviders.of(getActivity()).get(SelectProfileModel.class);
 
 
         selectProfileModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
@@ -69,7 +70,7 @@ public class CreateTodoFragment extends Fragment {
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                System.out.println("Button clicked");
+                Log.i(getTag(), "Button clicked");
                 Intent replyIntent = new Intent();
                 if (TextUtils.isEmpty(mEditTodoView.getText())) {
                     getActivity().setResult(RESULT_CANCELED, replyIntent);
@@ -77,7 +78,9 @@ public class CreateTodoFragment extends Fragment {
                     String word = mEditTodoView.getText().toString();
                     replyIntent.putExtra(EXTRA_REPLY, word);
                     getActivity().setResult(RESULT_OK, replyIntent);
+                    Log.i(getTag(), "Set result for activity: " + getTag());
                 }
+                Log.i(getTag(), "Finishing activity: " + getActivity());
                 getActivity().finish();
             }
         });
