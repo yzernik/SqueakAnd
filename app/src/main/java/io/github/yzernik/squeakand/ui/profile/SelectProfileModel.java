@@ -3,6 +3,7 @@ package io.github.yzernik.squeakand.ui.profile;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -64,11 +65,14 @@ public class SelectProfileModel extends AndroidViewModel {
     public LiveData<SqueakProfile> getSelectedSqueakProfile() {
         return Transformations.switchMap(mAllSqueakProfiles, profiles -> {
             return Transformations.map(mSelectedSqueakProfileId, profileId -> {
+                Log.i(getClass().getName(), "Doing transformation with profileId: " + profileId);
                 for (SqueakProfile profile: profiles) {
                     if (profile.getProfileId() == profileId) {
+                        Log.i(getClass().getName(), "Returning profile: " + profile);
                         return profile;
                     }
                 }
+                Log.i(getClass().getName(), "Returning profile: null");
                 return null;
             });
         });

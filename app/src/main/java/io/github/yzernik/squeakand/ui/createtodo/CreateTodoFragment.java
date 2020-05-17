@@ -52,6 +52,7 @@ public class CreateTodoFragment extends Fragment {
         selectProfileModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
             @Override
             public void onChanged(@Nullable final SqueakProfile squeakProfile) {
+                Log.i(getTag(), "Updating CreateTodoFragment display with profile: " + squeakProfile);
                 // set the textview to show the currently selected profile.
                 if (squeakProfile != null) {
                     currentProfileText.setText(squeakProfile.getName());
