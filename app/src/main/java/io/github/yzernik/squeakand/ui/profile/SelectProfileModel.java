@@ -63,8 +63,7 @@ public class SelectProfileModel extends AndroidViewModel {
 
     public LiveData<SqueakProfile> getSelectedSqueakProfile() {
         return Transformations.switchMap(mAllSqueakProfiles, profiles -> {
-            LiveData<SqueakProfile> ret = Transformations.map(mSelectedSqueakProfileId, profileId -> {
-                System.out.println("Transformation with profileId: " + profileId);
+            return Transformations.map(mSelectedSqueakProfileId, profileId -> {
                 for (SqueakProfile profile: profiles) {
                     if (profile.getProfileId() == profileId) {
                         return profile;
@@ -72,7 +71,6 @@ public class SelectProfileModel extends AndroidViewModel {
                 }
                 return null;
             });
-            return ret;
         });
     }
 

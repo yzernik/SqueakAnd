@@ -46,7 +46,7 @@ public class CreateTodoFragment extends Fragment {
         selectProfileButton = root.findViewById(R.id.new_todo_select_profile_button);
 
         selectProfileModel =
-                ViewModelProviders.of(getActivity()).get(SelectProfileModel.class);
+                ViewModelProviders.of(this).get(SelectProfileModel.class);
 
 
         selectProfileModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
