@@ -33,6 +33,7 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
     private TextView mSelectedProfileText;
     private Button mManageProfilesButton;
     private TextView mSelectedProfileText2;
+    private TextView mSelectedProfileAddress;
     private ArrayAdapter<SqueakProfile> adapter;
 
     private SelectProfileModel selectProfileModel;
@@ -47,6 +48,8 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
         mSelectedProfileText = root.findViewById(R.id.selected_profile_text);
         mManageProfilesButton = root.findViewById(R.id.manage_profiles_button);
         mSelectedProfileText2 = root.findViewById(R.id.profile_name);
+
+        mSelectedProfileAddress = root.findViewById(R.id.profile_address);
 
         selectProfileModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
             @Override
@@ -104,6 +107,7 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
         Log.i(getTag(), "Updating SelectProfileFragment display with profile: " + squeakProfile);
         mSelectedProfileText.setText(squeakProfile.getName());
         mSelectedProfileText2.setText(squeakProfile.getName());
+        mSelectedProfileAddress.setText(squeakProfile.getAddress());
     }
 
     /**
