@@ -1,6 +1,7 @@
 package io.github.yzernik.squeakand.ui.profile;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +22,16 @@ import androidx.lifecycle.ViewModelProviders;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.github.yzernik.squeakand.NewProfileActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeakand.ViewTodoActivity;
+import io.github.yzernik.squeakand.ui.createprofile.CreateProfileFragment;
 
 
 public class ManageProfilesFragment extends Fragment {
+
+    public static final int NEW_PROFILE_ACTIVITY_REQUEST_CODE = 1;
 
     private Spinner mProfilesSpinner;
     private Button mCreateProfileButton;
@@ -84,8 +90,10 @@ public class ManageProfilesFragment extends Fragment {
     // do something with the data coming from the AlertDialog
     private void handleNewProfileDialogData(String data) {
         Toast.makeText(getContext(), data, Toast.LENGTH_SHORT).show();
-        SqueakProfile squeakProfile = new SqueakProfile(data);
-        selectProfileModel.insert(squeakProfile);
+        //SqueakProfile squeakProfile = new SqueakProfile(data);
+        //selectProfileModel.insert(squeakProfile);
+
+        startActivityForResult(new Intent(getActivity(), NewProfileActivity.class).putExtra("name", data), NEW_PROFILE_ACTIVITY_REQUEST_CODE);
     }
 
 }
