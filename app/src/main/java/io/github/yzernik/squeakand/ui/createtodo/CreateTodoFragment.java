@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,9 +24,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.yzernik.squeakand.ManageProfilesActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.ui.selectprofile.SelectProfileModel;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -35,28 +35,59 @@ public class CreateTodoFragment extends Fragment {
 
     public static final String EXTRA_REPLY = "io.github.yzernik.squeakand.REPLY";
 
+    private Button mSelectProfileButton;
+    private Button mManageProfilesButton;
+    private TextView mSelectedProfileText2;
+    private TextView mSelectedProfileAddress;
     private TextInputLayout mTextInput;
     private Button button;
 
-    private SelectProfileModel selectProfileModel;
+    private CreateTodoModel createTodoModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_create_todo, container, false);
 
+        mSelectProfileButton = root.findViewById(R.id.select_profile_button);
+        mManageProfilesButton = root.findViewById(R.id.manage_profiles_button);
+        mSelectedProfileText2 = root.findViewById(R.id.profile_name);
+        mSelectedProfileAddress = root.findViewById(R.id.profile_address);
         mTextInput = root.findViewById(R.id.squeak_text);
         button = root.findViewById(R.id.btnDone);
 
-        selectProfileModel = new ViewModelProvider(getActivity()).get(SelectProfileModel.class);
+        createTodoModel = new ViewModelProvider(getActivity()).get(CreateTodoModel.class);
 
-        selectProfileModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
+        createTodoModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
             @Override
             public void onChanged(@Nullable final SqueakProfile squeakProfile) {
-                Log.i(getTag(), "Updating CreateTodoFragment display with profile: " + squeakProfile);
+                Log.i(getTag(),"Got selected profile from from observe: " + squeakProfile);
                 // set the textview to show the currently selected profile.
                 if (squeakProfile != null) {
-                    // TODO: Create a squeak using the squeakprofile.
+                    updateDisplayedProfile(squeakProfile);
+                    Log.i(getTag(), "Updated sharedviewmodel.");
                 }
+            }
+        });
+
+        createTodoModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
+            @Override
+            public void onChanged(@Nullable final List<SqueakProfile> profiles) {
+                mSelectProfileButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i(getTag(),"Select profile button clicked");
+                        showAlertDialog(profiles);
+                    }
+                });
+            }
+        });
+
+        mManageProfilesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("Manage profiles button clicked");
+                Intent intent = new Intent(getActivity(), ManageProfilesActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -99,13 +130,23 @@ public class CreateTodoFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 SqueakProfile selectedProfile = profiles.get(which);
-                selectProfileModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
+                createTodoModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
                 Toast.makeText(getContext(), "Selected profile " + selectedProfile.getName(), Toast.LENGTH_SHORT).show();
             }
         });
         // create and show the alert dialog
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    /**
+     * Update the display with the given profile
+     * @param squeakProfile
+     */
+    private void updateDisplayedProfile(SqueakProfile squeakProfile) {
+        Log.i(getTag(), "Updating SelectProfileFragment display with profile: " + squeakProfile);
+        mSelectedProfileText2.setText(squeakProfile.getName());
+        mSelectedProfileAddress.setText(squeakProfile.getAddress());
     }
 
 }

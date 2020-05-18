@@ -39,8 +39,6 @@ public class NewTodoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_todo);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment selectProfileFragment = new SelectProfileFragment();
-        transaction.replace(R.id.select_profile_fragment_frame, selectProfileFragment);
         Fragment createTodoFragment = new CreateTodoFragment();
         transaction.replace(R.id.create_todo_fragment_frame, createTodoFragment);
         transaction.commit();
