@@ -42,7 +42,7 @@ public class CreateTodoFragment extends Fragment {
     private TextInputLayout mTextInput;
     private Button button;
 
-    private CreateTodoModel selectProfileModel;
+    private CreateTodoModel createTodoModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -55,9 +55,9 @@ public class CreateTodoFragment extends Fragment {
         mTextInput = root.findViewById(R.id.squeak_text);
         button = root.findViewById(R.id.btnDone);
 
-        selectProfileModel = new ViewModelProvider(getActivity()).get(CreateTodoModel.class);
+        createTodoModel = new ViewModelProvider(getActivity()).get(CreateTodoModel.class);
 
-        selectProfileModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
+        createTodoModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
             @Override
             public void onChanged(@Nullable final SqueakProfile squeakProfile) {
                 Log.i(getTag(),"Got selected profile from from observe: " + squeakProfile);
@@ -69,7 +69,7 @@ public class CreateTodoFragment extends Fragment {
             }
         });
 
-        selectProfileModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
+        createTodoModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
             @Override
             public void onChanged(@Nullable final List<SqueakProfile> profiles) {
                 mSelectProfileButton.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +130,7 @@ public class CreateTodoFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 SqueakProfile selectedProfile = profiles.get(which);
-                selectProfileModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
+                createTodoModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
                 Toast.makeText(getContext(), "Selected profile " + selectedProfile.getName(), Toast.LENGTH_SHORT).show();
             }
         });
