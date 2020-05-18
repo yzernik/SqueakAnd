@@ -21,23 +21,19 @@
         <activity
             android:name=".NewTodoActivity"
             android:parentActivityName=".MainActivity"
-            android:label="@string/activity_create_todo"></activity>
+            android:label="@string/activity_create_todo" />
         <activity
             android:name=".ViewTodoActivity"
             android:parentActivityName=".MainActivity"
-            android:label="@string/activity_view_todo"></activity>
-        <activity
-            android:name=".SelectProfileActivity"
-            android:parentActivityName=".NewTodoActivity"
-            android:label="@string/activity_select_profile"></activity>
+            android:label="@string/activity_view_todo" />
         <activity
             android:name=".ManageProfilesActivity"
-            android:parentActivityName=".SelectProfileActivity"
-            android:label="@string/activity_manage_profiles"></activity>
+            android:parentActivityName=".NewTodoActivity"
+            android:label="@string/activity_manage_profiles" />
         <activity
             android:name=".NewProfileActivity"
             android:parentActivityName=".ManageProfilesActivity"
-            android:label="@string/activity_create_profile"></activity>
+            android:label="@string/activity_create_profile" />
     </application>
 
 </manifest>

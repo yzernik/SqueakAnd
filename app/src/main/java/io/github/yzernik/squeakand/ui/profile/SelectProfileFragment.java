@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,14 +26,12 @@ import io.github.yzernik.squeakand.ManageProfilesActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
 
-public class SelectProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class SelectProfileFragment extends Fragment {
 
     private Button mSelectProfileButton;
-    private TextView mSelectedProfileText;
     private Button mManageProfilesButton;
     private TextView mSelectedProfileText2;
     private TextView mSelectedProfileAddress;
-    private ArrayAdapter<SqueakProfile> adapter;
 
     private SelectProfileModel selectProfileModel;
 
@@ -45,7 +42,6 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
         View root = inflater.inflate(R.layout.fragment_select_profile, container, false);
 
         mSelectProfileButton = root.findViewById(R.id.select_profile_button);
-        mSelectedProfileText = root.findViewById(R.id.selected_profile_text);
         mManageProfilesButton = root.findViewById(R.id.manage_profiles_button);
         mSelectedProfileText2 = root.findViewById(R.id.profile_name);
 
@@ -80,23 +76,12 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
             @Override
             public void onClick(View v) {
                 System.out.println("Manage profiles button clicked");
-                Intent intent = new Intent(getContext(), ManageProfilesActivity.class);
+                Intent intent = new Intent(getActivity(), ManageProfilesActivity.class);
                 startActivity(intent);
             }
         });
 
         return root;
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        SqueakProfile profile = (SqueakProfile) parent.getItemAtPosition(position);
-        selectProfileModel.setSelectedSqueakProfileId(profile.profile_id);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Do nothing.
     }
 
     /**
@@ -105,7 +90,6 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
      */
     private void updateDisplayedProfile(SqueakProfile squeakProfile) {
         Log.i(getTag(), "Updating SelectProfileFragment display with profile: " + squeakProfile);
-        mSelectedProfileText.setText(squeakProfile.getName());
         mSelectedProfileText2.setText(squeakProfile.getName());
         mSelectedProfileAddress.setText(squeakProfile.getAddress());
     }

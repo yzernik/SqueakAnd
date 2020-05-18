@@ -38,11 +38,11 @@ public class SelectProfileModel extends AndroidViewModel {
         loadSelectedSqueakProfileId();
     }
 
-    LiveData<List<SqueakProfile>> getmAllSqueakProfiles() {
+    public LiveData<List<SqueakProfile>> getmAllSqueakProfiles() {
         return mAllSqueakProfiles;
     }
 
-    void setSelectedSqueakProfileId(int squeakProfileId) {
+    public void setSelectedSqueakProfileId(int squeakProfileId) {
         this.mSelectedSqueakProfileId.setValue(squeakProfileId);
         saveSelectedSqueakProfileId(squeakProfileId);
     }

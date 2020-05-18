@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import io.github.yzernik.squeakand.ui.createtodo.CreateTodoFragment;
+import io.github.yzernik.squeakand.ui.profile.SelectProfileFragment;
 import io.github.yzernik.squeakand.ui.profile.SelectProfileModel;
 
 /**
@@ -36,27 +37,16 @@ public class NewTodoActivity extends AppCompatActivity {
 
     public static final String EXTRA_REPLY = "io.github.yzernik.squeakand.REPLY";
 
-    private EditText mEditTodoView;
-    private Button button;
-    private Button selectProfileButton;
-    private TextView currentProfileText;
-
-    private SelectProfileModel selectProfileModel;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_todo);
 
-        // Create new fragment and transaction
-        Fragment newFragment = new CreateTodoFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        // int currentContainerViewId = ((ViewGroup) getView().getParent()).getId();
-        transaction.replace(R.id.create_todo_fragment_frame, newFragment);
-        // transaction.addToBackStack(null);
-        // Commit the transaction
+        Fragment selectProfileFragment = new SelectProfileFragment();
+        transaction.replace(R.id.select_profile_fragment_frame, selectProfileFragment);
+        Fragment createTodoFragment = new CreateTodoFragment();
+        transaction.replace(R.id.create_todo_fragment_frame, createTodoFragment);
         transaction.commit();
     }
 }

@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment implements TodoListAdapter.ClickListe
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), NewTodoActivity.class);
+                Intent intent = new Intent(getActivity(), NewTodoActivity.class);
                 startActivityForResult(intent, NEW_TODO_ACTIVITY_REQUEST_CODE);
             }
         });
