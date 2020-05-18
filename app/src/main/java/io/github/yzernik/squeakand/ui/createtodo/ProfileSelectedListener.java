@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.ui.profile.SelectProfileModel;
+import io.github.yzernik.squeakand.ui.selectprofile.SelectProfileModel;
 
 public class ProfileSelectedListener implements AdapterView.OnItemSelectedListener{
 

@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.createtodo;
+package io.github.yzernik.squeakand.ui.createprofile;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
