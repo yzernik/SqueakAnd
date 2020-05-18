@@ -23,7 +23,6 @@ import java.util.List;
 import io.github.yzernik.squeakand.ManageProfilesActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.ui.profile.SharedViewModel;
 
 public class SelectProfileFragment extends Fragment {
 
@@ -31,10 +30,8 @@ public class SelectProfileFragment extends Fragment {
     private Button mManageProfilesButton;
     private TextView mSelectedProfileText2;
     private TextView mSelectedProfileAddress;
-    private TextView mSharedText;
 
     private SelectProfileModel selectProfileModel;
-    private SharedViewModel sharedViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,14 +40,10 @@ public class SelectProfileFragment extends Fragment {
         mSelectProfileButton = root.findViewById(R.id.select_profile_button);
         mManageProfilesButton = root.findViewById(R.id.manage_profiles_button);
         mSelectedProfileText2 = root.findViewById(R.id.profile_name);
-        mSharedText = root.findViewById(R.id.shared_text);
 
         mSelectedProfileAddress = root.findViewById(R.id.profile_address);
 
         selectProfileModel = new ViewModelProvider(getActivity()).get(SelectProfileModel.class);
-        sharedViewModel = new ViewModelProvider(getActivity()).get(SharedViewModel.class);
-
-        Log.i(getTag(), "Created sharedViewModel: " + sharedViewModel + "in SelectProfileFragment");
 
         selectProfileModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
             @Override
@@ -72,7 +65,6 @@ public class SelectProfileFragment extends Fragment {
                 // set the textview to show the currently selected profile.
                 if (squeakProfile != null) {
                     updateDisplayedProfile(squeakProfile);
-                    sharedViewModel.select("Click time: " + System.currentTimeMillis());
                     Log.i(getTag(), "Updated sharedviewmodel.");
                 }
             }
@@ -86,10 +78,6 @@ public class SelectProfileFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), ManageProfilesActivity.class);
                 startActivity(intent);
             }
-        });
-
-        sharedViewModel.getSelected().observe(getViewLifecycleOwner(), sharedTextString -> {
-            mSharedText.setText(sharedTextString);
         });
 
         return root;
