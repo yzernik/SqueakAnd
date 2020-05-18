@@ -50,7 +50,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="1dp"
-            tools:layout_editor_absoluteY="280dp" />
+            tools:layout_editor_absoluteY="280dp"
+            android:inputType="textCapSentences|textMultiLine"
+            android:lines="5"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
