@@ -19,6 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class CreateTodoFragment extends Fragment {
 
     public static final String EXTRA_REPLY = "io.github.yzernik.squeakand.REPLY";
 
-    private EditText mEditTodoView;
+    private TextInputLayout mTextInput;
     private Button button;
 
     private SelectProfileModel selectProfileModel;
@@ -42,7 +44,7 @@ public class CreateTodoFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_create_todo, container, false);
 
-        mEditTodoView = root.findViewById(R.id.inTitle);
+        mTextInput = root.findViewById(R.id.squeak_text);
         button = root.findViewById(R.id.btnDone);
 
         selectProfileModel = new ViewModelProvider(getActivity()).get(SelectProfileModel.class);
@@ -62,10 +64,10 @@ public class CreateTodoFragment extends Fragment {
             public void onClick(View view) {
                 Log.i(getTag(), "Button clicked");
                 Intent replyIntent = new Intent();
-                if (TextUtils.isEmpty(mEditTodoView.getText())) {
+                if (TextUtils.isEmpty(mTextInput.getEditText().getText())) {
                     getActivity().setResult(RESULT_CANCELED, replyIntent);
                 } else {
-                    String word = mEditTodoView.getText().toString();
+                    String word = mTextInput.getEditText().getText().toString();
                     replyIntent.putExtra(EXTRA_REPLY, word);
                     getActivity().setResult(RESULT_OK, replyIntent);
                     Log.i(getTag(), "Set result for activity: " + word);
