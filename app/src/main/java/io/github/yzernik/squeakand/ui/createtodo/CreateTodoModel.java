@@ -47,14 +47,22 @@ public class CreateTodoModel extends AndroidViewModel {
 
     void setSelectedSqueakProfileId(int squeakProfileId) {
         mSelectedSqueakProfileId.setValue(squeakProfileId);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(SELECTED_SQUEAK_PROFILE_ID_KEY, squeakProfileId);
-        editor.commit();
+        saveSelectedProfileId(squeakProfileId);
     }
 
     private void loadSelectedSqueakProfileId() {
-        int currentSqueakProfileId = sharedPreferences.getInt(SELECTED_SQUEAK_PROFILE_ID_KEY, -1);
+        int currentSqueakProfileId = getSavedSelectedProfileId();
         mSelectedSqueakProfileId.setValue(currentSqueakProfileId);
+    }
+
+    private int getSavedSelectedProfileId() {
+        return sharedPreferences.getInt(SELECTED_SQUEAK_PROFILE_ID_KEY, -1);
+    }
+
+    private void saveSelectedProfileId(int squeakProfileId) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(SELECTED_SQUEAK_PROFILE_ID_KEY, squeakProfileId);
+        editor.commit();
     }
 
     LiveData<SqueakProfile> getSelectedSqueakProfile() {
