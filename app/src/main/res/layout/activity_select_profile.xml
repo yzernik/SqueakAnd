@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".NewTodoActivity">
 
-    <fragment android:name="io.github.yzernik.squeakand.ui.profile.SelectProfileFragment"
+    <fragment android:name="io.github.yzernik.squeakand.ui.selectprofile.SelectProfileFragment"
         android:id="@+id/select_profile_fragment"
         android:layout_weight="2"
         android:layout_width="match_parent"

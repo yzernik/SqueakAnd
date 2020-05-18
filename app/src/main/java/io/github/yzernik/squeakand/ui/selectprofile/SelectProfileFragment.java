@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.profile;
+package io.github.yzernik.squeakand.ui.selectprofile;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,18 +7,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,30 +23,34 @@ import java.util.List;
 import io.github.yzernik.squeakand.ManageProfilesActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeakand.ui.profile.SharedViewModel;
 
-public class SelectProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class SelectProfileFragment extends Fragment {
 
     private Button mSelectProfileButton;
-    private TextView mSelectedProfileText;
     private Button mManageProfilesButton;
     private TextView mSelectedProfileText2;
     private TextView mSelectedProfileAddress;
-    private ArrayAdapter<SqueakProfile> adapter;
+    private TextView mSharedText;
 
     private SelectProfileModel selectProfileModel;
+    private SharedViewModel sharedViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        selectProfileModel =
-                ViewModelProviders.of(this).get(SelectProfileModel.class);
         View root = inflater.inflate(R.layout.fragment_select_profile, container, false);
 
         mSelectProfileButton = root.findViewById(R.id.select_profile_button);
-        mSelectedProfileText = root.findViewById(R.id.selected_profile_text);
         mManageProfilesButton = root.findViewById(R.id.manage_profiles_button);
         mSelectedProfileText2 = root.findViewById(R.id.profile_name);
+        mSharedText = root.findViewById(R.id.shared_text);
 
         mSelectedProfileAddress = root.findViewById(R.id.profile_address);
+
+        selectProfileModel = new ViewModelProvider(getActivity()).get(SelectProfileModel.class);
+        sharedViewModel = new ViewModelProvider(getActivity()).get(SharedViewModel.class);
+
+        Log.i(getTag(), "Created sharedViewModel: " + sharedViewModel + "in SelectProfileFragment");
 
         selectProfileModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
             @Override
@@ -71,6 +72,8 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
                 // set the textview to show the currently selected profile.
                 if (squeakProfile != null) {
                     updateDisplayedProfile(squeakProfile);
+                    sharedViewModel.select("Click time: " + System.currentTimeMillis());
+                    Log.i(getTag(), "Updated sharedviewmodel.");
                 }
             }
         });
@@ -80,23 +83,16 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
             @Override
             public void onClick(View v) {
                 System.out.println("Manage profiles button clicked");
-                Intent intent = new Intent(getContext(), ManageProfilesActivity.class);
+                Intent intent = new Intent(getActivity(), ManageProfilesActivity.class);
                 startActivity(intent);
             }
         });
 
+        sharedViewModel.getSelected().observe(getViewLifecycleOwner(), sharedTextString -> {
+            mSharedText.setText(sharedTextString);
+        });
+
         return root;
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        SqueakProfile profile = (SqueakProfile) parent.getItemAtPosition(position);
-        selectProfileModel.setSelectedSqueakProfileId(profile.profile_id);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Do nothing.
     }
 
     /**
@@ -105,7 +101,6 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
      */
     private void updateDisplayedProfile(SqueakProfile squeakProfile) {
         Log.i(getTag(), "Updating SelectProfileFragment display with profile: " + squeakProfile);
-        mSelectedProfileText.setText(squeakProfile.getName());
         mSelectedProfileText2.setText(squeakProfile.getName());
         mSelectedProfileAddress.setText(squeakProfile.getAddress());
     }
@@ -129,7 +124,6 @@ public class SelectProfileFragment extends Fragment implements AdapterView.OnIte
             public void onClick(DialogInterface dialog, int which) {
                 SqueakProfile selectedProfile = profiles.get(which);
                 selectProfileModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
-                Toast.makeText(getContext(), "Selected profile " + selectedProfile.getName(), Toast.LENGTH_SHORT).show();
             }
         });
         // create and show the alert dialog

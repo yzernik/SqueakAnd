@@ -18,8 +18,7 @@ import org.bitcoinj.core.ECKey;
 
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.ui.createtodo.GeneratePrivateKeyDialogFragment;
-import io.github.yzernik.squeakand.ui.profile.SelectProfileModel;
+import io.github.yzernik.squeakand.ui.selectprofile.SelectProfileModel;
 
 public class CreateProfileFragment extends Fragment implements GeneratePrivateKeyDialogFragment.GeneratePrivateKeyNoticeDialogListener {
 

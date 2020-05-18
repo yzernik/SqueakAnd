@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,8 +24,7 @@ import java.util.stream.Collectors;
 import io.github.yzernik.squeakand.NewProfileActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.ViewTodoActivity;
-import io.github.yzernik.squeakand.ui.createprofile.CreateProfileFragment;
+import io.github.yzernik.squeakand.ui.selectprofile.SelectProfileModel;
 
 
 public class ManageProfilesFragment extends Fragment {

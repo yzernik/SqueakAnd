@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.profile;
+package io.github.yzernik.squeakand.ui.selectprofile;
 
 import android.app.Application;
 import android.content.Context;
@@ -14,7 +14,6 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileRepository;
-import io.github.yzernik.squeakand.Todo;
 
 public class SelectProfileModel extends AndroidViewModel {
 
@@ -38,11 +37,11 @@ public class SelectProfileModel extends AndroidViewModel {
         loadSelectedSqueakProfileId();
     }
 
-    LiveData<List<SqueakProfile>> getmAllSqueakProfiles() {
+    public LiveData<List<SqueakProfile>> getmAllSqueakProfiles() {
         return mAllSqueakProfiles;
     }
 
-    void setSelectedSqueakProfileId(int squeakProfileId) {
+    public void setSelectedSqueakProfileId(int squeakProfileId) {
         this.mSelectedSqueakProfileId.setValue(squeakProfileId);
         saveSelectedSqueakProfileId(squeakProfileId);
     }
