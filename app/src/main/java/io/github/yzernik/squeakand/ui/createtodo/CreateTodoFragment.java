@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,7 +25,6 @@ import java.util.List;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.ui.selectprofile.SelectProfileModel;
-import io.github.yzernik.squeakand.ui.profile.SharedViewModel;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -37,27 +35,17 @@ public class CreateTodoFragment extends Fragment {
 
     private EditText mEditTodoView;
     private Button button;
-    private Button otherSelectProfileButton;
-    private TextView currentProfileText;
-    private TextView mObservedSharedText;
 
     private SelectProfileModel selectProfileModel;
-    private SharedViewModel sharedViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_create_todo, container, false);
 
         mEditTodoView = root.findViewById(R.id.inTitle);
-        currentProfileText = root.findViewById(R.id.new_todo_current_profile_text);
         button = root.findViewById(R.id.btnDone);
-        otherSelectProfileButton = root.findViewById(R.id.other_select_profile_button);
-        mObservedSharedText = root.findViewById(R.id.observed_shared_text);
 
         selectProfileModel = new ViewModelProvider(getActivity()).get(SelectProfileModel.class);
-        sharedViewModel = new ViewModelProvider(getActivity()).get(SharedViewModel.class);
-
-        Log.i(getTag(), "Created sharedViewModel: " + sharedViewModel + "in CreateTodoFragment");
 
         selectProfileModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
             @Override
@@ -65,21 +53,8 @@ public class CreateTodoFragment extends Fragment {
                 Log.i(getTag(), "Updating CreateTodoFragment display with profile: " + squeakProfile);
                 // set the textview to show the currently selected profile.
                 if (squeakProfile != null) {
-                    currentProfileText.setText(squeakProfile.getName());
+                    // TODO: Create a squeak using the squeakprofile.
                 }
-            }
-        });
-
-        selectProfileModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
-            @Override
-            public void onChanged(@Nullable final List<SqueakProfile> profiles) {
-                otherSelectProfileButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.i(getTag(),"Select profile button clicked");
-                        showAlertDialog(profiles);
-                    }
-                });
             }
         });
 
@@ -99,12 +74,6 @@ public class CreateTodoFragment extends Fragment {
                 getActivity().finish();
             }
         });
-
-        sharedViewModel.getSelected().observe(getViewLifecycleOwner(), sharedTextString -> {
-            Log.i(getTag(), "Observed mObservedSharedText in CreateTodoFragment");
-            mObservedSharedText.setText(sharedTextString);
-        });
-
 
         return root;
     }
