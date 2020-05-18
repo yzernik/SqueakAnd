@@ -33,7 +33,7 @@ public class SelectProfileModel extends AndroidViewModel {
         sharedPreferences = application.getSharedPreferences(
                 SQUEAK_PROFILE_FILE_KEY, Context.MODE_PRIVATE);
 
-        // TODO: set the squeakprofile id
+        // Set the initial value of squeakprofile id
         loadSelectedSqueakProfileId();
     }
 
@@ -41,16 +41,9 @@ public class SelectProfileModel extends AndroidViewModel {
         return mAllSqueakProfiles;
     }
 
+
     public void setSelectedSqueakProfileId(int squeakProfileId) {
-        this.mSelectedSqueakProfileId.setValue(squeakProfileId);
-        saveSelectedSqueakProfileId(squeakProfileId);
-    }
-
-    LiveData<Integer> getSelectedSqueakProfileId() {
-        return mSelectedSqueakProfileId;
-    }
-
-    private void saveSelectedSqueakProfileId(int squeakProfileId) {
+        mSelectedSqueakProfileId.setValue(squeakProfileId);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(SELECTED_SQUEAK_PROFILE_ID_KEY, squeakProfileId);
         editor.commit();
@@ -76,9 +69,9 @@ public class SelectProfileModel extends AndroidViewModel {
             });
         });
     }
-
+/*
     public void insert(SqueakProfile squeakProfile) {
         mRepository.insert(squeakProfile);
-    }
+    }*/
 
 }

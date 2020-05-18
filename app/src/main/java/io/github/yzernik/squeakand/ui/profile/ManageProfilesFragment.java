@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 import io.github.yzernik.squeakand.NewProfileActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.ui.selectprofile.SelectProfileModel;
+import io.github.yzernik.squeakand.ui.home.HomeViewModel;
 
 
 public class ManageProfilesFragment extends Fragment {
@@ -34,16 +35,16 @@ public class ManageProfilesFragment extends Fragment {
     private Spinner mProfilesSpinner;
     private Button mCreateProfileButton;
 
-    private SelectProfileModel selectProfileModel;
+    private ManageProfilesModel manageProfilesModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        selectProfileModel =
-                ViewModelProviders.of(this).get(SelectProfileModel.class);
         View root = inflater.inflate(R.layout.fragment_manage_profiles, container, false);
 
         mCreateProfileButton = root.findViewById(R.id.create_profile_button);
         mProfilesSpinner = root.findViewById(R.id.profiles_spinner);
+
+        manageProfilesModel = new ViewModelProvider(getActivity()).get(ManageProfilesModel.class);
 
         mCreateProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +71,7 @@ public class ManageProfilesFragment extends Fragment {
             }
         });
 
-        selectProfileModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
+        manageProfilesModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
             @Override
             public void onChanged(@Nullable final List<SqueakProfile> squeakProfiles) {
                 List<String> profileNames = squeakProfiles.stream()
