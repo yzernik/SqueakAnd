@@ -17,9 +17,6 @@ package io.github.yzernik.squeakand;
  */
 
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -27,7 +24,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import io.github.yzernik.squeakand.ui.createtodo.CreateTodoFragment;
 import io.github.yzernik.squeakand.ui.profile.SelectProfileFragment;
-import io.github.yzernik.squeakand.ui.profile.SelectProfileModel;
 
 /**
  * Activity for entering a word.

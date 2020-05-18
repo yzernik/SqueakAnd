@@ -44,15 +44,6 @@
         app:layout_constraintTop_toBottomOf="@+id/btnDone" />
 
     <Button
-        android:id="@+id/new_todo_select_profile_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/new_todo_select_profile_button_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnDone" />
-
-    <Button
         android:id="@+id/other_select_profile_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,7 +60,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_todo_select_profile_button" />
+        app:layout_constraintTop_toBottomOf="@+id/btnDone" />
+
+    <TextView
+        android:id="@+id/observed_shared_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/other_select_profile_button" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
