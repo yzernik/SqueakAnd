@@ -18,7 +18,7 @@ import org.bitcoinj.core.ECKey;
 
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.ui.selectprofile.SelectProfileModel;
+import io.github.yzernik.squeakand.ui.profile.ManageProfilesModel;
 
 public class CreateProfileFragment extends Fragment implements GeneratePrivateKeyDialogFragment.GeneratePrivateKeyNoticeDialogListener {
 
@@ -26,7 +26,7 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
     Button mGeneratePrivateKeyButton;
     Button mImportPrivateKeyButton;
 
-    private SelectProfileModel selectProfileModel;
+    private ManageProfilesModel manageProfilesModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
         mImportPrivateKeyButton = root.findViewById(R.id.create_profile_import_private_key_button);
 
         // Get a new or existing ViewModel from the ViewModelProvider.
-        selectProfileModel = new ViewModelProvider(this).get(SelectProfileModel.class);
+        manageProfilesModel = new ViewModelProvider(getActivity()).get(ManageProfilesModel.class);
 
         // String profileName = "";
         Bundle arguments = getArguments();
@@ -69,7 +69,7 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
         Log.i(getTag(), "Generate private key here.");
         ECKey ecKey = new ECKey();
         SqueakProfile squeakProfile = new SqueakProfile(profileName, ecKey);
-        selectProfileModel.insert(squeakProfile);
+        manageProfilesModel.insert(squeakProfile);
         Toast.makeText(getContext(), "Created profile " + profileName, Toast.LENGTH_SHORT).show();
     }
 
