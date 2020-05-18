@@ -27,8 +27,9 @@
         android:layout_width="409dp"
         android:layout_height="wrap_content"
         android:text="DONE"
-        app:layout_constraintTop_toBottomOf="@+id/squeak_text"
-        tools:layout_editor_absoluteX="2dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/squeak_text" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
