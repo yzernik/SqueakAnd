@@ -41,7 +41,6 @@ public class SelectProfileModel extends AndroidViewModel {
         return mAllSqueakProfiles;
     }
 
-
     public void setSelectedSqueakProfileId(int squeakProfileId) {
         mSelectedSqueakProfileId.setValue(squeakProfileId);
         SharedPreferences.Editor editor = sharedPreferences.edit();
