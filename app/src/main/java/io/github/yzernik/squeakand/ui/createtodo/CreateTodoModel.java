@@ -10,6 +10,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import org.bitcoinj.core.Sha256Hash;
+
 import java.util.List;
 
 import io.github.yzernik.squeakand.SqueakProfile;
@@ -24,6 +26,7 @@ public class CreateTodoModel extends AndroidViewModel {
     private SharedPreferences sharedPreferences;
     private LiveData<List<SqueakProfile>> mAllSqueakProfiles;
     private MutableLiveData<Integer> mSelectedSqueakProfileId;
+    public Sha256Hash replyToHash;
 
     public CreateTodoModel(Application application) {
         super(application);
@@ -32,16 +35,17 @@ public class CreateTodoModel extends AndroidViewModel {
         mSelectedSqueakProfileId = new MutableLiveData<>();
         sharedPreferences = application.getSharedPreferences(
                 SQUEAK_PROFILE_FILE_KEY, Context.MODE_PRIVATE);
+        replyToHash = null;
 
         // Set the initial value of squeakprofile id
         loadSelectedSqueakProfileId();
     }
 
-    public LiveData<List<SqueakProfile>> getmAllSqueakProfiles() {
+    LiveData<List<SqueakProfile>> getmAllSqueakProfiles() {
         return mAllSqueakProfiles;
     }
 
-    public void setSelectedSqueakProfileId(int squeakProfileId) {
+    void setSelectedSqueakProfileId(int squeakProfileId) {
         mSelectedSqueakProfileId.setValue(squeakProfileId);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(SELECTED_SQUEAK_PROFILE_ID_KEY, squeakProfileId);
@@ -53,19 +57,23 @@ public class CreateTodoModel extends AndroidViewModel {
         mSelectedSqueakProfileId.setValue(currentSqueakProfileId);
     }
 
-    public LiveData<SqueakProfile> getSelectedSqueakProfile() {
+    LiveData<SqueakProfile> getSelectedSqueakProfile() {
         return Transformations.switchMap(mAllSqueakProfiles, profiles -> {
             return Transformations.map(mSelectedSqueakProfileId, profileId -> {
-                Log.i(getClass().getName(), "Doing transformation with profileId: " + profileId);
                 for (SqueakProfile profile: profiles) {
                     if (profile.getProfileId() == profileId) {
                         Log.i(getClass().getName(), "Returning profile: " + profile);
                         return profile;
                     }
                 }
-                Log.i(getClass().getName(), "Returning profile: null");
                 return null;
             });
+        });
+    }
+
+    LiveData<CreateSqueakParams> getCreateSqueakParams() {
+        return Transformations.map(getSelectedSqueakProfile(), profile -> {
+            return new CreateSqueakParams(profile, replyToHash);
         });
     }
 
