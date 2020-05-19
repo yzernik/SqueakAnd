@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.github.yzernik.squeakand.blockchain.Blockchain;
+import io.github.yzernik.squeakand.blockchain.DummyBlockchain;
 import io.github.yzernik.squeaklib.core.Signing;
 import io.github.yzernik.squeaklib.core.Squeak;
 
@@ -55,7 +56,7 @@ public class SqueakDaoTest {
                 .allowMainThreadQueries()
                 .build();
         mSqueakDao = mDb.squeakDao();
-        blockchain = new SqueakTestUtils.DummyBlockchain();
+        blockchain = new DummyBlockchain();
         keyPair = new Signing.BitcoinjKeyPair();
     }
 
