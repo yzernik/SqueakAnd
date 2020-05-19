@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
@@ -19,15 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.github.yzernik.squeakand.NewProfileActivity;
 import io.github.yzernik.squeakand.ProfileListAdapter;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.Todo;
-import io.github.yzernik.squeakand.TodoListAdapter;
-import io.github.yzernik.squeakand.ViewTodoActivity;
 
 
 public class ManageProfilesFragment extends Fragment implements ProfileListAdapter.ClickListener{
