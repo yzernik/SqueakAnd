@@ -48,6 +48,8 @@ public class CreateTodoFragment extends Fragment {
         mManageProfilesButton = root.findViewById(R.id.manage_profiles_button);
         mTextInput = root.findViewById(R.id.squeak_text);
         button = root.findViewById(R.id.btnDone);
+
+        // Start the fragment with the text input in focus.
         mTextInput.requestFocus();
 
         createTodoModel = new ViewModelProvider(getActivity()).get(CreateTodoModel.class);
