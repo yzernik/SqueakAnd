@@ -20,4 +20,5 @@
     <string name="create_profile_generate_private_key_button">Generate Private Key</string>
     <string name="create_profile_import_private_key_button">Import Private Key</string>
     <string name="dialog_confirm_generate_private_key_profile">Are you sure you want to create the profile with a generated private key?</string>
+    <string name="create_profile_complete_button_text">Create profile</string>
 </resources>

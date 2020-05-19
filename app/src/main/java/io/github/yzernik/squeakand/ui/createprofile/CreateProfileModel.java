@@ -28,6 +28,7 @@ public class CreateProfileModel  extends AndroidViewModel {
         mRepository = new SqueakProfileRepository(application);
         mAllSqueakProfiles = mRepository.getAllSqueakProfiles();
         mECKey = new MutableLiveData<>();
+        mECKey.setValue(null);
     }
 
     public void setmKeyPair(ECKey ecKey) {
@@ -44,6 +45,9 @@ public class CreateProfileModel  extends AndroidViewModel {
 
     public LiveData<Signing.BitcoinjKeyPair> getKeyPair() {
         return Transformations.map(mECKey, key -> {
+            if (key == null) {
+                return null;
+            }
             return new Signing.BitcoinjKeyPair(key);
         });
     }

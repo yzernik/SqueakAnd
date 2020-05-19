@@ -67,9 +67,12 @@ public class CreateProfileFragment extends Fragment {
         createProfileModel.getKeyPair().observe(getActivity(), new Observer<Signing.BitcoinjKeyPair>() {
             @Override
             public void onChanged(@Nullable final Signing.BitcoinjKeyPair keyPair) {
+                Log.i(getTag(), "Keypair change observed.");
 
                 // Change the address display
-                mProfileAddress.setText(keyPair.getPublicKey().getAddress(MainNetParams.get()));
+                if (keyPair != null) {
+                    mProfileAddress.setText(keyPair.getPublicKey().getAddress(MainNetParams.get()));
+                }
 
                 // Change the button response
                 mCreateProfileButton.setOnClickListener(new View.OnClickListener() {
