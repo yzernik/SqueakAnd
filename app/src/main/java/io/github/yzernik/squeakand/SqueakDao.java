@@ -20,7 +20,7 @@ public interface SqueakDao {
     // Always holds/caches latest version of data. Notifies its active observers when the
     // data has changed. Since we are getting all the contents of the database,
     // we are notified whenever any of the database contents have changed.
-    @Query("SELECT * from " + TodoRoomDatabase.TABLE_NAME_SQUEAK + " ORDER BY blockHeight DESC")
+    @Query("SELECT * from " + TodoRoomDatabase.TABLE_NAME_SQUEAK + " ORDER BY blockHeight, time DESC")
     LiveData<List<SqueakEntry>> getSqueaks();
 
     @Query("SELECT * FROM " + TodoRoomDatabase.TABLE_NAME_SQUEAK + " WHERE hash = :squeakHash")
