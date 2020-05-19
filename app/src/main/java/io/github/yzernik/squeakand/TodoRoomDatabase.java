@@ -20,14 +20,16 @@ import java.util.concurrent.Executors;
  * app, consider exporting the schema to help you with migrations.
  */
 
-@Database(entities = {Todo.class, SqueakProfile.class}, version = 1, exportSchema = false)
+@Database(entities = {Todo.class, SqueakProfile.class, SqueakEntry.class}, version = 1, exportSchema = false)
 abstract class TodoRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";
     public static final String TABLE_NAME_TODO = "todo";
     public static final String TABLE_NAME_PROFILE = "profile";
+    public static final String TABLE_NAME_SQUEAK = "squeak";
 
     abstract TodoDao todoDao();
+    abstract SqueakDao squeakDao();
     abstract SqueakProfileDao squeakProfileDao();
 
 
