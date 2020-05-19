@@ -25,6 +25,7 @@ import io.github.yzernik.squeaklib.core.Signing;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 
 /**
@@ -90,18 +91,17 @@ public class SqueakDaoTest {
         assertEquals(hashesFromDB, hashesFromSqueaks);
     }
 
-    /*
+
     @Test
     public void deleteAll() throws Exception {
-        Todo todo = new Todo("todo");
-        mSqueakDao.insert(todo);
-        Todo todo2 = new Todo("todo2");
-        mSqueakDao.insert(todo2);
+        Squeak squeak = createSqeakWithText("squeak1");
+        mSqueakDao.insert(new SqueakEntry(squeak));
+        Squeak squeak2 = createSqeakWithText("squeak2");
+        mSqueakDao.insert(new SqueakEntry(squeak2));
         mSqueakDao.deleteAll();
-        List<Todo> allTodos = LiveDataTestUtil.getValue(mSqueakDao.getAlphabetizedTodos());
-        assertTrue(allTodos.isEmpty());
+        List<SqueakEntry> allSqueaks = LiveDataTestUtil.getValue(mSqueakDao.getSqueaks());
+        assertTrue(allSqueaks.isEmpty());
     }
-*/
 
     private Squeak createSqeakWithText(String text) throws Exception {
         Pair<Sha256Hash, Integer> latestBlock = blockchain.getLatestBlock();
