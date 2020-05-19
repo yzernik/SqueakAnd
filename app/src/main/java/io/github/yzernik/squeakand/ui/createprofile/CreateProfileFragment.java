@@ -67,26 +67,25 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
             }
         });
 
-        createProfileModel.getECKey().observe(getActivity(), new Observer<ECKey>() {
+        createProfileModel.getKeyPair().observe(getActivity(), new Observer<Signing.BitcoinjKeyPair>() {
             @Override
-            public void onChanged(@Nullable final ECKey ecKey) {
+            public void onChanged(@Nullable final Signing.BitcoinjKeyPair keyPair) {
 
                 // Change the address display
-                Signing.KeyPair keyPair = new Signing.BitcoinjKeyPair(ecKey);
                 mProfileAddress.setText(keyPair.getPublicKey().getAddress(MainNetParams.get()));
 
                 // Change the button response
                 mCreateProfileButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (ecKey == null) {
+                        if (keyPair == null) {
                             showMissingKeyAlert();
                             return;
                         }
 
                         Log.i(getTag(), "Creating profile here.");
                         String profileName = mProfileNameInput.getEditText().getText().toString();
-                        SqueakProfile squeakProfile = new SqueakProfile(profileName, ecKey);
+                        SqueakProfile squeakProfile = new SqueakProfile(profileName, keyPair);
                         createProfileModel.insert(squeakProfile);
                         getActivity().finish();
                     }

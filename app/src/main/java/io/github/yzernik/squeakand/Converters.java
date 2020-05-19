@@ -4,18 +4,24 @@ import androidx.room.TypeConverter;
 
 import org.bitcoinj.core.ECKey;
 
+import java.security.KeyPair;
+
+import io.github.yzernik.squeaklib.core.Signing;
+
 import static org.bitcoinj.core.Utils.HEX;
 
 public class Converters {
 
     @TypeConverter
-    public static ECKey fromString(String s) {
+    public static Signing.BitcoinjKeyPair fromString(String s) {
         byte[] privKeyBytes = HEX.decode(s);
-        return ECKey.fromPrivate(privKeyBytes);
+        ECKey ecKey = ECKey.fromPrivate(privKeyBytes);
+        return new Signing.BitcoinjKeyPair(ecKey);
     }
 
     @TypeConverter
-    public static String keyToString(ECKey ecKey) {
+    public static String keyToString(Signing.BitcoinjKeyPair keyPair) {
+        ECKey ecKey = keyPair.getEcKey();
         byte[] privKeyBytes = ecKey.getPrivKeyBytes();
         return HEX.encode(privKeyBytes);
     }

@@ -42,14 +42,10 @@ public class CreateProfileModel  extends AndroidViewModel {
         mRepository.insert(squeakProfile);
     }
 
-    public LiveData<Signing.KeyPair> getKeyPair() {
+    public LiveData<Signing.BitcoinjKeyPair> getKeyPair() {
         return Transformations.map(mECKey, key -> {
             return new Signing.BitcoinjKeyPair(key);
         });
-    }
-
-    public LiveData<ECKey> getECKey() {
-        return mECKey;
     }
 
 }
