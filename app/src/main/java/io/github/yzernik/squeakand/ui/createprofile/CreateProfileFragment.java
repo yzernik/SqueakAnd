@@ -8,12 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -27,7 +25,7 @@ import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeaklib.core.Signing;
 
-public class CreateProfileFragment extends Fragment implements GeneratePrivateKeyDialogFragment.GeneratePrivateKeyNoticeDialogListener {
+public class CreateProfileFragment extends Fragment {
 
     TextInputLayout mProfileNameInput;
     Button mGeneratePrivateKeyButton;
@@ -49,12 +47,11 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
 
         createProfileModel = new ViewModelProvider(getActivity()).get(CreateProfileModel.class);
 
-        DialogFragment dialog = new GeneratePrivateKeyDialogFragment("", this);
-
         mGeneratePrivateKeyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.show(getChildFragmentManager(), "FireMissilesDialogFragment");
+                Log.i(getTag(), "Generating key pair");
+                generateKeyPair();
             }
         });
 
@@ -98,7 +95,7 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
         return root;
     }
 
-    private void generateKeyPair(String profileName) {
+    private void generateKeyPair() {
         Log.i(getTag(), "Generate private key here.");
         ECKey ecKey = new ECKey();
         // SqueakProfile squeakProfile = new SqueakProfile(profileName, ecKey);
@@ -131,16 +128,6 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
                     }
                 });
         alertDialog.show();
-    }
-
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog, String profileName) {
-        generateKeyPair(profileName);
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog, String profileName) {
-        // Do nothing.
     }
 
 }
