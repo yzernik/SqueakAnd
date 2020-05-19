@@ -18,27 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/select_profile_button_text"
-                android:id="@+id/select_profile_button"
-                android:layout_gravity="left|center_vertical" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/manage_profiles_button_text"
-                android:id="@+id/manage_profiles_button"
-                android:layout_gravity="right|center_vertical" />
-        </FrameLayout>
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/squeak_text"
             android:layout_width="match_parent"
@@ -68,6 +47,48 @@
                 android:orientation="vertical">
             </LinearLayout>
         </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select a profile:"
+                android:layout_gravity="left|center_vertical"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/select_profile_button_text"
+                android:id="@+id/select_profile_button"
+                android:layout_gravity="right|center_vertical" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manage profiles:"
+                android:layout_gravity="left|center_vertical"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/manage_profiles_button_text"
+                android:id="@+id/manage_profiles_button"
+                android:layout_gravity="right|center_vertical" />
+
+        </FrameLayout>
 
         <Button
             android:id="@+id/btnDone"
