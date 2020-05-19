@@ -48,4 +48,8 @@ public class CreateProfileModel  extends AndroidViewModel {
         });
     }
 
+    public LiveData<ECKey> getECKey() {
+        return mECKey;
+    }
+
 }

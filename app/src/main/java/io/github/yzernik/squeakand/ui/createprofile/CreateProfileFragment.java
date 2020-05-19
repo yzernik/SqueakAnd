@@ -23,8 +23,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.params.MainNetParams;
 
-import java.util.List;
-
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeaklib.core.Signing;
@@ -35,6 +33,7 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
     Button mGeneratePrivateKeyButton;
     Button mImportPrivateKeyButton;
     TextView mProfileAddress;
+    Button mCreateProfileButton;
 
     private CreateProfileModel createProfileModel;
 
@@ -46,6 +45,7 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
         mGeneratePrivateKeyButton = root.findViewById(R.id.create_profile_generate_private_key_button);
         mImportPrivateKeyButton = root.findViewById(R.id.create_profile_import_private_key_button);
         mProfileAddress = root.findViewById(R.id.new_profile_address);
+        mCreateProfileButton = root.findViewById(R.id.create_profile_finish_button);
 
         createProfileModel = new ViewModelProvider(getActivity()).get(CreateProfileModel.class);
 
@@ -63,25 +63,37 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
             @Override
             public void onClick(View v) {
                 Log.i(getTag(), "Import private key here.");
-                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                alertDialog.setTitle("Import private key not supported.");
-                alertDialog.setMessage("Importing private keys is not currently supported.");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
+                showUnsupportedImportAlert();
             }
         });
 
-        createProfileModel.getKeyPair().observe(getActivity(), new Observer<Signing.KeyPair>() {
+        createProfileModel.getECKey().observe(getActivity(), new Observer<ECKey>() {
             @Override
-            public void onChanged(@Nullable final Signing.KeyPair keyPair) {
+            public void onChanged(@Nullable final ECKey ecKey) {
+
+                // Change the address display
+                Signing.KeyPair keyPair = new Signing.BitcoinjKeyPair(ecKey);
                 mProfileAddress.setText(keyPair.getPublicKey().getAddress(MainNetParams.get()));
+
+                // Change the button response
+                mCreateProfileButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (ecKey == null) {
+                            showMissingKeyAlert();
+                            return;
+                        }
+
+                        Log.i(getTag(), "Creating profile here.");
+                        String profileName = mProfileNameInput.getEditText().getText().toString();
+                        SqueakProfile squeakProfile = new SqueakProfile(profileName, ecKey);
+                        createProfileModel.insert(squeakProfile);
+                        getActivity().finish();
+                    }
+                });
             }
         });
+
 
 
         return root;
@@ -94,6 +106,32 @@ public class CreateProfileFragment extends Fragment implements GeneratePrivateKe
         // createProfileModel.insert(squeakProfile);
         // Toast.makeText(getContext(), "Created profile " + profileName, Toast.LENGTH_SHORT).show();
         createProfileModel.setmKeyPair(ecKey);
+    }
+
+    private void showUnsupportedImportAlert() {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Import private key not supported.");
+        alertDialog.setMessage("Importing private keys is not currently supported.");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void showMissingKeyAlert() {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Missing key pair.");
+        alertDialog.setMessage("Key pair must be generated or imported before a profile can be created.");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
     @Override
