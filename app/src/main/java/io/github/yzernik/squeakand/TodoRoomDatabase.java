@@ -26,6 +26,7 @@ abstract class TodoRoomDatabase extends RoomDatabase {
     public static final String DB_NAME = "app_db";
     public static final String TABLE_NAME_TODO = "todo";
     public static final String TABLE_NAME_PROFILE = "profile";
+    public static final String TABLE_NAME_SQUEAK = "squeak";
 
     abstract TodoDao todoDao();
     abstract SqueakProfileDao squeakProfileDao();
