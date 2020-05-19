@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,8 +35,6 @@ public class CreateTodoFragment extends Fragment {
 
     private Button mSelectProfileButton;
     private Button mManageProfilesButton;
-    private TextView mSelectedProfileText2;
-    private TextView mSelectedProfileAddress;
     private TextInputLayout mTextInput;
     private Button button;
 
@@ -49,8 +46,6 @@ public class CreateTodoFragment extends Fragment {
 
         mSelectProfileButton = root.findViewById(R.id.select_profile_button);
         mManageProfilesButton = root.findViewById(R.id.manage_profiles_button);
-        mSelectedProfileText2 = root.findViewById(R.id.profile_name);
-        mSelectedProfileAddress = root.findViewById(R.id.profile_address);
         mTextInput = root.findViewById(R.id.squeak_text);
         button = root.findViewById(R.id.btnDone);
 
@@ -143,8 +138,7 @@ public class CreateTodoFragment extends Fragment {
      */
     private void updateDisplayedProfile(SqueakProfile squeakProfile) {
         Log.i(getTag(), "Updating SelectProfileFragment display with profile: " + squeakProfile);
-        mSelectedProfileText2.setText(squeakProfile.getName());
-        mSelectedProfileAddress.setText(squeakProfile.getAddress());
+        mSelectProfileButton.setText(squeakProfile.getName());
     }
 
 }
