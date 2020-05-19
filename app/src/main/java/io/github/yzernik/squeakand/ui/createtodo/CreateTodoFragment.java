@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,7 +35,6 @@ public class CreateTodoFragment extends Fragment {
     public static final String EXTRA_REPLY = "io.github.yzernik.squeakand.REPLY";
 
     private Button mSelectProfileButton;
-    private Button mManageProfilesButton;
     private TextInputLayout mTextInput;
     private Button button;
 
@@ -45,7 +45,6 @@ public class CreateTodoFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_create_todo, container, false);
 
         mSelectProfileButton = root.findViewById(R.id.select_profile_button);
-        mManageProfilesButton = root.findViewById(R.id.manage_profiles_button);
         mTextInput = root.findViewById(R.id.squeak_text);
         button = root.findViewById(R.id.btnDone);
 
@@ -76,15 +75,6 @@ public class CreateTodoFragment extends Fragment {
                         showAlertDialog(profiles);
                     }
                 });
-            }
-        });
-
-        mManageProfilesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("Manage profiles button clicked");
-                Intent intent = new Intent(getActivity(), ManageProfilesActivity.class);
-                startActivity(intent);
             }
         });
 
@@ -130,6 +120,17 @@ public class CreateTodoFragment extends Fragment {
                 createTodoModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
             }
         });
+
+        // Add the manage profiles button
+        builder.setNeutralButton("Manage profiles", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Toast.makeText(getContext(), "neutralize", Toast.LENGTH_SHORT).show();
+                System.out.println("Manage profiles button clicked");
+                startManageProfiles();
+            }
+        });
+
         // create and show the alert dialog
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -142,6 +143,11 @@ public class CreateTodoFragment extends Fragment {
     private void updateDisplayedProfile(SqueakProfile squeakProfile) {
         Log.i(getTag(), "Updating SelectProfileFragment display with profile: " + squeakProfile);
         mSelectProfileButton.setText(squeakProfile.getName());
+    }
+
+    public void startManageProfiles() {
+        Intent intent = new Intent(getActivity(), ManageProfilesActivity.class);
+        startActivity(intent);
     }
 
 }
