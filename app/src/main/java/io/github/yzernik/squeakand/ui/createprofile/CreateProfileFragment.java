@@ -28,9 +28,9 @@ import io.github.yzernik.squeaklib.core.Signing;
 public class CreateProfileFragment extends Fragment {
 
     TextInputLayout mProfileNameInput;
+    TextInputLayout mProfileAddressDisplay;
     Button mGeneratePrivateKeyButton;
     Button mImportPrivateKeyButton;
-    TextView mProfileAddress;
     Button mCreateProfileButton;
 
     private CreateProfileModel createProfileModel;
@@ -40,9 +40,9 @@ public class CreateProfileFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_create_profile, container, false);
 
         mProfileNameInput = root.findViewById(R.id.new_profile_name_input);
+        mProfileAddressDisplay = root.findViewById(R.id.new_profile_address_display);
         mGeneratePrivateKeyButton = root.findViewById(R.id.create_profile_generate_private_key_button);
         mImportPrivateKeyButton = root.findViewById(R.id.create_profile_import_private_key_button);
-        mProfileAddress = root.findViewById(R.id.new_profile_address);
         mCreateProfileButton = root.findViewById(R.id.create_profile_finish_button);
 
         createProfileModel = new ViewModelProvider(getActivity()).get(CreateProfileModel.class);
@@ -71,7 +71,7 @@ public class CreateProfileFragment extends Fragment {
 
                 // Change the address display
                 if (keyPair != null) {
-                    mProfileAddress.setText(keyPair.getPublicKey().getAddress(MainNetParams.get()));
+                    mProfileAddressDisplay.setHint(keyPair.getPublicKey().getAddress(MainNetParams.get()));
                 }
 
                 // Change the button response

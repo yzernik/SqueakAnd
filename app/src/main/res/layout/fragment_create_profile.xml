@@ -30,30 +30,40 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/create_profile_generate_private_key_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create_profile_generate_private_key_button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/new_profile_name_input" />
-
-        <Button
-            android:id="@+id/create_profile_import_private_key_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create_profile_import_private_key_button" />
-
-        <TextView
-            android:id="@+id/new_profile_address"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/new_profile_address_display"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="No address"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/create_profile_generate_private_key_button" />
+            android:hint="New key pair address not set"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_profile_generate_private_key_button"
+                android:id="@+id/create_profile_generate_private_key_button"
+                android:layout_gravity="left|center_vertical" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_profile_import_private_key_button"
+                android:id="@+id/create_profile_import_private_key_button"
+                android:layout_gravity="right|center_vertical" />
+        </FrameLayout>
 
         <Button
             android:id="@+id/create_profile_finish_button"
