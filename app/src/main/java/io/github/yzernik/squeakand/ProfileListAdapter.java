@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -14,13 +15,17 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
 
     class ProfileViewHolder extends RecyclerView.ViewHolder {
         public TextView txtProfileName;
+        public TextView txtProfileAddress;
+        public CardView cardView;
 
         public ProfileViewHolder(View view) {
             super(view);
 
             txtProfileName = view.findViewById(R.id.profile_item_view_name);
+            txtProfileAddress = view.findViewById(R.id.profile_item_view_address);
+            cardView = view.findViewById(R.id.profileCardView);
 
-            txtProfileName.setOnClickListener(new View.OnClickListener() {
+            cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     clickListener.handleItemClick(mProfiles.get(getAdapterPosition()).getProfileId());
@@ -50,6 +55,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
         if (mProfiles != null) {
             SqueakProfile current = mProfiles.get(position);
             holder.txtProfileName.setText(current.getName());
+            holder.txtProfileAddress.setText(current.getAddress());
         } else {
             // Covers the case of data not being ready yet.
             holder.txtProfileName.setText("No profile");
