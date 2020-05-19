@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -131,7 +130,6 @@ public class CreateTodoFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 SqueakProfile selectedProfile = profiles.get(which);
                 createTodoModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
-                Toast.makeText(getContext(), "Selected profile " + selectedProfile.getName(), Toast.LENGTH_SHORT).show();
             }
         });
         // create and show the alert dialog
