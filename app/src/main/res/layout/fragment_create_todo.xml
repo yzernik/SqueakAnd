@@ -69,27 +69,6 @@
 
         </FrameLayout>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Manage profiles:"
-                android:layout_gravity="left|center_vertical"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/manage_profiles_button_text"
-                android:id="@+id/manage_profiles_button"
-                android:layout_gravity="right|center_vertical" />
-
-        </FrameLayout>
-
         <Button
             android:id="@+id/btnDone"
             android:layout_width="match_parent"
