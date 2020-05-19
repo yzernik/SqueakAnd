@@ -27,8 +27,8 @@ public class Todo implements Serializable {
     }
 
     @Ignore
-    public Todo(String name) {
-        this.name = name;
+    public Todo(String description) {
+        this.description = description;
     }
 
     @Ignore
