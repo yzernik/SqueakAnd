@@ -6,6 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.notifications.NotificationsFragment">
 
-    <include layout="@layout/recyclerview_item_layout" />
+    <include layout="@layout/todo_item_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
