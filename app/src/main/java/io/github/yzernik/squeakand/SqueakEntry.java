@@ -1,5 +1,6 @@
 package io.github.yzernik.squeakand;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -18,6 +19,7 @@ import io.github.yzernik.squeaklib.core.Squeak;
 public class SqueakEntry implements Serializable {
 
     @PrimaryKey
+    @NonNull
     public Sha256Hash hash;
 
     public Sha256Hash hashEncContent;
@@ -32,11 +34,6 @@ public class SqueakEntry implements Serializable {
     public byte[] encContent;
     public byte[] scriptSigBytes;
     public byte[] dataKey;
-
-    public String category;
-
-    @Ignore
-    public String priority;
 
     public SqueakEntry() {
     }
