@@ -31,19 +31,19 @@ public class CreateProfileModel  extends AndroidViewModel {
         mECKey.setValue(null);
     }
 
-    public void setmKeyPair(ECKey ecKey) {
+    void setmKeyPair(ECKey ecKey) {
         this.mECKey.setValue(ecKey);
     }
 
-    public LiveData<List<SqueakProfile>> getmAllSqueakProfiles() {
+    LiveData<List<SqueakProfile>> getmAllSqueakProfiles() {
         return mAllSqueakProfiles;
     }
 
-    public void insert(SqueakProfile squeakProfile) {
+    void insert(SqueakProfile squeakProfile) {
         mRepository.insert(squeakProfile);
     }
 
-    public LiveData<Signing.BitcoinjKeyPair> getKeyPair() {
+    LiveData<Signing.BitcoinjKeyPair> getKeyPair() {
         return Transformations.map(mECKey, key -> {
             if (key == null) {
                 return null;
