@@ -51,12 +51,32 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Generate a key pair:"
+                android:layout_gravity="left|center_vertical"/>
+
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/create_profile_generate_private_key_button"
                 android:id="@+id/create_profile_generate_private_key_button"
-                android:layout_gravity="left|center_vertical" />
+                android:layout_gravity="right|center_vertical" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Import a key pair:"
+                android:layout_gravity="left|center_vertical"/>
 
             <Button
                 android:layout_width="wrap_content"

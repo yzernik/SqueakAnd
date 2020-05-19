@@ -45,6 +45,9 @@ public class CreateProfileFragment extends Fragment {
         mImportPrivateKeyButton = root.findViewById(R.id.create_profile_import_private_key_button);
         mCreateProfileButton = root.findViewById(R.id.create_profile_finish_button);
 
+        // Start the fragment with the profile name input in focus.
+        mProfileNameInput.requestFocus();
+
         createProfileModel = new ViewModelProvider(getActivity()).get(CreateProfileModel.class);
 
         mGeneratePrivateKeyButton.setOnClickListener(new View.OnClickListener() {
