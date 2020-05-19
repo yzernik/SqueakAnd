@@ -5,43 +5,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <TextView
-        android:id="@+id/create_profile_new_profile_name_display"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/new_profile_name_input"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="71dp"
-        android:layout_marginTop="75dp"
-        android:text="@string/create_profile_new_profile_name_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:hint="New profile name"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/create_profile_new_profile_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text=""
-        app:layout_constraintStart_toStartOf="@+id/create_profile_new_profile_name_display"
-        app:layout_constraintTop_toBottomOf="@+id/create_profile_new_profile_name_display" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/create_profile_generate_private_key_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="195dp"
+        android:layout_marginStart="16dp"
         android:text="@string/create_profile_generate_private_key_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/new_profile_name_input" />
 
     <Button
         android:id="@+id/create_profile_import_private_key_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/create_profile_import_private_key_button"
-        app:layout_constraintStart_toStartOf="@+id/create_profile_generate_private_key_button"
+        app:layout_constraintStart_toEndOf="@+id/create_profile_generate_private_key_button"
+        app:layout_constraintTop_toTopOf="@+id/create_profile_generate_private_key_button" />
+
+    <TextView
+        android:id="@+id/new_profile_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="No address"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_profile_generate_private_key_button" />
+
+    <Button
+        android:id="@+id/create_profile_finish_button"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

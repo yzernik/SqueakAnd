@@ -24,15 +24,15 @@ public class SqueakProfile implements Serializable {
 
     public String name;
 
-    public ECKey ecKey;
+    public Signing.BitcoinjKeyPair keyPair;
 
     public SqueakProfile() {
     }
 
     @Ignore
-    public SqueakProfile(String name, ECKey ecKey) {
+    public SqueakProfile(String name, Signing.BitcoinjKeyPair keyPair) {
         this.name = name;
-        this.ecKey = ecKey;
+        this.keyPair = keyPair;
     }
 
     @Ignore
@@ -41,13 +41,8 @@ public class SqueakProfile implements Serializable {
     }
 
     @Ignore
-    public ECKey getEcKey() {
-        return ecKey;
-    }
-
-    @Ignore
     public Signing.KeyPair getKeyPair() {
-        return new Signing.BitcoinjKeyPair(ecKey);
+        return keyPair;
     }
 
     @Ignore
@@ -57,7 +52,7 @@ public class SqueakProfile implements Serializable {
 
     @Ignore
     public String getAddress(NetworkParameters params) {
-        return getKeyPair().getPublicKey().getAddress(params);
+        return keyPair.getPublicKey().getAddress(params);
     }
 
     @Ignore
