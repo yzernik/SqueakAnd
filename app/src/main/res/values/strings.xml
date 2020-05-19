@@ -20,4 +20,5 @@
     <string name="create_profile_generate_private_key_button">Generate Key Pair</string>
     <string name="create_profile_import_private_key_button">Import Key Pair</string>
     <string name="create_profile_complete_button_text">Create Profile</string>
+    <string name="create_squeak_button">Create Squeak</string>
 </resources>
