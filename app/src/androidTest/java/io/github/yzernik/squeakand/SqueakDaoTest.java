@@ -16,7 +16,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import io.github.yzernik.squeakand.blockchain.Blockchain;
 import io.github.yzernik.squeaklib.core.Signing;
@@ -69,19 +71,26 @@ public class SqueakDaoTest {
         List<SqueakEntry> allSqueaks = LiveDataTestUtil.getValue(mSqueakDao.getSqueaks());
         assertEquals(allSqueaks.get(0).getSqueak().getHash(), squeak.getHash());
     }
-/*
 
     @Test
-    public void getAllTodos() throws Exception {
-        Todo todo = new Todo("aaa");
-        mTodoDao.insert(todo);
-        Todo todo2 = new Todo("bbb");
-        mTodoDao.insert(todo2);
-        List<Todo> allTodos = LiveDataTestUtil.getValue(mTodoDao.getAlphabetizedTodos());
-        assertEquals(allTodos.get(0).getName(), todo.getName());
-        assertEquals(allTodos.get(1).getName(), todo2.getName());
+    public void getAllSqueaks() throws Exception {
+        Squeak squeak = createSqeakWithText("aaa");
+        mSqueakDao.insert(new SqueakEntry(squeak));
+        Squeak squeak2 = createSqeakWithText("bbb");
+        mSqueakDao.insert(new SqueakEntry(squeak2));
+        List<SqueakEntry> allSqueaks = LiveDataTestUtil.getValue(mSqueakDao.getSqueaks());
+
+        Set<Sha256Hash> hashesFromSqueaks = new HashSet<>();
+        Set<Sha256Hash> hashesFromDB = new HashSet<>();
+        hashesFromDB.add(allSqueaks.get(0).getSqueak().getHash());
+        hashesFromDB.add(allSqueaks.get(1).getSqueak().getHash());
+        hashesFromSqueaks.add(squeak.getHash());
+        hashesFromSqueaks.add(squeak2.getHash());
+
+        assertEquals(hashesFromDB, hashesFromSqueaks);
     }
 
+    /*
     @Test
     public void deleteAll() throws Exception {
         Todo todo = new Todo("todo");
