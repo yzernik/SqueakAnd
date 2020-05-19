@@ -17,16 +17,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/profilesRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="154dp" />
-
         <Button
             android:id="@+id/create_profile_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/manage_profiles_new_profile_button_button" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/profilesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="154dp" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
