@@ -34,6 +34,8 @@ public class SqueakEntry implements Serializable {
     public byte[] encContent;
     public byte[] scriptSigBytes;
     public byte[] dataKey;
+    public String decryptedContentStr;
+    public String address;
 
     public SqueakEntry() {
     }
@@ -53,6 +55,12 @@ public class SqueakEntry implements Serializable {
         this.encContent = squeak.getEncContent();
         this.scriptSigBytes = squeak.getScriptSigBytes();
         this.dataKey = squeak.getDataKey();
+        try {
+            this.decryptedContentStr = squeak.getDecryptedContentStr();
+        } catch (Exception e) {
+            this.decryptedContentStr = null;
+        }
+        this.address = squeak.getAddress().toString();
     }
 
     @Ignore
@@ -72,6 +80,10 @@ public class SqueakEntry implements Serializable {
                 scriptSigBytes,
                 dataKey
         );
+    }
+
+    public String getDecryptedContentStr() {
+        return decryptedContentStr;
     }
 
 }
