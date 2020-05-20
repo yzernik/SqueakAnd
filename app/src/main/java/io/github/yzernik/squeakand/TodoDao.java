@@ -40,15 +40,15 @@ public interface TodoDao {
     // Always holds/caches latest version of data. Notifies its active observers when the
     // data has changed. Since we are getting all the contents of the database,
     // we are notified whenever any of the database contents have changed.
-    @Query("SELECT * from " + TodoRoomDatabase.TABLE_NAME_TODO + " ORDER BY name ASC")
+    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_TODO + " ORDER BY name ASC")
     LiveData<List<Todo>> getAlphabetizedTodos();
 
-    @Query("SELECT * FROM " + TodoRoomDatabase.TABLE_NAME_TODO + " WHERE todo_id = :todoId")
+    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_TODO + " WHERE todo_id = :todoId")
     LiveData<Todo> fetchTodoById(int todoId);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Todo todo);
 
-    @Query("DELETE FROM " + TodoRoomDatabase.TABLE_NAME_TODO)
+    @Query("DELETE FROM " + SqueakRoomDatabase.TABLE_NAME_TODO)
     void deleteAll();
 }

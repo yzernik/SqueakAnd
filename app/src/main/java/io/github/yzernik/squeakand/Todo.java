@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
-@Entity(tableName = TodoRoomDatabase.TABLE_NAME_TODO)
+@Entity(tableName = SqueakRoomDatabase.TABLE_NAME_TODO)
 public class Todo implements Serializable {
 
     @PrimaryKey(autoGenerate = true)

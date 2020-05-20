@@ -6,7 +6,6 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.params.MainNetParams;
 
@@ -15,7 +14,7 @@ import java.io.Serializable;
 import io.github.yzernik.squeaklib.core.Signing;
 
 
-@Entity(tableName = TodoRoomDatabase.TABLE_NAME_PROFILE)
+@Entity(tableName = SqueakRoomDatabase.TABLE_NAME_PROFILE)
 @TypeConverters({Converters.class})
 public class SqueakProfile implements Serializable {
 

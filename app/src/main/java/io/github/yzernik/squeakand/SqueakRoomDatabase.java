@@ -3,14 +3,10 @@ package io.github.yzernik.squeakand;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -21,7 +17,7 @@ import java.util.concurrent.Executors;
  */
 
 @Database(entities = {Todo.class, SqueakProfile.class, SqueakEntry.class}, version = 1, exportSchema = false)
-abstract class TodoRoomDatabase extends RoomDatabase {
+abstract class SqueakRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";
     public static final String TABLE_NAME_TODO = "todo";
@@ -34,18 +30,18 @@ abstract class TodoRoomDatabase extends RoomDatabase {
 
 
     // marking the instance as volatile to ensure atomic access to the variable
-    private static volatile TodoRoomDatabase INSTANCE;
+    private static volatile SqueakRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
     static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-    static TodoRoomDatabase getDatabase(final Context context) {
+    static SqueakRoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
-            synchronized (TodoRoomDatabase.class) {
+            synchronized (SqueakRoomDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            TodoRoomDatabase.class, DB_NAME)
-                            .addCallback(sRoomDatabaseCallback)
+                            SqueakRoomDatabase.class, DB_NAME)
+                            //.addCallback(sRoomDatabaseCallback)
                             .build();
                 }
             }
@@ -60,6 +56,7 @@ abstract class TodoRoomDatabase extends RoomDatabase {
      * If you want to populate the database only when the database is created for the 1st time,
      * override RoomDatabase.Callback()#onCreate
      */
+    /*
     private static Callback sRoomDatabaseCallback = new Callback() {
         @Override
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
@@ -79,14 +76,12 @@ abstract class TodoRoomDatabase extends RoomDatabase {
 
                 SqueakProfileDao squeakProfileDao = INSTANCE.squeakProfileDao();
                 squeakProfileDao.deleteAll();
-
-/*                for (SqueakProfile squeakProfile: INSTANCE.buildDummySqueakProfiles()) {
-                    squeakProfileDao.insert(squeakProfile);
-                }*/
             });
         }
-    };
+    };*/
 
+
+    /*
     private List<Todo> buildDummyTodos() {
         List<Todo> todoArrayList = new ArrayList<>();
         Todo todo = new Todo();
@@ -139,6 +134,6 @@ abstract class TodoRoomDatabase extends RoomDatabase {
         squeakProfileArrayList.add(squeakProfile);
 
         return squeakProfileArrayList;
-    }
+    }*/
 
 }

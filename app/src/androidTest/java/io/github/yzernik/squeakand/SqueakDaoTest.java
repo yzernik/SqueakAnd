@@ -42,7 +42,7 @@ public class SqueakDaoTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     private SqueakDao mSqueakDao;
-    private TodoRoomDatabase mDb;
+    private SqueakRoomDatabase mDb;
     private Blockchain blockchain;
     private Signing.KeyPair keyPair;
 
@@ -51,7 +51,7 @@ public class SqueakDaoTest {
         Context context = ApplicationProvider.getApplicationContext();
         // Using an in-memory database because the information stored here disappears when the
         // process is killed.
-        mDb = Room.inMemoryDatabaseBuilder(context, TodoRoomDatabase.class)
+        mDb = Room.inMemoryDatabaseBuilder(context, SqueakRoomDatabase.class)
                 // Allowing main thread queries, just for testing.
                 .allowMainThreadQueries()
                 .build();

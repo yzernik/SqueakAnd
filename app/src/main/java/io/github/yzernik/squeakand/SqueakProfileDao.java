@@ -27,15 +27,15 @@ import java.util.List;
 @Dao
 public interface SqueakProfileDao {
 
-    @Query("SELECT * from " + TodoRoomDatabase.TABLE_NAME_PROFILE + " ORDER BY profile_id ASC")
+    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ORDER BY profile_id ASC")
     LiveData<List<SqueakProfile>> getProfiles();
 
-    @Query("SELECT * FROM " + TodoRoomDatabase.TABLE_NAME_PROFILE + " WHERE profile_id = :profileId")
+    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE profile_id = :profileId")
     LiveData<SqueakProfile> fetchProfileById(int profileId);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(SqueakProfile squeakProfile);
 
-    @Query("DELETE FROM " + TodoRoomDatabase.TABLE_NAME_PROFILE)
+    @Query("DELETE FROM " + SqueakRoomDatabase.TABLE_NAME_PROFILE)
     void deleteAll();
 }
