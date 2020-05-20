@@ -31,9 +31,6 @@ import io.github.yzernik.squeakand.ViewSqueakActivity;
 
 public class HomeFragment extends Fragment implements SqueakListAdapter.ClickListener {
 
-    public static final int NEW_TODO_ACTIVITY_REQUEST_CODE = 1;
-    public static final int UPDATE_TODO_REQUEST_CODE = 300;
-
     private HomeViewModel homeViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -66,7 +63,7 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CreateSqueakActivity.class);
-                startActivityForResult(intent, NEW_TODO_ACTIVITY_REQUEST_CODE);
+                startActivity(intent);
             }
         });
 
@@ -83,6 +80,6 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
     @Override
     public void handleItemClick(Sha256Hash hash) {
         // TODO: Go to the squeak view activity for the hash
-        startActivityForResult(new Intent(getActivity(), ViewSqueakActivity.class).putExtra("squeak_hash", hash.toString()), UPDATE_TODO_REQUEST_CODE);
+        startActivity(new Intent(getActivity(), ViewSqueakActivity.class).putExtra("squeak_hash", hash.toString()));
     }
 }
