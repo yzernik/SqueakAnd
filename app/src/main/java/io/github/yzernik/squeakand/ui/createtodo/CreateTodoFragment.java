@@ -19,15 +19,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.bitcoinj.params.MainNetParams;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import io.github.yzernik.squeakand.ManageProfilesActivity;
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeaklib.core.Squeak;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
 
 public class CreateTodoFragment extends Fragment {
 
@@ -76,23 +78,6 @@ public class CreateTodoFragment extends Fragment {
                 });
             }
         });
-/*
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Log.i(getTag(), "Button clicked");
-                Intent replyIntent = new Intent();
-                if (TextUtils.isEmpty(mTextInput.getEditText().getText())) {
-                    getActivity().setResult(RESULT_CANCELED, replyIntent);
-                } else {
-                    String word = mTextInput.getEditText().getText().toString();
-                    replyIntent.putExtra(EXTRA_REPLY, word);
-                    getActivity().setResult(RESULT_OK, replyIntent);
-                    Log.i(getTag(), "Set result for activity: " + word);
-                }
-                Log.i(getTag(), "Finishing activity: " + getActivity());
-                getActivity().finish();
-            }
-        });*/
 
         createTodoModel.getCreateSqueakParams().observe(getViewLifecycleOwner(), new Observer<CreateSqueakParams>() {
             @Override
@@ -101,17 +86,8 @@ public class CreateTodoFragment extends Fragment {
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
                         Log.i(getTag(), "Button clicked");
-                        Intent replyIntent = new Intent();
-                        if (TextUtils.isEmpty(mTextInput.getEditText().getText())) {
-                            getActivity().setResult(RESULT_CANCELED, replyIntent);
-                        } else {
-                            String word = mTextInput.getEditText().getText().toString();
-                            replyIntent.putExtra(EXTRA_REPLY, word);
-                            getActivity().setResult(RESULT_OK, replyIntent);
-                            Log.i(getTag(), "Set result for activity: " + word);
-                        }
-                        Log.i(getTag(), "Finishing activity: " + getActivity());
-                        getActivity().finish();
+                        String inputText = mTextInput.getEditText().getText().toString();
+                        createSqueak(createSqueakParams, inputText);
                     }
                 });
             }
@@ -170,6 +146,65 @@ public class CreateTodoFragment extends Fragment {
     public void startManageProfiles() {
         Intent intent = new Intent(getActivity(), ManageProfilesActivity.class);
         startActivity(intent);
+    }
+
+    private void createSqueak(CreateSqueakParams createSqueakParams, String squeakText) {
+        if (TextUtils.isEmpty(squeakText)) {
+            showEmptyTextAlert();
+            return;
+        }
+
+        SqueakProfile squeakProfile = createSqueakParams.getSqueakProfile();
+        if (squeakProfile == null) {
+            showMissingProfileAlert();
+            return;
+        }
+
+        try {
+            Squeak squeak = Squeak.makeSqueakFromStr(
+                    MainNetParams.get(),
+                    createSqueakParams.getSqueakProfile().getKeyPair(),
+                    squeakText,
+                    createSqueakParams.getLatestBlockk().getHeight(),
+                    createSqueakParams.getLatestBlockk().getHash(),
+                    System.currentTimeMillis() / 1000,
+                    createSqueakParams.getReplyToHash()
+            );
+            createTodoModel.insertSqueak(new SqueakEntry(squeak));
+            Log.i(getTag(), "Created and inserted squeak: " + squeak);
+            Log.i(getTag(), "Created squeak with content: " + squeak.getDecryptedContentStr());
+            Log.i(getTag(), "Finishing activity: " + getActivity());
+            getActivity().finish();
+        } catch (Exception e) {
+            Log.e(getTag(), "Unable to create squeak: " + e);
+        }
+    }
+
+
+    private void showMissingProfileAlert() {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Missing profile");
+        alertDialog.setMessage("Profile must be selected before a squeak can be created.");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void showEmptyTextAlert() {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Empty text");
+        alertDialog.setMessage("Text cannot be empty.");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
 }

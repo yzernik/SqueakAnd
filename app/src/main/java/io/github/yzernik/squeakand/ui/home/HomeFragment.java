@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,18 +18,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.bitcoinj.core.Sha256Hash;
+
 import java.util.List;
 
 import io.github.yzernik.squeakand.NewTodoActivity;
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.Todo;
-import io.github.yzernik.squeakand.TodoListAdapter;
-import io.github.yzernik.squeakand.ViewTodoActivity;
-
-import static android.app.Activity.RESULT_OK;
+import io.github.yzernik.squeakand.SqueakEntry;
+import io.github.yzernik.squeakand.SqueakListAdapter;
 
 
-public class HomeFragment extends Fragment implements TodoListAdapter.ClickListener {
+public class HomeFragment extends Fragment implements SqueakListAdapter.ClickListener {
 
     public static final int NEW_TODO_ACTIVITY_REQUEST_CODE = 1;
     public static final int UPDATE_TODO_REQUEST_CODE = 300;
@@ -44,7 +42,7 @@ public class HomeFragment extends Fragment implements TodoListAdapter.ClickListe
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         final RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
-        final TodoListAdapter adapter = new TodoListAdapter(root.getContext(), this);
+        final SqueakListAdapter adapter = new SqueakListAdapter(root.getContext(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
@@ -54,11 +52,11 @@ public class HomeFragment extends Fragment implements TodoListAdapter.ClickListe
         // Add an observer on the LiveData returned by getAlphabetizedTodos.
         // The onChanged() method fires when the observed data changes and the activity is
         // in the foreground.
-        homeViewModel.getAllTodos().observe(getViewLifecycleOwner(), new Observer<List<Todo>>() {
+        homeViewModel.getAllSqueaks().observe(getViewLifecycleOwner(), new Observer<List<SqueakEntry>>() {
             @Override
-            public void onChanged(@Nullable final List<Todo> todos) {
-                // Update the cached copy of the todos in the adapter.
-                adapter.setTodos(todos);
+            public void onChanged(@Nullable final List<SqueakEntry> squeakEntries) {
+                // Update the cached copy of the squeaks in the adapter.
+                adapter.setSqueaks(squeakEntries);
             }
         });
 
@@ -80,7 +78,7 @@ public class HomeFragment extends Fragment implements TodoListAdapter.ClickListe
         super.onActivityResult(requestCode, resultCode, data);
         Log.i(getTag(), "Called super.onActivityResult...");
 
-        if (resultCode == RESULT_OK) {
+/*        if (resultCode == RESULT_OK) {
 
             if (requestCode == NEW_TODO_ACTIVITY_REQUEST_CODE) {
                 String todoInput = data.getStringExtra(NewTodoActivity.EXTRA_REPLY);
@@ -89,11 +87,12 @@ public class HomeFragment extends Fragment implements TodoListAdapter.ClickListe
             } else {
                 Toast.makeText(getActivity(), "No action done by user", Toast.LENGTH_SHORT).show();
             }
-        }
+        }*/
     }
 
     @Override
-    public void handleItemClick(int id) {
-        startActivityForResult(new Intent(getActivity(), ViewTodoActivity.class).putExtra("id", id), UPDATE_TODO_REQUEST_CODE);
+    public void handleItemClick(Sha256Hash hash) {
+        // startActivityForResult(new Intent(getActivity(), ViewTodoActivity.class).putExtra("id", id), UPDATE_TODO_REQUEST_CODE);
+        // TODO: Go to the squeak view activity for the hash
     }
 }
