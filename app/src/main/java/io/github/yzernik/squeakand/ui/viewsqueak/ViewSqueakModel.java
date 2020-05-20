@@ -10,7 +10,7 @@ import org.bitcoinj.core.Sha256Hash;
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakRepository;
 
-public class SqueakViewModel extends AndroidViewModel {
+public class ViewSqueakModel extends AndroidViewModel {
 
     private SqueakRepository mRepository;
     // Using LiveData and caching what fetchTodoById returns has several benefits:
@@ -18,7 +18,7 @@ public class SqueakViewModel extends AndroidViewModel {
     //   the UI when the data actually changes.
     // - Repository is completely separated from the UI through the ViewModel.
 
-    public SqueakViewModel(Application application) {
+    public ViewSqueakModel(Application application) {
         super(application);
         mRepository = new SqueakRepository(application);
     }

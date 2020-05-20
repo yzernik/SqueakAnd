@@ -25,7 +25,7 @@ public class ViewSqueakFragment extends Fragment {
     TextView txtSqueakAuthor;
 
     // private EditText mEditTodoView;
-    private SqueakViewModel todoViewModel;
+    private ViewSqueakModel todoViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class ViewSqueakFragment extends Fragment {
         }
 
         // Get a new or existing ViewModel from the ViewModelProvider.
-        todoViewModel = new ViewModelProvider(this).get(SqueakViewModel.class);
+        todoViewModel = new ViewModelProvider(this).get(ViewSqueakModel.class);
 
         txtSqueakBlockNumber = root.findViewById(R.id.squeak_block_number);
         txtSqueakHash = root.findViewById(R.id.squeak_hash);
