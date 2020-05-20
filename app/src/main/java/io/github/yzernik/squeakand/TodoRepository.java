@@ -37,7 +37,7 @@ public class TodoRepository {
     // See the BasicSample in the android-architecture-components repository at
     // https://github.com/googlesamples
     public TodoRepository(Application application) {
-        TodoRoomDatabase db = TodoRoomDatabase.getDatabase(application);
+        SqueakRoomDatabase db = SqueakRoomDatabase.getDatabase(application);
         mTodoDao = db.todoDao();
         mAllTodos = mTodoDao.getAlphabetizedTodos();
     }
@@ -57,7 +57,7 @@ public class TodoRepository {
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
     public void insert(Todo todo) {
-        TodoRoomDatabase.databaseWriteExecutor.execute(() -> {
+        SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
             mTodoDao.insert(todo);
         });
     }

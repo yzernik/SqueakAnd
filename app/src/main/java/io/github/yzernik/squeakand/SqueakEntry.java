@@ -14,7 +14,7 @@ import java.io.Serializable;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 
-@Entity(tableName = TodoRoomDatabase.TABLE_NAME_SQUEAK)
+@Entity(tableName = SqueakRoomDatabase.TABLE_NAME_SQUEAK)
 @TypeConverters({Converters.class})
 public class SqueakEntry implements Serializable {
 

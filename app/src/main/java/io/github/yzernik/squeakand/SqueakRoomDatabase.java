@@ -7,8 +7,6 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,7 +17,7 @@ import java.util.concurrent.Executors;
  */
 
 @Database(entities = {Todo.class, SqueakProfile.class, SqueakEntry.class}, version = 1, exportSchema = false)
-abstract class TodoRoomDatabase extends RoomDatabase {
+abstract class SqueakRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";
     public static final String TABLE_NAME_TODO = "todo";
@@ -32,17 +30,17 @@ abstract class TodoRoomDatabase extends RoomDatabase {
 
 
     // marking the instance as volatile to ensure atomic access to the variable
-    private static volatile TodoRoomDatabase INSTANCE;
+    private static volatile SqueakRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
     static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-    static TodoRoomDatabase getDatabase(final Context context) {
+    static SqueakRoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
-            synchronized (TodoRoomDatabase.class) {
+            synchronized (SqueakRoomDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            TodoRoomDatabase.class, DB_NAME)
+                            SqueakRoomDatabase.class, DB_NAME)
                             //.addCallback(sRoomDatabaseCallback)
                             .build();
                 }

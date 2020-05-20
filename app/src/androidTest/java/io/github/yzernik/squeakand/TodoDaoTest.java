@@ -47,14 +47,14 @@ public class TodoDaoTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     private TodoDao mTodoDao;
-    private TodoRoomDatabase mDb;
+    private SqueakRoomDatabase mDb;
 
     @Before
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
         // Using an in-memory database because the information stored here disappears when the
         // process is killed.
-        mDb = Room.inMemoryDatabaseBuilder(context, TodoRoomDatabase.class)
+        mDb = Room.inMemoryDatabaseBuilder(context, SqueakRoomDatabase.class)
                 // Allowing main thread queries, just for testing.
                 .allowMainThreadQueries()
                 .build();
