@@ -3,11 +3,9 @@ package io.github.yzernik.squeakand;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +43,7 @@ abstract class TodoRoomDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             TodoRoomDatabase.class, DB_NAME)
-                            .addCallback(sRoomDatabaseCallback)
+                            //.addCallback(sRoomDatabaseCallback)
                             .build();
                 }
             }
@@ -60,6 +58,7 @@ abstract class TodoRoomDatabase extends RoomDatabase {
      * If you want to populate the database only when the database is created for the 1st time,
      * override RoomDatabase.Callback()#onCreate
      */
+    /*
     private static Callback sRoomDatabaseCallback = new Callback() {
         @Override
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
@@ -79,14 +78,12 @@ abstract class TodoRoomDatabase extends RoomDatabase {
 
                 SqueakProfileDao squeakProfileDao = INSTANCE.squeakProfileDao();
                 squeakProfileDao.deleteAll();
-
-/*                for (SqueakProfile squeakProfile: INSTANCE.buildDummySqueakProfiles()) {
-                    squeakProfileDao.insert(squeakProfile);
-                }*/
             });
         }
-    };
+    };*/
 
+
+    /*
     private List<Todo> buildDummyTodos() {
         List<Todo> todoArrayList = new ArrayList<>();
         Todo todo = new Todo();
@@ -139,6 +136,6 @@ abstract class TodoRoomDatabase extends RoomDatabase {
         squeakProfileArrayList.add(squeakProfile);
 
         return squeakProfileArrayList;
-    }
+    }*/
 
 }
