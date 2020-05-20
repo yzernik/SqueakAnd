@@ -60,10 +60,9 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
     public void onBindViewHolder(SqueakViewHolder holder, int position) {
         if (mSqueaks != null) {
             SqueakEntry currentEntry = mSqueaks.get(position);
-            holder.txtSqueakHash.setText(currentEntry.hash.toString());
-            holder.txtSqueakBlockNumber.setText("#" + String.valueOf(currentEntry.blockHeight));
+            holder.txtSqueakHash.setText(currentEntry.address);
             holder.txtSqueakText.setText(currentEntry.getDecryptedContentStr());
-            holder.txtSqueakAuthor.setText(currentEntry.address);
+            holder.txtSqueakAuthor.setText("Block #" + String.valueOf(currentEntry.blockHeight));
         } else {
             // Covers the case of data not being ready yet.
             holder.txtSqueakHash.setText("No squeak");
