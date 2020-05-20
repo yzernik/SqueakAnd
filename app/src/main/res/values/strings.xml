@@ -4,8 +4,8 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
-    <string name="activity_create_todo">Create Todo</string>
-    <string name="activity_view_todo">Todo</string>
+    <string name="activity_create_squeak_label">Create Squeak</string>
+    <string name="activity_view_squeak_label">Squeak</string>
     <string name="activity_select_profile">Select Profile</string>
     <string name="activity_manage_profiles">Manage Profiles</string>
     <string name="activity_create_profile">Create Profile</string>
