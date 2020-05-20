@@ -21,11 +21,11 @@
         <activity
             android:name=".CreateSqueakActivity"
             android:parentActivityName=".MainActivity"
-            android:label="@string/activity_create_todo" />
+            android:label="@string/activity_create_squeak_label" />
         <activity
             android:name=".ViewSqueakActivity"
             android:parentActivityName=".MainActivity"
-            android:label="@string/activity_view_todo" />
+            android:label="@string/activity_view_squeak_label" />
         <activity
             android:name=".ManageProfilesActivity"
             android:parentActivityName=".CreateSqueakActivity"
