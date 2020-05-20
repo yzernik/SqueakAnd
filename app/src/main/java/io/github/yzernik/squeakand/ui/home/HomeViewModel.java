@@ -9,8 +9,6 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakRepository;
-import io.github.yzernik.squeakand.Todo;
-import io.github.yzernik.squeakand.TodoRepository;
 
 public class HomeViewModel extends AndroidViewModel {
 
