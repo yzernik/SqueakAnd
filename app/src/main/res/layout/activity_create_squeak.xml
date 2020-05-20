@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewTodoActivity">
+    tools:context=".CreateSqueakActivity">
 
     <FrameLayout
-        android:id="@+id/view_todo_fragment_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:id="@+id/create_squeak_fragment_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

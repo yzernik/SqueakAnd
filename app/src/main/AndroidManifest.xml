@@ -19,16 +19,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NewTodoActivity"
+            android:name=".CreateSqueakActivity"
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_create_todo" />
         <activity
-            android:name=".ViewTodoActivity"
+            android:name=".ViewSqueakActivity"
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_view_todo" />
         <activity
             android:name=".ManageProfilesActivity"
-            android:parentActivityName=".NewTodoActivity"
+            android:parentActivityName=".CreateSqueakActivity"
             android:label="@string/activity_manage_profiles" />
         <activity
             android:name=".NewProfileActivity"
