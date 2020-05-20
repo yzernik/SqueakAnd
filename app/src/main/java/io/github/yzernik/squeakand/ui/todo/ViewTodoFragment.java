@@ -8,56 +8,54 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
+
+import org.bitcoinj.core.Sha256Hash;
 
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.Todo;
+import io.github.yzernik.squeakand.SqueakEntry;
 
 public class ViewTodoFragment extends Fragment {
 
-    TextView txtName;
-    TextView txtNo;
-    TextView txtDesc;
-    TextView txtCategory;
-    CardView cardView;
+    TextView txtSqueakBlockNumber;
+    TextView txtSqueakHash;
+    TextView txtSqueakText;
+    TextView txtSqueakAuthor;
 
     // private EditText mEditTodoView;
-    private TodoViewModel todoViewModel;
+    private SqueakViewModel todoViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_view_todo, container, false);
 
-        int todoId = 0;
+        Sha256Hash squeakHash = null;
         Bundle arguments = getArguments();
         if (arguments != null) {
-            todoId = this.getArguments().getInt("todo_id");
+            String squeakHashStr = this.getArguments().getString("squeak_hash");
+            squeakHash = Sha256Hash.wrap(squeakHashStr);
         }
 
         // Get a new or existing ViewModel from the ViewModelProvider.
-        todoViewModel = new ViewModelProvider(this).get(TodoViewModel.class);
+        todoViewModel = new ViewModelProvider(this).get(SqueakViewModel.class);
 
-        txtNo = root.findViewById(R.id.txtNo);
-        txtName = root.findViewById(R.id.txtName);
-        txtDesc = root.findViewById(R.id.txtDesc);
-        txtCategory = root.findViewById(R.id.txtCategory);
-        cardView = root.findViewById(R.id.cardView);
+        txtSqueakBlockNumber = root.findViewById(R.id.squeak_block_number);
+        txtSqueakHash = root.findViewById(R.id.squeak_hash);
+        txtSqueakText = root.findViewById(R.id.squeak_text);
+        txtSqueakAuthor = root.findViewById(R.id.squeak_author);
 
-        todoViewModel.getSingleTodo(todoId).observe(getViewLifecycleOwner(), new Observer<Todo>() {
+        todoViewModel.getSingleTodo(squeakHash).observe(getViewLifecycleOwner(), new Observer<SqueakEntry>() {
             @Override
-            public void onChanged(@Nullable Todo todo) {
-                if (todo == null) {
+            public void onChanged(@Nullable SqueakEntry squeakEntry) {
+                if (squeakEntry == null) {
                     return;
                 }
 
-                txtName.setText(todo.getName());
-                txtNo.setText("#" + String.valueOf(todo.todo_id));
-                txtDesc.setText(todo.description);
-                txtCategory.setText(todo.category);
+                txtSqueakHash.setText(squeakEntry.address);
+                txtSqueakText.setText(squeakEntry.getDecryptedContentStr());
+                txtSqueakAuthor.setText("Block #" + String.valueOf(squeakEntry.blockHeight));
             }
         });
 

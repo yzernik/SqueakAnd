@@ -26,6 +26,7 @@ import io.github.yzernik.squeakand.NewTodoActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakListAdapter;
+import io.github.yzernik.squeakand.ViewTodoActivity;
 
 
 public class HomeFragment extends Fragment implements SqueakListAdapter.ClickListener {
@@ -77,22 +78,11 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
         Log.i(getTag(), "Got activity result requestCode: " + requestCode + ", resultCode: " + resultCode + ", data: " + data);
         super.onActivityResult(requestCode, resultCode, data);
         Log.i(getTag(), "Called super.onActivityResult...");
-
-/*        if (resultCode == RESULT_OK) {
-
-            if (requestCode == NEW_TODO_ACTIVITY_REQUEST_CODE) {
-                String todoInput = data.getStringExtra(NewTodoActivity.EXTRA_REPLY);
-                Todo todo = new Todo(todoInput);
-                homeViewModel.insert(todo);
-            } else {
-                Toast.makeText(getActivity(), "No action done by user", Toast.LENGTH_SHORT).show();
-            }
-        }*/
     }
 
     @Override
     public void handleItemClick(Sha256Hash hash) {
-        // startActivityForResult(new Intent(getActivity(), ViewTodoActivity.class).putExtra("id", id), UPDATE_TODO_REQUEST_CODE);
         // TODO: Go to the squeak view activity for the hash
+        startActivityForResult(new Intent(getActivity(), ViewTodoActivity.class).putExtra("squeak_hash", hash.toString()), UPDATE_TODO_REQUEST_CODE);
     }
 }

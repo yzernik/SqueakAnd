@@ -5,28 +5,28 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import org.bitcoinj.core.Sha256Hash;
+
+import io.github.yzernik.squeakand.SqueakEntry;
+import io.github.yzernik.squeakand.SqueakRepository;
 import io.github.yzernik.squeakand.Todo;
 import io.github.yzernik.squeakand.TodoRepository;
 
-public class TodoViewModel extends AndroidViewModel {
+public class SqueakViewModel extends AndroidViewModel {
 
-    private TodoRepository mRepository;
+    private SqueakRepository mRepository;
     // Using LiveData and caching what fetchTodoById returns has several benefits:
     // - We can put an observer on the data (instead of polling for changes) and only update the
     //   the UI when the data actually changes.
     // - Repository is completely separated from the UI through the ViewModel.
-    private LiveData<Todo> mSingleTodo;
 
-    public TodoViewModel(Application application) {
+    public SqueakViewModel(Application application) {
         super(application);
-        mRepository = new TodoRepository(application);
-        // TODO: use correct id.
-        mSingleTodo = mRepository.getTodo(12345);
+        mRepository = new SqueakRepository(application);
     }
 
-    // TODO: get the id from the class variable, not a method parameter.
-    public LiveData<Todo> getSingleTodo(int id) {
-        return mRepository.getTodo(id);
+    public LiveData<SqueakEntry> getSingleTodo(Sha256Hash hash) {
+        return mRepository.getSqueak(hash);
     }
 
 }
