@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import androidx.core.util.Pair;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -15,8 +14,10 @@ import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileRepository;
+import io.github.yzernik.squeakand.SqueakRepository;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.BlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.DummyBlockchainRepository;
@@ -26,7 +27,8 @@ public class CreateTodoModel extends AndroidViewModel {
     private static final String SQUEAK_PROFILE_FILE_KEY = "io.github.yzernik.squeakand.SQUEAK_PROFILE_PREFERENCES";
     private static final String SELECTED_SQUEAK_PROFILE_ID_KEY = "SELECTED_SQUEAK_PROFILE_ID";
 
-    private SqueakProfileRepository mRepository;
+    private SqueakProfileRepository mProfileRepository;
+    private SqueakRepository mSqueakRepository;
     private BlockchainRepository blockchainRepository;
     private SharedPreferences sharedPreferences;
     private LiveData<List<SqueakProfile>> mAllSqueakProfiles;
@@ -35,13 +37,14 @@ public class CreateTodoModel extends AndroidViewModel {
 
     public CreateTodoModel(Application application) {
         super(application);
-        mRepository = new SqueakProfileRepository(application);
+        mProfileRepository = new SqueakProfileRepository(application);
+        mSqueakRepository = new SqueakRepository(application);
         blockchainRepository = new DummyBlockchainRepository(application);
-        mAllSqueakProfiles = mRepository.getAllSqueakProfiles();
+        mAllSqueakProfiles = mProfileRepository.getAllSqueakProfiles();
         mSelectedSqueakProfileId = new MutableLiveData<>();
         sharedPreferences = application.getSharedPreferences(
                 SQUEAK_PROFILE_FILE_KEY, Context.MODE_PRIVATE);
-        replyToHash = null;
+        replyToHash = Sha256Hash.ZERO_HASH;
 
         // Set the initial value of squeakprofile id
         loadSelectedSqueakProfileId();
@@ -95,6 +98,10 @@ public class CreateTodoModel extends AndroidViewModel {
                 return new CreateSqueakParams(profile, replyToHash, block);
             });
         });
+    }
+
+    void insertSqueak(SqueakEntry squeakEntry) {
+        mSqueakRepository.insert(squeakEntry);
     }
 
 }
