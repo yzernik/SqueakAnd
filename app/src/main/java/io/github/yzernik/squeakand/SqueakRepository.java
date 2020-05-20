@@ -12,6 +12,7 @@ public class SqueakRepository {
 
     private SqueakDao mSqueakDao;
     private LiveData<List<SqueakEntry>> mAllSqueaks;
+    private LiveData<List<SqueakEntryWithProfile>> mAllSqueaksWithProfile;
 
     // Note that in order to unit test the TodoRepository, you have to remove the Application
     // dependency. This adds complexity and much more code, and this sample is not about testing.
@@ -21,12 +22,17 @@ public class SqueakRepository {
         SqueakRoomDatabase db = SqueakRoomDatabase.getDatabase(application);
         mSqueakDao = db.squeakDao();
         mAllSqueaks = mSqueakDao.getSqueaks();
+        mAllSqueaksWithProfile = mSqueakDao.getSqueaksWithProfile();
     }
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
     public LiveData<List<SqueakEntry>> getAllSqueaks() {
         return mAllSqueaks;
+    }
+
+    public LiveData<List<SqueakEntryWithProfile>> getAllSqueaksWithProfile() {
+        return mAllSqueaksWithProfile;
     }
 
     // Room executes all queries on a separate thread.

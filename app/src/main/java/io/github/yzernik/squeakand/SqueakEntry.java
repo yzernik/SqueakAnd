@@ -35,7 +35,7 @@ public class SqueakEntry implements Serializable {
     public byte[] scriptSigBytes;
     public byte[] dataKey;
     public String decryptedContentStr;
-    public String address;
+    public String authorAddress;
 
     public SqueakEntry() {
     }
@@ -60,7 +60,7 @@ public class SqueakEntry implements Serializable {
         } catch (Exception e) {
             this.decryptedContentStr = null;
         }
-        this.address = squeak.getAddress().toString();
+        this.authorAddress = squeak.getAddress().toString();
     }
 
     @Ignore

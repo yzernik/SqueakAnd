@@ -53,7 +53,7 @@ public class ViewSqueakFragment extends Fragment {
                     return;
                 }
 
-                txtSqueakHash.setText(squeakEntry.address);
+                txtSqueakHash.setText(squeakEntry.authorAddress);
                 txtSqueakText.setText(squeakEntry.getDecryptedContentStr());
                 txtSqueakAuthor.setText("Block #" + String.valueOf(squeakEntry.blockHeight));
             }

@@ -35,14 +35,14 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
             squeakCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clickListener.handleItemClick(mSqueaks.get(getAdapterPosition()).hash);
+                    clickListener.handleItemClick(mSqueaks.get(getAdapterPosition()).squeakEntry.hash);
                 }
             });
         }
     }
 
     private final LayoutInflater mInflater;
-    private List<SqueakEntry> mSqueaks; // Cached copy of todos
+    private List<SqueakEntryWithProfile> mSqueaks; // Cached copy of todos
     private ClickListener clickListener;
 
     public SqueakListAdapter(Context context, ClickListener clickListener) {
@@ -59,17 +59,24 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
     @Override
     public void onBindViewHolder(SqueakViewHolder holder, int position) {
         if (mSqueaks != null) {
-            SqueakEntry currentEntry = mSqueaks.get(position);
-            holder.txtSqueakHash.setText(currentEntry.address);
-            holder.txtSqueakText.setText(currentEntry.getDecryptedContentStr());
-            holder.txtSqueakAuthor.setText("Block #" + String.valueOf(currentEntry.blockHeight));
+            SqueakEntryWithProfile currentEntry = mSqueaks.get(position);
+            String authorAddress = currentEntry.squeakEntry.authorAddress;
+            String authorName = currentEntry.squeakProfile.getName();
+            String authorDisplay = authorAddress;
+            if (authorName != null) {
+                authorDisplay = authorName + " (" + authorAddress + ")";
+            }
+            // holder.txtSqueakHash.setText(currentEntry.squeakEntry.authorAddress);
+            holder.txtSqueakHash.setText(authorDisplay);
+            holder.txtSqueakText.setText(currentEntry.squeakEntry.getDecryptedContentStr());
+            holder.txtSqueakAuthor.setText("Block #" + String.valueOf(currentEntry.squeakEntry.blockHeight));
         } else {
             // Covers the case of data not being ready yet.
             holder.txtSqueakHash.setText("No squeak");
         }
     }
 
-    public void setSqueaks(List<SqueakEntry> squeakEntries) {
+    public void setSqueaks(List<SqueakEntryWithProfile> squeakEntries) {
         mSqueaks = squeakEntries;
         notifyDataSetChanged();
     }
