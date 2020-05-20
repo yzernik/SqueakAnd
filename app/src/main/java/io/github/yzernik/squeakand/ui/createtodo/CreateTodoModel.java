@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.core.util.Pair;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -16,6 +17,8 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileRepository;
+import io.github.yzernik.squeakand.blockchain.BlockchainRepository;
+import io.github.yzernik.squeakand.blockchain.DummyBlockchainRepository;
 
 public class CreateTodoModel extends AndroidViewModel {
 
@@ -23,6 +26,7 @@ public class CreateTodoModel extends AndroidViewModel {
     private static final String SELECTED_SQUEAK_PROFILE_ID_KEY = "SELECTED_SQUEAK_PROFILE_ID";
 
     private SqueakProfileRepository mRepository;
+    private BlockchainRepository blockchainRepository;
     private SharedPreferences sharedPreferences;
     private LiveData<List<SqueakProfile>> mAllSqueakProfiles;
     private MutableLiveData<Integer> mSelectedSqueakProfileId;
@@ -31,6 +35,7 @@ public class CreateTodoModel extends AndroidViewModel {
     public CreateTodoModel(Application application) {
         super(application);
         mRepository = new SqueakProfileRepository(application);
+        blockchainRepository = new DummyBlockchainRepository(application);
         mAllSqueakProfiles = mRepository.getAllSqueakProfiles();
         mSelectedSqueakProfileId = new MutableLiveData<>();
         sharedPreferences = application.getSharedPreferences(
@@ -79,9 +84,15 @@ public class CreateTodoModel extends AndroidViewModel {
         });
     }
 
+    LiveData<Pair<Sha256Hash, Integer>> getLatestBlock() {
+        return blockchainRepository.getLatestBlock();
+    }
+
     LiveData<CreateSqueakParams> getCreateSqueakParams() {
-        return Transformations.map(getSelectedSqueakProfile(), profile -> {
-            return new CreateSqueakParams(profile, replyToHash);
+        return Transformations.switchMap(getSelectedSqueakProfile(), profile -> {
+            return Transformations.map(getLatestBlock(), block -> {
+                return new CreateSqueakParams(profile, replyToHash, block);
+            });
         });
     }
 

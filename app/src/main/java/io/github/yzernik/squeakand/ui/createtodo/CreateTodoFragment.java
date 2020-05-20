@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,7 +76,7 @@ public class CreateTodoFragment extends Fragment {
                 });
             }
         });
-
+/*
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Log.i(getTag(), "Button clicked");
@@ -92,6 +91,29 @@ public class CreateTodoFragment extends Fragment {
                 }
                 Log.i(getTag(), "Finishing activity: " + getActivity());
                 getActivity().finish();
+            }
+        });*/
+
+        createTodoModel.getCreateSqueakParams().observe(getViewLifecycleOwner(), new Observer<CreateSqueakParams>() {
+            @Override
+            public void onChanged(@Nullable final CreateSqueakParams createSqueakParams) {
+                Log.i(getTag(), "Observed new create squeak params: " + createSqueakParams);
+                button.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View view) {
+                        Log.i(getTag(), "Button clicked");
+                        Intent replyIntent = new Intent();
+                        if (TextUtils.isEmpty(mTextInput.getEditText().getText())) {
+                            getActivity().setResult(RESULT_CANCELED, replyIntent);
+                        } else {
+                            String word = mTextInput.getEditText().getText().toString();
+                            replyIntent.putExtra(EXTRA_REPLY, word);
+                            getActivity().setResult(RESULT_OK, replyIntent);
+                            Log.i(getTag(), "Set result for activity: " + word);
+                        }
+                        Log.i(getTag(), "Finishing activity: " + getActivity());
+                        getActivity().finish();
+                    }
+                });
             }
         });
 

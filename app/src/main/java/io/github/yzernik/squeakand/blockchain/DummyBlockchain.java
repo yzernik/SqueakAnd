@@ -15,7 +15,7 @@ public class DummyBlockchain implements Blockchain {
     }
 
     @Override
-    public Sha256Hash getBlockHash(long blockHeight) throws BlockchainException {
+    public Sha256Hash getBlockHash(int blockHeight) throws BlockchainException {
         if (blockHeight == GENESIS_BLOCK_HEIGHT) {
             return GENESIS_BLOCK_HASH;
         }
