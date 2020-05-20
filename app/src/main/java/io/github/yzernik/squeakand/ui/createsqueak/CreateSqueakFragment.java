@@ -41,7 +41,7 @@ public class CreateSqueakFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_create_todo, container, false);
+        View root = inflater.inflate(R.layout.fragment_create_squeak, container, false);
 
         mSelectProfileButton = root.findViewById(R.id.select_profile_button);
         mTextInput = root.findViewById(R.id.squeak_text);

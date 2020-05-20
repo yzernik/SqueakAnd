@@ -29,7 +29,7 @@ public class ViewSqueakFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_view_todo, container, false);
+        View root = inflater.inflate(R.layout.fragment_view_squeak, container, false);
 
         Sha256Hash squeakHash = null;
         Bundle arguments = getArguments();
