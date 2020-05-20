@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.profile;
+package io.github.yzernik.squeakand.ui.manageprofiles;
 
 import android.app.Application;
 import android.content.SharedPreferences;
