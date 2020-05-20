@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.todo;
+package io.github.yzernik.squeakand.ui.viewsqueak;
 
 import android.app.Application;
 
@@ -9,8 +9,6 @@ import org.bitcoinj.core.Sha256Hash;
 
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakRepository;
-import io.github.yzernik.squeakand.Todo;
-import io.github.yzernik.squeakand.TodoRepository;
 
 public class SqueakViewModel extends AndroidViewModel {
 

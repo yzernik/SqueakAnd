@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.todo;
+package io.github.yzernik.squeakand.ui.viewsqueak;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

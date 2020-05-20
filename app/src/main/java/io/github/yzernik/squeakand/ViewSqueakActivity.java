@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import io.github.yzernik.squeakand.ui.todo.ViewSqueakFragment;
+import io.github.yzernik.squeakand.ui.viewsqueak.ViewSqueakFragment;
 
 /**
  * Activity for creating a squeak.
