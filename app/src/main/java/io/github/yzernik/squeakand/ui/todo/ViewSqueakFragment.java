@@ -17,7 +17,7 @@ import org.bitcoinj.core.Sha256Hash;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntry;
 
-public class ViewTodoFragment extends Fragment {
+public class ViewSqueakFragment extends Fragment {
 
     TextView txtSqueakBlockNumber;
     TextView txtSqueakHash;

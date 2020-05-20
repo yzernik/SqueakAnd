@@ -8,18 +8,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import io.github.yzernik.squeakand.ui.todo.ViewTodoFragment;
+import io.github.yzernik.squeakand.ui.todo.ViewSqueakFragment;
 
 /**
- * Activity for entering a word.
+ * Activity for creating a squeak.
  */
 
-public class ViewTodoActivity extends AppCompatActivity {
+public class ViewSqueakActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_todo);
+        setContentView(R.layout.activity_view_squeak);
 
         // Get the transferred data from source activity.
         String squeakHashStr = getIntent().getStringExtra("squeak_hash");
@@ -28,13 +28,13 @@ public class ViewTodoActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("squeak_hash", squeakHashStr);
         // Create new fragment and transaction
-        Fragment newFragment = new ViewTodoFragment();
+        Fragment newFragment = new ViewSqueakFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack
         newFragment.setArguments(bundle);
         // int currentContainerViewId = ((ViewGroup) getView().getParent()).getId();
-        transaction.replace(R.id.view_todo_fragment_frame, newFragment);
+        transaction.replace(R.id.view_squeak_fragment_frame, newFragment);
         // transaction.addToBackStack(null);
         // Commit the transaction
         transaction.commit();

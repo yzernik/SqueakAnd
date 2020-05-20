@@ -23,7 +23,7 @@
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_create_todo" />
         <activity
-            android:name=".ViewTodoActivity"
+            android:name=".ViewSqueakActivity"
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_view_todo" />
         <activity
