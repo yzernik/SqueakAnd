@@ -42,9 +42,10 @@ public class SqueakDaoTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     private SqueakDao mSqueakDao;
+    private SqueakProfileDao mSqueakProfileDao;
     private SqueakRoomDatabase mDb;
     private Blockchain blockchain;
-    private Signing.KeyPair keyPair;
+    private Signing.BitcoinjKeyPair keyPair;
 
     @Before
     public void createDb() {
@@ -56,6 +57,7 @@ public class SqueakDaoTest {
                 .allowMainThreadQueries()
                 .build();
         mSqueakDao = mDb.squeakDao();
+        mSqueakProfileDao = mDb.squeakProfileDao();
         blockchain = new DummyBlockchain();
         keyPair = new Signing.BitcoinjKeyPair();
     }
@@ -92,6 +94,32 @@ public class SqueakDaoTest {
         assertEquals(hashesFromDB, hashesFromSqueaks);
     }
 
+    @Test
+    public void getAllSqueaksWithProfile() throws Exception {
+        SqueakProfile squeakProfile = new SqueakProfile("profile1", keyPair);
+        mSqueakProfileDao.insert(squeakProfile);
+
+        Signing.BitcoinjKeyPair otherKeyPair = new Signing.BitcoinjKeyPair();
+
+        Squeak squeak1 = createSqeakWithText("aaa");
+        mSqueakDao.insert(new SqueakEntry(squeak1));
+        Squeak squeak2 = createSqeakWithText("bbb", otherKeyPair);
+        mSqueakDao.insert(new SqueakEntry(squeak2));
+        List<SqueakEntryWithProfile> allSqueaks = LiveDataTestUtil.getValue(mSqueakDao.getSqueaksWithProfile());
+
+        Set<Sha256Hash> hashesFromSqueaks = new HashSet<>();
+        Set<Sha256Hash> hashesFromDB = new HashSet<>();
+        hashesFromDB.add(allSqueaks.get(0).squeakEntry.getSqueak().getHash());
+        hashesFromDB.add(allSqueaks.get(1).squeakEntry.getSqueak().getHash());
+        hashesFromSqueaks.add(squeak1.getHash());
+        hashesFromSqueaks.add(squeak2.getHash());
+
+        // Because of LEFT JOIN, only one of the query results should have a profile attached.
+        assertEquals(allSqueaks.get(0).squeakProfile, null);
+        assert allSqueaks.get(1).squeakProfile.getAddress().equals(squeak1.getAddress());
+        assertEquals(hashesFromDB, hashesFromSqueaks);
+    }
+
 
     @Test
     public void deleteAll() throws Exception {
@@ -104,7 +132,7 @@ public class SqueakDaoTest {
         assertTrue(allSqueaks.isEmpty());
     }
 
-    private Squeak createSqeakWithText(String text) throws Exception {
+    private Squeak createSqeakWithText(String text, Signing.BitcoinjKeyPair keyPair) throws Exception {
         BlockInfo latestBlock = blockchain.getLatestBlock();
         return Squeak.makeSqueakFromStr(
                 MainNetParams.get(),
@@ -112,8 +140,12 @@ public class SqueakDaoTest {
                 text,
                 latestBlock.getHeight(),
                 latestBlock.getHash(),
-                System.currentTimeMillis(),
+                System.currentTimeMillis() / 1000,
                 Sha256Hash.ZERO_HASH
         );
+    }
+
+    private Squeak createSqeakWithText(String text) throws Exception {
+        return createSqeakWithText(text, keyPair);
     }
 }

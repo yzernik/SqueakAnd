@@ -23,6 +23,9 @@ public interface SqueakDao {
     @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " ORDER BY blockHeight, time DESC")
     LiveData<List<SqueakEntry>> getSqueaks();
 
+    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " LEFT JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" + " ORDER BY blockHeight, time, decryptedContentStr DESC")
+    LiveData<List<SqueakEntryWithProfile>> getSqueaksWithProfile();
+
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE hash = :squeakHash")
     LiveData<SqueakEntry> fetchSqueakByHash(Sha256Hash squeakHash);
 

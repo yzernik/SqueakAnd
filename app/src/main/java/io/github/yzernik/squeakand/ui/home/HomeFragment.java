@@ -25,6 +25,7 @@ import java.util.List;
 import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntry;
+import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
 
@@ -50,11 +51,11 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
         // Add an observer on the LiveData returned by getAlphabetizedTodos.
         // The onChanged() method fires when the observed data changes and the activity is
         // in the foreground.
-        homeViewModel.getAllSqueaks().observe(getViewLifecycleOwner(), new Observer<List<SqueakEntry>>() {
+        homeViewModel.getmAllSqueaksWithProfile().observe(getViewLifecycleOwner(), new Observer<List<SqueakEntryWithProfile>>() {
             @Override
-            public void onChanged(@Nullable final List<SqueakEntry> squeakEntries) {
+            public void onChanged(@Nullable final List<SqueakEntryWithProfile> squeakEntriesWithProfile) {
                 // Update the cached copy of the squeaks in the adapter.
-                adapter.setSqueaks(squeakEntries);
+                adapter.setSqueaks(squeakEntriesWithProfile);
             }
         });
 
