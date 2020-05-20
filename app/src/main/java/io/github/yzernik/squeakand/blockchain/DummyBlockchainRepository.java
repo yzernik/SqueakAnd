@@ -7,14 +7,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import org.bitcoinj.core.Sha256Hash;
 
-import java.util.List;
-
-import io.github.yzernik.squeakand.Todo;
-
 public class DummyBlockchainRepository implements BlockchainRepository{
 
     private Blockchain blockchain;
-    private LiveData<List<Todo>> mAllTodos;
 
     // Note that in order to unit test the TodoRepository, you have to remove the Application
     // dependency. This adds complexity and much more code, and this sample is not about testing.

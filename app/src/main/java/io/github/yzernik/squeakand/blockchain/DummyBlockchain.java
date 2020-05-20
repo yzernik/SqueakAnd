@@ -1,7 +1,5 @@
 package io.github.yzernik.squeakand.blockchain;
 
-import androidx.core.util.Pair;
-
 import org.bitcoinj.core.Sha256Hash;
 
 
