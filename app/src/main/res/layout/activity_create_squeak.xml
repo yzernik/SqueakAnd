@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewTodoActivity">
+    tools:context=".CreateSqueakActivity">
 
     <FrameLayout
-        android:id="@+id/create_todo_fragment_frame"
+        android:id="@+id/create_squeak_fragment_frame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import io.github.yzernik.squeakand.ui.viewsqueak.ViewSqueakFragment;
 
 /**
- * Activity for creating a squeak.
+ * Activity for viewing a squeak.
  */
 
 public class ViewSqueakActivity extends AppCompatActivity {

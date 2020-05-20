@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.createtodo;
+package io.github.yzernik.squeakand.ui.createsqueak;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,15 +31,13 @@ import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 
-public class CreateTodoFragment extends Fragment {
-
-    public static final String EXTRA_REPLY = "io.github.yzernik.squeakand.REPLY";
+public class CreateSqueakFragment extends Fragment {
 
     private Button mSelectProfileButton;
     private TextInputLayout mTextInput;
     private Button button;
 
-    private CreateTodoModel createTodoModel;
+    private CreateSqueakModel createSqueakModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,9 +50,9 @@ public class CreateTodoFragment extends Fragment {
         // Start the fragment with the text input in focus.
         mTextInput.requestFocus();
 
-        createTodoModel = new ViewModelProvider(getActivity()).get(CreateTodoModel.class);
+        createSqueakModel = new ViewModelProvider(getActivity()).get(CreateSqueakModel.class);
 
-        createTodoModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
+        createSqueakModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
             @Override
             public void onChanged(@Nullable final SqueakProfile squeakProfile) {
                 Log.i(getTag(),"Got selected profile from from observe: " + squeakProfile);
@@ -66,7 +64,7 @@ public class CreateTodoFragment extends Fragment {
             }
         });
 
-        createTodoModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
+        createSqueakModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
             @Override
             public void onChanged(@Nullable final List<SqueakProfile> profiles) {
                 mSelectProfileButton.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +77,7 @@ public class CreateTodoFragment extends Fragment {
             }
         });
 
-        createTodoModel.getCreateSqueakParams().observe(getViewLifecycleOwner(), new Observer<CreateSqueakParams>() {
+        createSqueakModel.getCreateSqueakParams().observe(getViewLifecycleOwner(), new Observer<CreateSqueakParams>() {
             @Override
             public void onChanged(@Nullable final CreateSqueakParams createSqueakParams) {
                 Log.i(getTag(), "Observed new create squeak params: " + createSqueakParams);
@@ -115,7 +113,7 @@ public class CreateTodoFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 SqueakProfile selectedProfile = profiles.get(which);
-                createTodoModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
+                createSqueakModel.setSelectedSqueakProfileId(selectedProfile.getProfileId());
             }
         });
 
@@ -170,7 +168,7 @@ public class CreateTodoFragment extends Fragment {
                     System.currentTimeMillis() / 1000,
                     createSqueakParams.getReplyToHash()
             );
-            createTodoModel.insertSqueak(new SqueakEntry(squeak));
+            createSqueakModel.insertSqueak(new SqueakEntry(squeak));
             Log.i(getTag(), "Created and inserted squeak: " + squeak);
             Log.i(getTag(), "Created squeak with content: " + squeak.getDecryptedContentStr());
             Log.i(getTag(), "Finishing activity: " + getActivity());

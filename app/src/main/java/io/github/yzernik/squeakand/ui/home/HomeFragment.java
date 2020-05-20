@@ -22,7 +22,7 @@ import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
 
-import io.github.yzernik.squeakand.NewTodoActivity;
+import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakListAdapter;
@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), NewTodoActivity.class);
+                Intent intent = new Intent(getActivity(), CreateSqueakActivity.class);
                 startActivityForResult(intent, NEW_TODO_ACTIVITY_REQUEST_CODE);
             }
         });

@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.createtodo;
+package io.github.yzernik.squeakand.ui.createsqueak;
 
 import android.app.Application;
 import android.content.Context;
@@ -22,7 +22,7 @@ import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.BlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.DummyBlockchainRepository;
 
-public class CreateTodoModel extends AndroidViewModel {
+public class CreateSqueakModel extends AndroidViewModel {
 
     private static final String SQUEAK_PROFILE_FILE_KEY = "io.github.yzernik.squeakand.SQUEAK_PROFILE_PREFERENCES";
     private static final String SELECTED_SQUEAK_PROFILE_ID_KEY = "SELECTED_SQUEAK_PROFILE_ID";
@@ -35,7 +35,7 @@ public class CreateTodoModel extends AndroidViewModel {
     private MutableLiveData<Integer> mSelectedSqueakProfileId;
     public Sha256Hash replyToHash;
 
-    public CreateTodoModel(Application application) {
+    public CreateSqueakModel(Application application) {
         super(application);
         mProfileRepository = new SqueakProfileRepository(application);
         mSqueakRepository = new SqueakRepository(application);

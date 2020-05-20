@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.createtodo;
+package io.github.yzernik.squeakand.ui.createsqueak;
 
 import org.bitcoinj.core.Sha256Hash;
 
