@@ -2,7 +2,6 @@ package io.github.yzernik.squeakand.blockchain;
 
 import android.app.Application;
 
-import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -26,8 +25,8 @@ public class DummyBlockchainRepository implements BlockchainRepository{
         blockchain = new DummyBlockchain();
     }
 
-    public LiveData<Pair<Sha256Hash, Integer>> getLatestBlock() {
-        MutableLiveData<Pair<Sha256Hash, Integer>> liveBlockTip = new MutableLiveData<>();
+    public LiveData<BlockInfo> getLatestBlock() {
+        MutableLiveData<BlockInfo> liveBlockTip = new MutableLiveData<>();
         liveBlockTip.setValue(blockchain.getLatestBlock());
         return liveBlockTip;
     }

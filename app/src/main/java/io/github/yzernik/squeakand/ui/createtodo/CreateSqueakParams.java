@@ -1,18 +1,17 @@
 package io.github.yzernik.squeakand.ui.createtodo;
 
-import androidx.core.util.Pair;
-
 import org.bitcoinj.core.Sha256Hash;
 
 import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeakand.blockchain.BlockInfo;
 
 public class CreateSqueakParams {
 
     private SqueakProfile squeakProfile;
     private Sha256Hash replyToHash;
-    private Pair<Sha256Hash, Integer> latestBlock;
+    private BlockInfo latestBlock;
 
-    public CreateSqueakParams(SqueakProfile squeakProfile, Sha256Hash replyToHash, Pair<Sha256Hash, Integer> latestBlock) {
+    public CreateSqueakParams(SqueakProfile squeakProfile, Sha256Hash replyToHash, BlockInfo latestBlock) {
         this.squeakProfile = squeakProfile;
         this.replyToHash = replyToHash;
         this.latestBlock = latestBlock;
@@ -26,7 +25,7 @@ public class CreateSqueakParams {
         return replyToHash;
     }
 
-    public Pair<Sha256Hash, Integer> getLatestBlockk() {
+    public BlockInfo getLatestBlockk() {
         return latestBlock;
     }
 

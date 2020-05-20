@@ -17,6 +17,7 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileRepository;
+import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.BlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.DummyBlockchainRepository;
 
@@ -84,7 +85,7 @@ public class CreateTodoModel extends AndroidViewModel {
         });
     }
 
-    LiveData<Pair<Sha256Hash, Integer>> getLatestBlock() {
+    LiveData<BlockInfo> getLatestBlock() {
         return blockchainRepository.getLatestBlock();
     }
 

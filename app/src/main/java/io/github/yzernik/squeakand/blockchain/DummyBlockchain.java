@@ -10,8 +10,8 @@ public class DummyBlockchain implements Blockchain {
     private static final int GENESIS_BLOCK_HEIGHT = 1;
 
     @Override
-    public Pair<Sha256Hash, Integer> getLatestBlock() {
-        return new Pair<Sha256Hash, Integer>(GENESIS_BLOCK_HASH, GENESIS_BLOCK_HEIGHT);
+    public BlockInfo getLatestBlock() {
+        return new BlockInfo(GENESIS_BLOCK_HASH, GENESIS_BLOCK_HEIGHT);
     }
 
     @Override

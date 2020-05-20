@@ -3,7 +3,6 @@ package io.github.yzernik.squeakand;
 import android.content.Context;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.core.util.Pair;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -20,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.Blockchain;
 import io.github.yzernik.squeakand.blockchain.DummyBlockchain;
 import io.github.yzernik.squeaklib.core.Signing;
@@ -105,13 +105,13 @@ public class SqueakDaoTest {
     }
 
     private Squeak createSqeakWithText(String text) throws Exception {
-        Pair<Sha256Hash, Integer> latestBlock = blockchain.getLatestBlock();
+        BlockInfo latestBlock = blockchain.getLatestBlock();
         return Squeak.makeSqueakFromStr(
                 MainNetParams.get(),
                 keyPair,
                 text,
-                latestBlock.second,
-                latestBlock.first,
+                latestBlock.getHeight(),
+                latestBlock.getHash(),
                 System.currentTimeMillis(),
                 Sha256Hash.ZERO_HASH
         );
