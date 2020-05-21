@@ -66,4 +66,7 @@ dependencies {
 
     // Fragment testing
     debugImplementation "androidx.fragment:fragment-testing:$rootProject.fragmentVersion"
+
+    // json-rpc
+    implementation 'com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.3'
 }
