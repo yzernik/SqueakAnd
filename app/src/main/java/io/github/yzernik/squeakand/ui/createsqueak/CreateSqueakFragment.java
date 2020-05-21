@@ -33,6 +33,8 @@ import io.github.yzernik.squeaklib.core.Squeak;
 
 public class CreateSqueakFragment extends Fragment {
 
+    private static final int MAXIMUM_SQUEAK_TEXT_LENGTH = 280;
+
     private Button mSelectProfileButton;
     private TextInputLayout mTextInput;
     private Button button;
@@ -152,6 +154,11 @@ public class CreateSqueakFragment extends Fragment {
             return;
         }
 
+        if (squeakText.length() > MAXIMUM_SQUEAK_TEXT_LENGTH) {
+            showTooLongTextAlert();
+            return;
+        }
+
         SqueakProfile squeakProfile = createSqueakParams.getSqueakProfile();
         if (squeakProfile == null) {
             showMissingProfileAlert();
@@ -196,6 +203,19 @@ public class CreateSqueakFragment extends Fragment {
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Empty text");
         alertDialog.setMessage("Text cannot be empty.");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void showTooLongTextAlert() {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Text input too long");
+        alertDialog.setMessage("Text cannot be more than " + MAXIMUM_SQUEAK_TEXT_LENGTH  + " characters.");
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
