@@ -31,15 +31,26 @@ public class ElectrumClientTest {
     }
 
     @Test
-    public void subscribeServer() throws Exception {
+    public void subscribeBlockHeaders() throws Exception {
         ElectrumClient electrumClient = new ElectrumClient("currentlane.lovebitco.in", 50001);
         electrumClient.start();
 
-        Stream<String> blockStringStream = electrumClient.getBlocks();
+        electrumClient.sendSubscribeMessage();
+        Stream<String> blockStringStream = electrumClient.getResponseLines();
         String currentBlockString = blockStringStream.findFirst().get();
 
-        // assertEquals("my block", currentBlockString);
         assert currentBlockString.startsWith("{\"jsonrpc\": \"2.0\", \"result\":");
+    }
+
+    @Test
+    public void getBlockHeader() throws Exception {
+        ElectrumClient electrumClient = new ElectrumClient("currentlane.lovebitco.in", 50001);
+        electrumClient.start();
+
+        electrumClient.sendGetBlockHeaderMessage();
+        String blockString = electrumClient.getResponseLine();
+
+        assert blockString.startsWith("{\"jsonrpc\": \"2.0\", \"result\":");
     }
 
 }

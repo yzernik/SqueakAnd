@@ -55,6 +55,12 @@ public class ElectrumClient {
         sendMessage(subscribeMessage);
     }
 
+    public void sendGetBlockHeaderMessage() throws IOException {
+        String getBlockHeaderMessage = "{ \"id\": \"blk\", \"method\": \"blockchain.block.header\", \"params\": [23]}";
+        Log.i(getClass().getName(), getBlockHeaderMessage);
+        sendMessage(getBlockHeaderMessage);
+    }
+
     public static InetAddress selectAddress(InetAddress[] addresses) {
         // Get ip6 address if available
         for (InetAddress addr : addresses) {
@@ -76,17 +82,17 @@ public class ElectrumClient {
         return selectAddress(addresses);
     }
 
-    public Stream<String> getBlocks() throws IOException {
-        sendSubscribeMessage();
+    public Stream<String> getResponseLines() throws IOException {
+        // sendSubscribeMessage();
 
         //read file into stream, try-with-resources
         return in.lines();
     }
 
-/*    private Socket getConnection() {
-        Socket clientSocket;
-        clientSocket = new Socket(address, port);
+    public String getResponseLine() throws IOException {
+        sendSubscribeMessage();
 
-    }*/
+        return in.readLine();
+    }
 
 }
