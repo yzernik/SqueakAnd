@@ -24,7 +24,7 @@ public class BlockInfo {
     public String toString() {
         return "BlockInfo(" +
                 "hash: " + hash + ", " +
-                "height: " + height + ", " +
+                "height: " + height +
                 ")";
     }
 }
