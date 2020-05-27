@@ -21,6 +21,7 @@ import io.github.yzernik.squeakand.SqueakRepository;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.BlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.DummyBlockchainRepository;
+import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 
 public class CreateSqueakModel extends AndroidViewModel {
 
@@ -29,7 +30,7 @@ public class CreateSqueakModel extends AndroidViewModel {
 
     private SqueakProfileRepository mProfileRepository;
     private SqueakRepository mSqueakRepository;
-    private BlockchainRepository blockchainRepository;
+    private ElectrumBlockchainRepository blockchainRepository;
     private SharedPreferences sharedPreferences;
     private LiveData<List<SqueakProfile>> mAllSqueakProfiles;
     private MutableLiveData<Integer> mSelectedSqueakProfileId;
@@ -39,7 +40,8 @@ public class CreateSqueakModel extends AndroidViewModel {
         super(application);
         mProfileRepository = new SqueakProfileRepository(application);
         mSqueakRepository = new SqueakRepository(application);
-        blockchainRepository = new DummyBlockchainRepository(application);
+        blockchainRepository = ElectrumBlockchainRepository.getRepository();
+        blockchainRepository.setServer("electrum-server.ninja", 50001);
         mAllSqueakProfiles = mProfileRepository.getAllSqueakProfiles();
         mSelectedSqueakProfileId = new MutableLiveData<>();
         sharedPreferences = application.getSharedPreferences(
@@ -94,7 +96,9 @@ public class CreateSqueakModel extends AndroidViewModel {
 
     LiveData<CreateSqueakParams> getCreateSqueakParams() {
         return Transformations.switchMap(getSelectedSqueakProfile(), profile -> {
+            Log.i(getClass().getName(), "Got selected profile: " + profile);
             return Transformations.map(getLatestBlock(), block -> {
+                Log.i(getClass().getName(), "Got latest block: " + block);
                 return new CreateSqueakParams(profile, replyToHash, block);
             });
         });

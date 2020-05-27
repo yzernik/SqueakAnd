@@ -19,4 +19,12 @@ public class BlockInfo {
     public int getHeight() {
         return height;
     }
+
+    @Override
+    public String toString() {
+        return "BlockInfo(" +
+                "hash: " + hash + ", " +
+                "height: " + height + ", " +
+                ")";
+    }
 }

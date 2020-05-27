@@ -11,12 +11,7 @@ public class DummyBlockchainRepository implements BlockchainRepository{
 
     private Blockchain blockchain;
 
-    // Note that in order to unit test the TodoRepository, you have to remove the Application
-    // dependency. This adds complexity and much more code, and this sample is not about testing.
-    // See the BasicSample in the android-architecture-components repository at
-    // https://github.com/googlesamples
     public DummyBlockchainRepository(Application application) {
-        // TodoRoomDatabase db = TodoRoomDatabase.getDatabase(application);
         blockchain = new DummyBlockchain();
     }
 

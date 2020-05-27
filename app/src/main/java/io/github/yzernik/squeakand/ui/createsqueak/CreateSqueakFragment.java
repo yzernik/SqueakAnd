@@ -28,6 +28,7 @@ import io.github.yzernik.squeakand.ManageProfilesActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 
@@ -158,6 +159,12 @@ public class CreateSqueakFragment extends Fragment {
             return;
         }
 
+        BlockInfo blockTip = createSqueakParams.getLatestBlockk();
+        if (blockTip == null) {
+            showMissingBlockTipAlert();
+            return;
+        }
+
         try {
             Squeak squeak = Squeak.makeSqueakFromStr(
                     MainNetParams.get(),
@@ -183,6 +190,19 @@ public class CreateSqueakFragment extends Fragment {
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Missing profile");
         alertDialog.setMessage("Profile must be selected before a squeak can be created.");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void showMissingBlockTipAlert() {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Missing Block Tip");
+        alertDialog.setMessage("Latest block header must be downloaded before a squeak can be created.");
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
