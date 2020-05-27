@@ -41,7 +41,7 @@ public class CreateSqueakModel extends AndroidViewModel {
         mProfileRepository = new SqueakProfileRepository(application);
         mSqueakRepository = new SqueakRepository(application);
         blockchainRepository = ElectrumBlockchainRepository.getRepository();
-        blockchainRepository.setServer("electrum-server.ninja", 50001);
+        blockchainRepository.setServer("electrumx-core.1209k.com", 50001);
         mAllSqueakProfiles = mProfileRepository.getAllSqueakProfiles();
         mSelectedSqueakProfileId = new MutableLiveData<>();
         sharedPreferences = application.getSharedPreferences(

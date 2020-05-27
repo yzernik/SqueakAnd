@@ -29,13 +29,14 @@ public class ElectrumBlockchainRepository implements BlockchainRepository {
     private MutableLiveData<Integer> electrumPort = new MutableLiveData<>();
     private MutableLiveData<BlockInfo> liveBlockTip = new MutableLiveData<>();
     private MutableLiveData<ElectrumError> error = new MutableLiveData<>();
-    private ExecutorService service;
+    private BlockDownloader blockDownloader;
 
     private ElectrumBlockchainRepository() {
         // Singleton constructor, only called by static method.
         electrumHost.setValue(null);
         electrumPort.setValue(null);
         liveBlockTip.setValue(null);
+        blockDownloader = new BlockDownloader(liveBlockTip);
     }
 
     public static ElectrumBlockchainRepository getRepository() {
@@ -54,10 +55,12 @@ public class ElectrumBlockchainRepository implements BlockchainRepository {
         electrumPort.setValue(port);
 
         // Set up electrum client with server config, and load livedata.
-        loadLiveData(host, port);
+        // loadLiveData(host, port);
+        blockDownloader.setElectrumServer(host, port);
     }
 
-    private void loadLiveData(String host, int port) {
+
+    /*    private void loadLiveData(String host, int port) {
         Log.i(getClass().getName(), "Calling loadLiveData...");
         // do async operation to fetch blocks so the UI thread does not get blocked.
         service =  Executors.newSingleThreadExecutor();
@@ -100,7 +103,7 @@ public class ElectrumBlockchainRepository implements BlockchainRepository {
         byte[] blockBytes = HEX.decode(response.hex);
         Block block = bitcoinSerializer.makeBlock(blockBytes);
         return new BlockInfo(block.getHash(), response.height);
-    }
+    }*/
 
     @Override
     public LiveData<BlockInfo> getLatestBlock() {
