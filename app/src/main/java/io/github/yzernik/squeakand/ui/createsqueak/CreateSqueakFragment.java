@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +38,7 @@ public class CreateSqueakFragment extends Fragment {
     private static final int MAXIMUM_SQUEAK_TEXT_LENGTH = 280;
 
     private Button mSelectProfileButton;
+    private TextView mLatestBlockHeightText;
     private TextInputLayout mTextInput;
     private Button button;
 
@@ -47,6 +49,7 @@ public class CreateSqueakFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_create_squeak, container, false);
 
         mSelectProfileButton = root.findViewById(R.id.select_profile_button);
+        mLatestBlockHeightText = root.findViewById(R.id.latest_block_height_text);
         mTextInput = root.findViewById(R.id.squeak_text);
         button = root.findViewById(R.id.btnDone);
 
@@ -77,6 +80,17 @@ public class CreateSqueakFragment extends Fragment {
                         showAlertDialog(profiles);
                     }
                 });
+            }
+        });
+
+        createSqueakModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
+            @Override
+            public void onChanged(@Nullable final BlockInfo blockInfo) {
+                String blockHeightText = "No latest block downloaded";
+                if (blockInfo != null) {
+                    blockHeightText = Integer.toString(blockInfo.getHeight());
+                }
+                mLatestBlockHeightText.setText(blockHeightText);
             }
         });
 
