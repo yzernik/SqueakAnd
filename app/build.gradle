@@ -53,6 +53,10 @@ dependencies {
     // Squeak library
     implementation 'io.github.yzernik:squeaklib:1.0-SNAPSHOT'
 
+    // Squeak library
+    implementation 'io.github.yzernik.electrumclient:electrumclient:1.0-SNAPSHOT'
+
+
     // Testing
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
@@ -66,4 +70,5 @@ dependencies {
 
     // Fragment testing
     debugImplementation "androidx.fragment:fragment-testing:$rootProject.fragmentVersion"
+
 }
