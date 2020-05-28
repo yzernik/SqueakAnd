@@ -36,8 +36,7 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         final RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
