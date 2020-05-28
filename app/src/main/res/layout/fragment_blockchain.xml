@@ -45,6 +45,17 @@
             android:text="Update electrum server"
             android:id="@+id/update_electrum_server_button" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connection status:"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/connection_status_text"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

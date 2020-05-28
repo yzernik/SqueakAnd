@@ -27,4 +27,8 @@ public class BlockchainModel extends ViewModel {
         blockchainRepository.setServer(electrumServerAddress);
     }
 
+    public LiveData<ElectrumBlockchainRepository.ConnectionStatus> getConnectionStatus() {
+        return blockchainRepository.getConnectionStatus();
+    }
+
 }
