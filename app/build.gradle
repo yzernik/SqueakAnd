@@ -51,10 +51,12 @@ dependencies {
     implementation "com.google.android.material:material:$rootProject.materialVersion"
 
     // Squeak library
-    implementation 'io.github.yzernik:squeaklib:1.0-SNAPSHOT'
+    // TODO: Use snapshot build
+    implementation 'io.github.yzernik.squeaklib:squeaklib:1.0.0'
 
-    // Squeak library
-    implementation 'io.github.yzernik.electrumclient:electrumclient:1.0-SNAPSHOT'
+    // Electrum client library
+    // TODO: Use snapshot build
+    implementation 'io.github.yzernik.electrumclient:electrumclient:1.0.0'
 
 
     // Testing
