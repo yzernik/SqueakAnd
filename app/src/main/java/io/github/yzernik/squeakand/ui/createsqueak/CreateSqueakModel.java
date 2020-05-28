@@ -19,8 +19,6 @@ import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileRepository;
 import io.github.yzernik.squeakand.SqueakRepository;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
-import io.github.yzernik.squeakand.blockchain.BlockchainRepository;
-import io.github.yzernik.squeakand.blockchain.DummyBlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.ElectrumServerAddress;
 

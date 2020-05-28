@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +24,7 @@ import org.bitcoinj.params.MainNetParams;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.yzernik.squeakand.BlockchainActivity;
 import io.github.yzernik.squeakand.ManageProfilesActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntry;
@@ -38,7 +38,7 @@ public class CreateSqueakFragment extends Fragment {
     private static final int MAXIMUM_SQUEAK_TEXT_LENGTH = 280;
 
     private Button mSelectProfileButton;
-    private TextView mLatestBlockHeightText;
+    private Button mLatestBlockHeightButton;
     private TextInputLayout mTextInput;
     private Button button;
 
@@ -49,7 +49,7 @@ public class CreateSqueakFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_create_squeak, container, false);
 
         mSelectProfileButton = root.findViewById(R.id.select_profile_button);
-        mLatestBlockHeightText = root.findViewById(R.id.latest_block_height_text);
+        mLatestBlockHeightButton = root.findViewById(R.id.latest_block_height_button);
         mTextInput = root.findViewById(R.id.squeak_text);
         button = root.findViewById(R.id.btnDone);
 
@@ -77,7 +77,7 @@ public class CreateSqueakFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Log.i(getTag(),"Select profile button clicked");
-                        showAlertDialog(profiles);
+                        showProfileAlertDialog(profiles);
                     }
                 });
             }
@@ -86,11 +86,18 @@ public class CreateSqueakFragment extends Fragment {
         createSqueakModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
             @Override
             public void onChanged(@Nullable final BlockInfo blockInfo) {
-                String blockHeightText = "No latest block downloaded";
+                String blockHeightText = "None";
                 if (blockInfo != null) {
                     blockHeightText = Integer.toString(blockInfo.getHeight());
                 }
-                mLatestBlockHeightText.setText(blockHeightText);
+                mLatestBlockHeightButton.setText(blockHeightText);
+                mLatestBlockHeightButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i(getTag(),"View latest block button clicked");
+                        showBlockchainAlertDialog(blockInfo);
+                    }
+                });
             }
         });
 
@@ -116,7 +123,7 @@ public class CreateSqueakFragment extends Fragment {
      * Show the alert dialog for selecting a profile.
      * @param profiles
      */
-    private void showAlertDialog(List<SqueakProfile> profiles) {
+    private void showProfileAlertDialog(List<SqueakProfile> profiles) {
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Choose a profile");
@@ -150,6 +157,29 @@ public class CreateSqueakFragment extends Fragment {
     }
 
     /**
+     * Show the alert dialog for the latest block.
+     * @param blockInfo
+     */
+    private void showBlockchainAlertDialog(BlockInfo blockInfo) {
+        // setup the alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Latest block");
+        builder.setMessage("Viewing latest block info...");
+        // Add the manage blockchain button
+        builder.setNeutralButton("Manage blockchain connection", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Toast.makeText(getContext(), "neutralize", Toast.LENGTH_SHORT).show();
+                System.out.println("Manage blockchain button clicked");
+                startManageBlockchain();
+            }
+        });
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    /**
      * Update the display with the given profile
      * @param squeakProfile
      */
@@ -160,6 +190,11 @@ public class CreateSqueakFragment extends Fragment {
 
     public void startManageProfiles() {
         Intent intent = new Intent(getActivity(), ManageProfilesActivity.class);
+        startActivity(intent);
+    }
+
+    public void startManageBlockchain() {
+        Intent intent = new Intent(getActivity(), BlockchainActivity.class);
         startActivity(intent);
     }
 

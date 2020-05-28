@@ -15,9 +15,7 @@ import io.github.yzernik.squeakand.SqueakProfileRepository;
 public class ManageProfilesModel extends AndroidViewModel {
 
     private SqueakProfileRepository mRepository;
-    private SharedPreferences sharedPreferences;
     private LiveData<List<SqueakProfile>> mAllSqueakProfiles;
-    private MutableLiveData<Integer> mSelectedSqueakProfileId;
 
     public ManageProfilesModel(Application application) {
         super(application);
