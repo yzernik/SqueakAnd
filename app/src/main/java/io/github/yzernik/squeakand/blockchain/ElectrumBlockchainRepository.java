@@ -6,19 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import org.bitcoinj.core.BitcoinSerializer;
-import org.bitcoinj.core.Block;
-import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Sha256Hash;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Stream;
-
-import io.github.yzernik.electrumclient.ElectrumClient;
-import io.github.yzernik.electrumclient.SubscribeHeadersResponse;
-
-import static org.bitcoinj.core.Utils.HEX;
 
 
 public class ElectrumBlockchainRepository implements BlockchainRepository {
@@ -112,6 +100,10 @@ public class ElectrumBlockchainRepository implements BlockchainRepository {
     public LiveData<Sha256Hash> getBlockHash(int blockHeight) {
         // TODO
         return null;
+    }
+
+    public LiveData<ElectrumServerAddress> getServerAddress() {
+        return liveServerAddress;
     }
 
     public static class ElectrumError {
