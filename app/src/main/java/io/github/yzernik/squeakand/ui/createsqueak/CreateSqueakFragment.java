@@ -164,7 +164,11 @@ public class CreateSqueakFragment extends Fragment {
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Latest block");
-        builder.setMessage("Viewing latest block info...");
+        if (blockInfo == null) {
+            builder.setMessage("No block headers downloaded.");
+        } else {
+            builder.setMessage("Latest block header hash: " + blockInfo.getHash());
+        }
         // Add the manage blockchain button
         builder.setNeutralButton("Manage blockchain connection", new DialogInterface.OnClickListener() {
             @Override
