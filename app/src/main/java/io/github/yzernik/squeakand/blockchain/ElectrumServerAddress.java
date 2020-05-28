@@ -17,4 +17,12 @@ public class ElectrumServerAddress {
     public int getPort() {
         return port;
     }
+
+    @Override
+    public String toString() {
+        return "ElectrumServerAddress(" +
+                "host: " + host + ", " +
+                "port: " + port +
+                ")";
+    }
 }
