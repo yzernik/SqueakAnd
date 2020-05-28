@@ -78,7 +78,7 @@ public class BlockDownloader {
         public String call() throws Exception {
             Log.i(getClass().getName(), "Calling call...");
             ElectrumClient electrumClient = new ElectrumClient(serverAddress.getHost(), serverAddress.getPort());
-            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTED);
+            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTING);
             int maxRetries = MAX_RETRIES;
             int backoff = INITIAL_BACKOFF_TIME_MS;
             int retryCounter = 0;
