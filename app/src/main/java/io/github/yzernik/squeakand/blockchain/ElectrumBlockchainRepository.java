@@ -25,16 +25,14 @@ public class ElectrumBlockchainRepository implements BlockchainRepository {
 
     private static volatile ElectrumBlockchainRepository INSTANCE;
 
-    private MutableLiveData<String> electrumHost = new MutableLiveData<>();
-    private MutableLiveData<Integer> electrumPort = new MutableLiveData<>();
+    private MutableLiveData<ElectrumServerAddress> liveServerAddress = new MutableLiveData<>();
     private MutableLiveData<BlockInfo> liveBlockTip = new MutableLiveData<>();
     private MutableLiveData<ElectrumError> error = new MutableLiveData<>();
     private BlockDownloader blockDownloader;
 
     private ElectrumBlockchainRepository() {
         // Singleton constructor, only called by static method.
-        electrumHost.setValue(null);
-        electrumPort.setValue(null);
+        liveServerAddress.setValue(null);
         liveBlockTip.setValue(null);
         blockDownloader = new BlockDownloader(liveBlockTip);
     }
@@ -50,13 +48,12 @@ public class ElectrumBlockchainRepository implements BlockchainRepository {
         return INSTANCE;
     }
 
-    public void setServer(String host, int port) {
-        electrumHost.setValue(host);
-        electrumPort.setValue(port);
+    public void setServer(ElectrumServerAddress serverAddress) {
+        liveServerAddress.setValue(serverAddress);
 
         // Set up electrum client with server config, and load livedata.
         // loadLiveData(host, port);
-        blockDownloader.setElectrumServer(host, port);
+        blockDownloader.setElectrumServer(serverAddress);
     }
 
 

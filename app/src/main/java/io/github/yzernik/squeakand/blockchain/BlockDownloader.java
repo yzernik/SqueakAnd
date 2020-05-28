@@ -33,12 +33,12 @@ public class BlockDownloader {
         this.executorService = Executors.newFixedThreadPool(10);
     }
 
-    public void setElectrumServer(String host, int port) {
+    public void setElectrumServer(ElectrumServerAddress serverAddress) {
         if (future != null) {
             future.cancel(true);
         }
 
-        BlockDownloadTask newDownloadTask = new BlockDownloadTask(host, port);
+        BlockDownloadTask newDownloadTask = new BlockDownloadTask(serverAddress);
         executorService.submit(newDownloadTask);
     }
 
@@ -63,19 +63,17 @@ public class BlockDownloader {
 
 
     class BlockDownloadTask implements Callable<String> {
-        private final String host;
-        private final int port;
+        private final ElectrumServerAddress serverAddress;
 
-        public BlockDownloadTask(String host, int port) {
-            this.host = host;
-            this.port = port;
+        public BlockDownloadTask(ElectrumServerAddress serverAddress) {
+            this.serverAddress = serverAddress;
         }
 
         @Override
         public String call() throws Exception {
 
             Log.i(getClass().getName(), "Calling call...");
-            ElectrumClient electrumClient = new ElectrumClient(host, port);
+            ElectrumClient electrumClient = new ElectrumClient(serverAddress.getHost(), serverAddress.getPort());
             int maxRetries = MAX_RETRIES;
             int backoff = INITIAL_BACKOFF_TIME_MS;
             int retryCounter = 0;
