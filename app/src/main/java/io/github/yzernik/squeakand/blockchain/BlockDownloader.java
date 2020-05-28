@@ -21,6 +21,9 @@ import static org.bitcoinj.core.Utils.HEX;
 
 public class BlockDownloader {
 
+    private static final int MAX_RETRIES = 10;
+    private static final int INITIAL_BACKOFF_TIME_MS = 1000;
+
     private final MutableLiveData<BlockInfo> liveBlockTip;
     private final ExecutorService executorService;
     private Future<String> future = null;
@@ -73,7 +76,8 @@ public class BlockDownloader {
 
             Log.i(getClass().getName(), "Calling call...");
             ElectrumClient electrumClient = new ElectrumClient(host, port);
-            int maxRetries = 5;
+            int maxRetries = MAX_RETRIES;
+            int backoff = INITIAL_BACKOFF_TIME_MS;
             int retryCounter = 0;
             while (retryCounter < maxRetries) {
                 try {
@@ -86,6 +90,8 @@ public class BlockDownloader {
                         break;
                     }
                 }
+                backoff *= 2;
+                Thread.sleep(backoff);
             }
 
             return "";
