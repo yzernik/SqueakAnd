@@ -38,15 +38,18 @@ public class BlockDownloader {
 
     public void setElectrumServer(ElectrumServerAddress serverAddress) {
         if (future != null) {
+            Log.i(getClass().getName(), "Cancelling running download task.");
             future.cancel(true);
         }
 
         BlockDownloadTask newDownloadTask = new BlockDownloadTask(serverAddress);
-        executorService.submit(newDownloadTask);
+        Log.i(getClass().getName(), "Submitting new download task.");
+        future = executorService.submit(newDownloadTask);
     }
 
     private void tryLoadLiveData(ElectrumClient electrumClient) throws Throwable {
         Log.i(getClass().getName(), "Loading live data with electrum client: " + electrumClient);
+        liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTING);
         Stream<SubscribeHeadersResponse> headers = electrumClient.subscribeHeaders();
         liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTED);
         headers.forEach(header -> {
@@ -78,7 +81,6 @@ public class BlockDownloader {
         public String call() throws Exception {
             Log.i(getClass().getName(), "Calling call...");
             ElectrumClient electrumClient = new ElectrumClient(serverAddress.getHost(), serverAddress.getPort());
-            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTING);
             int maxRetries = MAX_RETRIES;
             int backoff = INITIAL_BACKOFF_TIME_MS;
             int retryCounter = 0;
