@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.ElectrumServerAddress;
 
 public class BlockchainFragment extends Fragment {
@@ -26,6 +28,7 @@ public class BlockchainFragment extends Fragment {
     private EditText mElectrumServerHost;
     private EditText mElectrumServerPort;
     private Button mUpdateElectrumServerButton;
+    private TextView mElectrumConnectionStatus;
 
     private BlockchainModel blockchainModel;
 
@@ -36,6 +39,7 @@ public class BlockchainFragment extends Fragment {
         mElectrumServerHost = root.findViewById(R.id.enter_electrum_host);
         mElectrumServerPort = root.findViewById(R.id.enter_electrum_port);
         mUpdateElectrumServerButton = root.findViewById(R.id.update_electrum_server_button);
+        mElectrumConnectionStatus = root.findViewById(R.id.connection_status_text);
 
         blockchainModel = new ViewModelProvider(getActivity()).get(BlockchainModel.class);
 
@@ -48,6 +52,16 @@ public class BlockchainFragment extends Fragment {
                     mElectrumServerHost.setText(electrumServerAddress.getHost());
                     mElectrumServerPort.setText(Integer.toString(electrumServerAddress.getPort()));
                 }
+            }
+        });
+
+        blockchainModel.getConnectionStatus().observe(getViewLifecycleOwner(), new Observer<ElectrumBlockchainRepository.ConnectionStatus>() {
+            @Override
+            public void onChanged(@Nullable final ElectrumBlockchainRepository.ConnectionStatus connectionStatus) {
+                // Update edit text fields with current connection status.
+                Log.i(getTag(),"Observed new electrum server connection status: " + connectionStatus);
+                String connectionStatusString = connectionStatus.toString();
+                mElectrumConnectionStatus.setText(connectionStatusString);
             }
         });
 

@@ -15,14 +15,14 @@ public class ElectrumBlockchainRepository implements BlockchainRepository {
 
     private MutableLiveData<ElectrumServerAddress> liveServerAddress = new MutableLiveData<>();
     private MutableLiveData<BlockInfo> liveBlockTip = new MutableLiveData<>();
-    private MutableLiveData<ElectrumError> error = new MutableLiveData<>();
+    private MutableLiveData<ConnectionStatus> liveConnectionStatus = new MutableLiveData<>();
     private BlockDownloader blockDownloader;
 
     private ElectrumBlockchainRepository() {
         // Singleton constructor, only called by static method.
         liveServerAddress.setValue(null);
         liveBlockTip.setValue(null);
-        blockDownloader = new BlockDownloader(liveBlockTip);
+        blockDownloader = new BlockDownloader(liveBlockTip, liveConnectionStatus);
     }
 
     public static ElectrumBlockchainRepository getRepository() {
@@ -44,52 +44,6 @@ public class ElectrumBlockchainRepository implements BlockchainRepository {
         blockDownloader.setElectrumServer(serverAddress);
     }
 
-
-    /*    private void loadLiveData(String host, int port) {
-        Log.i(getClass().getName(), "Calling loadLiveData...");
-        // do async operation to fetch blocks so the UI thread does not get blocked.
-        service =  Executors.newSingleThreadExecutor();
-        service.submit(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(getClass().getName(), "Calling run...");
-                ElectrumClient electrumClient = new ElectrumClient(host, port);
-                int maxRetries = 5;
-                int retryCounter = 0;
-                while (retryCounter < maxRetries) {
-                    try {
-                        tryLoadLiveData(electrumClient);
-                    } catch (Throwable throwable) {
-                        retryCounter++;
-                        Log.e(getClass().getName(), "FAILED - Command failed on retry " + retryCounter + " of " + maxRetries + " error: " + throwable);
-                        if (retryCounter >= maxRetries) {
-                            Log.e(getClass().getName(), "Max retries exceeded.");
-                            break;
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    private void tryLoadLiveData(ElectrumClient electrumClient) throws Throwable {
-        Log.i(getClass().getName(), "Loading live data with electrum client: " + electrumClient);
-        Stream<SubscribeHeadersResponse> headers = electrumClient.subscribeHeaders();
-        headers.forEach(header -> {
-            Log.i(getClass().getName(), "Downloaded header: " + header);
-            BlockInfo blockInfo = parseHeaderResponse(header);
-            liveBlockTip.postValue(blockInfo);
-        });
-    }
-
-    private BlockInfo parseHeaderResponse(SubscribeHeadersResponse response) {
-        NetworkParameters networkParameters = io.github.yzernik.squeakand.networkparameters.NetworkParameters.getNetworkParameters();
-        BitcoinSerializer bitcoinSerializer = new BitcoinSerializer(networkParameters, false);
-        byte[] blockBytes = HEX.decode(response.hex);
-        Block block = bitcoinSerializer.makeBlock(blockBytes);
-        return new BlockInfo(block.getHash(), response.height);
-    }*/
-
     @Override
     public LiveData<BlockInfo> getLatestBlock() {
         Log.i(getClass().getName(), "Returning latest block tip live data from repository..");
@@ -104,6 +58,10 @@ public class ElectrumBlockchainRepository implements BlockchainRepository {
 
     public LiveData<ElectrumServerAddress> getServerAddress() {
         return liveServerAddress;
+    }
+
+    public LiveData<ConnectionStatus> getConnectionStatus() {
+        return liveConnectionStatus;
     }
 
     public static class ElectrumError {
@@ -123,6 +81,10 @@ public class ElectrumBlockchainRepository implements BlockchainRepository {
         public String toString() {
             return exception.toString();
         }
+    }
+
+    public enum ConnectionStatus {
+        CONNECTED, CONNECTING, DISCONNECTED;
     }
 
 }

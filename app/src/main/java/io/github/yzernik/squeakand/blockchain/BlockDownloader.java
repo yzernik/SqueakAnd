@@ -25,11 +25,14 @@ public class BlockDownloader {
     private static final int INITIAL_BACKOFF_TIME_MS = 1000;
 
     private final MutableLiveData<BlockInfo> liveBlockTip;
+    private final MutableLiveData<ElectrumBlockchainRepository.ConnectionStatus> liveConnectionStatus;
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    public BlockDownloader(MutableLiveData<BlockInfo> liveBlockTip) {
+    public BlockDownloader(MutableLiveData<BlockInfo> liveBlockTip, MutableLiveData<ElectrumBlockchainRepository.ConnectionStatus> liveConnectionStatus) {
         this.liveBlockTip = liveBlockTip;
+        this.liveConnectionStatus = liveConnectionStatus;
+        liveConnectionStatus.setValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
         this.executorService = Executors.newFixedThreadPool(10);
     }
 
@@ -45,11 +48,13 @@ public class BlockDownloader {
     private void tryLoadLiveData(ElectrumClient electrumClient) throws Throwable {
         Log.i(getClass().getName(), "Loading live data with electrum client: " + electrumClient);
         Stream<SubscribeHeadersResponse> headers = electrumClient.subscribeHeaders();
+        liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTED);
         headers.forEach(header -> {
             Log.i(getClass().getName(), "Downloaded header: " + header);
             BlockInfo blockInfo = parseHeaderResponse(header);
             liveBlockTip.postValue(blockInfo);
         });
+        liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
     }
 
 
@@ -71,9 +76,9 @@ public class BlockDownloader {
 
         @Override
         public String call() throws Exception {
-
             Log.i(getClass().getName(), "Calling call...");
             ElectrumClient electrumClient = new ElectrumClient(serverAddress.getHost(), serverAddress.getPort());
+            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTING);
             int maxRetries = MAX_RETRIES;
             int backoff = INITIAL_BACKOFF_TIME_MS;
             int retryCounter = 0;
@@ -87,6 +92,8 @@ public class BlockDownloader {
                         Log.e(getClass().getName(), "Max retries exceeded.");
                         break;
                     }
+                } finally {
+                    liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
                 }
                 backoff *= 2;
                 Thread.sleep(backoff);
