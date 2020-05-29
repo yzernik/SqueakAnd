@@ -40,7 +40,6 @@ public class BlockDownloader {
 
     synchronized void setElectrumServer(ElectrumServerAddress serverAddress) {
         if (future != null) {
-            Log.i(getClass().getName(), "Cancelling running download task.");
             future.cancel(true);
         }
 
@@ -50,7 +49,6 @@ public class BlockDownloader {
     }
 
     private void tryLoadLiveData(ElectrumClient electrumClient) throws InterruptedException, ElectrumClientException {
-        Log.i(getClass().getName(), "Loading live data with electrum client: " + electrumClient);
         liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTING);
         SubscribeHeadersClientConnection connection = electrumClient.subscribeHeaders(header -> {
             Log.i(getClass().getName(), "Downloaded header: " + header);
@@ -81,27 +79,9 @@ public class BlockDownloader {
             }
             throw e;
         }
-
-            /*
-            } catch (ElectrumClientException | InterruptedException e) {
-            Log.i(getClass().getName(), "Caught exception in tryLoadLiveData: " + e);
-            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
-            if (connection != null) {
-                Log.i(getClass().getName(), "Trying to close connection.");
-                try {
-                    connection.close();
-                    Log.i(getClass().getName(), "Closed connection with electrum client: " + electrumClient);
-                } catch (IOException ex) {
-                    Log.i(getClass().getName(), "Failed to close connection");
-                    ex.printStackTrace();
-                }
-            }
-            throw e;
-        }*/
     }
 
     private void listenNotifications(SubscribeHeadersClientConnection connection) throws InterruptedException {
-        Log.i(getClass().getName(), "Sleeping download thread...");
         Thread.sleep(Integer.MAX_VALUE);
     }
 
@@ -125,16 +105,13 @@ public class BlockDownloader {
         @Override
         public String call() {
 
-            Log.i(getClass().getName(), "Calling call...");
             ElectrumClient electrumClient = new ElectrumClient(serverAddress.getHost(), serverAddress.getPort());
             int backoff = INITIAL_BACKOFF_TIME_MS;
             int retryCounter = 0;
             while (retryCounter < MAX_RETRIES) {
                 try {
-                    Log.i(getClass().getName(), "Calling tryLoadLiveData...");
                     tryLoadLiveData(electrumClient);
                 } catch (ElectrumClientException e) {
-                    Log.i(getClass().getName(),"Caught ElectrumClientException in call: " + e);
                     retryCounter++;
                     Log.e(getClass().getName(), "FAILED - Command failed on retry " + retryCounter + " of " + MAX_RETRIES + " error: " + e);
                     if (retryCounter >= MAX_RETRIES) {
@@ -142,7 +119,6 @@ public class BlockDownloader {
                         break;
                     }
                 } catch (InterruptedException e) {
-                    Log.i(getClass().getName(),"Caught ElectrumClientException in call: " + e);
                     return "";
                 }
                 backoff *= 2;
