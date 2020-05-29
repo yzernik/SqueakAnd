@@ -56,7 +56,7 @@ dependencies {
 
     // Electrum client library
     // TODO: Use snapshot build
-    implementation 'io.github.yzernik.electrumclient:electrumclient:1.0.2'
+    implementation 'io.github.yzernik.electrumclient:electrumclient:1.0.3-SNAPSHOT'
 
 
     // Testing
