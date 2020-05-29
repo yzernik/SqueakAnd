@@ -8,6 +8,7 @@ import org.bitcoinj.core.BitcoinSerializer;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.NetworkParameters;
 
+import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,7 +16,9 @@ import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
 import io.github.yzernik.electrumclient.ElectrumClient;
+import io.github.yzernik.electrumclient.SubscribeHeadersClientConnection;
 import io.github.yzernik.electrumclient.SubscribeHeadersResponse;
+import io.github.yzernik.electrumclient.exceptions.ElectrumClientException;
 
 import static org.bitcoinj.core.Utils.HEX;
 
@@ -47,17 +50,34 @@ public class BlockDownloader {
         future = executorService.submit(newDownloadTask);
     }
 
-    private void tryLoadLiveData(ElectrumClient electrumClient) throws Throwable {
+    private void tryLoadLiveData(ElectrumClient electrumClient) throws ElectrumClientException, IOException {
         Log.i(getClass().getName(), "Loading live data with electrum client: " + electrumClient);
         liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTING);
-        Stream<SubscribeHeadersResponse> headers = electrumClient.subscribeHeaders();
-        liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTED);
-        headers.forEach(header -> {
+        SubscribeHeadersClientConnection connection = electrumClient.subscribeHeaders(header -> {
             Log.i(getClass().getName(), "Downloaded header: " + header);
             BlockInfo blockInfo = parseHeaderResponse(header);
             liveBlockTip.postValue(blockInfo);
         });
-        liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
+        SubscribeHeadersResponse response = null;
+        try {
+            response = connection.getResult();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            connection.close();
+            Log.i(getClass().getName(), "Closed connection with electrum client: " + electrumClient);
+            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
+        }
+        liveBlockTip.postValue(parseHeaderResponse(response));
+        liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTED);
+        Log.i(getClass().getName(), "Sleeping download thread...");
+        try {
+            Thread.sleep(Integer.MAX_VALUE);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            connection.close();
+            Log.i(getClass().getName(), "Closed connection with electrum client: " + electrumClient);
+            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
+        }
     }
 
 
@@ -87,9 +107,9 @@ public class BlockDownloader {
             while (retryCounter < maxRetries) {
                 try {
                     tryLoadLiveData(electrumClient);
-                } catch (Throwable throwable) {
+                } catch (Exception e) {
                     retryCounter++;
-                    Log.e(getClass().getName(), "FAILED - Command failed on retry " + retryCounter + " of " + maxRetries + " error: " + throwable);
+                    Log.e(getClass().getName(), "FAILED - Command failed on retry " + retryCounter + " of " + maxRetries + " error: " + e);
                     if (retryCounter >= maxRetries) {
                         Log.e(getClass().getName(), "Max retries exceeded.");
                         break;
