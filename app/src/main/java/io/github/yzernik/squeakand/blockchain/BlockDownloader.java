@@ -8,16 +8,14 @@ import org.bitcoinj.core.BitcoinSerializer;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.NetworkParameters;
 
-import java.io.IOException;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import io.github.yzernik.electrumclient.ElectrumClient;
-import io.github.yzernik.electrumclient.SubscribeHeadersClientConnection;
 import io.github.yzernik.electrumclient.SubscribeHeadersResponse;
-import io.github.yzernik.electrumclient.exceptions.ElectrumClientException;
 
 import static org.bitcoinj.core.Utils.HEX;
 
@@ -48,41 +46,21 @@ public class BlockDownloader {
         future = executorService.submit(newDownloadTask);
     }
 
-    private void tryLoadLiveData(ElectrumClient electrumClient) throws InterruptedException, ElectrumClientException {
+    private void tryLoadLiveData(ElectrumClient electrumClient) throws ExecutionException, InterruptedException {
         liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTING);
-        SubscribeHeadersClientConnection connection = electrumClient.subscribeHeaders(header -> {
+        Future<SubscribeHeadersResponse> responseFuture = electrumClient.subscribeHeaders(header -> {
             Log.i(getClass().getName(), "Downloaded header: " + header);
             BlockInfo blockInfo = parseHeaderResponse(header);
             liveBlockTip.postValue(blockInfo);
+            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTED);
         });
-        SubscribeHeadersResponse response = null;
         try {
-            response = connection.getResult();
-        } catch (ElectrumClientException | InterruptedException e) {
+            responseFuture.get();
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
             liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
             throw e;
         }
-        liveBlockTip.postValue(parseHeaderResponse(response));
-        liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTED);
-
-        // Listen for notifications
-        try {
-            listenNotifications(connection);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
-            try {
-                connection.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            throw e;
-        }
-    }
-
-    private void listenNotifications(SubscribeHeadersClientConnection connection) throws InterruptedException {
-        Thread.sleep(Integer.MAX_VALUE);
     }
 
 
@@ -104,31 +82,28 @@ public class BlockDownloader {
 
         @Override
         public String call() {
-
-            ElectrumClient electrumClient = new ElectrumClient(serverAddress.getHost(), serverAddress.getPort());
+            Log.i(getClass().getName(), "Calling call.");
+            ElectrumClient electrumClient = new ElectrumClient(serverAddress.getHost(), serverAddress.getPort(), executorService);
             int backoff = INITIAL_BACKOFF_TIME_MS;
             int retryCounter = 0;
             while (retryCounter < MAX_RETRIES) {
                 try {
                     tryLoadLiveData(electrumClient);
-                } catch (ElectrumClientException e) {
+                } catch (ExecutionException  e) {
                     retryCounter++;
                     Log.e(getClass().getName(), "FAILED - Command failed on retry " + retryCounter + " of " + MAX_RETRIES + " error: " + e);
-                    if (retryCounter >= MAX_RETRIES) {
-                        Log.e(getClass().getName(), "Max retries exceeded.");
-                        break;
-                    }
                 } catch (InterruptedException e) {
-                    return "";
+                    e.printStackTrace();
+                    Log.e(getClass().getName(), "CANCELLED - Command because of interrupt. error: " + e);
+                    break;
                 }
                 backoff *= 2;
                 try {
                     Thread.sleep(backoff);
                 } catch (InterruptedException e) {
-                    return "";
+                    break;
                 }
             }
-
             return "";
         }
 
