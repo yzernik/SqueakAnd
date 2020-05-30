@@ -64,10 +64,6 @@ public class BlockDownloader {
         }
     }
 
-    private void listenNotifications(SubscribeHeadersClientConnection connection) throws InterruptedException {
-        Thread.sleep(Integer.MAX_VALUE);
-    }
-
 
     private BlockInfo parseHeaderResponse(SubscribeHeadersResponse response) {
         NetworkParameters networkParameters = io.github.yzernik.squeakand.networkparameters.NetworkParameters.getNetworkParameters();
@@ -97,10 +93,6 @@ public class BlockDownloader {
                 } catch (ExecutionException | InterruptedException e) {
                     retryCounter++;
                     Log.e(getClass().getName(), "FAILED - Command failed on retry " + retryCounter + " of " + MAX_RETRIES + " error: " + e);
-                    if (retryCounter >= MAX_RETRIES) {
-                        Log.e(getClass().getName(), "Max retries exceeded.");
-                        break;
-                    }
                 }
                 backoff *= 2;
                 try {
@@ -109,7 +101,7 @@ public class BlockDownloader {
                     return "";
                 }
             }
-
+            Log.e(getClass().getName(), "Max retries exceeded.");
             return "";
         }
 
