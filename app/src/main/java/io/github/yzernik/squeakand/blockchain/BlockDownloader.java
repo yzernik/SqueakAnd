@@ -15,7 +15,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import io.github.yzernik.electrumclient.ElectrumClient;
-import io.github.yzernik.electrumclient.SubscribeHeadersClientConnection;
 import io.github.yzernik.electrumclient.SubscribeHeadersResponse;
 
 import static org.bitcoinj.core.Utils.HEX;
@@ -90,18 +89,21 @@ public class BlockDownloader {
             while (retryCounter < MAX_RETRIES) {
                 try {
                     tryLoadLiveData(electrumClient);
-                } catch (ExecutionException | InterruptedException e) {
+                } catch (ExecutionException  e) {
                     retryCounter++;
                     Log.e(getClass().getName(), "FAILED - Command failed on retry " + retryCounter + " of " + MAX_RETRIES + " error: " + e);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Log.e(getClass().getName(), "CANCELLED - Command because of interrupt. error: " + e);
+                    break;
                 }
                 backoff *= 2;
                 try {
                     Thread.sleep(backoff);
                 } catch (InterruptedException e) {
-                    return "";
+                    break;
                 }
             }
-            Log.e(getClass().getName(), "Max retries exceeded.");
             return "";
         }
 
