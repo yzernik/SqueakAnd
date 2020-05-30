@@ -106,6 +106,10 @@ public class PeerDownloader {
         }
 
         private void handleNewAddress(InetSocketAddress address) throws InterruptedException {
+            if (serversMap.contains(address)) {
+                return;
+            }
+
             boolean canConnect = ping(address);
             if (canConnect) {
                 add(address);
