@@ -21,9 +21,6 @@ import static org.bitcoinj.core.Utils.HEX;
 
 public class BlockDownloader {
 
-    private static final int MAX_RETRIES = 10;
-    private static final int INITIAL_BACKOFF_TIME_MS = 1000;
-
     private final MutableLiveData<BlockInfo> liveBlockTip;
     private final MutableLiveData<ElectrumBlockchainRepository.ConnectionStatus> liveConnectionStatus;
     private final ExecutorService executorService;
@@ -46,23 +43,6 @@ public class BlockDownloader {
         future = executorService.submit(newDownloadTask);
     }
 
-    private void tryLoadLiveData(ElectrumClient electrumClient) throws ExecutionException, InterruptedException {
-        liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTING);
-        Future<SubscribeHeadersResponse> responseFuture = electrumClient.subscribeHeaders(header -> {
-            Log.i(getClass().getName(), "Downloaded header: " + header);
-            BlockInfo blockInfo = parseHeaderResponse(header);
-            liveBlockTip.postValue(blockInfo);
-            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTED);
-        });
-        try {
-            responseFuture.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
-            throw e;
-        }
-    }
-
 
     private BlockInfo parseHeaderResponse(SubscribeHeadersResponse response) {
         NetworkParameters networkParameters = io.github.yzernik.squeakand.networkparameters.NetworkParameters.getNetworkParameters();
@@ -74,7 +54,11 @@ public class BlockDownloader {
 
 
     class BlockDownloadTask implements Callable<String> {
+        private static final int MAX_RETRIES = 10;
+        private static final int INITIAL_BACKOFF_TIME_MS = 1000;
+
         private final ElectrumServerAddress serverAddress;
+        private int retryCounter = 0;
 
         BlockDownloadTask(ElectrumServerAddress serverAddress) {
             this.serverAddress = serverAddress;
@@ -84,8 +68,6 @@ public class BlockDownloader {
         public String call() {
             Log.i(getClass().getName(), "Calling call.");
             ElectrumClient electrumClient = new ElectrumClient(serverAddress.getHost(), serverAddress.getPort(), executorService);
-            int backoff = INITIAL_BACKOFF_TIME_MS;
-            int retryCounter = 0;
             while (retryCounter < MAX_RETRIES) {
                 try {
                     tryLoadLiveData(electrumClient);
@@ -97,8 +79,8 @@ public class BlockDownloader {
                     Log.e(getClass().getName(), "CANCELLED - Command because of interrupt. error: " + e);
                     break;
                 }
-                backoff *= 2;
                 try {
+                    int backoff = INITIAL_BACKOFF_TIME_MS << retryCounter;
                     Thread.sleep(backoff);
                 } catch (InterruptedException e) {
                     break;
@@ -107,7 +89,27 @@ public class BlockDownloader {
             return "";
         }
 
+        private void tryLoadLiveData(ElectrumClient electrumClient) throws ExecutionException, InterruptedException {
+            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTING);
+            Future<SubscribeHeadersResponse> responseFuture = electrumClient.subscribeHeaders(header -> {
+                Log.i(getClass().getName(), "Downloaded header: " + header);
+                BlockInfo blockInfo = parseHeaderResponse(header);
+                liveBlockTip.postValue(blockInfo);
+                liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTED);
+                resetRetryCounter();
+            });
+            try {
+                responseFuture.get();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+                liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
+                throw e;
+            }
+        }
 
+        private void resetRetryCounter() {
+            retryCounter = 0;
+        }
 
     }
 
