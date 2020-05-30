@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,6 +25,7 @@ public class PeerDownloader {
     private static final int UPDATE_INTERVAL_MS = 60000; // 1 minute
     private static final int DISCONNECT_TIMEOUT_MS = 3600000; // 1 hour
     private static final int CONNECT_TIMEOUT_MS = 10000; // 10 seconds
+    private static final int MAX_SERVERS = 100;
 
     private MutableLiveData<List<InetSocketAddress>> liveServers;
     private ConcurrentHashMap<InetSocketAddress, Long> serversMap;
@@ -48,6 +50,26 @@ public class PeerDownloader {
         future = executorService.submit(peerUpdateTask);
     }
 
+    private void remove(InetSocketAddress address) {
+        serversMap.remove(address);
+        updateLiveData();
+    }
+
+    private void add(InetSocketAddress address) {
+        serversMap.put(address, getCurrentTimeMs());
+        updateLiveData();
+    }
+
+    private long getCurrentTimeMs() {
+        return System.currentTimeMillis();
+    }
+
+    public void updateLiveData() {
+        System.out.println("serversMap size: " + serversMap.size());
+        ArrayList<InetSocketAddress> keyList = new ArrayList<InetSocketAddress>(serversMap.keySet());
+        liveServers.postValue(keyList);
+    }
+
 
     class PeerUpdateTask implements Callable<String> {
 
@@ -67,13 +89,22 @@ public class PeerDownloader {
             for (InetSocketAddress address: serversMap.keySet()) {
                 updatePeer(address);
             }
+
+            // Handle the seed peers
+            List<Peer> seedPeers = SeedPeers.getSeedPeers();
+            Log.i(getClass().getName(), "Trying to add seed peers: " + seedPeers);
+            for (Peer peer: seedPeers) {
+                Log.i(getClass().getName(), "Trying to add seed peer: " + peer);
+                InetSocketAddress newAddress = addressFromPeer(peer);
+                handleNewAddress(newAddress);
+                Log.i(getClass().getName(), "Finished trying to add seed peer: " + peer);
+            }
         }
 
         private void updatePeer(InetSocketAddress address) throws InterruptedException {
             List<Peer> peers = getPeers(address);
             if (peers != null) {
                 for (Peer peer: peers) {
-                    // TODO: Do something...
                     InetSocketAddress newAddress = addressFromPeer(peer);
                     handleNewAddress(newAddress);
                 }
@@ -93,19 +124,16 @@ public class PeerDownloader {
 
         }
 
-        private void remove(InetSocketAddress address) {
-            serversMap.remove(address);
-        }
-
-        private void add(InetSocketAddress address) {
-            serversMap.put(address, getCurrentTimeMs());
-        }
-
-        private long getCurrentTimeMs() {
-            return System.currentTimeMillis();
-        }
-
         private void handleNewAddress(InetSocketAddress address) throws InterruptedException {
+            Log.i(getClass().getName(), "Handling address: " + address);
+            if (address == null) {
+                return;
+            }
+
+            if (serversMap.size() >= MAX_SERVERS) {
+                return;
+            }
+
             if (serversMap.contains(address)) {
                 return;
             }
@@ -162,6 +190,6 @@ public class PeerDownloader {
             return null;
         }
 
-
     }
+
 }
