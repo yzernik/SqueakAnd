@@ -29,11 +29,10 @@
                 android:text="Electrum host:"
                 android:layout_gravity="left|center_vertical"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/enter_electrum_host"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:editable="false"
                 android:text=""
                 android:layout_gravity="right|center_vertical"/>
 
@@ -51,11 +50,10 @@
                 android:text="Electrum port:"
                 android:layout_gravity="left|center_vertical"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/enter_electrum_port"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:editable="false"
                 android:text=""
                 android:layout_gravity="right|center_vertical"/>
 
@@ -74,16 +72,41 @@
                 android:text="Connection status:"
                 android:layout_gravity="left|center_vertical"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/connection_status_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:editable="false"
                 android:layout_gravity="right|center_vertical"/>
 
         </FrameLayout>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Latest block height:"
+                android:layout_gravity="left|center_vertical"/>
+
+            <TextView
+                android:id="@+id/latest_block_height_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_gravity="right|center_vertical"/>
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/electrum_host_input"

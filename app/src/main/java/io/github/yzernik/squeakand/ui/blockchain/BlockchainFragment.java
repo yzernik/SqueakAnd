@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,15 +23,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.ElectrumServerAddress;
 
 public class BlockchainFragment extends Fragment {
 
-    private EditText mShowServerHost;
-    private EditText mShowServerPort;
+    private TextView mShowServerHost;
+    private TextView mShowServerPort;
     private Button mConnectElectrumServerButton;
     private TextView mElectrumConnectionStatus;
+    private TextView mShowLatestBlockHeight;
     private Button mSelectElectrumServerButton;
     private TextInputLayout mEnterServerHostname;
     private TextInputLayout mEnterServerPort;
@@ -51,6 +52,7 @@ public class BlockchainFragment extends Fragment {
         mSelectElectrumServerButton = root.findViewById(R.id.select_public_electrum_server_button);
         mEnterServerHostname = root.findViewById(R.id.electrum_host_input);
         mEnterServerPort = root.findViewById(R.id.electrum_port_input);
+        mShowLatestBlockHeight = root.findViewById(R.id.latest_block_height_text);
 
         blockchainModel = new ViewModelProvider(getActivity()).get(BlockchainModel.class);
 
@@ -73,6 +75,16 @@ public class BlockchainFragment extends Fragment {
                 Log.i(getTag(),"Observed new electrum server connection status: " + connectionStatus);
                 String connectionStatusString = connectionStatus.toString();
                 mElectrumConnectionStatus.setText(connectionStatusString);
+            }
+        });
+
+        blockchainModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
+            @Override
+            public void onChanged(@Nullable final BlockInfo blockInfo) {
+                if (blockInfo != null) {
+                    Log.i(getTag(),"Observed new block: " + blockInfo);
+                    mShowLatestBlockHeight.setText(Integer.toString(blockInfo.getHeight()));
+                }
             }
         });
 
