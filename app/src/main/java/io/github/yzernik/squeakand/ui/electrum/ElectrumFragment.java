@@ -138,15 +138,10 @@ public class ElectrumFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ElectrumServerAddress selectedAddress = addresses.get(which);
-                // TODO: do something with the selected server address.
-
-                /*
-                String hostname = selectedAddress.getHostName();
-                int port = selectedAddress.getPort();
+                String hostname = selectedAddress.getHost();
+                String port = Integer.toString(selectedAddress.getPort());
                 mEnterServerHostname.getEditText().setText(hostname);
-                mEnterServerPort.getEditText().setText(Integer.toString(port));*/
-
-                electrumModel.setElectrumServerAddress(selectedAddress);
+                mEnterServerPort.getEditText().setText(port);
             }
         });
 
