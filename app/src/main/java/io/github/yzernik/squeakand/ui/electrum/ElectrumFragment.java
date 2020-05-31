@@ -56,13 +56,13 @@ public class ElectrumFragment extends Fragment {
 
         electrumModel = new ViewModelProvider(getActivity()).get(ElectrumModel.class);
 
-        electrumModel.getElectrumServerAddress().observe(getViewLifecycleOwner(), new Observer<ElectrumServerAddress>() {
+        electrumModel.getElectrumServerAddress().observe(getViewLifecycleOwner(), new Observer<InetSocketAddress>() {
             @Override
-            public void onChanged(@Nullable final ElectrumServerAddress electrumServerAddress) {
+            public void onChanged(@Nullable final InetSocketAddress electrumServerAddress) {
                 // Update edit text fields with current address.
                 Log.i(getTag(),"Observed new electrum server address: " + electrumServerAddress);
                 if (electrumServerAddress != null) {
-                    mShowServerHost.setText(electrumServerAddress.getHost());
+                    mShowServerHost.setText(electrumServerAddress.getAddress().toString());
                     mShowServerPort.setText(Integer.toString(electrumServerAddress.getPort()));
                 }
             }
@@ -96,7 +96,7 @@ public class ElectrumFragment extends Fragment {
                 String host = mEnterServerHostname.getEditText().getText().toString();
                 Log.i(getTag(), "Input port is: " + mEnterServerPort.getEditText().getText());
                 int port = Integer.parseInt(mEnterServerPort.getEditText().getText().toString());
-                ElectrumServerAddress serverAddress = new ElectrumServerAddress(host, port);
+                InetSocketAddress serverAddress = new InetSocketAddress(host, port);
                 Log.i(getTag(), "Updating electrum server with new address: " + serverAddress);
                 electrumModel.setElectrumServerAddress(serverAddress);
             }
@@ -140,10 +140,13 @@ public class ElectrumFragment extends Fragment {
                 InetSocketAddress selectedAddress = addresses.get(which);
                 // TODO: do something with the selected server address.
 
+                /*
                 String hostname = selectedAddress.getHostName();
                 int port = selectedAddress.getPort();
                 mEnterServerHostname.getEditText().setText(hostname);
-                mEnterServerPort.getEditText().setText(Integer.toString(port));
+                mEnterServerPort.getEditText().setText(Integer.toString(port));*/
+
+                electrumModel.setElectrumServerAddress(selectedAddress);
             }
         });
 

@@ -34,7 +34,7 @@ public class BlockDownloader {
         this.executorService = Executors.newCachedThreadPool();
     }
 
-    synchronized void setElectrumServer(ElectrumServerAddress serverAddress) {
+    synchronized void setElectrumServer(InetSocketAddress serverAddress) {
         if (future != null) {
             future.cancel(true);
         }
@@ -58,17 +58,18 @@ public class BlockDownloader {
         private static final int MAX_RETRIES = 10;
         private static final int INITIAL_BACKOFF_TIME_MS = 1000;
 
-        private final ElectrumServerAddress serverAddress;
+        private final InetSocketAddress serverAddress;
         private int retryCounter = 0;
 
-        BlockDownloadTask(ElectrumServerAddress serverAddress) {
+        BlockDownloadTask(InetSocketAddress serverAddress) {
             this.serverAddress = serverAddress;
         }
 
         @Override
         public String call() {
             Log.i(getClass().getName(), "Calling call.");
-            InetSocketAddress address = new InetSocketAddress(serverAddress.getHost(), serverAddress.getPort());
+            // InetSocketAddress address = new InetSocketAddress(serverAddress.getHost(), serverAddress.getPort());
+            InetSocketAddress address = serverAddress;
             ElectrumClient electrumClient = new ElectrumClient(address, executorService);
             while (retryCounter < MAX_RETRIES) {
                 try {
