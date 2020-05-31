@@ -8,6 +8,7 @@ import org.bitcoinj.core.BitcoinSerializer;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.NetworkParameters;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -67,7 +68,8 @@ public class BlockDownloader {
         @Override
         public String call() {
             Log.i(getClass().getName(), "Calling call.");
-            ElectrumClient electrumClient = new ElectrumClient(serverAddress.getHost(), serverAddress.getPort(), executorService);
+            InetSocketAddress address = new InetSocketAddress(serverAddress.getHost(), serverAddress.getPort());
+            ElectrumClient electrumClient = new ElectrumClient(address, executorService);
             while (retryCounter < MAX_RETRIES) {
                 try {
                     tryLoadLiveData(electrumClient);

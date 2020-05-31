@@ -85,19 +85,15 @@ public class PeerDownloader {
         }
 
         private void updatePeers() throws InterruptedException {
-            Log.i(getClass().getName(), "Calling updatePeers in PeerUpdateTask");
             for (InetSocketAddress address: serversMap.keySet()) {
                 updatePeer(address);
             }
 
             // Handle the seed peers
             List<Peer> seedPeers = SeedPeers.getSeedPeers();
-            Log.i(getClass().getName(), "Trying to add seed peers: " + seedPeers);
             for (Peer peer: seedPeers) {
-                Log.i(getClass().getName(), "Trying to add seed peer: " + peer);
                 InetSocketAddress newAddress = addressFromPeer(peer);
                 handleNewAddress(newAddress);
-                Log.i(getClass().getName(), "Finished trying to add seed peer: " + peer);
             }
         }
 
@@ -154,7 +150,7 @@ public class PeerDownloader {
         }
 
         private List<Peer> getPeers(InetSocketAddress address) throws InterruptedException {
-            ElectrumClient client = new ElectrumClient(address.getHostName(), address.getPort(), executorService);
+            ElectrumClient client = new ElectrumClient(address, executorService);
             Future<SubscribePeersResponse> responseFuture = client.subscribePeers();
             try {
                 SubscribePeersResponse response = responseFuture.get(CONNECT_TIMEOUT_MS, TimeUnit.MILLISECONDS);
