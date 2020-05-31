@@ -37,9 +37,9 @@
             android:parentActivityName=".ManageProfilesActivity"
             android:label="@string/activity_create_profile" />
         <activity
-            android:name=".BlockchainActivity"
+            android:name=".ElectrumActivity"
             android:parentActivityName=".CreateSqueakActivity"
-            android:label="@string/activity_blockchain" />
+            android:label="@string/activity_electrum" />
     </application>
 
 </manifest>
