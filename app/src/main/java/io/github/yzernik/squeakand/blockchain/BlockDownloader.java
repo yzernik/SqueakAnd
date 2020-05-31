@@ -23,15 +23,22 @@ import static org.bitcoinj.core.Utils.HEX;
 public class BlockDownloader {
 
     private final MutableLiveData<BlockInfo> liveBlockTip;
-    private final MutableLiveData<ElectrumBlockchainRepository.ConnectionStatus> liveConnectionStatus;
+    private final MutableLiveData<ServerUpdate.ConnectionStatus> liveConnectionStatus;
+    private final MutableLiveData<ServerUpdate> liveServerUpdate;
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    BlockDownloader(MutableLiveData<BlockInfo> liveBlockTip, MutableLiveData<ElectrumBlockchainRepository.ConnectionStatus> liveConnectionStatus) {
+    BlockDownloader(MutableLiveData<BlockInfo> liveBlockTip, MutableLiveData<ServerUpdate.ConnectionStatus> liveConnectionStatus, MutableLiveData<ServerUpdate> liveServerUpdate) {
         this.liveBlockTip = liveBlockTip;
         this.liveConnectionStatus = liveConnectionStatus;
-        liveConnectionStatus.setValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
+        this.liveServerUpdate = liveServerUpdate;
+        liveConnectionStatus.setValue(ServerUpdate.ConnectionStatus.DISCONNECTED);
         this.executorService = Executors.newCachedThreadPool();
+        initialize();
+    }
+
+    synchronized void initialize() {
+        setStatusDisconnected(null);
     }
 
     synchronized void setElectrumServer(ElectrumServerAddress serverAddress) {
@@ -45,6 +52,33 @@ public class BlockDownloader {
     }
 
 
+    void setStatusConnected(ElectrumServerAddress serverAddress, BlockInfo blockInfo) {
+        ServerUpdate serverUpdate = new ServerUpdate(
+                ServerUpdate.ConnectionStatus.CONNECTED,
+                serverAddress,
+                blockInfo
+        );
+        liveServerUpdate.postValue(serverUpdate);
+    }
+
+    void setStatusDisconnected(ElectrumServerAddress serverAddress) {
+        ServerUpdate serverUpdate = new ServerUpdate(
+                ServerUpdate.ConnectionStatus.DISCONNECTED,
+                serverAddress,
+                null
+        );
+        liveServerUpdate.postValue(serverUpdate);
+    }
+
+    void setStatusConnecting(ElectrumServerAddress serverAddress) {
+        ServerUpdate serverUpdate = new ServerUpdate(
+                ServerUpdate.ConnectionStatus.CONNECTING,
+                serverAddress,
+                null
+        );
+        liveServerUpdate.postValue(serverUpdate);
+    }
+
     private BlockInfo parseHeaderResponse(SubscribeHeadersResponse response) {
         NetworkParameters networkParameters = io.github.yzernik.squeakand.networkparameters.NetworkParameters.getNetworkParameters();
         BitcoinSerializer bitcoinSerializer = new BitcoinSerializer(networkParameters, false);
@@ -52,7 +86,6 @@ public class BlockDownloader {
         Block block = bitcoinSerializer.makeBlock(blockBytes);
         return new BlockInfo(block.getHash(), response.height);
     }
-
 
     class BlockDownloadTask implements Callable<String> {
         private static final int MAX_RETRIES = 10;
@@ -93,19 +126,22 @@ public class BlockDownloader {
         }
 
         private void tryLoadLiveData(ElectrumClient electrumClient) throws ExecutionException, InterruptedException {
-            liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTING);
+            liveConnectionStatus.postValue(ServerUpdate.ConnectionStatus.CONNECTING);
+            updateStatusConnecting();
             Future<SubscribeHeadersResponse> responseFuture = electrumClient.subscribeHeaders(header -> {
                 Log.i(getClass().getName(), "Downloaded header: " + header);
                 BlockInfo blockInfo = parseHeaderResponse(header);
                 liveBlockTip.postValue(blockInfo);
-                liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.CONNECTED);
+                liveConnectionStatus.postValue(ServerUpdate.ConnectionStatus.CONNECTED);
+                updateStatusConnected(blockInfo);
                 resetRetryCounter();
             });
             try {
                 responseFuture.get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
-                liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
+                liveConnectionStatus.postValue(ServerUpdate.ConnectionStatus.DISCONNECTED);
+                updateStatusDisconnected();
                 responseFuture.cancel(true);
                 throw e;
             }
@@ -113,6 +149,18 @@ public class BlockDownloader {
 
         private void resetRetryCounter() {
             retryCounter = 0;
+        }
+
+        private void updateStatusConnected(BlockInfo blockInfo) {
+            setStatusConnected(serverAddress, blockInfo);
+        }
+
+        private void updateStatusDisconnected() {
+            setStatusDisconnected(serverAddress);
+        }
+
+        private void updateStatusConnecting() {
+            setStatusConnecting(serverAddress);
         }
 
     }

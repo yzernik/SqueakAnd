@@ -18,14 +18,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
-import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.ElectrumServerAddress;
+import io.github.yzernik.squeakand.blockchain.ServerUpdate;
 
 public class ElectrumFragment extends Fragment {
 
@@ -56,7 +55,7 @@ public class ElectrumFragment extends Fragment {
 
         electrumModel = new ViewModelProvider(getActivity()).get(ElectrumModel.class);
 
-        electrumModel.getElectrumServerAddress().observe(getViewLifecycleOwner(), new Observer<ElectrumServerAddress>() {
+/*        electrumModel.getElectrumServerAddress().observe(getViewLifecycleOwner(), new Observer<ElectrumServerAddress>() {
             @Override
             public void onChanged(@Nullable final ElectrumServerAddress electrumServerAddress) {
                 // Update edit text fields with current address.
@@ -66,19 +65,43 @@ public class ElectrumFragment extends Fragment {
                     mShowServerPort.setText(Integer.toString(electrumServerAddress.getPort()));
                 }
             }
-        });
+        });*/
 
-        electrumModel.getConnectionStatus().observe(getViewLifecycleOwner(), new Observer<ElectrumBlockchainRepository.ConnectionStatus>() {
+/*        electrumModel.getConnectionStatus().observe(getViewLifecycleOwner(), new Observer<ServerUpdate.ConnectionStatus>() {
             @Override
-            public void onChanged(@Nullable final ElectrumBlockchainRepository.ConnectionStatus connectionStatus) {
+            public void onChanged(@Nullable final ServerUpdate.ConnectionStatus connectionStatus) {
                 // Update edit text fields with current connection status.
                 Log.i(getTag(),"Observed new electrum server connection status: " + connectionStatus);
                 String connectionStatusString = connectionStatus.toString();
                 mElectrumConnectionStatus.setText(connectionStatusString);
             }
+        });*/
+
+        electrumModel.getServerUpdate().observe(getViewLifecycleOwner(), new Observer<ServerUpdate>() {
+            @Override
+            public void onChanged(@Nullable final ServerUpdate serverUpdate) {
+                // Update edit text fields with current connection status.
+                ServerUpdate.ConnectionStatus connectionStatus = serverUpdate.getConnectionStatus();
+                Log.i(getTag(),"Observed new electrum server connection status: " + connectionStatus);
+                String connectionStatusString = connectionStatus.toString();
+                mElectrumConnectionStatus.setText(connectionStatusString);
+
+                // Update the latest block height display
+                BlockInfo blockInfo = serverUpdate.getBlockInfo();
+                if (blockInfo != null) {
+                    mShowLatestBlockHeight.setText(Integer.toString(blockInfo.getHeight()));
+                }
+
+                // Update text field with current address.
+                ElectrumServerAddress electrumServerAddress = serverUpdate.getElectrumServerAddress();
+                if (electrumServerAddress != null) {
+                    mShowServerHost.setText(electrumServerAddress.getHost());
+                    mShowServerPort.setText(Integer.toString(electrumServerAddress.getPort()));
+                }
+            }
         });
 
-        electrumModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
+/*        electrumModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
             @Override
             public void onChanged(@Nullable final BlockInfo blockInfo) {
                 if (blockInfo != null) {
@@ -86,19 +109,24 @@ public class ElectrumFragment extends Fragment {
                     mShowLatestBlockHeight.setText(Integer.toString(blockInfo.getHeight()));
                 }
             }
-        });
+        });*/
 
         // Update the electrum server being used to download block headers
         mConnectElectrumServerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(getTag(), "Input hostname is: " + mEnterServerHostname.getEditText().getText());
                 String host = mEnterServerHostname.getEditText().getText().toString();
-                Log.i(getTag(), "Input port is: " + mEnterServerPort.getEditText().getText());
-                int port = Integer.parseInt(mEnterServerPort.getEditText().getText().toString());
-                ElectrumServerAddress serverAddress = new ElectrumServerAddress(host, port);
-                Log.i(getTag(), "Updating electrum server with new address: " + serverAddress);
-                electrumModel.setElectrumServerAddress(serverAddress);
+                Integer port;
+                try {
+                    port = Integer.parseInt(mEnterServerPort.getEditText().getText().toString());
+                }catch (NumberFormatException e){
+                    port = null;
+                }
+                if (host != null && port != null) {
+                    ElectrumServerAddress serverAddress = new ElectrumServerAddress(host, port);
+                    Log.i(getTag(), "Updating electrum server with new address: " + serverAddress);
+                    electrumModel.setElectrumServerAddress(serverAddress);
+                }
             }
         });
 

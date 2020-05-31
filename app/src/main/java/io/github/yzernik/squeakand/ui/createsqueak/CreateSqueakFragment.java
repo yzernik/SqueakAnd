@@ -30,6 +30,7 @@ import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
+import io.github.yzernik.squeakand.blockchain.ServerUpdate;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 
@@ -83,7 +84,7 @@ public class CreateSqueakFragment extends Fragment {
             }
         });
 
-        createSqueakModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
+/*        createSqueakModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
             @Override
             public void onChanged(@Nullable final BlockInfo blockInfo) {
                 String blockHeightText = "None";
@@ -96,6 +97,28 @@ public class CreateSqueakFragment extends Fragment {
                     public void onClick(View v) {
                         Log.i(getTag(),"View latest block button clicked");
                         showBlockchainAlertDialog(blockInfo);
+                    }
+                });
+            }
+        });*/
+
+        createSqueakModel.getServerUpdate().observe(getViewLifecycleOwner(), new Observer<ServerUpdate>() {
+            @Override
+            public void onChanged(@Nullable final ServerUpdate serverUpdate) {
+                ServerUpdate.ConnectionStatus connectionStatus = serverUpdate.getConnectionStatus();
+                switch (connectionStatus) {
+                    case CONNECTED:
+                        mLatestBlockHeightButton.setText(serverUpdate.getElectrumServerAddress().toString());
+                        break;
+                    default:
+                        mLatestBlockHeightButton.setText("Disconnected");
+                        break;
+                }
+                mLatestBlockHeightButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i(getTag(),"View latest block button clicked");
+                        showElectrumAlertDialog(serverUpdate);
                     }
                 });
             }
@@ -157,17 +180,21 @@ public class CreateSqueakFragment extends Fragment {
     }
 
     /**
-     * Show the alert dialog for the latest block.
-     * @param blockInfo
+     * Show the alert dialog for the electrum connection.
+     * @param serverUpdate
      */
-    private void showBlockchainAlertDialog(BlockInfo blockInfo) {
+    private void showElectrumAlertDialog(ServerUpdate serverUpdate) {
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Latest block");
-        if (blockInfo == null) {
-            builder.setMessage("No block headers downloaded.");
-        } else {
-            builder.setMessage("Latest block header hash: " + blockInfo.getHash());
+        builder.setTitle("Electrum connection");
+
+        switch (serverUpdate.getConnectionStatus()) {
+            case CONNECTED:
+                builder.setMessage("Connected to: " + serverUpdate.getElectrumServerAddress().toString());
+                break;
+            default:
+                builder.setMessage("Not connected to any electrum server.");
+                break;
         }
         // Add the manage electrum button
         builder.setNeutralButton("Manage electrum connection", new DialogInterface.OnClickListener() {
