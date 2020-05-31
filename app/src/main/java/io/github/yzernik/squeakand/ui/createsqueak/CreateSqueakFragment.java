@@ -118,7 +118,7 @@ public class CreateSqueakFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Log.i(getTag(),"View latest block button clicked");
-                        showBlockchainAlertDialog(serverUpdate.getBlockInfo());
+                        showElectrumAlertDialog(serverUpdate);
                     }
                 });
             }
@@ -180,17 +180,21 @@ public class CreateSqueakFragment extends Fragment {
     }
 
     /**
-     * Show the alert dialog for the latest block.
-     * @param blockInfo
+     * Show the alert dialog for the electrum connection.
+     * @param serverUpdate
      */
-    private void showBlockchainAlertDialog(BlockInfo blockInfo) {
+    private void showElectrumAlertDialog(ServerUpdate serverUpdate) {
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Latest block");
-        if (blockInfo == null) {
-            builder.setMessage("No block headers downloaded.");
-        } else {
-            builder.setMessage("Latest block header hash: " + blockInfo.getHash());
+        builder.setTitle("Electrum connection");
+
+        switch (serverUpdate.getConnectionStatus()) {
+            case CONNECTED:
+                builder.setMessage("Connected to: " + serverUpdate.getElectrumServerAddress().toString());
+                break;
+            default:
+                builder.setMessage("Not connected to any electrum server.");
+                break;
         }
         // Add the manage electrum button
         builder.setNeutralButton("Manage electrum connection", new DialogInterface.OnClickListener() {
