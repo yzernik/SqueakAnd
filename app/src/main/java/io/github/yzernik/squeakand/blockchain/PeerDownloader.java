@@ -65,7 +65,7 @@ public class PeerDownloader {
     }
 
     public void updateLiveData() {
-        System.out.println("serversMap size: " + serversMap.size());
+        Log.i(getClass().getName(), "serversMap size: " + serversMap.size());
         ArrayList<InetSocketAddress> keyList = new ArrayList<InetSocketAddress>(serversMap.keySet());
         liveServers.postValue(keyList);
     }
@@ -121,7 +121,6 @@ public class PeerDownloader {
         }
 
         private void handleNewAddress(InetSocketAddress address) throws InterruptedException {
-            Log.i(getClass().getName(), "Handling address: " + address);
             if (address == null) {
                 return;
             }
@@ -156,7 +155,6 @@ public class PeerDownloader {
                 SubscribePeersResponse response = responseFuture.get(CONNECT_TIMEOUT_MS, TimeUnit.MILLISECONDS);
                 return response.peers;
             } catch (ExecutionException | TimeoutException e) {
-                e.printStackTrace();
                 return null;
             } catch (InterruptedException e) {
                 e.printStackTrace();

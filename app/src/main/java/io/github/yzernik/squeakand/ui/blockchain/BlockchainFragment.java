@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,22 +16,27 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.ElectrumServerAddress;
 
 public class BlockchainFragment extends Fragment {
 
-    private EditText mElectrumServerHost;
-    private EditText mElectrumServerPort;
-    private Button mUpdateElectrumServerButton;
+    private TextView mShowServerHost;
+    private TextView mShowServerPort;
+    private Button mConnectElectrumServerButton;
     private TextView mElectrumConnectionStatus;
+    private TextView mShowLatestBlockHeight;
     private Button mSelectElectrumServerButton;
+    private TextInputLayout mEnterServerHostname;
+    private TextInputLayout mEnterServerPort;
 
 
     private BlockchainModel blockchainModel;
@@ -42,11 +45,14 @@ public class BlockchainFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_blockchain, container, false);
 
-        mElectrumServerHost = root.findViewById(R.id.enter_electrum_host);
-        mElectrumServerPort = root.findViewById(R.id.enter_electrum_port);
-        mUpdateElectrumServerButton = root.findViewById(R.id.update_electrum_server_button);
+        mShowServerHost = root.findViewById(R.id.enter_electrum_host);
+        mShowServerPort = root.findViewById(R.id.enter_electrum_port);
+        mConnectElectrumServerButton = root.findViewById(R.id.connect_electrum_server_button);
         mElectrumConnectionStatus = root.findViewById(R.id.connection_status_text);
-        mSelectElectrumServerButton = root.findViewById(R.id.select_electrum_server_button);
+        mSelectElectrumServerButton = root.findViewById(R.id.select_public_electrum_server_button);
+        mEnterServerHostname = root.findViewById(R.id.electrum_host_input);
+        mEnterServerPort = root.findViewById(R.id.electrum_port_input);
+        mShowLatestBlockHeight = root.findViewById(R.id.latest_block_height_text);
 
         blockchainModel = new ViewModelProvider(getActivity()).get(BlockchainModel.class);
 
@@ -56,8 +62,8 @@ public class BlockchainFragment extends Fragment {
                 // Update edit text fields with current address.
                 Log.i(getTag(),"Observed new electrum server address: " + electrumServerAddress);
                 if (electrumServerAddress != null) {
-                    mElectrumServerHost.setText(electrumServerAddress.getHost());
-                    mElectrumServerPort.setText(Integer.toString(electrumServerAddress.getPort()));
+                    mShowServerHost.setText(electrumServerAddress.getHost());
+                    mShowServerPort.setText(Integer.toString(electrumServerAddress.getPort()));
                 }
             }
         });
@@ -72,12 +78,24 @@ public class BlockchainFragment extends Fragment {
             }
         });
 
+        blockchainModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
+            @Override
+            public void onChanged(@Nullable final BlockInfo blockInfo) {
+                if (blockInfo != null) {
+                    Log.i(getTag(),"Observed new block: " + blockInfo);
+                    mShowLatestBlockHeight.setText(Integer.toString(blockInfo.getHeight()));
+                }
+            }
+        });
+
         // Update the electrum server being used to download block headers
-        mUpdateElectrumServerButton.setOnClickListener(new View.OnClickListener() {
+        mConnectElectrumServerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String host = mElectrumServerHost.getText().toString();
-                int port = Integer.valueOf(mElectrumServerPort.getText().toString());
+                Log.i(getTag(), "Input hostname is: " + mEnterServerHostname.getEditText().getText());
+                String host = mEnterServerHostname.getEditText().getText().toString();
+                Log.i(getTag(), "Input port is: " + mEnterServerPort.getEditText().getText());
+                int port = Integer.parseInt(mEnterServerPort.getEditText().getText().toString());
                 ElectrumServerAddress serverAddress = new ElectrumServerAddress(host, port);
                 Log.i(getTag(), "Updating electrum server with new address: " + serverAddress);
                 blockchainModel.setElectrumServerAddress(serverAddress);
@@ -121,6 +139,11 @@ public class BlockchainFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 InetSocketAddress selectedAddress = addresses.get(which);
                 // TODO: do something with the selected server address.
+
+                String hostname = selectedAddress.getHostName();
+                int port = selectedAddress.getPort();
+                mEnterServerHostname.getEditText().setText(hostname);
+                mEnterServerPort.getEditText().setText(Integer.toString(port));
             }
         });
 

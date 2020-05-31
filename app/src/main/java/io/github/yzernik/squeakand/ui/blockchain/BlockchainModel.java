@@ -26,7 +26,7 @@ public class BlockchainModel extends ViewModel {
         return blockchainRepository.getServerAddress();
     }
 
-    public LiveData<BlockInfo> getBlockInfo() {
+    public LiveData<BlockInfo> getLatestBlock() {
         return blockchainRepository.getLatestBlock();
     }
 
