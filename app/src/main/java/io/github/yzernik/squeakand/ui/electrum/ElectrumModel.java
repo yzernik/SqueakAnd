@@ -22,7 +22,7 @@ public class ElectrumModel extends ViewModel {
         serversRepository.initialize();
     }
 
-    public LiveData<InetSocketAddress> getElectrumServerAddress() {
+    public LiveData<ElectrumServerAddress> getElectrumServerAddress() {
         return blockchainRepository.getServerAddress();
     }
 
@@ -30,7 +30,7 @@ public class ElectrumModel extends ViewModel {
         return blockchainRepository.getLatestBlock();
     }
 
-    public void setElectrumServerAddress(InetSocketAddress electrumServerAddress) {
+    public void setElectrumServerAddress(ElectrumServerAddress electrumServerAddress) {
         blockchainRepository.setServer(electrumServerAddress);
     }
 
@@ -38,7 +38,7 @@ public class ElectrumModel extends ViewModel {
         return blockchainRepository.getConnectionStatus();
     }
 
-    public LiveData<List<InetSocketAddress>> getServers() {
+    public LiveData<List<ElectrumServerAddress>> getServers() {
         return serversRepository.getElectrumServers();
     }
 

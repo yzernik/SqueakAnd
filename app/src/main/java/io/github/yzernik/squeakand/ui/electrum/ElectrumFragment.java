@@ -56,13 +56,13 @@ public class ElectrumFragment extends Fragment {
 
         electrumModel = new ViewModelProvider(getActivity()).get(ElectrumModel.class);
 
-        electrumModel.getElectrumServerAddress().observe(getViewLifecycleOwner(), new Observer<InetSocketAddress>() {
+        electrumModel.getElectrumServerAddress().observe(getViewLifecycleOwner(), new Observer<ElectrumServerAddress>() {
             @Override
-            public void onChanged(@Nullable final InetSocketAddress electrumServerAddress) {
+            public void onChanged(@Nullable final ElectrumServerAddress electrumServerAddress) {
                 // Update edit text fields with current address.
                 Log.i(getTag(),"Observed new electrum server address: " + electrumServerAddress);
                 if (electrumServerAddress != null) {
-                    mShowServerHost.setText(electrumServerAddress.getAddress().toString());
+                    mShowServerHost.setText(electrumServerAddress.getHost());
                     mShowServerPort.setText(Integer.toString(electrumServerAddress.getPort()));
                 }
             }
@@ -96,15 +96,15 @@ public class ElectrumFragment extends Fragment {
                 String host = mEnterServerHostname.getEditText().getText().toString();
                 Log.i(getTag(), "Input port is: " + mEnterServerPort.getEditText().getText());
                 int port = Integer.parseInt(mEnterServerPort.getEditText().getText().toString());
-                InetSocketAddress serverAddress = new InetSocketAddress(host, port);
+                ElectrumServerAddress serverAddress = new ElectrumServerAddress(host, port);
                 Log.i(getTag(), "Updating electrum server with new address: " + serverAddress);
                 electrumModel.setElectrumServerAddress(serverAddress);
             }
         });
 
-        electrumModel.getServers().observe(getViewLifecycleOwner(), new Observer<List<InetSocketAddress>>() {
+        electrumModel.getServers().observe(getViewLifecycleOwner(), new Observer<List<ElectrumServerAddress>>() {
             @Override
-            public void onChanged(@Nullable final List<InetSocketAddress> servers) {
+            public void onChanged(@Nullable final List<ElectrumServerAddress> servers) {
                 mSelectElectrumServerButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -124,20 +124,20 @@ public class ElectrumFragment extends Fragment {
      * Show the alert dialog for selecting an electrum server.
      * @param addresses
      */
-    private void showSelectElectrumServerDialog(List<InetSocketAddress> addresses) {
+    private void showSelectElectrumServerDialog(List<ElectrumServerAddress> addresses) {
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Choose an electrum server");
         // add a list
         ArrayList<String> displayValues=new ArrayList<>();
-        for (InetSocketAddress address : addresses) {
+        for (ElectrumServerAddress address : addresses) {
             displayValues.add(address.toString());
         }
         String[] displayValuesArr = displayValues.toArray(new String[displayValues.size()]);
         builder.setItems(displayValuesArr, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                InetSocketAddress selectedAddress = addresses.get(which);
+                ElectrumServerAddress selectedAddress = addresses.get(which);
                 // TODO: do something with the selected server address.
 
                 /*

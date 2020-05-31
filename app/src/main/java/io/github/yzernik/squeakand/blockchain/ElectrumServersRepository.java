@@ -12,7 +12,7 @@ public class ElectrumServersRepository {
 
     private static volatile ElectrumServersRepository INSTANCE;
 
-    private MutableLiveData<List<InetSocketAddress>> liveServers = new MutableLiveData<>();
+    private MutableLiveData<List<ElectrumServerAddress>> liveServers = new MutableLiveData<>();
 
     private ConcurrentHashMap<InetSocketAddress, Long> serversMap;
 
@@ -42,7 +42,7 @@ public class ElectrumServersRepository {
         peerDownloader.keepPeersUpdated();
     }
 
-    public LiveData<List<InetSocketAddress>> getElectrumServers() {
+    public LiveData<List<ElectrumServerAddress>> getElectrumServers() {
         return liveServers;
     }
 
