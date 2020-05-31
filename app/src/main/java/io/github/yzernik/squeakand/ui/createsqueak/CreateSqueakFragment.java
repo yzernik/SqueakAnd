@@ -24,7 +24,7 @@ import org.bitcoinj.params.MainNetParams;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.yzernik.squeakand.BlockchainActivity;
+import io.github.yzernik.squeakand.ElectrumActivity;
 import io.github.yzernik.squeakand.ManageProfilesActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntry;
@@ -169,13 +169,13 @@ public class CreateSqueakFragment extends Fragment {
         } else {
             builder.setMessage("Latest block header hash: " + blockInfo.getHash());
         }
-        // Add the manage blockchain button
-        builder.setNeutralButton("Manage blockchain connection", new DialogInterface.OnClickListener() {
+        // Add the manage electrum button
+        builder.setNeutralButton("Manage electrum connection", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Toast.makeText(getContext(), "neutralize", Toast.LENGTH_SHORT).show();
-                System.out.println("Manage blockchain button clicked");
-                startManageBlockchain();
+                System.out.println("Manage electrum button clicked");
+                startManageElectrum();
             }
         });
         // create and show the alert dialog
@@ -197,8 +197,8 @@ public class CreateSqueakFragment extends Fragment {
         startActivity(intent);
     }
 
-    public void startManageBlockchain() {
-        Intent intent = new Intent(getActivity(), BlockchainActivity.class);
+    public void startManageElectrum() {
+        Intent intent = new Intent(getActivity(), ElectrumActivity.class);
         startActivity(intent);
     }
 

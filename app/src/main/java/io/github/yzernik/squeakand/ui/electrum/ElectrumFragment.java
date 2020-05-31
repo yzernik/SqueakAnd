@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.blockchain;
+package io.github.yzernik.squeakand.ui.electrum;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -27,7 +27,7 @@ import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.ElectrumServerAddress;
 
-public class BlockchainFragment extends Fragment {
+public class ElectrumFragment extends Fragment {
 
     private TextView mShowServerHost;
     private TextView mShowServerPort;
@@ -39,11 +39,11 @@ public class BlockchainFragment extends Fragment {
     private TextInputLayout mEnterServerPort;
 
 
-    private BlockchainModel blockchainModel;
+    private ElectrumModel electrumModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_blockchain, container, false);
+        View root = inflater.inflate(R.layout.fragment_electrum, container, false);
 
         mShowServerHost = root.findViewById(R.id.enter_electrum_host);
         mShowServerPort = root.findViewById(R.id.enter_electrum_port);
@@ -54,9 +54,9 @@ public class BlockchainFragment extends Fragment {
         mEnterServerPort = root.findViewById(R.id.electrum_port_input);
         mShowLatestBlockHeight = root.findViewById(R.id.latest_block_height_text);
 
-        blockchainModel = new ViewModelProvider(getActivity()).get(BlockchainModel.class);
+        electrumModel = new ViewModelProvider(getActivity()).get(ElectrumModel.class);
 
-        blockchainModel.getElectrumServerAddress().observe(getViewLifecycleOwner(), new Observer<ElectrumServerAddress>() {
+        electrumModel.getElectrumServerAddress().observe(getViewLifecycleOwner(), new Observer<ElectrumServerAddress>() {
             @Override
             public void onChanged(@Nullable final ElectrumServerAddress electrumServerAddress) {
                 // Update edit text fields with current address.
@@ -68,7 +68,7 @@ public class BlockchainFragment extends Fragment {
             }
         });
 
-        blockchainModel.getConnectionStatus().observe(getViewLifecycleOwner(), new Observer<ElectrumBlockchainRepository.ConnectionStatus>() {
+        electrumModel.getConnectionStatus().observe(getViewLifecycleOwner(), new Observer<ElectrumBlockchainRepository.ConnectionStatus>() {
             @Override
             public void onChanged(@Nullable final ElectrumBlockchainRepository.ConnectionStatus connectionStatus) {
                 // Update edit text fields with current connection status.
@@ -78,7 +78,7 @@ public class BlockchainFragment extends Fragment {
             }
         });
 
-        blockchainModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
+        electrumModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
             @Override
             public void onChanged(@Nullable final BlockInfo blockInfo) {
                 if (blockInfo != null) {
@@ -98,11 +98,11 @@ public class BlockchainFragment extends Fragment {
                 int port = Integer.parseInt(mEnterServerPort.getEditText().getText().toString());
                 ElectrumServerAddress serverAddress = new ElectrumServerAddress(host, port);
                 Log.i(getTag(), "Updating electrum server with new address: " + serverAddress);
-                blockchainModel.setElectrumServerAddress(serverAddress);
+                electrumModel.setElectrumServerAddress(serverAddress);
             }
         });
 
-        blockchainModel.getServers().observe(getViewLifecycleOwner(), new Observer<List<InetSocketAddress>>() {
+        electrumModel.getServers().observe(getViewLifecycleOwner(), new Observer<List<InetSocketAddress>>() {
             @Override
             public void onChanged(@Nullable final List<InetSocketAddress> servers) {
                 mSelectElectrumServerButton.setOnClickListener(new View.OnClickListener() {

@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.blockchain;
+package io.github.yzernik.squeakand.ui.electrum;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,12 +11,12 @@ import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.ElectrumServerAddress;
 import io.github.yzernik.squeakand.blockchain.ElectrumServersRepository;
 
-public class BlockchainModel extends ViewModel {
+public class ElectrumModel extends ViewModel {
 
     private ElectrumBlockchainRepository blockchainRepository;
     private ElectrumServersRepository serversRepository;
 
-    public BlockchainModel() {
+    public ElectrumModel() {
         blockchainRepository = ElectrumBlockchainRepository.getRepository();
         serversRepository = ElectrumServersRepository.getRepository();
         serversRepository.initialize();
