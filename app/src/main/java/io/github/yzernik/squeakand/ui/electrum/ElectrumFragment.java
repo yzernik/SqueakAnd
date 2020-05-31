@@ -115,13 +115,18 @@ public class ElectrumFragment extends Fragment {
         mConnectElectrumServerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(getTag(), "Input hostname is: " + mEnterServerHostname.getEditText().getText());
                 String host = mEnterServerHostname.getEditText().getText().toString();
-                Log.i(getTag(), "Input port is: " + mEnterServerPort.getEditText().getText());
-                int port = Integer.parseInt(mEnterServerPort.getEditText().getText().toString());
-                ElectrumServerAddress serverAddress = new ElectrumServerAddress(host, port);
-                Log.i(getTag(), "Updating electrum server with new address: " + serverAddress);
-                electrumModel.setElectrumServerAddress(serverAddress);
+                Integer port;
+                try {
+                    port = Integer.parseInt(mEnterServerPort.getEditText().getText().toString());
+                }catch (NumberFormatException e){
+                    port = null;
+                }
+                if (host != null && port != null) {
+                    ElectrumServerAddress serverAddress = new ElectrumServerAddress(host, port);
+                    Log.i(getTag(), "Updating electrum server with new address: " + serverAddress);
+                    electrumModel.setElectrumServerAddress(serverAddress);
+                }
             }
         });
 
