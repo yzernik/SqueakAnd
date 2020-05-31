@@ -31,7 +31,7 @@ public class BlockDownloader {
         this.liveBlockTip = liveBlockTip;
         this.liveConnectionStatus = liveConnectionStatus;
         liveConnectionStatus.setValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
-        this.executorService = Executors.newFixedThreadPool(10);
+        this.executorService = Executors.newCachedThreadPool();
     }
 
     synchronized void setElectrumServer(ElectrumServerAddress serverAddress) {
@@ -105,6 +105,7 @@ public class BlockDownloader {
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
                 liveConnectionStatus.postValue(ElectrumBlockchainRepository.ConnectionStatus.DISCONNECTED);
+                responseFuture.cancel(true);
                 throw e;
             }
         }
