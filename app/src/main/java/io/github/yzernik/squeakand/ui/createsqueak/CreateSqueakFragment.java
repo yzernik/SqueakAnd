@@ -221,7 +221,7 @@ public class CreateSqueakFragment extends Fragment {
 
         BlockInfo blockTip = createSqueakParams.getLatestBlockk();
         if (blockTip == null) {
-            showMissingBlockTipAlert();
+            showMissingBlockHeaderAlert();
             return;
         }
 
@@ -259,9 +259,9 @@ public class CreateSqueakFragment extends Fragment {
         alertDialog.show();
     }
 
-    private void showMissingBlockTipAlert() {
+    private void showMissingBlockHeaderAlert() {
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-        alertDialog.setTitle("Missing Block Tip");
+        alertDialog.setTitle("Missing Block Header");
         alertDialog.setMessage("Latest block header must be downloaded before a squeak can be created.");
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 new DialogInterface.OnClickListener() {

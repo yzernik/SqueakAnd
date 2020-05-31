@@ -130,7 +130,7 @@ public class PeerDownloader {
                 return;
             }
 
-            if (serversMap.contains(address)) {
+            if (serversMap.containsKey(address)) {
                 return;
             }
 
