@@ -30,6 +30,7 @@ import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
+import io.github.yzernik.squeakand.blockchain.ServerUpdate;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 
@@ -83,7 +84,7 @@ public class CreateSqueakFragment extends Fragment {
             }
         });
 
-        createSqueakModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
+/*        createSqueakModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
             @Override
             public void onChanged(@Nullable final BlockInfo blockInfo) {
                 String blockHeightText = "None";
@@ -96,6 +97,28 @@ public class CreateSqueakFragment extends Fragment {
                     public void onClick(View v) {
                         Log.i(getTag(),"View latest block button clicked");
                         showBlockchainAlertDialog(blockInfo);
+                    }
+                });
+            }
+        });*/
+
+        createSqueakModel.getServerUpdate().observe(getViewLifecycleOwner(), new Observer<ServerUpdate>() {
+            @Override
+            public void onChanged(@Nullable final ServerUpdate serverUpdate) {
+                ServerUpdate.ConnectionStatus connectionStatus = serverUpdate.getConnectionStatus();
+                switch (connectionStatus) {
+                    case CONNECTED:
+                        mLatestBlockHeightButton.setText(serverUpdate.getElectrumServerAddress().toString());
+                        break;
+                    default:
+                        mLatestBlockHeightButton.setText("Disconnected");
+                        break;
+                }
+                mLatestBlockHeightButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i(getTag(),"View latest block button clicked");
+                        showBlockchainAlertDialog(serverUpdate.getBlockInfo());
                     }
                 });
             }

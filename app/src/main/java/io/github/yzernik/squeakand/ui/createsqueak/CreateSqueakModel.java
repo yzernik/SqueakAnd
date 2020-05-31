@@ -96,7 +96,6 @@ public class CreateSqueakModel extends AndroidViewModel {
         });
     }
 
-
     LiveData<ServerUpdate> getServerUpdate() {
         return blockchainRepository.getServerUpdate();
     }
