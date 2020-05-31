@@ -17,47 +17,72 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Electrum host:"/>
-
-        <EditText
-            android:id="@+id/enter_electrum_host"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:editable="false"
-            android:text="" />
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Electrum port:"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Electrum host:"
+                android:layout_gravity="left|center_vertical"/>
 
-        <EditText
-            android:id="@+id/enter_electrum_port"
+            <EditText
+                android:id="@+id/enter_electrum_host"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:text=""
+                android:layout_gravity="right|center_vertical"/>
+
+        </FrameLayout>
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:editable="false"
-            android:text="" />
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Connection status:"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Electrum port:"
+                android:layout_gravity="left|center_vertical"/>
 
-        <EditText
-            android:id="@+id/connection_status_text"
+            <EditText
+                android:id="@+id/enter_electrum_port"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:text=""
+                android:layout_gravity="right|center_vertical"/>
+
+        </FrameLayout>
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
-            android:editable="false"/>
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
 
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connection status:"
+                android:layout_gravity="left|center_vertical"/>
 
+            <EditText
+                android:id="@+id/connection_status_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:editable="false"
+                android:layout_gravity="right|center_vertical"/>
 
-
-
+        </FrameLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
