@@ -20,9 +20,6 @@ public class ElectrumServerAddress {
 
     @Override
     public String toString() {
-        return "ElectrumServerAddress(" +
-                "host: " + host + ", " +
-                "port: " + port +
-                ")";
+        return host + ":" + port;
     }
 }
