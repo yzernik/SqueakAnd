@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import io.github.yzernik.electrumclient.ElectrumClient;
 import io.github.yzernik.electrumclient.subscribepeers.Peer;
@@ -27,14 +28,14 @@ public class PeerDownloader {
     private static final int CONNECT_TIMEOUT_MS = 10000; // 10 seconds
     private static final int MAX_SERVERS = 100;
 
-    private MutableLiveData<List<InetSocketAddress>> liveServers;
+    private MutableLiveData<List<ElectrumServerAddress>> liveServers;
     private ConcurrentHashMap<InetSocketAddress, Long> serversMap;
 
     private final ExecutorService executorService;
     private Future<String> future = null;
 
 
-    public PeerDownloader(MutableLiveData<List<InetSocketAddress>> liveServers, ConcurrentHashMap<InetSocketAddress, Long> serversMap) {
+    public PeerDownloader(MutableLiveData<List<ElectrumServerAddress>> liveServers, ConcurrentHashMap<InetSocketAddress, Long> serversMap) {
         this.liveServers = liveServers;
         this.serversMap = serversMap;
         this.executorService =  Executors.newFixedThreadPool(10);
@@ -67,7 +68,10 @@ public class PeerDownloader {
     public void updateLiveData() {
         Log.i(getClass().getName(), "serversMap size: " + serversMap.size());
         ArrayList<InetSocketAddress> keyList = new ArrayList<InetSocketAddress>(serversMap.keySet());
-        liveServers.postValue(keyList);
+        List<ElectrumServerAddress> electrumServerAddresses = keyList.stream()
+                .map(inetSocketAddress -> new ElectrumServerAddress(inetSocketAddress.getHostString(), inetSocketAddress.getPort()))
+                .collect(Collectors.toList());
+        liveServers.postValue(electrumServerAddresses);
     }
 
 
