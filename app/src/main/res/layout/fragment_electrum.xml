@@ -137,6 +137,14 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <Button
+            android:id="@+id/connect_electrum_server_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Connect to electrum server"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -157,14 +165,6 @@
                 android:layout_gravity="right|center_vertical" />
 
         </FrameLayout>
-
-        <Button
-            android:id="@+id/connect_electrum_server_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Connect to electrum server"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
 
     </LinearLayout>

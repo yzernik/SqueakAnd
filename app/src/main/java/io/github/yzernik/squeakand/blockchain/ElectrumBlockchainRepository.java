@@ -8,12 +8,14 @@ import androidx.lifecycle.MutableLiveData;
 
 import org.bitcoinj.core.Sha256Hash;
 
+import java.net.InetSocketAddress;
+
 
 public class ElectrumBlockchainRepository implements BlockchainRepository {
 
     private static volatile ElectrumBlockchainRepository INSTANCE;
 
-    private MutableLiveData<ElectrumServerAddress> liveServerAddress = new MutableLiveData<>();
+    private MutableLiveData<InetSocketAddress> liveServerAddress = new MutableLiveData<>();
     private MutableLiveData<BlockInfo> liveBlockTip = new MutableLiveData<>();
     private MutableLiveData<ConnectionStatus> liveConnectionStatus = new MutableLiveData<>();
     private BlockDownloader blockDownloader;
@@ -36,7 +38,7 @@ public class ElectrumBlockchainRepository implements BlockchainRepository {
         return INSTANCE;
     }
 
-    public void setServer(ElectrumServerAddress serverAddress) {
+    public void setServer(InetSocketAddress serverAddress) {
         liveServerAddress.setValue(serverAddress);
 
         // Set up electrum client with server config, and load livedata.
@@ -56,7 +58,7 @@ public class ElectrumBlockchainRepository implements BlockchainRepository {
         return null;
     }
 
-    public LiveData<ElectrumServerAddress> getServerAddress() {
+    public LiveData<InetSocketAddress> getServerAddress() {
         return liveServerAddress;
     }
 
