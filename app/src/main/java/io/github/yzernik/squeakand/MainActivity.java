@@ -11,7 +11,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
-import io.github.yzernik.squeakand.blockchain.ElectrumServersRepository;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
      * Initializes the connection to electrum server, etc.
      */
     private void initializeNetworkConnections() {
-        ElectrumServersRepository electrumServersRepository = ElectrumServersRepository.getRepository();
-        electrumServersRepository.initialize();
+        ElectrumBlockchainRepository electrumBlockchainRepository = ElectrumBlockchainRepository.getRepository(getApplication());
+        electrumBlockchainRepository.initialize();
     }
 
 }

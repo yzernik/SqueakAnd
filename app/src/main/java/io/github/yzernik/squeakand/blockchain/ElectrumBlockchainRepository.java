@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import org.bitcoinj.core.Sha256Hash;
 
+import java.util.List;
+
 import io.github.yzernik.squeakand.preferences.Preferences;
 
 
@@ -14,15 +16,22 @@ public class ElectrumBlockchainRepository {
 
     private static volatile ElectrumBlockchainRepository INSTANCE;
 
+    // For handling download
     private MutableLiveData<ServerUpdate> liveServerUpdate = new MutableLiveData<>();
     private BlockDownloader blockDownloader;
     private Preferences preferences;
+
+    // For handling peers
+    private MutableLiveData<List<ElectrumServerAddress>> liveServers = new MutableLiveData<>();
+    private LiveElectrumPeersMap peersMap = new LiveElectrumPeersMap(liveServers);
+    private PeerDownloader peerDownloader;
 
     private ElectrumBlockchainRepository(Application application) {
         // Singleton constructor, only called by static method.
         ElectrumDownloaderConnection downloaderConnection = new ElectrumDownloaderConnection(liveServerUpdate);
         blockDownloader = new BlockDownloader(downloaderConnection);
         preferences = new Preferences(application);
+        peerDownloader = new PeerDownloader(peersMap);
 
         // Initialize the electrum server connection
         initialize();
@@ -45,6 +54,9 @@ public class ElectrumBlockchainRepository {
         if (serverAddress != null) {
             setServer(serverAddress);
         }
+
+        // Start the peer discovery
+        peerDownloader.keepPeersUpdated();
     }
 
     public void setServer(ElectrumServerAddress serverAddress) {
@@ -62,6 +74,10 @@ public class ElectrumBlockchainRepository {
 
     public LiveData<ServerUpdate> getServerUpdate() {
         return liveServerUpdate;
+    }
+
+    public LiveData<List<ElectrumServerAddress>> getElectrumServers() {
+        return liveServers;
     }
 
 }
