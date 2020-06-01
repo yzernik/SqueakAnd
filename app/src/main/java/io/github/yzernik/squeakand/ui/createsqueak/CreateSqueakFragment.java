@@ -190,7 +190,9 @@ public class CreateSqueakFragment extends Fragment {
 
         switch (serverUpdate.getConnectionStatus()) {
             case CONNECTED:
-                builder.setMessage("Connected to: " + serverUpdate.getElectrumServerAddress().toString());
+                String serverString = serverUpdate.getElectrumServerAddress().toString();
+                BlockInfo blockInfo = serverUpdate.getBlockInfo();
+                builder.setMessage("Connected to: " + serverString + " with block height: " + blockInfo.getHeight());
                 break;
             default:
                 builder.setMessage("Not connected to any electrum server.");
