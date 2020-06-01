@@ -19,7 +19,6 @@ public class ElectrumModel extends ViewModel {
     public ElectrumModel() {
         blockchainRepository = ElectrumBlockchainRepository.getRepository();
         serversRepository = ElectrumServersRepository.getRepository();
-        serversRepository.initialize();
     }
 /*
     public LiveData<ElectrumServerAddress> getElectrumServerAddress() {
