@@ -35,7 +35,7 @@ public class CreateSqueakModel extends AndroidViewModel {
         super(application);
         mProfileRepository = new SqueakProfileRepository(application);
         mSqueakRepository = new SqueakRepository(application);
-        blockchainRepository = ElectrumBlockchainRepository.getRepository();
+        blockchainRepository = ElectrumBlockchainRepository.getRepository(application);
         mAllSqueakProfiles = mProfileRepository.getAllSqueakProfiles();
         mSelectedSqueakProfileId = new MutableLiveData<>();
         replyToHash = Sha256Hash.ZERO_HASH;
