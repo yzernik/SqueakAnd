@@ -1,8 +1,6 @@
 package io.github.yzernik.squeakand.ui.createsqueak;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
@@ -20,33 +18,28 @@ import io.github.yzernik.squeakand.SqueakProfileRepository;
 import io.github.yzernik.squeakand.SqueakRepository;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
-import io.github.yzernik.squeakand.blockchain.ElectrumServerAddress;
 import io.github.yzernik.squeakand.blockchain.ServerUpdate;
+import io.github.yzernik.squeakand.preferences.Preferences;
 
 public class CreateSqueakModel extends AndroidViewModel {
-
-    private static final String SQUEAK_PROFILE_FILE_KEY = "io.github.yzernik.squeakand.SQUEAK_PROFILE_PREFERENCES";
-    private static final String SELECTED_SQUEAK_PROFILE_ID_KEY = "SELECTED_SQUEAK_PROFILE_ID";
 
     private SqueakProfileRepository mProfileRepository;
     private SqueakRepository mSqueakRepository;
     private ElectrumBlockchainRepository blockchainRepository;
-    private SharedPreferences sharedPreferences;
     private LiveData<List<SqueakProfile>> mAllSqueakProfiles;
     private MutableLiveData<Integer> mSelectedSqueakProfileId;
     public Sha256Hash replyToHash;
+    private Preferences preferences;
 
     public CreateSqueakModel(Application application) {
         super(application);
         mProfileRepository = new SqueakProfileRepository(application);
         mSqueakRepository = new SqueakRepository(application);
-        blockchainRepository = ElectrumBlockchainRepository.getRepository();
-        // blockchainRepository.setServer(new ElectrumServerAddress("electrumx-core.1209k.com", 50001));
+        blockchainRepository = ElectrumBlockchainRepository.getRepository(application);
         mAllSqueakProfiles = mProfileRepository.getAllSqueakProfiles();
         mSelectedSqueakProfileId = new MutableLiveData<>();
-        sharedPreferences = application.getSharedPreferences(
-                SQUEAK_PROFILE_FILE_KEY, Context.MODE_PRIVATE);
         replyToHash = Sha256Hash.ZERO_HASH;
+        preferences = new Preferences(application);
 
         // Set the initial value of squeakprofile id
         loadSelectedSqueakProfileId();
@@ -67,13 +60,11 @@ public class CreateSqueakModel extends AndroidViewModel {
     }
 
     private int getSavedSelectedProfileId() {
-        return sharedPreferences.getInt(SELECTED_SQUEAK_PROFILE_ID_KEY, -1);
+        return preferences.getProfileId();
     }
 
     private void saveSelectedProfileId(int squeakProfileId) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(SELECTED_SQUEAK_PROFILE_ID_KEY, squeakProfileId);
-        editor.commit();
+        preferences.saveSelectedProfileId(squeakProfileId);
     }
 
     LiveData<SqueakProfile> getSelectedSqueakProfile() {
