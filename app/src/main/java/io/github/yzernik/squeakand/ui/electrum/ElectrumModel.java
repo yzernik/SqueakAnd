@@ -9,19 +9,15 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.ElectrumServerAddress;
-import io.github.yzernik.squeakand.blockchain.ElectrumServersRepository;
 import io.github.yzernik.squeakand.blockchain.ServerUpdate;
 
 public class ElectrumModel extends AndroidViewModel {
 
     private ElectrumBlockchainRepository blockchainRepository;
-    private ElectrumServersRepository serversRepository;
-    // private Preferences preferences;
 
     public ElectrumModel(Application application) {
         super(application);
         blockchainRepository = ElectrumBlockchainRepository.getRepository(application);
-        serversRepository = ElectrumServersRepository.getRepository();
     }
 
 /*
@@ -37,7 +33,6 @@ public class ElectrumModel extends AndroidViewModel {
 
     public void setElectrumServerAddress(ElectrumServerAddress electrumServerAddress) {
         blockchainRepository.setServer(electrumServerAddress);
-        serversRepository.addPeer(electrumServerAddress);
     }
 
 /*    public LiveData<ServerUpdate.ConnectionStatus> getConnectionStatus() {
@@ -45,13 +40,11 @@ public class ElectrumModel extends AndroidViewModel {
     }*/
 
     public LiveData<List<ElectrumServerAddress>> getServers() {
-        return serversRepository.getElectrumServers();
+        return blockchainRepository.getElectrumServers();
     }
 
     public LiveData<ServerUpdate> getServerUpdate() {
         return blockchainRepository.getServerUpdate();
     }
-
-
 
 }
