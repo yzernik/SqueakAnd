@@ -1,7 +1,6 @@
 package io.github.yzernik.squeakand.blockchain;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -48,33 +47,17 @@ public class ElectrumBlockchainRepository {
     }
 
     public void setServer(ElectrumServerAddress serverAddress) {
-        // liveServerAddress.setValue(serverAddress);
-
         // Set up electrum client with server config, and load livedata.
-        // loadLiveData(host, port);
         blockDownloader.setElectrumServer(serverAddress);
 
         // Save the server address in sharedpreferences
         preferences.saveElectrumServerAddress(serverAddress);
     }
 
-/*    public LiveData<BlockInfo> getLatestBlock() {
-        Log.i(getClass().getName(), "Returning latest block tip live data from repository..");
-        return liveBlockTip;
-    }*/
-
     public LiveData<Sha256Hash> getBlockHash(int blockHeight) {
         // TODO
         return null;
     }
-
-/*    public LiveData<ElectrumServerAddress> getServerAddress() {
-        return liveServerAddress;
-    }*/
-
-/*    public LiveData<ServerUpdate.ConnectionStatus> getConnectionStatus() {
-        return liveConnectionStatus;
-    }*/
 
     public LiveData<ServerUpdate> getServerUpdate() {
         return liveServerUpdate;
