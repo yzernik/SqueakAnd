@@ -88,7 +88,7 @@ public class BlockDownloader {
     }
 
     class BlockDownloadTask implements Callable<String> {
-        private static final int MAX_RETRIES = 10;
+        private static final int MAX_RETRIES = 5;
         private static final int INITIAL_BACKOFF_TIME_MS = 1000;
 
         private final ElectrumServerAddress serverAddress;
@@ -101,7 +101,19 @@ public class BlockDownloader {
         @Override
         public String call() {
             Log.i(getClass().getName(), "Calling call.");
-            // InetSocketAddress address = new InetSocketAddress(serverAddress.getHost(), serverAddress.getPort());
+            while (true) {
+                try {
+                    Log.e(getClass().getName(), "Calling : tryLoadLiveDataWithRetries");
+                    tryLoadLiveDataWithRetries();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Log.e(getClass().getName(), "CANCELLED - Command because of interrupt. error: " + e);
+                    return "";
+                }
+            }
+        }
+
+        private void tryLoadLiveDataWithRetries() throws InterruptedException {
             InetSocketAddress address = new InetSocketAddress(serverAddress.getHost(), serverAddress.getPort());
             ElectrumClient electrumClient = new ElectrumClient(address, executorService);
             while (retryCounter < MAX_RETRIES) {
@@ -110,19 +122,11 @@ public class BlockDownloader {
                 } catch (ExecutionException  e) {
                     retryCounter++;
                     Log.e(getClass().getName(), "FAILED - Command failed on retry " + retryCounter + " of " + MAX_RETRIES + " error: " + e);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Log.e(getClass().getName(), "CANCELLED - Command because of interrupt. error: " + e);
-                    break;
                 }
-                try {
-                    int backoff = INITIAL_BACKOFF_TIME_MS << retryCounter;
-                    Thread.sleep(backoff);
-                } catch (InterruptedException e) {
-                    break;
-                }
+                int backoff = INITIAL_BACKOFF_TIME_MS << retryCounter;
+                Thread.sleep(backoff);
             }
-            return "";
+            resetRetryCounter();
         }
 
         private void tryLoadLiveData(ElectrumClient electrumClient) throws ExecutionException, InterruptedException {
