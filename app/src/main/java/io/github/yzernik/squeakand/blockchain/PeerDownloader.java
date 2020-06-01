@@ -27,7 +27,7 @@ public class PeerDownloader {
     private static final int MAX_SERVERS = 100;
 
     // private MutableLiveData<List<ElectrumServerAddress>> liveServers;
-    private ConcurrentHashMap<ElectrumServerAddress, Long> serversMap;
+    private LiveElectrumPeersMap serversMap;
     private BlockingQueue<ElectrumServerAddress> peerCandidates = new LinkedBlockingQueue();
 
     private final ExecutorService executorService;
@@ -59,13 +59,12 @@ public class PeerDownloader {
     }
 
     private void add(ElectrumServerAddress address) {
-        serversMap.put(address, getCurrentTimeMs());
+        serversMap.putNewPeer(address);
     }
 
     private long getCurrentTimeMs() {
         return System.currentTimeMillis();
     }
-
 
     /*
     public void updateLiveData() {

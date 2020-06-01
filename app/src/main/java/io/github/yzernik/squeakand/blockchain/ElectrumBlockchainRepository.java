@@ -28,7 +28,7 @@ public class ElectrumBlockchainRepository {
 
     private ElectrumBlockchainRepository(Application application) {
         // Singleton constructor, only called by static method.
-        ElectrumDownloaderConnection downloaderConnection = new ElectrumDownloaderConnection(liveServerUpdate);
+        ElectrumDownloaderConnection downloaderConnection = new ElectrumDownloaderConnection(liveServerUpdate, peersMap);
         blockDownloader = new BlockDownloader(downloaderConnection);
         preferences = new Preferences(application);
         peerDownloader = new PeerDownloader(peersMap);

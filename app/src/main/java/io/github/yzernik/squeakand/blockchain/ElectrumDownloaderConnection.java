@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData;
 public class ElectrumDownloaderConnection {
 
     private MutableLiveData<ServerUpdate> liveServerUpdate;
+    private LiveElectrumPeersMap peersMap;
 
-    public ElectrumDownloaderConnection(MutableLiveData<ServerUpdate> liveServerUpdate) {
+    public ElectrumDownloaderConnection(MutableLiveData<ServerUpdate> liveServerUpdate, LiveElectrumPeersMap peersMap) {
         this.liveServerUpdate = liveServerUpdate;
+        this.peersMap = peersMap;
         setStatusDisconnected(null);
     }
 
@@ -18,6 +20,9 @@ public class ElectrumDownloaderConnection {
                 blockInfo
         );
         liveServerUpdate.postValue(serverUpdate);
+
+        // Add the connected address to the peers map
+        peersMap.putNewPeer(serverAddress);
     }
 
     void setStatusDisconnected(ElectrumServerAddress serverAddress) {
