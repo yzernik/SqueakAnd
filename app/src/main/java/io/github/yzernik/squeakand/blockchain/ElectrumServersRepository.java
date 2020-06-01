@@ -40,8 +40,4 @@ public class ElectrumServersRepository {
         return liveServers;
     }
 
-    public void addPeer(ElectrumServerAddress serverAddress) {
-        peerDownloader.considerAddress(serverAddress);
-    }
-
 }
