@@ -11,8 +11,8 @@ public class Preferences {
 
     private SharedPreferences sharedPreferences;
 
-    public Preferences(Application application) {
-        sharedPreferences = application.getSharedPreferences(
+    public Preferences(Context context) {
+        sharedPreferences = context.getSharedPreferences(
                 SQUEAK_PROFILE_FILE_KEY, Context.MODE_PRIVATE);
     }
 
