@@ -15,18 +15,13 @@ public class ElectrumBlockchainRepository {
 
     private static volatile ElectrumBlockchainRepository INSTANCE;
 
-    private MutableLiveData<ElectrumServerAddress> liveServerAddress = new MutableLiveData<>();
-    private MutableLiveData<BlockInfo> liveBlockTip = new MutableLiveData<>();
-    private MutableLiveData<ServerUpdate.ConnectionStatus> liveConnectionStatus = new MutableLiveData<>();
     private MutableLiveData<ServerUpdate> liveServerUpdate = new MutableLiveData<>();
     private BlockDownloader blockDownloader;
     private Preferences preferences;
 
     private ElectrumBlockchainRepository(Application application) {
         // Singleton constructor, only called by static method.
-        liveServerAddress.setValue(null);
-        liveBlockTip.setValue(null);
-        blockDownloader = new BlockDownloader(liveBlockTip, liveConnectionStatus, liveServerUpdate);
+        blockDownloader = new BlockDownloader(liveServerUpdate);
         preferences = new Preferences(application);
 
         // Initialize the electrum server connection
