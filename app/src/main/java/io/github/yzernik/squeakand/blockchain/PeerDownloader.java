@@ -2,10 +2,7 @@ package io.github.yzernik.squeakand.blockchain;
 
 import android.util.Log;
 
-import androidx.lifecycle.MutableLiveData;
-
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -29,16 +26,16 @@ public class PeerDownloader {
     private static final int CONNECT_TIMEOUT_MS = 10000; // 10 seconds
     private static final int MAX_SERVERS = 100;
 
-    private MutableLiveData<List<ElectrumServerAddress>> liveServers;
+    // private MutableLiveData<List<ElectrumServerAddress>> liveServers;
     private ConcurrentHashMap<ElectrumServerAddress, Long> serversMap;
     private BlockingQueue<ElectrumServerAddress> peerCandidates = new LinkedBlockingQueue();
 
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    public PeerDownloader(MutableLiveData<List<ElectrumServerAddress>> liveServers) {
-        this.liveServers = liveServers;
-        this.serversMap = new ConcurrentHashMap<>();
+    public PeerDownloader(LiveElectrumPeersMap peersMap) {
+        // this.liveServers = liveServers;
+        this.serversMap = peersMap;
         this.executorService =  Executors.newFixedThreadPool(10);
     }
 
@@ -56,25 +53,26 @@ public class PeerDownloader {
         peerCandidates.add(address);
     }
 
+
     private void remove(ElectrumServerAddress address) {
         serversMap.remove(address);
-        updateLiveData();
     }
 
     private void add(ElectrumServerAddress address) {
         serversMap.put(address, getCurrentTimeMs());
-        updateLiveData();
     }
 
     private long getCurrentTimeMs() {
         return System.currentTimeMillis();
     }
 
+
+    /*
     public void updateLiveData() {
         Log.i(getClass().getName(), "Number of electrum peers: " + serversMap.size());
         ArrayList<ElectrumServerAddress> keyList = new ArrayList<ElectrumServerAddress>(serversMap.keySet());
         liveServers.postValue(keyList);
-    }
+    }*/
 
 
     class PeerUpdateTask implements Callable<String> {
