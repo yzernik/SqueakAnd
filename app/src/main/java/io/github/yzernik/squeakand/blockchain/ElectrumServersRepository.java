@@ -3,7 +3,6 @@ package io.github.yzernik.squeakand.blockchain;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ElectrumServersRepository {
