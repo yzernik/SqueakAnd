@@ -11,13 +11,14 @@ public class ElectrumServersRepository {
     private static volatile ElectrumServersRepository INSTANCE;
 
     private MutableLiveData<List<ElectrumServerAddress>> liveServers = new MutableLiveData<>();
+    private LiveElectrumPeersMap peersMap = new LiveElectrumPeersMap(liveServers);
 
     private PeerDownloader peerDownloader;
 
     private ElectrumServersRepository() {
         // Singleton constructor, only called by static method.
         System.out.println("Starting new ElectrumServersRepository");
-        peerDownloader = new PeerDownloader(liveServers);
+        peerDownloader = new PeerDownloader(peersMap);
     }
 
     public static ElectrumServersRepository getRepository() {
