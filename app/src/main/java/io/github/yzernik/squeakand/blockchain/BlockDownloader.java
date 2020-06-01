@@ -2,8 +2,6 @@ package io.github.yzernik.squeakand.blockchain;
 
 import android.util.Log;
 
-import androidx.lifecycle.MutableLiveData;
-
 import org.bitcoinj.core.BitcoinSerializer;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.NetworkParameters;
@@ -22,19 +20,23 @@ import static org.bitcoinj.core.Utils.HEX;
 
 public class BlockDownloader {
 
-    private final MutableLiveData<ServerUpdate> liveServerUpdate;
+    // private final MutableLiveData<ServerUpdate> liveServerUpdate;
+    private final ElectrumDownloaderConnection downloaderConnection;
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    BlockDownloader(MutableLiveData<ServerUpdate> liveServerUpdate) {
-        this.liveServerUpdate = liveServerUpdate;
+    BlockDownloader(ElectrumDownloaderConnection downloaderConnection) {
+        // this.liveServerUpdate = liveServerUpdate;
+        this.downloaderConnection = downloaderConnection;
         this.executorService = Executors.newCachedThreadPool();
-        initialize();
+        // initialize();
     }
 
+
+    /*
     synchronized void initialize() {
         setStatusDisconnected(null);
-    }
+    }*/
 
     synchronized void setElectrumServer(ElectrumServerAddress serverAddress) {
         if (future != null) {
@@ -47,7 +49,8 @@ public class BlockDownloader {
     }
 
 
-    void setStatusConnected(ElectrumServerAddress serverAddress, BlockInfo blockInfo) {
+
+    /*    void setStatusConnected(ElectrumServerAddress serverAddress, BlockInfo blockInfo) {
         ServerUpdate serverUpdate = new ServerUpdate(
                 ServerUpdate.ConnectionStatus.CONNECTED,
                 serverAddress,
@@ -72,7 +75,7 @@ public class BlockDownloader {
                 null
         );
         liveServerUpdate.postValue(serverUpdate);
-    }
+    }*/
 
     private BlockInfo parseHeaderResponse(SubscribeHeadersResponse response) {
         NetworkParameters networkParameters = io.github.yzernik.squeakand.networkparameters.NetworkParameters.getNetworkParameters();
@@ -124,18 +127,21 @@ public class BlockDownloader {
         }
 
         private void tryLoadLiveData(ElectrumClient electrumClient) throws ExecutionException, InterruptedException {
-            updateStatusConnecting();
+            // updateStatusConnecting();
+            downloaderConnection.setStatusConnecting(serverAddress);
             Future<SubscribeHeadersResponse> responseFuture = electrumClient.subscribeHeaders(header -> {
                 Log.i(getClass().getName(), "Downloaded header: " + header);
                 BlockInfo blockInfo = parseHeaderResponse(header);
-                updateStatusConnected(blockInfo);
+                // updateStatusConnected(blockInfo);
+                downloaderConnection.setStatusConnected(serverAddress, blockInfo);
                 resetRetryCounter();
             });
             try {
                 responseFuture.get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
-                updateStatusDisconnected();
+                // updateStatusDisconnected();
+                downloaderConnection.setStatusDisconnected(serverAddress);
                 responseFuture.cancel(true);
                 throw e;
             }
@@ -145,7 +151,8 @@ public class BlockDownloader {
             retryCounter = 0;
         }
 
-        private void updateStatusConnected(BlockInfo blockInfo) {
+
+        /*        private void updateStatusConnected(BlockInfo blockInfo) {
             setStatusConnected(serverAddress, blockInfo);
         }
 
@@ -155,7 +162,7 @@ public class BlockDownloader {
 
         private void updateStatusConnecting() {
             setStatusConnecting(serverAddress);
-        }
+        }*/
 
     }
 
