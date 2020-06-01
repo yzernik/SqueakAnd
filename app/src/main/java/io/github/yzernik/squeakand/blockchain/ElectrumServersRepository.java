@@ -33,9 +33,6 @@ public class ElectrumServersRepository {
     }
 
     public void initialize() {
-        // Initialize the livedata with an empty list.
-        liveServers.setValue(Collections.emptyList());
-
         // Start the worker thread.
         peerDownloader.keepPeersUpdated();
     }

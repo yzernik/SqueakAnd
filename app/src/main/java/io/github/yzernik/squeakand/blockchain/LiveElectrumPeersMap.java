@@ -16,6 +16,7 @@ public class LiveElectrumPeersMap extends ConcurrentHashMap<ElectrumServerAddres
 
     public LiveElectrumPeersMap(MutableLiveData<List<ElectrumServerAddress>> liveServers) {
         this.liveServers = liveServers;
+        updateLiveData();
     }
 
     @Nullable
