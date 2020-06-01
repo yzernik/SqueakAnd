@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.net.InetSocketAddress;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,7 +23,6 @@ public class ElectrumServersRepository {
         System.out.println("Starting new ElectrumServersRepository");
         serversMap = new ConcurrentHashMap<>();
         peerDownloader = new PeerDownloader(liveServers, serversMap);
-
     }
 
     public static ElectrumServersRepository getRepository() {
@@ -37,7 +37,10 @@ public class ElectrumServersRepository {
     }
 
     public void initialize() {
-        // TODO: start the worker thread, and pass it the reference to the livedata objects.
+        // Initialize the livedata with an empty list.
+        liveServers.setValue(Collections.emptyList());
+
+        // Start the worker thread.
         peerDownloader.keepPeersUpdated();
     }
 
