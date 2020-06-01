@@ -37,6 +37,7 @@ public class ElectrumModel extends AndroidViewModel {
 
     public void setElectrumServerAddress(ElectrumServerAddress electrumServerAddress) {
         blockchainRepository.setServer(electrumServerAddress);
+        serversRepository.addPeer(electrumServerAddress);
     }
 
 /*    public LiveData<ServerUpdate.ConnectionStatus> getConnectionStatus() {
@@ -50,5 +51,7 @@ public class ElectrumModel extends AndroidViewModel {
     public LiveData<ServerUpdate> getServerUpdate() {
         return blockchainRepository.getServerUpdate();
     }
+
+
 
 }
