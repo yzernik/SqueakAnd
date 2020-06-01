@@ -38,6 +38,12 @@ public class SqueakProfile implements Serializable {
     }
 
     @Ignore
+    public SqueakProfile(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    @Ignore
     public String getName() {
         return name;
     }
@@ -55,6 +61,11 @@ public class SqueakProfile implements Serializable {
     @Ignore
     public int getProfileId() {
         return profile_id;
+    }
+
+    @Ignore
+    public boolean isSigningProfile() {
+        return keyPair != null;
     }
 
     @Override

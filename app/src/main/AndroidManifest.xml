@@ -40,6 +40,10 @@
             android:name=".ElectrumActivity"
             android:parentActivityName=".CreateSqueakActivity"
             android:label="@string/activity_electrum" />
+        <activity
+            android:name=".NewContactActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/activity_add_contact" />
     </application>
 
 </manifest>
