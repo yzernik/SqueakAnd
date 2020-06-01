@@ -44,7 +44,7 @@ public class ElectrumServersRepository {
     }
 
     public void addPeer(ElectrumServerAddress serverAddress) {
-        peerDownloader.add(serverAddress);
+        peerDownloader.considerAddress(serverAddress);
     }
 
 }

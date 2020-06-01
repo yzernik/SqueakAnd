@@ -7,12 +7,14 @@ import androidx.lifecycle.MutableLiveData;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -29,6 +31,7 @@ public class PeerDownloader {
 
     private MutableLiveData<List<ElectrumServerAddress>> liveServers;
     private ConcurrentHashMap<ElectrumServerAddress, Long> serversMap;
+    private BlockingQueue<ElectrumServerAddress> peerCandidates = new LinkedBlockingQueue();
 
     private final ExecutorService executorService;
     private Future<String> future = null;
@@ -49,12 +52,16 @@ public class PeerDownloader {
         future = executorService.submit(peerUpdateTask);
     }
 
-    public void remove(ElectrumServerAddress address) {
+    public void considerAddress(ElectrumServerAddress address) {
+        peerCandidates.add(address);
+    }
+
+    private void remove(ElectrumServerAddress address) {
         serversMap.remove(address);
         updateLiveData();
     }
 
-    public void add(ElectrumServerAddress address) {
+    private void add(ElectrumServerAddress address) {
         serversMap.put(address, getCurrentTimeMs());
         updateLiveData();
     }
@@ -64,11 +71,8 @@ public class PeerDownloader {
     }
 
     public void updateLiveData() {
-        Log.i(getClass().getName(), "serversMap size: " + serversMap.size());
+        Log.i(getClass().getName(), "Number of electrum peers: " + serversMap.size());
         ArrayList<ElectrumServerAddress> keyList = new ArrayList<ElectrumServerAddress>(serversMap.keySet());
-/*        List<ElectrumServerAddress> electrumServerAddresses = keyList.stream()
-                .map(inetSocketAddress -> new ElectrumServerAddress(inetSocketAddress.getHostString(), inetSocketAddress.getPort()))
-                .collect(Collectors.toList());*/
         liveServers.postValue(keyList);
     }
 
@@ -82,6 +86,7 @@ public class PeerDownloader {
         public String call() throws InterruptedException {
             while (true) {
                 updatePeers();
+                considerCandidatePeers();
                 Thread.sleep(UPDATE_INTERVAL_MS);
             }
         }
@@ -95,7 +100,14 @@ public class PeerDownloader {
             List<Peer> seedPeers = SeedPeers.getSeedPeers();
             for (Peer peer: seedPeers) {
                 ElectrumServerAddress newAddress = addressFromPeer(peer);
-                handleNewAddress(newAddress);
+                makeCandidateAddress(newAddress);
+            }
+        }
+
+        private void considerCandidatePeers() throws InterruptedException {
+            while (!peerCandidates.isEmpty()) {
+                ElectrumServerAddress candidate = peerCandidates.take();
+                handleNewAddress(candidate);
             }
         }
 
@@ -104,7 +116,7 @@ public class PeerDownloader {
             if (peers != null) {
                 for (Peer peer: peers) {
                     ElectrumServerAddress newAddress = addressFromPeer(peer);
-                    handleNewAddress(newAddress);
+                    makeCandidateAddress(newAddress);
                 }
             }
 
@@ -139,6 +151,14 @@ public class PeerDownloader {
             if (canConnect) {
                 add(address);
             }
+        }
+
+        private void makeCandidateAddress(ElectrumServerAddress address) {
+            if (address == null) {
+                return;
+            }
+
+            peerCandidates.add(address);
         }
 
         private boolean ping(ElectrumServerAddress address) throws InterruptedException {
