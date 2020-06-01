@@ -7,15 +7,16 @@ import androidx.lifecycle.MutableLiveData;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 import io.github.yzernik.electrumclient.ElectrumClient;
 import io.github.yzernik.electrumclient.subscribepeers.Peer;
@@ -29,15 +30,15 @@ public class PeerDownloader {
     private static final int MAX_SERVERS = 100;
 
     private MutableLiveData<List<ElectrumServerAddress>> liveServers;
-    private ConcurrentHashMap<InetSocketAddress, Long> serversMap;
+    private ConcurrentHashMap<ElectrumServerAddress, Long> serversMap;
+    private BlockingQueue<ElectrumServerAddress> peerCandidates = new LinkedBlockingQueue();
 
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-
-    public PeerDownloader(MutableLiveData<List<ElectrumServerAddress>> liveServers, ConcurrentHashMap<InetSocketAddress, Long> serversMap) {
+    public PeerDownloader(MutableLiveData<List<ElectrumServerAddress>> liveServers) {
         this.liveServers = liveServers;
-        this.serversMap = serversMap;
+        this.serversMap = new ConcurrentHashMap<>();
         this.executorService =  Executors.newFixedThreadPool(10);
     }
 
@@ -51,12 +52,16 @@ public class PeerDownloader {
         future = executorService.submit(peerUpdateTask);
     }
 
-    private void remove(InetSocketAddress address) {
+    public void considerAddress(ElectrumServerAddress address) {
+        peerCandidates.add(address);
+    }
+
+    private void remove(ElectrumServerAddress address) {
         serversMap.remove(address);
         updateLiveData();
     }
 
-    private void add(InetSocketAddress address) {
+    private void add(ElectrumServerAddress address) {
         serversMap.put(address, getCurrentTimeMs());
         updateLiveData();
     }
@@ -66,12 +71,9 @@ public class PeerDownloader {
     }
 
     public void updateLiveData() {
-        Log.i(getClass().getName(), "serversMap size: " + serversMap.size());
-        ArrayList<InetSocketAddress> keyList = new ArrayList<InetSocketAddress>(serversMap.keySet());
-        List<ElectrumServerAddress> electrumServerAddresses = keyList.stream()
-                .map(inetSocketAddress -> new ElectrumServerAddress(inetSocketAddress.getHostString(), inetSocketAddress.getPort()))
-                .collect(Collectors.toList());
-        liveServers.postValue(electrumServerAddresses);
+        Log.i(getClass().getName(), "Number of electrum peers: " + serversMap.size());
+        ArrayList<ElectrumServerAddress> keyList = new ArrayList<ElectrumServerAddress>(serversMap.keySet());
+        liveServers.postValue(keyList);
     }
 
 
@@ -84,36 +86,44 @@ public class PeerDownloader {
         public String call() throws InterruptedException {
             while (true) {
                 updatePeers();
+                considerCandidatePeers();
                 Thread.sleep(UPDATE_INTERVAL_MS);
             }
         }
 
         private void updatePeers() throws InterruptedException {
-            for (InetSocketAddress address: serversMap.keySet()) {
+            for (ElectrumServerAddress address: serversMap.keySet()) {
                 updatePeer(address);
             }
 
             // Handle the seed peers
             List<Peer> seedPeers = SeedPeers.getSeedPeers();
             for (Peer peer: seedPeers) {
-                InetSocketAddress newAddress = addressFromPeer(peer);
-                handleNewAddress(newAddress);
+                ElectrumServerAddress newAddress = addressFromPeer(peer);
+                makeCandidateAddress(newAddress);
             }
         }
 
-        private void updatePeer(InetSocketAddress address) throws InterruptedException {
+        private void considerCandidatePeers() throws InterruptedException {
+            while (!peerCandidates.isEmpty()) {
+                ElectrumServerAddress candidate = peerCandidates.take();
+                handleNewAddress(candidate);
+            }
+        }
+
+        private void updatePeer(ElectrumServerAddress address) throws InterruptedException {
             List<Peer> peers = getPeers(address);
             if (peers != null) {
                 for (Peer peer: peers) {
-                    InetSocketAddress newAddress = addressFromPeer(peer);
-                    handleNewAddress(newAddress);
+                    ElectrumServerAddress newAddress = addressFromPeer(peer);
+                    makeCandidateAddress(newAddress);
                 }
             }
 
             removeIfOld(address);
         }
 
-        private void removeIfOld(InetSocketAddress address) {
+        private void removeIfOld(ElectrumServerAddress address) {
             Long lastConnectTimeMs = serversMap.get(address);
             if (lastConnectTimeMs != null) {
                 long currentTimeMs = getCurrentTimeMs();
@@ -124,7 +134,7 @@ public class PeerDownloader {
 
         }
 
-        private void handleNewAddress(InetSocketAddress address) throws InterruptedException {
+        private void handleNewAddress(ElectrumServerAddress address) throws InterruptedException {
             if (address == null) {
                 return;
             }
@@ -143,7 +153,15 @@ public class PeerDownloader {
             }
         }
 
-        private boolean ping(InetSocketAddress address) throws InterruptedException {
+        private void makeCandidateAddress(ElectrumServerAddress address) {
+            if (address == null) {
+                return;
+            }
+
+            peerCandidates.add(address);
+        }
+
+        private boolean ping(ElectrumServerAddress address) throws InterruptedException {
             List<Peer> peers = getPeers(address);
             if (peers != null) {
                 return true;
@@ -152,8 +170,9 @@ public class PeerDownloader {
             }
         }
 
-        private List<Peer> getPeers(InetSocketAddress address) throws InterruptedException {
-            ElectrumClient client = new ElectrumClient(address, executorService);
+        private List<Peer> getPeers(ElectrumServerAddress address) throws InterruptedException {
+            InetSocketAddress socketAddress = new InetSocketAddress(address.getHost(), address.getPort());
+            ElectrumClient client = new ElectrumClient(socketAddress, executorService);
             Future<SubscribePeersResponse> responseFuture = client.subscribePeers();
             try {
                 SubscribePeersResponse response = responseFuture.get(CONNECT_TIMEOUT_MS, TimeUnit.MILLISECONDS);
@@ -166,7 +185,7 @@ public class PeerDownloader {
             }
         }
 
-        private InetSocketAddress addressFromPeer(Peer peer) {
+        private ElectrumServerAddress addressFromPeer(Peer peer) {
             InetSocketAddress address;
             Integer port = getPort(peer);
             if (port == null) {
@@ -174,8 +193,7 @@ public class PeerDownloader {
             }
 
             // Try creating a new address from the peer hostname.
-            address = new InetSocketAddress(peer.hostname, port);
-            return address;
+            return new ElectrumServerAddress(peer.hostname, port);
         }
 
         private Integer getPort(Peer peer) {

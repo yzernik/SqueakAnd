@@ -103,7 +103,6 @@ public class BlockDownloader {
             Log.i(getClass().getName(), "Calling call.");
             while (true) {
                 try {
-                    Log.e(getClass().getName(), "Calling : tryLoadLiveDataWithRetries");
                     tryLoadLiveDataWithRetries();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
