@@ -22,17 +22,12 @@ import static org.bitcoinj.core.Utils.HEX;
 
 public class BlockDownloader {
 
-    private final MutableLiveData<BlockInfo> liveBlockTip;
-    private final MutableLiveData<ServerUpdate.ConnectionStatus> liveConnectionStatus;
     private final MutableLiveData<ServerUpdate> liveServerUpdate;
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    BlockDownloader(MutableLiveData<BlockInfo> liveBlockTip, MutableLiveData<ServerUpdate.ConnectionStatus> liveConnectionStatus, MutableLiveData<ServerUpdate> liveServerUpdate) {
-        this.liveBlockTip = liveBlockTip;
-        this.liveConnectionStatus = liveConnectionStatus;
+    BlockDownloader(MutableLiveData<ServerUpdate> liveServerUpdate) {
         this.liveServerUpdate = liveServerUpdate;
-        liveConnectionStatus.setValue(ServerUpdate.ConnectionStatus.DISCONNECTED);
         this.executorService = Executors.newCachedThreadPool();
         initialize();
     }
@@ -129,13 +124,10 @@ public class BlockDownloader {
         }
 
         private void tryLoadLiveData(ElectrumClient electrumClient) throws ExecutionException, InterruptedException {
-            liveConnectionStatus.postValue(ServerUpdate.ConnectionStatus.CONNECTING);
             updateStatusConnecting();
             Future<SubscribeHeadersResponse> responseFuture = electrumClient.subscribeHeaders(header -> {
                 Log.i(getClass().getName(), "Downloaded header: " + header);
                 BlockInfo blockInfo = parseHeaderResponse(header);
-                liveBlockTip.postValue(blockInfo);
-                liveConnectionStatus.postValue(ServerUpdate.ConnectionStatus.CONNECTED);
                 updateStatusConnected(blockInfo);
                 resetRetryCounter();
             });
@@ -143,7 +135,6 @@ public class BlockDownloader {
                 responseFuture.get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
-                liveConnectionStatus.postValue(ServerUpdate.ConnectionStatus.DISCONNECTED);
                 updateStatusDisconnected();
                 responseFuture.cancel(true);
                 throw e;
