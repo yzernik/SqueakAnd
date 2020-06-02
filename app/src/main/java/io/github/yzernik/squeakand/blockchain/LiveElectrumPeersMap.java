@@ -45,7 +45,6 @@ public class LiveElectrumPeersMap extends ConcurrentHashMap<ElectrumServerAddres
     }
 
     public void updateLiveData() {
-        Log.i(getClass().getName(), "Number of electrum peers: " + this.size());
         ArrayList<ElectrumServerAddress> keyList = new ArrayList<ElectrumServerAddress>(this.keySet());
         liveServers.postValue(keyList);
     }

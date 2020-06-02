@@ -62,11 +62,9 @@ public class CreateSqueakFragment extends Fragment {
         createSqueakModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
             @Override
             public void onChanged(@Nullable final SqueakProfile squeakProfile) {
-                Log.i(getTag(),"Got selected profile from from observe: " + squeakProfile);
                 // set the textview to show the currently selected profile.
                 if (squeakProfile != null) {
                     updateDisplayedProfile(squeakProfile);
-                    Log.i(getTag(), "Updated sharedviewmodel.");
                 }
             }
         });
@@ -77,30 +75,11 @@ public class CreateSqueakFragment extends Fragment {
                 mSelectProfileButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.i(getTag(),"Select profile button clicked");
                         showProfileAlertDialog(profiles);
                     }
                 });
             }
         });
-
-/*        createSqueakModel.getLatestBlock().observe(getViewLifecycleOwner(), new Observer<BlockInfo>() {
-            @Override
-            public void onChanged(@Nullable final BlockInfo blockInfo) {
-                String blockHeightText = "None";
-                if (blockInfo != null) {
-                    blockHeightText = Integer.toString(blockInfo.getHeight());
-                }
-                mLatestBlockHeightButton.setText(blockHeightText);
-                mLatestBlockHeightButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.i(getTag(),"View latest block button clicked");
-                        showBlockchainAlertDialog(blockInfo);
-                    }
-                });
-            }
-        });*/
 
         createSqueakModel.getServerUpdate().observe(getViewLifecycleOwner(), new Observer<ServerUpdate>() {
             @Override
@@ -117,7 +96,6 @@ public class CreateSqueakFragment extends Fragment {
                 mLatestBlockHeightButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.i(getTag(),"View latest block button clicked");
                         showElectrumAlertDialog(serverUpdate);
                     }
                 });
@@ -130,7 +108,6 @@ public class CreateSqueakFragment extends Fragment {
                 Log.i(getTag(), "Observed new create squeak params: " + createSqueakParams);
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
-                        Log.i(getTag(), "Button clicked");
                         String inputText = mTextInput.getEditText().getText().toString();
                         createSqueak(createSqueakParams, inputText);
                     }
@@ -217,7 +194,6 @@ public class CreateSqueakFragment extends Fragment {
      * @param squeakProfile
      */
     private void updateDisplayedProfile(SqueakProfile squeakProfile) {
-        Log.i(getTag(), "Updating SelectProfileFragment display with profile: " + squeakProfile);
         mSelectProfileButton.setText(squeakProfile.getName());
     }
 
@@ -267,7 +243,6 @@ public class CreateSqueakFragment extends Fragment {
             createSqueakModel.insertSqueak(new SqueakEntry(squeak));
             Log.i(getTag(), "Created and inserted squeak: " + squeak);
             Log.i(getTag(), "Created squeak with content: " + squeak.getDecryptedContentStr());
-            Log.i(getTag(), "Finishing activity: " + getActivity());
             getActivity().finish();
         } catch (Exception e) {
             Log.e(getTag(), "Unable to create squeak: " + e);
