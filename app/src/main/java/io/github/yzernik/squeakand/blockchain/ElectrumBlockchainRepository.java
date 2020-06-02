@@ -1,6 +1,7 @@
 package io.github.yzernik.squeakand.blockchain;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -32,9 +33,6 @@ public class ElectrumBlockchainRepository {
         blockDownloader = new BlockDownloader(downloaderConnection);
         preferences = new Preferences(application);
         peerDownloader = new PeerDownloader(peersMap);
-
-        // Initialize the electrum server connection
-        initialize();
     }
 
     public static ElectrumBlockchainRepository getRepository(Application application) {
@@ -49,6 +47,8 @@ public class ElectrumBlockchainRepository {
     }
 
     public void initialize() {
+        Log.i(getClass().getName(), "Initializing electrum connection...");
+
         // Load the server address from sharedpreferences
         ElectrumServerAddress serverAddress = preferences.getElectrumServerAddress();
         if (serverAddress != null) {
@@ -61,6 +61,7 @@ public class ElectrumBlockchainRepository {
 
     public void setServer(ElectrumServerAddress serverAddress) {
         // Set up electrum client with server config, and load livedata.
+        Log.i(getClass().getName(), "Setting electrum server: " + serverAddress);
         blockDownloader.setElectrumServer(serverAddress);
 
         // Save the server address in sharedpreferences
