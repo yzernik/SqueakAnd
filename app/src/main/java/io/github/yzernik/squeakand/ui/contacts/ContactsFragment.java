@@ -22,10 +22,9 @@ import io.github.yzernik.squeakand.NewContactActivity;
 import io.github.yzernik.squeakand.ProfileListAdapter;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeakand.ViewContactActivity;
 
 public class ContactsFragment extends Fragment implements ProfileListAdapter.ClickListener {
-
-    public static final int NEW_CONTACT_ACTIVITY_REQUEST_CODE = 1;
 
     private Button mAddContactButton;
 
@@ -49,7 +48,7 @@ public class ContactsFragment extends Fragment implements ProfileListAdapter.Cli
             @Override
             public void onClick(View v) {
                 System.out.println("Add contact button clicked");
-                startActivityForResult(new Intent(getActivity(), NewContactActivity.class), NEW_CONTACT_ACTIVITY_REQUEST_CODE);
+                startActivity(new Intent(getActivity(), NewContactActivity.class));
             }
         });
 
@@ -68,6 +67,8 @@ public class ContactsFragment extends Fragment implements ProfileListAdapter.Cli
     public void handleItemClick(int id) {
         // TODO: go to profile activity
         Log.i(getTag(), "Clicked on contact profile id: " + id);
+
+        startActivity(new Intent(getActivity(), ViewContactActivity.class).putExtra("profile_id", id));
     }
 
 }
