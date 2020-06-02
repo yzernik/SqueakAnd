@@ -3,6 +3,7 @@ package io.github.yzernik.squeakand;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -14,7 +15,9 @@ import java.io.Serializable;
 import io.github.yzernik.squeaklib.core.Signing;
 
 
-@Entity(tableName = SqueakRoomDatabase.TABLE_NAME_PROFILE)
+@Entity(
+        tableName = SqueakRoomDatabase.TABLE_NAME_PROFILE,
+        indices = {@Index(value = {"address"}, unique = true)})
 @TypeConverters({Converters.class})
 public class SqueakProfile implements Serializable {
 

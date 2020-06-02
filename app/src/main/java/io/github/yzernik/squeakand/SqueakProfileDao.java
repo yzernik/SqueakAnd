@@ -30,6 +30,9 @@ public interface SqueakProfileDao {
     @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ORDER BY profile_id ASC")
     LiveData<List<SqueakProfile>> getProfiles();
 
+    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE keyPair IS NOT NULL " + " ORDER BY profile_id ASC")
+    LiveData<List<SqueakProfile>> getSigningProfiles();
+
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE profile_id = :profileId")
     LiveData<SqueakProfile> fetchProfileById(int profileId);
 

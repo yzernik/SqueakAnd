@@ -26,7 +26,7 @@ public class CreateSqueakModel extends AndroidViewModel {
     private SqueakProfileRepository mProfileRepository;
     private SqueakRepository mSqueakRepository;
     private ElectrumBlockchainRepository blockchainRepository;
-    private LiveData<List<SqueakProfile>> mAllSqueakProfiles;
+    private LiveData<List<SqueakProfile>> mAllSqueakSigningProfiles;
     private MutableLiveData<Integer> mSelectedSqueakProfileId;
     public Sha256Hash replyToHash;
     private Preferences preferences;
@@ -36,7 +36,7 @@ public class CreateSqueakModel extends AndroidViewModel {
         mProfileRepository = new SqueakProfileRepository(application);
         mSqueakRepository = new SqueakRepository(application);
         blockchainRepository = ElectrumBlockchainRepository.getRepository(application);
-        mAllSqueakProfiles = mProfileRepository.getAllSqueakProfiles();
+        mAllSqueakSigningProfiles = mProfileRepository.getAllSqueakSigningProfiles();
         mSelectedSqueakProfileId = new MutableLiveData<>();
         replyToHash = Sha256Hash.ZERO_HASH;
         preferences = new Preferences(application);
@@ -45,8 +45,8 @@ public class CreateSqueakModel extends AndroidViewModel {
         loadSelectedSqueakProfileId();
     }
 
-    LiveData<List<SqueakProfile>> getmAllSqueakProfiles() {
-        return mAllSqueakProfiles;
+    LiveData<List<SqueakProfile>> getmAllSqueakSigningProfiles() {
+        return mAllSqueakSigningProfiles;
     }
 
     void setSelectedSqueakProfileId(int squeakProfileId) {
@@ -68,7 +68,7 @@ public class CreateSqueakModel extends AndroidViewModel {
     }
 
     LiveData<SqueakProfile> getSelectedSqueakProfile() {
-        return Transformations.switchMap(mAllSqueakProfiles, profiles -> {
+        return Transformations.switchMap(mAllSqueakSigningProfiles, profiles -> {
             return Transformations.map(mSelectedSqueakProfileId, profileId -> {
                 for (SqueakProfile profile: profiles) {
                     if (profile.getProfileId() == profileId) {

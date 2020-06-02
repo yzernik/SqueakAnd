@@ -71,7 +71,7 @@ public class CreateSqueakFragment extends Fragment {
             }
         });
 
-        createSqueakModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
+        createSqueakModel.getmAllSqueakSigningProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
             @Override
             public void onChanged(@Nullable final List<SqueakProfile> profiles) {
                 mSelectProfileButton.setOnClickListener(new View.OnClickListener() {

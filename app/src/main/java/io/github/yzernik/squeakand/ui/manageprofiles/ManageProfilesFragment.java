@@ -68,7 +68,7 @@ public class ManageProfilesFragment extends Fragment implements ProfileListAdapt
             }
         });*/
 
-        manageProfilesModel.getmAllSqueakProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
+        manageProfilesModel.getmAllSqueakSigningProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
             @Override
             public void onChanged(@Nullable final List<SqueakProfile> squeakProfiles) {
                 // Update the cached copy of the profiles in the adapter.
