@@ -44,6 +44,10 @@
             android:name=".NewContactActivity"
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_add_contact" />
+        <activity
+            android:name=".ViewContactActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/activity_view_contact" />
     </application>
 
 </manifest>
