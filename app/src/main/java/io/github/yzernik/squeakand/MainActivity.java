@@ -10,8 +10,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -27,17 +25,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-
-        // Initialize the network connections.
-        initializeNetworkConnections();
-    }
-
-    /**
-     * Initializes the connection to electrum server, etc.
-     */
-    private void initializeNetworkConnections() {
-        ElectrumBlockchainRepository electrumBlockchainRepository = ElectrumBlockchainRepository.getRepository(getApplication());
-        electrumBlockchainRepository.initialize();
     }
 
 }
