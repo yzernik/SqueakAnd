@@ -13,6 +13,10 @@ public class Converters {
 
     @TypeConverter
     public static Signing.BitcoinjKeyPair fromString(String s) {
+        if (s == null) {
+            return null;
+        }
+
         byte[] privKeyBytes = HEX.decode(s);
         ECKey ecKey = ECKey.fromPrivate(privKeyBytes);
         return new Signing.BitcoinjKeyPair(ecKey);
@@ -20,6 +24,10 @@ public class Converters {
 
     @TypeConverter
     public static String keyToString(Signing.BitcoinjKeyPair keyPair) {
+        if (keyPair == null) {
+            return null;
+        }
+
         ECKey ecKey = keyPair.getEcKey();
         byte[] privKeyBytes = ecKey.getPrivKeyBytes();
         return HEX.encode(privKeyBytes);
