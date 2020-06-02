@@ -12,6 +12,13 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -26,6 +33,10 @@ android {
     }
     lintOptions {
         abortOnError false
+    }
+    sourceSets {
+        // Adds exported schema location as test app assets.
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
 }
 

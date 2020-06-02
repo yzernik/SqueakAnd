@@ -3,9 +3,13 @@ package io.github.yzernik.squeakand;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,7 +20,7 @@ import java.util.concurrent.Executors;
  * app, consider exporting the schema to help you with migrations.
  */
 
-@Database(entities = {SqueakProfile.class, SqueakEntry.class}, version = 1, exportSchema = false)
+@Database(entities = {SqueakProfile.class, SqueakEntry.class}, version = 2)
 abstract class SqueakRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";
@@ -40,6 +44,7 @@ abstract class SqueakRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             SqueakRoomDatabase.class, DB_NAME)
                             //.addCallback(sRoomDatabaseCallback)
+                            .addMigrations(MIGRATION_1_2)
                             .build();
                 }
             }
@@ -133,5 +138,22 @@ abstract class SqueakRoomDatabase extends RoomDatabase {
 
         return squeakProfileArrayList;
     }*/
+
+    /**
+     * Migrate from:
+     * version 1
+     * to
+     * version 2 - where the {@link SqueakProfile} has a unique constraint on
+     * the address field.
+     */
+    @VisibleForTesting
+    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Add the address index to the squeak profile table
+            database.execSQL(
+                    "CREATE UNIQUE INDEX index_profile_address ON profile (address)");
+        }
+    };
 
 }
