@@ -67,7 +67,6 @@ public class ContactsFragment extends Fragment implements ProfileListAdapter.Cli
     public void handleItemClick(int id) {
         // TODO: go to profile activity
         Log.i(getTag(), "Clicked on contact profile id: " + id);
-
         startActivity(new Intent(getActivity(), ViewContactActivity.class).putExtra("profile_id", id));
     }
 

@@ -80,14 +80,14 @@
                 android:id="@+id/view_contact_rename_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rename contact"
+                android:text="Rename"
                 android:layout_gravity="left|center_vertical"/>
 
             <Button
                 android:id="@+id/view_contact_delete_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Delete contact"
+                android:text="Delete"
                 android:layout_gravity="right|center_vertical"/>
 
         </FrameLayout>
