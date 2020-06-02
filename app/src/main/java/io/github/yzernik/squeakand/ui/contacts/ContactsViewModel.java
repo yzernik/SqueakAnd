@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.dashboard;
+package io.github.yzernik.squeakand.ui.contacts;
 
 import android.app.Application;
 
@@ -10,14 +10,14 @@ import java.util.List;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileRepository;
 
-public class DashboardViewModel extends AndroidViewModel {
+public class ContactsViewModel extends AndroidViewModel {
 
     // private MutableLiveData<String> mText;
     private SqueakProfileRepository mRepository;
     private LiveData<List<SqueakProfile>> mAllSqueakContactProfiles;
 
 
-    public DashboardViewModel(Application application) {
+    public ContactsViewModel(Application application) {
         super(application);
         mRepository = new SqueakProfileRepository(application);
         mAllSqueakContactProfiles = mRepository.getAllSqueakContactProfiles();

@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.dashboard;
+package io.github.yzernik.squeakand.ui.contacts;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,17 +23,17 @@ import io.github.yzernik.squeakand.ProfileListAdapter;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
 
-public class DashboardFragment extends Fragment implements ProfileListAdapter.ClickListener {
+public class ContactsFragment extends Fragment implements ProfileListAdapter.ClickListener {
 
     public static final int NEW_CONTACT_ACTIVITY_REQUEST_CODE = 1;
 
     private Button mAddContactButton;
 
-    private DashboardViewModel dashboardViewModel;
+    private ContactsViewModel contactsViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+        contactsViewModel = new ViewModelProvider(this).get(ContactsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_contacts, container, false);
 
         final RecyclerView recyclerView = root.findViewById(R.id.contactsRecyclerView);
@@ -43,7 +43,7 @@ public class DashboardFragment extends Fragment implements ProfileListAdapter.Cl
 
         mAddContactButton = root.findViewById(R.id.add_contact_button);
 
-        dashboardViewModel = new ViewModelProvider(getActivity()).get(DashboardViewModel.class);
+        contactsViewModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
 
         mAddContactButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +53,7 @@ public class DashboardFragment extends Fragment implements ProfileListAdapter.Cl
             }
         });
 
-        dashboardViewModel.getmAllSqueakContactProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
+        contactsViewModel.getmAllSqueakContactProfiles().observe(getViewLifecycleOwner(), new Observer<List<SqueakProfile>>() {
             @Override
             public void onChanged(@Nullable final List<SqueakProfile> squeakProfiles) {
                 // Update the cached copy of the profiles in the adapter.
