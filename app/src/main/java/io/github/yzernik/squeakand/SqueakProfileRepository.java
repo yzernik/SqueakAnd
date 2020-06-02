@@ -12,6 +12,7 @@ public class SqueakProfileRepository {
     private SqueakProfileDao mSqueakProfileDao;
     private LiveData<List<SqueakProfile>> mAllSqueakProfiles;
     private LiveData<List<SqueakProfile>> mAllSqueakSigningProfiles;
+    private LiveData<List<SqueakProfile>> mAllSqueakContactProfiles;
 
     // Note that in order to unit test the TodoRepository, you have to remove the Application
     // dependency. This adds complexity and much more code, and this sample is not about testing.
@@ -22,6 +23,7 @@ public class SqueakProfileRepository {
         mSqueakProfileDao = db.squeakProfileDao();
         mAllSqueakProfiles = mSqueakProfileDao.getProfiles();
         mAllSqueakSigningProfiles = mSqueakProfileDao.getSigningProfiles();
+        mAllSqueakContactProfiles = mSqueakProfileDao.getContactProfiles();
     }
 
     // Room executes all queries on a separate thread.
@@ -32,6 +34,10 @@ public class SqueakProfileRepository {
 
     public LiveData<List<SqueakProfile>> getAllSqueakSigningProfiles() {
         return mAllSqueakSigningProfiles;
+    }
+
+    public LiveData<List<SqueakProfile>> getAllSqueakContactProfiles() {
+        return mAllSqueakContactProfiles;
     }
 
     // Room executes all queries on a separate thread.

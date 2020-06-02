@@ -4,8 +4,6 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
@@ -16,13 +14,13 @@ public class DashboardViewModel extends AndroidViewModel {
 
     // private MutableLiveData<String> mText;
     private SqueakProfileRepository mRepository;
-    private LiveData<List<SqueakProfile>> mAllSqueakProfiles;
+    private LiveData<List<SqueakProfile>> mAllSqueakContactProfiles;
 
 
     public DashboardViewModel(Application application) {
         super(application);
         mRepository = new SqueakProfileRepository(application);
-        mAllSqueakProfiles = mRepository.getAllSqueakProfiles();
+        mAllSqueakContactProfiles = mRepository.getAllSqueakContactProfiles();
     }
 
 
@@ -30,8 +28,8 @@ public class DashboardViewModel extends AndroidViewModel {
         return mText;
     }*/
 
-    public LiveData<List<SqueakProfile>> getmAllSqueakProfiles() {
-        return mAllSqueakProfiles;
+    public LiveData<List<SqueakProfile>> getmAllSqueakContactProfiles() {
+        return mAllSqueakContactProfiles;
     }
 
     public void insert(SqueakProfile squeakProfile) {
