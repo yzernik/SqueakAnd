@@ -52,7 +52,7 @@ public class SqueakProfile implements Serializable {
     }
 
     @Ignore
-    public Signing.KeyPair getKeyPair() {
+    public Signing.BitcoinjKeyPair getKeyPair() {
         return keyPair;
     }
 
