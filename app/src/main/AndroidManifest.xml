@@ -45,9 +45,9 @@
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_add_contact" />
         <activity
-            android:name=".ViewContactActivity"
+            android:name=".ViewProfileActivity"
             android:parentActivityName=".MainActivity"
-            android:label="@string/activity_view_contact" />
+            android:label="@string/activity_view_profile" />
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.viewcontact;
+package io.github.yzernik.squeakand.ui.viewprofile;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -20,38 +20,38 @@ import androidx.lifecycle.ViewModelProvider;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
 
-public class ViewContactFragment extends Fragment {
+public class ViewProfileFragment extends Fragment {
 
-    private TextView mContactNameText;
-    private TextView mContactAddressText;
-    private Button mRenameContactButton;
+    private TextView mProfileNameText;
+    private TextView mProfileAddressText;
+    private Button mRenameProfileButton;
 
-    private ViewContactModel viewContactModel;
+    private ViewProfileModel viewProfileModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_view_contact, container, false);
+        View root = inflater.inflate(R.layout.fragment_view_profile, container, false);
 
         int profileId = this.getArguments().getInt("profile_id", -1);
 
-        mContactNameText = root.findViewById(R.id.view_contact_show_name);
-        mContactAddressText = root.findViewById(R.id.view_contact_show_address);
-        mRenameContactButton = root.findViewById(R.id.view_contact_rename_button);
+        mProfileNameText = root.findViewById(R.id.view_profile_show_name);
+        mProfileAddressText = root.findViewById(R.id.view_profile_show_address);
+        mRenameProfileButton = root.findViewById(R.id.view_profile_rename_button);
 
-        viewContactModel = new ViewModelProvider(getActivity()).get(ViewContactModel.class);
+        viewProfileModel = new ViewModelProvider(getActivity()).get(ViewProfileModel.class);
 
-        viewContactModel.getSqueakContactProfile(profileId).observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
+        viewProfileModel.getSqueakProfile(profileId).observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
             @Override
             public void onChanged(@Nullable SqueakProfile squeakProfile) {
                 if (squeakProfile == null) {
                     return;
                 }
 
-                mContactNameText.setText(squeakProfile.getName());
-                mContactAddressText.setText(squeakProfile.getAddress());
+                mProfileNameText.setText(squeakProfile.getName());
+                mProfileAddressText.setText(squeakProfile.getAddress());
 
 
-                mRenameContactButton.setOnClickListener(new View.OnClickListener() {
+                mRenameProfileButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         showRenameAlertDialog(inflater, squeakProfile);
@@ -68,7 +68,7 @@ public class ViewContactFragment extends Fragment {
     private void showRenameAlertDialog(LayoutInflater inflater, SqueakProfile squeakProfile) {
         final View view = inflater.inflate(R.layout.dialog_rename_profile, null);
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-        alertDialog.setTitle("Rename contact");
+        alertDialog.setTitle("Rename profile");
 
         final EditText newNameText = (EditText) view.findViewById(R.id.dialog_rename_profile_new_name_input);
 
@@ -82,7 +82,7 @@ public class ViewContactFragment extends Fragment {
                         }
                         squeakProfile.name = newName;
                         Log.i(getTag(), "New profile class: " + squeakProfile);
-                        viewContactModel.updateProfile(squeakProfile);
+                        viewProfileModel.updateProfile(squeakProfile);
                         Log.i(getTag(), "Setting new name for profile to: " + newName);
                     }
                 });

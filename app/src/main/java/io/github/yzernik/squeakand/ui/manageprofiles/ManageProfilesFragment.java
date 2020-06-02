@@ -23,7 +23,7 @@ import io.github.yzernik.squeakand.NewProfileActivity;
 import io.github.yzernik.squeakand.ProfileListAdapter;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.ViewContactActivity;
+import io.github.yzernik.squeakand.ViewProfileActivity;
 
 
 public class ManageProfilesFragment extends Fragment implements ProfileListAdapter.ClickListener{
@@ -84,7 +84,7 @@ public class ManageProfilesFragment extends Fragment implements ProfileListAdapt
     public void handleItemClick(int id) {
         // TODO: go to profile activity
         Log.i(getTag(), "Clicked on profile id: " + id);
-        startActivity(new Intent(getActivity(), ViewContactActivity.class).putExtra("profile_id", id));
+        startActivity(new Intent(getActivity(), ViewProfileActivity.class).putExtra("profile_id", id));
     }
 
 }

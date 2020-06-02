@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.viewcontact.ViewContactFragment">
+    tools:context=".ui.viewprofile.ViewProfileFragment">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:id="@+id/view_contact_show_name"
+                android:id="@+id/view_profile_show_name"
                 android:textIsSelectable="true"
                 android:layout_gravity="right|center_vertical" />
 
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:id="@+id/view_contact_show_address"
+                android:id="@+id/view_profile_show_address"
                 android:textIsSelectable="true"
                 android:layout_gravity="right|center_vertical" />
 
@@ -63,7 +63,7 @@
                 android:layout_gravity="left|center_vertical"/>
 
             <Switch
-                android:id="@+id/view_contact_following_switch"
+                android:id="@+id/view_profile_following_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"/>
@@ -77,14 +77,14 @@
             android:layout_centerHorizontal="true">
 
             <Button
-                android:id="@+id/view_contact_rename_button"
+                android:id="@+id/view_profile_rename_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rename"
                 android:layout_gravity="left|center_vertical"/>
 
             <Button
-                android:id="@+id/view_contact_delete_button"
+                android:id="@+id/view_profile_delete_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Delete"
