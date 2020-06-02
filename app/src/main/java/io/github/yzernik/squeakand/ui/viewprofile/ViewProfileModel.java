@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.viewcontact;
+package io.github.yzernik.squeakand.ui.viewprofile;
 
 import android.app.Application;
 
@@ -9,16 +9,16 @@ import androidx.lifecycle.LiveData;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileRepository;
 
-public class ViewContactModel extends AndroidViewModel {
+public class ViewProfileModel extends AndroidViewModel {
 
     private SqueakProfileRepository mRepository;
 
-    public ViewContactModel(@NonNull Application application) {
+    public ViewProfileModel(@NonNull Application application) {
         super(application);
         mRepository = new SqueakProfileRepository(application);
     }
 
-    public LiveData<SqueakProfile> getSqueakContactProfile(int profileId) {
+    public LiveData<SqueakProfile> getSqueakProfile(int profileId) {
         return mRepository.getSqueakProfile(profileId);
     }
 
