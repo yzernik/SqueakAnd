@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
  * app, consider exporting the schema to help you with migrations.
  */
 
-@Database(entities = {SqueakProfile.class, SqueakEntry.class}, version = 2, exportSchema = false)
+@Database(entities = {SqueakProfile.class, SqueakEntry.class}, version = 2)
 abstract class SqueakRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";

@@ -3,6 +3,7 @@ package io.github.yzernik.squeakand;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 import androidx.room.testing.MigrationTestHelper;
@@ -31,6 +32,9 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class MigrationTest {
 
+    @Rule
+    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
+
     private static final Signing.BitcoinjKeyPair EXAMPLE_KEY_PAIR = new Signing.BitcoinjKeyPair();
     private static final String EXAMPLE_ADDRESS = EXAMPLE_KEY_PAIR.getPublicKey().getAddress(MainNetParams.get());
 
@@ -56,7 +60,7 @@ public class MigrationTest {
     }
 
     @Test
-    public void migrationFrom1To2_containsCorrectData() throws IOException {
+    public void migrationFrom1To2_containsCorrectData() throws IOException, InterruptedException {
         // Create the database with version 2
         SupportSQLiteDatabase db = mMigrationTestHelper.createDatabase(TEST_DB_NAME, 2);
         // Insert some data
@@ -66,19 +70,16 @@ public class MigrationTest {
 
         // Re-open the database with version 2 and provide
         // MIGRATION_1_2 as the migration process.
-        mMigrationTestHelper.runMigrationsAndValidate(TEST_DB_NAME, 4, true,
+        mMigrationTestHelper.runMigrationsAndValidate(TEST_DB_NAME, 2, true,
                 MIGRATION_1_2);
 
         // MigrationTestHelper automatically verifies the schema changes, but not the data validity
         // Validate that the data was migrated properly.
-        LiveData<List<SqueakProfile>> liveSigningProfiles = getMigratedRoomDatabase().squeakProfileDao().getSigningProfiles();
-        List<SqueakProfile> signingProfiles = liveSigningProfiles.getValue();
-        SqueakProfile firstProfile = signingProfiles.get(0);
+        List<SqueakProfile> allProfiles = LiveDataTestUtil.getValue(getMigratedRoomDatabase().squeakProfileDao().getProfiles());
+        SqueakProfile firstProfile = allProfiles.get(0);
 
         assertEquals(firstProfile.getName(), "alice");
-/*        assertEquals(dbUser.getUserName(), USER.getUserName());
-        // The date was missing in version 2, so it should be null in version 3
-        assertEquals(dbUser.getDate(), null);*/
+        assertEquals(firstProfile.getAddress(), EXAMPLE_ADDRESS);
     }
 
     private void insertUser(String profileName, Signing.BitcoinjKeyPair keyPair, SupportSQLiteDatabase db) {
@@ -87,7 +88,7 @@ public class MigrationTest {
         values.put("keyPair", Converters.keyToString(keyPair));
         values.put("address", EXAMPLE_ADDRESS);
 
-        db.insert("users", SQLiteDatabase.CONFLICT_REPLACE, values);
+        db.insert("profile", SQLiteDatabase.CONFLICT_REPLACE, values);
     }
 
     private SqueakRoomDatabase getMigratedRoomDatabase() {
