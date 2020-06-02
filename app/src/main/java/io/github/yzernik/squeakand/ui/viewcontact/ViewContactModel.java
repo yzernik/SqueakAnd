@@ -22,4 +22,8 @@ public class ViewContactModel extends AndroidViewModel {
         return mRepository.getSqueakProfile(profileId);
     }
 
+    public void updateProfile(SqueakProfile squeakProfile) {
+        mRepository.update(squeakProfile);
+    }
+
 }

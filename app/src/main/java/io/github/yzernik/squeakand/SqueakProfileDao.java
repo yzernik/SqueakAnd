@@ -21,6 +21,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -41,6 +42,9 @@ public interface SqueakProfileDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(SqueakProfile squeakProfile);
+
+    @Update
+    void update(SqueakProfile squeakProfile);
 
     @Query("DELETE FROM " + SqueakRoomDatabase.TABLE_NAME_PROFILE)
     void deleteAll();

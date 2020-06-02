@@ -54,4 +54,10 @@ public class SqueakProfileRepository {
         });
     }
 
+    public void update(SqueakProfile squeakProfile) {
+        SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mSqueakProfileDao.update(squeakProfile);
+        });
+    }
+
 }
