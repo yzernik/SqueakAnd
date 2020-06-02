@@ -72,7 +72,6 @@ public class CreateSqueakModel extends AndroidViewModel {
             return Transformations.map(mSelectedSqueakProfileId, profileId -> {
                 for (SqueakProfile profile: profiles) {
                     if (profile.getProfileId() == profileId) {
-                        Log.i(getClass().getName(), "Returning profile: " + profile);
                         return profile;
                     }
                 }
@@ -93,9 +92,7 @@ public class CreateSqueakModel extends AndroidViewModel {
 
     LiveData<CreateSqueakParams> getCreateSqueakParams() {
         return Transformations.switchMap(getSelectedSqueakProfile(), profile -> {
-            Log.i(getClass().getName(), "Got selected profile: " + profile);
             return Transformations.map(getLatestBlock(), block -> {
-                Log.i(getClass().getName(), "Got latest block: " + block);
                 return new CreateSqueakParams(profile, replyToHash, block);
             });
         });

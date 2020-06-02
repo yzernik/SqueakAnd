@@ -66,14 +66,6 @@ public class PeerDownloader {
         return System.currentTimeMillis();
     }
 
-    /*
-    public void updateLiveData() {
-        Log.i(getClass().getName(), "Number of electrum peers: " + serversMap.size());
-        ArrayList<ElectrumServerAddress> keyList = new ArrayList<ElectrumServerAddress>(serversMap.keySet());
-        liveServers.postValue(keyList);
-    }*/
-
-
     class PeerUpdateTask implements Callable<String> {
 
         PeerUpdateTask() {
