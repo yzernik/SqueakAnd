@@ -25,6 +25,7 @@ public class ViewProfileFragment extends Fragment {
     private TextView mProfileNameText;
     private TextView mProfileAddressText;
     private Button mRenameProfileButton;
+    private Button mDeleteProfileButton;
 
     private ViewProfileModel viewProfileModel;
 
@@ -37,6 +38,7 @@ public class ViewProfileFragment extends Fragment {
         mProfileNameText = root.findViewById(R.id.view_profile_show_name);
         mProfileAddressText = root.findViewById(R.id.view_profile_show_address);
         mRenameProfileButton = root.findViewById(R.id.view_profile_rename_button);
+        mDeleteProfileButton = root.findViewById(R.id.view_profile_delete_button);
 
         viewProfileModel = new ViewModelProvider(getActivity()).get(ViewProfileModel.class);
 
@@ -50,11 +52,21 @@ public class ViewProfileFragment extends Fragment {
                 mProfileNameText.setText(squeakProfile.getName());
                 mProfileAddressText.setText(squeakProfile.getAddress());
 
-
+                // Setup the rename button.
                 mRenameProfileButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         showRenameAlertDialog(inflater, squeakProfile);
+                    }
+                });
+
+                // Setup the delete button.
+                mDeleteProfileButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showDeleteAlertDialog(inflater, squeakProfile);
+                        // dialog.dismiss();
+                        // getActivity().finish();
                     }
                 });
             }
@@ -75,7 +87,6 @@ public class ViewProfileFragment extends Fragment {
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Rename",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
                         String newName = newNameText.getText().toString();
                         if (newName == null || newName.isEmpty()) {
                             return;
@@ -102,6 +113,32 @@ public class ViewProfileFragment extends Fragment {
                 });
 
         alertDialog.setView(view);
+        alertDialog.show();
+    }
+
+    private void showDeleteAlertDialog(LayoutInflater inflater, SqueakProfile squeakProfile) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Delete profile");
+        alertDialog.setMessage("Are you sure you want to delete this profile?");
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i(getTag(), "Deleting profile: " + squeakProfile);
+                        viewProfileModel.deleteProfile(squeakProfile);
+                        dialog.dismiss();
+                        getActivity().finish();
+                    }
+                });
+
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
         alertDialog.show();
     }
 

@@ -60,4 +60,10 @@ public class SqueakProfileRepository {
         });
     }
 
+    public void delete(SqueakProfile squeakProfile) {
+        SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mSqueakProfileDao.delete(squeakProfile);
+        });
+    }
+
 }
