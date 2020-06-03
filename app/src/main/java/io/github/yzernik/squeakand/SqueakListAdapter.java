@@ -61,12 +61,12 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
         if (mSqueaks != null) {
             SqueakEntryWithProfile currentEntry = mSqueaks.get(position);
             String authorAddress = currentEntry.squeakEntry.authorAddress;
-            String authorName = currentEntry.squeakProfile.getName();
+            SqueakProfile authorProfile = currentEntry.squeakProfile;
             String authorDisplay = authorAddress;
-            if (authorName != null) {
+            if (authorProfile != null) {
+                String authorName = currentEntry.squeakProfile.getName();
                 authorDisplay = authorName + " (" + authorAddress + ")";
             }
-            // holder.txtSqueakHash.setText(currentEntry.squeakEntry.authorAddress);
             holder.txtSqueakHash.setText(authorDisplay);
             holder.txtSqueakText.setText(currentEntry.squeakEntry.getDecryptedContentStr());
             holder.txtSqueakAuthor.setText("Block #" + String.valueOf(currentEntry.squeakEntry.blockHeight));
