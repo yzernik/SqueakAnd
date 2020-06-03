@@ -18,6 +18,7 @@ package io.github.yzernik.squeakand;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -45,6 +46,9 @@ public interface SqueakProfileDao {
 
     @Update
     void update(SqueakProfile squeakProfile);
+
+    @Delete
+    void delete(SqueakProfile squeakProfile);
 
     @Query("DELETE FROM " + SqueakRoomDatabase.TABLE_NAME_PROFILE)
     void deleteAll();

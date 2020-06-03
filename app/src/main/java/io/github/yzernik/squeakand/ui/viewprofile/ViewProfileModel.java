@@ -26,4 +26,8 @@ public class ViewProfileModel extends AndroidViewModel {
         mRepository.update(squeakProfile);
     }
 
+    public void deleteProfile(SqueakProfile squeakProfile) {
+        mRepository.delete(squeakProfile);
+    }
+
 }
