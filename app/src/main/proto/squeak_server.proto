@@ -1,0 +1,94 @@
+// Copyright 2015 gRPC authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.github.yzernik.squeakserver";
+option java_outer_classname = "SqueakProto";
+option objc_class_prefix = "SQK";
+
+package squeakserver;
+
+// Interface exported by the server.
+service SqueakServer {
+
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+
+  /** sqk: `postsqueak`
+  */
+  rpc PostSqueak (PostSqueakRequest) returns (PostSqueakReply) {}
+
+  /** sqk: `getsqueak`
+  */
+  rpc GetSqueak (GetSqueakRequest) returns (GetSqueakReply) {}
+
+  /** sqk: `lookupsqueaks`
+  */
+  rpc LookupSqueaks (LookupSqueaksRequest) returns (LookupSqueaksReply) {}
+
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+
+message PostSqueakRequest {
+    /// Content of the squeak to be made.
+    Squeak squeak = 1;
+}
+
+message GetSqueakRequest {
+    /// Hash of the squeak to get.
+    bytes hash = 1;
+}
+
+message LookupSqueaksRequest {
+    /// List of the author addresses
+    repeated string addresses = 1;
+    /// Minimum block to look for
+    int32 min_block = 2;
+    /// Maximum block to look for
+    int32 max_block = 3;
+}
+
+message PostSqueakReply {
+    /// The squeak.
+    bytes hash = 1;
+}
+
+message GetSqueakReply {
+    /// The squeak.
+    Squeak squeak = 1;
+}
+
+message LookupSqueaksReply {
+    /// Hash of the squeak to get.
+    repeated bytes hashes = 1;
+}
+
+message Squeak {
+    /// Hash of the squeak.
+    bytes hash = 1;
+
+    /// Serialized squeak.
+    bytes serialized_squeak = 2;
+}
