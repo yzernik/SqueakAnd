@@ -47,7 +47,7 @@ public class Uploader {
         localHashes.removeAll(remoteHashes);
         Log.i(getClass().getName(), "Uploading number of squeaks: " + localHashes.size());
         for (Sha256Hash hash: localHashes) {
-            Squeak squeak = squeakDao.fetchSqueakByHash(hash).getValue().getSqueak();
+            Squeak squeak = squeakDao.fetchSqueakByHash(hash).getSqueak();
             upload(squeak);
         }
 
@@ -63,7 +63,7 @@ public class Uploader {
         Set<Sha256Hash> localHashes = new HashSet<>();
         for (String address: uploadAddresses) {
             // TODO: include block range in DAO method.
-            List<SqueakEntry> squeakEntries = squeakDao.fetchSqueaksByAddress(address).getValue();
+            List<SqueakEntry> squeakEntries = squeakDao.fetchSqueaksByAddress(address);
             for (SqueakEntry squeakEntry: squeakEntries) {
                 localHashes.add(squeakEntry.hash);
             }
