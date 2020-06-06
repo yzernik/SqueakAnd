@@ -32,8 +32,8 @@ public class Uploader {
     }
 
     public void upload(Squeak squeak) {
-        // TODO: implement
-        // client.postSqueak(squeak);
+        // Upload the squeak to the server.
+        client.postSqueak(squeak);
     }
 
     public void uploadSync(List<String> uploadAddresses, int minBlock, int maxBlock) {
