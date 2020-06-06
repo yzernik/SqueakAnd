@@ -13,6 +13,9 @@ import io.github.yzernik.squeakand.SqueakDao;
 
 public class ServerSyncer {
 
+    private static final int DEFAULT_MIN_BLOCK = 0;
+    private static final int DEFAULT_MAX_BLOCK = 1000000000;
+
     private final SqueakDao squeakDao;
     private final ExecutorService executorService;
     private Future<String> future = null;
@@ -68,7 +71,7 @@ public class ServerSyncer {
                 for (SqueakServerAddress serverAddress: serverAddresses) {
                     // Upload
                     Uploader uploader = new Uploader(serverAddress, squeakDao);
-                    uploader.uploadSync(uploadAddresses);
+                    uploader.uploadSync(uploadAddresses, DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
 
                     // TODO: Download
                 }

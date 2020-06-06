@@ -29,6 +29,9 @@ public interface SqueakDao {
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE hash = :squeakHash")
     LiveData<SqueakEntry> fetchSqueakByHash(Sha256Hash squeakHash);
 
+    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE authorAddress = :address")
+    LiveData<List<SqueakEntry>> fetchSqueaksByAddress(String address);
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(SqueakEntry squeakEntry);
 
