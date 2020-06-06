@@ -3,6 +3,10 @@ package io.github.yzernik.squeakand;
 import android.app.Application;
 import android.util.Log;
 
+import com.google.common.collect.Lists;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.github.yzernik.squeakand.server.ServerSyncer;
@@ -51,6 +55,11 @@ public class SqueakServerRepository {
         // Start the sync thread
         ServerSyncer syncer = new ServerSyncer(mSqueakDao);
         syncer.startSyncTask();
+
+        SqueakServerAddress localServer = new SqueakServerAddress("10.0.2.2", 8774);
+        List<SqueakServerAddress> servers = Arrays.asList(localServer);
+        Log.i(getClass().getName(), "Setting syncer servers with only local server");
+        syncer.setServers(servers);
     }
 
     public void publishSqueak(Squeak squeak) {

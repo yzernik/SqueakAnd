@@ -19,7 +19,7 @@ public class SqueakRPCClient {
     }
 
     public List<Sha256Hash> lookupSqueaks(List<String> addresses, int minBlock, int maxBlock) {
-        String target =  String.format("{}:{}", this.host, this.port);
+        String target =  String.format("%s:%d", this.host, this.port);
         ManagedChannel channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
 
         try {

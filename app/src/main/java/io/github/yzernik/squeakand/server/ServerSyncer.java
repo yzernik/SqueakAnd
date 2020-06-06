@@ -24,6 +24,7 @@ public class ServerSyncer {
         this.executorService =  Executors.newFixedThreadPool(10);
 
         serverAddresses = Collections.emptyList();
+        uploadAddresses = Collections.emptyList();
     }
 
     public synchronized void startSyncTask() {

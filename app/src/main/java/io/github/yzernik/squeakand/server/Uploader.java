@@ -29,8 +29,13 @@ public class Uploader {
     }
 
     public void uploadSync(List<String> uploadAddresses) {
-        List<Sha256Hash> serverHashes = client.lookupSqueaks(uploadAddresses, 0, 0);
-        Log.i(getClass().getName(), "Got server hashes: " + serverHashes);
+        Log.i(getClass().getName(), "Calling uploadSync...");
+        try {
+            List<Sha256Hash> serverHashes = client.lookupSqueaks(uploadAddresses, 0, 0);
+            Log.i(getClass().getName(), "Got server hashes: " + serverHashes);
+        } catch (Exception e) {
+            Log.i(getClass().getName(), "Got exception : " + e);
+        }
 
         // TODO: check against database, and upload the missing hashes
         // List<Sha256Hash> localHashes = squeakDao.fetchSqueakByAddresses(uploadAddresses);
