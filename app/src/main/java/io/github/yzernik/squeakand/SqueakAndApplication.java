@@ -37,8 +37,14 @@ public class SqueakAndApplication extends Application {
      * Initializes the connection to electrum server, etc.
      */
     private void initializeNetworkConnections() {
+        // Initialize the electrum repository
         ElectrumBlockchainRepository electrumBlockchainRepository = ElectrumBlockchainRepository.getRepository(this);
         Log.i(getClass().getName(), "Calling electrumBlockchainRepository.initialize...");
         electrumBlockchainRepository.initialize();
+
+        // Initialize the squeakserver repository
+        SqueakServerRepository squeakServerRepository = SqueakServerRepository.getRepository(this);
+        Log.i(getClass().getName(), "Calling squeakServerRepository.initialize...");
+        squeakServerRepository.initialize();
     }
 }

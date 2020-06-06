@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand;
+package io.github.yzernik.squeakand.client;
 
 import org.bitcoinj.core.Sha256Hash;
 
@@ -11,13 +11,13 @@ import io.github.yzernik.squeakserver.LookupSqueaksRequest;
 import io.github.yzernik.squeakserver.SqueakServerGrpc;
 import io.grpc.Channel;
 
-public class SqueakRPCClient {
-    private static final Logger logger = Logger.getLogger(SqueakRPCClient.class.getName());
+public class SqueakServerClient {
+    private static final Logger logger = Logger.getLogger(SqueakServerClient.class.getName());
 
     private final SqueakServerGrpc.SqueakServerBlockingStub blockingStub;
     private final SqueakServerGrpc.SqueakServerStub asyncStub;
 
-    public SqueakRPCClient(Channel channel) {
+    public SqueakServerClient(Channel channel) {
         this.blockingStub = SqueakServerGrpc.newBlockingStub(channel);
         this.asyncStub = SqueakServerGrpc.newStub(channel);
     }
@@ -26,7 +26,7 @@ public class SqueakRPCClient {
         logger.info("*** LookupSqueaks: addresses: " + addresses);
 
         LookupSqueaksRequest request = LookupSqueaksRequest.newBuilder()
-                .setAddresses(0, addresses.get(0))
+                .addAllAddresses(addresses)
                 .setMinBlock(minBlock)
                 .setMaxBlock(maxBlock)
                 .build();
