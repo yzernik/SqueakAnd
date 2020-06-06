@@ -2,8 +2,6 @@ package io.github.yzernik.squeakand.server;
 
 import android.util.Log;
 
-import com.google.common.collect.Lists;
-
 import org.bitcoinj.core.Sha256Hash;
 
 import java.util.HashSet;
