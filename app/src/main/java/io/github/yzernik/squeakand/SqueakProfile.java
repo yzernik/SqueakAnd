@@ -7,11 +7,9 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.params.MainNetParams;
-
 import java.io.Serializable;
 
+import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
 import io.github.yzernik.squeaklib.core.Signing;
 
 
@@ -37,7 +35,7 @@ public class SqueakProfile implements Serializable {
     public SqueakProfile(String name, Signing.BitcoinjKeyPair keyPair) {
         this.name = name;
         this.keyPair = keyPair;
-        this.address = keyPair.getPublicKey().getAddress(MainNetParams.get());
+        this.address = keyPair.getPublicKey().getAddress(NetworkParameters.getNetworkParameters());
     }
 
     @Ignore

@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,10 +18,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.bitcoinj.core.ECKey;
-import org.bitcoinj.params.MainNetParams;
 
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
 import io.github.yzernik.squeaklib.core.Signing;
 
 public class CreateProfileFragment extends Fragment {
@@ -74,7 +73,7 @@ public class CreateProfileFragment extends Fragment {
 
                 // Change the address display
                 if (keyPair != null) {
-                    mProfileAddressDisplay.setHint(keyPair.getPublicKey().getAddress(MainNetParams.get()));
+                    mProfileAddressDisplay.setHint(keyPair.getPublicKey().getAddress(NetworkParameters.getNetworkParameters()));
                 }
 
                 // Change the button response

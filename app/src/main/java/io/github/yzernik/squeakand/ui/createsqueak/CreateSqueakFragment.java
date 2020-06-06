@@ -19,8 +19,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputLayout;
 
-import org.bitcoinj.params.MainNetParams;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +29,7 @@ import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.ServerUpdate;
+import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 
@@ -232,7 +231,7 @@ public class CreateSqueakFragment extends Fragment {
 
         try {
             Squeak squeak = Squeak.makeSqueakFromStr(
-                    MainNetParams.get(),
+                    NetworkParameters.getNetworkParameters(),
                     createSqueakParams.getSqueakProfile().getKeyPair(),
                     squeakText,
                     createSqueakParams.getLatestBlockk().getHeight(),

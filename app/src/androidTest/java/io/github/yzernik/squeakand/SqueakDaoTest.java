@@ -8,7 +8,6 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.bitcoinj.core.Sha256Hash;
-import org.bitcoinj.params.MainNetParams;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -22,6 +21,7 @@ import java.util.Set;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.Blockchain;
 import io.github.yzernik.squeakand.blockchain.DummyBlockchain;
+import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
 import io.github.yzernik.squeaklib.core.Signing;
 import io.github.yzernik.squeaklib.core.Squeak;
 
@@ -135,7 +135,7 @@ public class SqueakDaoTest {
     private Squeak createSqeakWithText(String text, Signing.BitcoinjKeyPair keyPair) throws Exception {
         BlockInfo latestBlock = blockchain.getLatestBlock();
         return Squeak.makeSqueakFromStr(
-                MainNetParams.get(),
+                NetworkParameters.getNetworkParameters(),
                 keyPair,
                 text,
                 latestBlock.getHeight(),

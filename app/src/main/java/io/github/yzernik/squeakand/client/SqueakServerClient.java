@@ -3,12 +3,12 @@ package io.github.yzernik.squeakand.client;
 import com.google.protobuf.ByteString;
 
 import org.bitcoinj.core.Sha256Hash;
-import org.bitcoinj.params.MainNetParams;
 
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
 import io.github.yzernik.squeaklib.core.Squeak;
 import io.github.yzernik.squeaklib.core.SqueakSerializer;
 import io.github.yzernik.squeakserver.GetSqueakReply;
@@ -63,7 +63,7 @@ public class SqueakServerClient {
         GetSqueakReply reply = blockingStub.getSqueak(request);
         io.github.yzernik.squeakserver.Squeak squeakMessage = reply.getSqueak();
         byte[] squeakBytes = squeakMessage.getSerializedSqueak().toByteArray();
-        SqueakSerializer squeakSerializer = new SqueakSerializer(MainNetParams.get(), true);
+        SqueakSerializer squeakSerializer = new SqueakSerializer(NetworkParameters.getNetworkParameters(), true);
         return squeakSerializer.makeSqueak(squeakBytes);
     }
 

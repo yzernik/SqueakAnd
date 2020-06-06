@@ -7,10 +7,10 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import org.bitcoinj.core.Sha256Hash;
-import org.bitcoinj.params.MainNetParams;
 
 import java.io.Serializable;
 
+import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 
@@ -66,7 +66,7 @@ public class SqueakEntry implements Serializable {
     @Ignore
     public Squeak getSqueak() {
         return new Squeak(
-                MainNetParams.get(),
+                NetworkParameters.getNetworkParameters(),
                 hashEncContent,
                 hashReplySqk,
                 hashBlock,

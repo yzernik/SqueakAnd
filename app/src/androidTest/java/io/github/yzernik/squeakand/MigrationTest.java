@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 import androidx.room.testing.MigrationTestHelper;
 import androidx.sqlite.db.SupportSQLiteDatabase;
@@ -13,8 +12,6 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import org.bitcoinj.core.LegacyAddress;
-import org.bitcoinj.params.MainNetParams;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,6 +21,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.List;
 
+import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
 import io.github.yzernik.squeaklib.core.Signing;
 
 import static io.github.yzernik.squeakand.SqueakRoomDatabase.MIGRATION_1_2;
@@ -36,7 +34,7 @@ public class MigrationTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     private static final Signing.BitcoinjKeyPair EXAMPLE_KEY_PAIR = new Signing.BitcoinjKeyPair();
-    private static final String EXAMPLE_ADDRESS = EXAMPLE_KEY_PAIR.getPublicKey().getAddress(MainNetParams.get());
+    private static final String EXAMPLE_ADDRESS = EXAMPLE_KEY_PAIR.getPublicKey().getAddress(NetworkParameters.getNetworkParameters());
 
     private static final String TEST_DB_NAME = "test-db";
 
