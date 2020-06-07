@@ -3,12 +3,10 @@ package io.github.yzernik.squeakand;
 import android.app.Application;
 import android.util.Log;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import io.github.yzernik.squeakand.server.ServerSyncer;
+import io.github.yzernik.squeakand.server.SqueakNetworkController;
 import io.github.yzernik.squeakand.server.SqueakServer;
 import io.github.yzernik.squeakand.server.SqueakServerAddress;
 import io.github.yzernik.squeaklib.core.Squeak;
@@ -25,6 +23,7 @@ public class SqueakServerRepository {
     // private SqueakServerDao mSqueakServerDao;
     private SqueakDao mSqueakDao;
     private SqueakProfileDao mSqueakProfileDao;
+    private SqueakNetworkController squeakNetworkController;
 
     private SqueakServerRepository(Application application) {
         // Singleton constructor, only called by static method.
@@ -33,6 +32,7 @@ public class SqueakServerRepository {
         // mSqueakServerDao = db.squeakServerDao();
         mSqueakDao = db.squeakDao();
         mSqueakProfileDao = db.squeakProfileDao();
+        squeakNetworkController = new SqueakNetworkController(mSqueakDao, mSqueakProfileDao);
     }
 
     public static SqueakServerRepository getRepository(Application application) {
@@ -49,48 +49,13 @@ public class SqueakServerRepository {
     public void initialize() {
         Log.i(getClass().getName(), "Initializing squeak server connections...");
 
-        // Start the peer discovery
-        // peerDownloader.keepPeersUpdated();
-
-        // Keep the map of servers synced with the database.
-        // TODO: use the db here
-
         // Start the sync thread
-        ServerSyncer syncer = new ServerSyncer(mSqueakDao, mSqueakProfileDao);
+        ServerSyncer syncer = new ServerSyncer(squeakNetworkController);
         syncer.startSyncTask();
-
-
-        /*        // Set the servers
-        List<SqueakServerAddress> servers = getServers();
-        Log.i(getClass().getName(), "Setting syncer servers with only local server");
-        syncer.setServers(servers);
-
-        // Set the upload profiles
-        List<String> signingProfiles = getUploadAddresses();
-        syncer.setUploadAddresses(signingProfiles);*/
-
     }
 
     public void publishSqueak(Squeak squeak) {
-        // TODO: upload the squeak to all of the servers.
+        squeakNetworkController.publish(squeak);
     }
 
-/*    private List<SqueakServerAddress> getServers() {
-        SqueakServerAddress localServer = new SqueakServerAddress("10.0.2.2", 8774);
-        return Arrays.asList(localServer);
-    }*/
-
-/*    private List<String> getUploadAddresses() {
-        List<SqueakProfile> signingProfiles = mSqueakProfileDao.getSigningProfiles();
-        Log.i(getClass().getName(), "Got number of signing profiles: " + signingProfiles.size());
-        Log.i(getClass().getName(), "Got signing profiles: " + signingProfiles);
-        for (SqueakProfile profile: signingProfiles) {
-            Log.i(getClass().getName(), "Got signing profile: " + profile);
-        }
-
-
-        return signingProfiles.stream()
-                .map(profile -> profile.getAddress())
-                .collect(Collectors.toList());
-    }*/
 }
