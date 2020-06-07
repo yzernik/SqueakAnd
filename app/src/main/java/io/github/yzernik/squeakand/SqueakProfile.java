@@ -39,12 +39,16 @@ public class SqueakProfile implements Serializable {
     public SqueakProfile(String name, Signing.BitcoinjKeyPair keyPair) {
         this(name, keyPair.getPublicKey().getAddress(NetworkParameters.getNetworkParameters()));
         this.keyPair = keyPair;
+        this.uploadEnabled = true;
+        this.downloadEnabled = true;
     }
 
     @Ignore
     public SqueakProfile(String name, String address) {
         this.name = name;
         this.address = address;
+        this.uploadEnabled = false;
+        this.downloadEnabled = true;
     }
 
     @Ignore
