@@ -26,6 +26,16 @@ public class SqueakServerAddress {
         return host + ":" + port;
     }
 
+    public static SqueakServerAddress fromString(String s) {
+        String[] pieces = s.split(",");
+        if (pieces.length != 2) {
+            throw new IllegalArgumentException();
+        }
+        String host = pieces[0];
+        int port = Integer.parseInt(pieces[1]);
+        return new SqueakServerAddress(host, port);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

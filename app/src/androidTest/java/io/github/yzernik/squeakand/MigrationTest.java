@@ -25,6 +25,7 @@ import io.github.yzernik.squeaklib.core.Signing;
 
 import static io.github.yzernik.squeakand.SqueakRoomDatabase.MIGRATION_1_2;
 import static io.github.yzernik.squeakand.SqueakRoomDatabase.MIGRATION_2_3;
+import static io.github.yzernik.squeakand.SqueakRoomDatabase.MIGRATION_3_4;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
@@ -85,7 +86,7 @@ public class MigrationTest {
     private SqueakRoomDatabase getMigratedRoomDatabase() {
         SqueakRoomDatabase database = Room.databaseBuilder(ApplicationProvider.getApplicationContext(),
                 SqueakRoomDatabase.class, TEST_DB_NAME)
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                 .build();
         // close the database and release any stream resources when the test finishes
         helper.closeWhenFinished(database);
@@ -111,6 +112,6 @@ public class MigrationTest {
 
     // Array of all migrations
     private static final Migration[] ALL_MIGRATIONS = new Migration[]{
-            MIGRATION_1_2, MIGRATION_2_3};
+            MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4};
 
 }

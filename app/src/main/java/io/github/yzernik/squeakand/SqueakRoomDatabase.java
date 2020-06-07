@@ -20,12 +20,13 @@ import java.util.concurrent.Executors;
  * app, consider exporting the schema to help you with migrations.
  */
 
-@Database(entities = {SqueakProfile.class, SqueakEntry.class}, version = 3)
+@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class}, version = 4)
 abstract class SqueakRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";
     public static final String TABLE_NAME_PROFILE = "profile";
     public static final String TABLE_NAME_SQUEAK = "squeak";
+    public static final String TABLE_NAME_SERVER = "server";
 
     abstract SqueakDao squeakDao();
     abstract SqueakProfileDao squeakProfileDao();
@@ -44,7 +45,7 @@ abstract class SqueakRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             SqueakRoomDatabase.class, DB_NAME)
                             //.addCallback(sRoomDatabaseCallback)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                             .build();
                 }
             }
@@ -164,6 +165,20 @@ abstract class SqueakRoomDatabase extends RoomDatabase {
                     "ALTER TABLE profile ADD COLUMN uploadEnabled INTEGER NOT NULL DEFAULT 1");
             database.execSQL(
                     "ALTER TABLE profile ADD COLUMN downloadEnabled INTEGER NOT NULL DEFAULT 1");
+        }
+    };
+
+    @VisibleForTesting
+    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "CREATE TABLE server (" +
+                            "server_id INTEGER PRIMARY KEY NOT NULL," +
+                            "serverName TEXT," +
+                            "serverAddress TEXT NOT NULL)");
+            database.execSQL(
+                    "CREATE UNIQUE INDEX index_server_serverAddress ON server (serverAddress)");
         }
     };
 

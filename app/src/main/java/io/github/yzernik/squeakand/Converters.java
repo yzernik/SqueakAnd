@@ -5,6 +5,7 @@ import androidx.room.TypeConverter;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Sha256Hash;
 
+import io.github.yzernik.squeakand.server.SqueakServerAddress;
 import io.github.yzernik.squeaklib.core.Signing;
 
 import static org.bitcoinj.core.Utils.HEX;
@@ -53,6 +54,16 @@ public class Converters {
     public static String hashToString(Sha256Hash hash) {
         byte[] hashBytes = hash.getBytes();
         return HEX.encode(hashBytes);
+    }
+
+    @TypeConverter
+    public static SqueakServerAddress serverAddressFromString(String s) {
+        return SqueakServerAddress.fromString(s);
+    }
+
+    @TypeConverter
+    public static String serverAddressToString(SqueakServerAddress squeakServerAddress) {
+        return squeakServerAddress.toString();
     }
 
 }
