@@ -19,6 +19,8 @@ public class ServerSyncer {
 
     private static final int DEFAULT_MIN_BLOCK = 0;
     private static final int DEFAULT_MAX_BLOCK = 1000000000;
+    private static final int DEFAULT_SYNC_SLEEP_INTERVAL_MS = 60000;
+
 
     private final SqueakDao squeakDao;
     private final SqueakProfileDao squeakProfileDao;
@@ -59,19 +61,6 @@ public class ServerSyncer {
                 .collect(Collectors.toList());
     }
 
-    /*
-    public void setServers(List<SqueakServerAddress> serverAddresses) {
-        // Restart task with the given servers
-        this.serverAddresses = serverAddresses;
-        startSyncTask();
-    }
-
-    public void setUploadAddresses(List<String> uploadAddresses) {
-        // Restart task with the given upload addresses
-        this.uploadAddresses = uploadAddresses;
-        startSyncTask();
-    }*/
-
 
     class SyncTask implements Callable<String> {
 
@@ -82,23 +71,38 @@ public class ServerSyncer {
         public String call() throws InterruptedException {
             Log.i(getClass().getName(), "Calling call.");
             while (true) {
-                List<SqueakServerAddress> serverAddresses = getServers();
-                List<String> uploadAddresses = getUploadAddresses();
-
-                Log.i(getClass().getName(), "Doing another round of syncing with servers: " + serverAddresses);
-                Log.i(getClass().getName(), "Doing another round of syncing with number of servers: " + serverAddresses.size());
-                for (SqueakServerAddress serverAddress: serverAddresses) {
-                    // Upload
-                    Uploader uploader = new Uploader(serverAddress, squeakDao);
-                    uploader.uploadSync(uploadAddresses, DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
-
-                    // TODO: Download
+                try {
+                    trySync();
+                } catch (Exception e) {
+                    Log.e(getClass().getName(),"Failed to sync with servers with error: " + e);
                 }
-                Log.i(getClass().getName(), "Finished round of syncing.");
-
                 // Sleep until the next sync
-                Thread.sleep(60000);
+                Thread.sleep(DEFAULT_SYNC_SLEEP_INTERVAL_MS);
             }
+        }
+
+        private void trySync() {
+            List<SqueakServerAddress> serverAddresses = getServers();
+            List<String> uploadAddresses = getUploadAddresses();
+
+            Log.i(getClass().getName(), "Doing another round of syncing with servers: " + serverAddresses);
+            Log.i(getClass().getName(), "Doing another round of syncing with number of servers: " + serverAddresses.size());
+            for (SqueakServerAddress serverAddress: serverAddresses) {
+                try {
+                    trySyncServer(serverAddress, uploadAddresses);
+                } catch (io.grpc.StatusRuntimeException e) {
+                    Log.e(getClass().getName(),"Failed to sync with server " + serverAddress + " with error: " + e);
+                }
+            }
+            Log.i(getClass().getName(), "Finished round of syncing.");
+        }
+
+        private void trySyncServer(SqueakServerAddress serverAddress, List<String> uploadAddresses) {
+            // Upload
+            Uploader uploader = new Uploader(serverAddress, squeakDao);
+            uploader.uploadSync(uploadAddresses, DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
+
+            // TODO: Download
         }
 
     }

@@ -39,9 +39,15 @@ public class Uploader {
 
         Set<Sha256Hash> remoteHashes = getRemoteHashes(uploadAddresses, minBlock, maxBlock);
         Log.i(getClass().getName(), "Got server number of hashes: " + remoteHashes.size());
+        for (Sha256Hash hash: remoteHashes) {
+            Log.i(getClass().getName(), "Hash: : " + hash);
+        }
 
         Set<Sha256Hash> localHashes = getLocalHashes(uploadAddresses, minBlock, maxBlock);
-        Log.i(getClass().getName(), "Got local number of hashes: " + remoteHashes.size());
+        Log.i(getClass().getName(), "Got local number of hashes: " + localHashes.size());
+        for (Sha256Hash hash: localHashes) {
+            Log.i(getClass().getName(), "Hash: : " + hash);
+        }
 
         // For every local hash not in server hashes, upload.
         localHashes.removeAll(remoteHashes);

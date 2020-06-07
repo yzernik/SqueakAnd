@@ -72,10 +72,6 @@ public class SqueakServerClient {
 
         ByteString squeakHashBytes = ByteString.copyFrom(squeak.getHash().getBytes());
         ByteString squeakBytes = ByteString.copyFrom(squeak.bitcoinSerialize());
-        logger.info("squeak.getHash().getBytes() length: " + squeak.getHash().getBytes().length);
-        logger.info("squeak.bitcoinSerialize() length: " + squeak.bitcoinSerialize().length);
-        logger.info("squeakHashBytes: " + squeakHashBytes.size());
-        logger.info("squeakBytes: " + squeakBytes.size());
 
         io.github.yzernik.squeakserver.Squeak squeakMessage = io.github.yzernik.squeakserver.Squeak.newBuilder()
                 .setHash(squeakHashBytes)
