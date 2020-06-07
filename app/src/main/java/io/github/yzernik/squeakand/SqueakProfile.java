@@ -28,6 +28,10 @@ public class SqueakProfile implements Serializable {
 
     public String address;
 
+    public boolean uploadEnabled;
+
+    public boolean downloadEnabled;
+
     public SqueakProfile() {
     }
 
