@@ -29,11 +29,16 @@ import java.util.List;
 @Dao
 public interface SqueakProfileDao {
 
+    String getSigningProfilesQuery = "SELECT * from " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE keyPair IS NOT NULL " + " ORDER BY profile_id ASC";
+
     @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ORDER BY profile_id ASC")
     LiveData<List<SqueakProfile>> getProfiles();
 
-    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE keyPair IS NOT NULL " + " ORDER BY profile_id ASC")
-    LiveData<List<SqueakProfile>> getSigningProfiles();
+    @Query(getSigningProfilesQuery)
+    LiveData<List<SqueakProfile>> getLiveSigningProfiles();
+
+    @Query(getSigningProfilesQuery)
+    List<SqueakProfile> getSigningProfiles();
 
     @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE keyPair IS NULL " + " ORDER BY profile_id ASC")
     LiveData<List<SqueakProfile>> getContactProfiles();

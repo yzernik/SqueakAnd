@@ -39,15 +39,21 @@ public class Uploader {
 
         Set<Sha256Hash> remoteHashes = getRemoteHashes(uploadAddresses, minBlock, maxBlock);
         Log.i(getClass().getName(), "Got server number of hashes: " + remoteHashes.size());
+        for (Sha256Hash hash: remoteHashes) {
+            Log.i(getClass().getName(), "Hash: : " + hash);
+        }
 
         Set<Sha256Hash> localHashes = getLocalHashes(uploadAddresses, minBlock, maxBlock);
-        Log.i(getClass().getName(), "Got local number of hashes: " + remoteHashes.size());
+        Log.i(getClass().getName(), "Got local number of hashes: " + localHashes.size());
+        for (Sha256Hash hash: localHashes) {
+            Log.i(getClass().getName(), "Hash: : " + hash);
+        }
 
         // For every local hash not in server hashes, upload.
         localHashes.removeAll(remoteHashes);
         Log.i(getClass().getName(), "Uploading number of squeaks: " + localHashes.size());
         for (Sha256Hash hash: localHashes) {
-            Squeak squeak = squeakDao.fetchSqueakByHash(hash).getValue().getSqueak();
+            Squeak squeak = squeakDao.fetchSqueakByHash(hash).getSqueak();
             upload(squeak);
         }
 
@@ -63,7 +69,7 @@ public class Uploader {
         Set<Sha256Hash> localHashes = new HashSet<>();
         for (String address: uploadAddresses) {
             // TODO: include block range in DAO method.
-            List<SqueakEntry> squeakEntries = squeakDao.fetchSqueaksByAddress(address).getValue();
+            List<SqueakEntry> squeakEntries = squeakDao.fetchSqueaksByAddress(address);
             for (SqueakEntry squeakEntry: squeakEntries) {
                 localHashes.add(squeakEntry.hash);
             }

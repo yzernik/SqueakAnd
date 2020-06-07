@@ -22,7 +22,7 @@ public class SqueakProfileRepository {
         SqueakRoomDatabase db = SqueakRoomDatabase.getDatabase(application);
         mSqueakProfileDao = db.squeakProfileDao();
         mAllSqueakProfiles = mSqueakProfileDao.getProfiles();
-        mAllSqueakSigningProfiles = mSqueakProfileDao.getSigningProfiles();
+        mAllSqueakSigningProfiles = mSqueakProfileDao.getLiveSigningProfiles();
         mAllSqueakContactProfiles = mSqueakProfileDao.getContactProfiles();
     }
 
