@@ -3,7 +3,6 @@ package io.github.yzernik.squeakand.server;
 import android.util.Log;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -49,7 +48,7 @@ public class ServerSyncer {
     }
 
     private List<String> getUploadAddresses() {
-        List<SqueakProfile> signingProfiles = squeakProfileDao.getSigningProfiles();
+        List<SqueakProfile> signingProfiles = squeakProfileDao.getProfilesToUpload();
         Log.i(getClass().getName(), "Got number of signing profiles: " + signingProfiles.size());
         Log.i(getClass().getName(), "Got signing profiles: " + signingProfiles);
         for (SqueakProfile profile: signingProfiles) {

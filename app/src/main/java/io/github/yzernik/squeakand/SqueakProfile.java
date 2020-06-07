@@ -28,6 +28,10 @@ public class SqueakProfile implements Serializable {
 
     public String address;
 
+    public boolean uploadEnabled;
+
+    public boolean downloadEnabled;
+
     public SqueakProfile() {
     }
 
@@ -35,12 +39,16 @@ public class SqueakProfile implements Serializable {
     public SqueakProfile(String name, Signing.BitcoinjKeyPair keyPair) {
         this(name, keyPair.getPublicKey().getAddress(NetworkParameters.getNetworkParameters()));
         this.keyPair = keyPair;
+        this.uploadEnabled = true;
+        this.downloadEnabled = true;
     }
 
     @Ignore
     public SqueakProfile(String name, String address) {
         this.name = name;
         this.address = address;
+        this.uploadEnabled = false;
+        this.downloadEnabled = true;
     }
 
     @Ignore
@@ -73,6 +81,8 @@ public class SqueakProfile implements Serializable {
         return "SqueakProfile("
                 + "name: " + name + ", "
                 + "profile_id: " + profile_id + ", "
+                + "uploadEnabled: " + uploadEnabled + ", "
+                + "downloadEnabled: " + downloadEnabled + ", "
                 + "address: " + getAddress()
                 + ")";
     }

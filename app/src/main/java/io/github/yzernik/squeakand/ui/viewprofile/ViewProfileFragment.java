@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +26,7 @@ public class ViewProfileFragment extends Fragment {
 
     private TextView mProfileNameText;
     private TextView mProfileAddressText;
+    private Switch mFollowingSwitch;
     private Button mRenameProfileButton;
     private Button mDeleteProfileButton;
 
@@ -37,6 +40,7 @@ public class ViewProfileFragment extends Fragment {
 
         mProfileNameText = root.findViewById(R.id.view_profile_show_name);
         mProfileAddressText = root.findViewById(R.id.view_profile_show_address);
+        mFollowingSwitch = root.findViewById(R.id.view_profile_following_switch);
         mRenameProfileButton = root.findViewById(R.id.view_profile_rename_button);
         mDeleteProfileButton = root.findViewById(R.id.view_profile_delete_button);
 
@@ -51,6 +55,16 @@ public class ViewProfileFragment extends Fragment {
 
                 mProfileNameText.setText(squeakProfile.getName());
                 mProfileAddressText.setText(squeakProfile.getAddress());
+
+                mFollowingSwitch.setChecked(squeakProfile.downloadEnabled);
+                mFollowingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        squeakProfile.downloadEnabled = isChecked;
+                        Log.i(getTag(), "New profile class: " + squeakProfile);
+                        viewProfileModel.updateProfile(squeakProfile);
+                    }
+                });
 
                 // Setup the rename button.
                 mRenameProfileButton.setOnClickListener(new View.OnClickListener() {
