@@ -77,6 +77,8 @@ public class SqueakProfile implements Serializable {
         return "SqueakProfile("
                 + "name: " + name + ", "
                 + "profile_id: " + profile_id + ", "
+                + "uploadEnabled: " + uploadEnabled + ", "
+                + "downloadEnabled: " + downloadEnabled + ", "
                 + "address: " + getAddress()
                 + ")";
     }

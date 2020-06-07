@@ -161,9 +161,9 @@ abstract class SqueakRoomDatabase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL(
-                    "ALTER TABLE profile ADD COLUMN uploadEnabled INTEGER NOT NULL DEFAULT 'true'");
+                    "ALTER TABLE profile ADD COLUMN uploadEnabled INTEGER NOT NULL DEFAULT 1");
             database.execSQL(
-                    "ALTER TABLE profile ADD COLUMN downloadEnabled INTEGER NOT NULL DEFAULT 'true'");
+                    "ALTER TABLE profile ADD COLUMN downloadEnabled INTEGER NOT NULL DEFAULT 1");
         }
     };
 
