@@ -3,12 +3,12 @@ package io.github.yzernik.squeakand;
 import android.app.Application;
 import android.util.Log;
 
-import java.util.concurrent.ConcurrentHashMap;
+import androidx.lifecycle.LiveData;
+
+import java.util.List;
 
 import io.github.yzernik.squeakand.server.ServerSyncer;
 import io.github.yzernik.squeakand.server.SqueakNetworkController;
-import io.github.yzernik.squeakand.server.SqueakServer;
-import io.github.yzernik.squeakand.server.SqueakServerAddress;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 /**
@@ -19,20 +19,19 @@ public class SqueakServerRepository {
     private static volatile SqueakServerRepository INSTANCE;
 
     private final Application application;
-    private final ConcurrentHashMap<SqueakServerAddress, SqueakServer> servers = new ConcurrentHashMap<>();
-    // private SqueakServerDao mSqueakServerDao;
     private SqueakDao mSqueakDao;
     private SqueakProfileDao mSqueakProfileDao;
+    private SqueakServerDao mSqueakServerDao;
     private SqueakNetworkController squeakNetworkController;
 
     private SqueakServerRepository(Application application) {
         // Singleton constructor, only called by static method.
         this.application = application;
         SqueakRoomDatabase db = SqueakRoomDatabase.getDatabase(application);
-        // mSqueakServerDao = db.squeakServerDao();
         mSqueakDao = db.squeakDao();
         mSqueakProfileDao = db.squeakProfileDao();
-        squeakNetworkController = new SqueakNetworkController(mSqueakDao, mSqueakProfileDao);
+        mSqueakServerDao = db.squeakServerDao();
+        squeakNetworkController = new SqueakNetworkController(mSqueakDao, mSqueakProfileDao, mSqueakServerDao);
     }
 
     public static SqueakServerRepository getRepository(Application application) {
@@ -56,6 +55,18 @@ public class SqueakServerRepository {
 
     public void publishSqueak(Squeak squeak) {
         squeakNetworkController.publish(squeak);
+    }
+
+    public void insert(SqueakServer server) {
+        mSqueakServerDao.insert(server);
+    }
+
+    public void delete(SqueakServer server) {
+        mSqueakServerDao.delete(server);
+    }
+
+    public LiveData<List<SqueakServer>> getLiveServers() {
+        return mSqueakServerDao.getLiveServers();
     }
 
 }

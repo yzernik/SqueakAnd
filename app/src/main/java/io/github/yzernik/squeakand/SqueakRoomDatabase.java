@@ -30,6 +30,7 @@ abstract class SqueakRoomDatabase extends RoomDatabase {
 
     abstract SqueakDao squeakDao();
     abstract SqueakProfileDao squeakProfileDao();
+    abstract SqueakServerDao squeakServerDao();
 
 
     // marking the instance as volatile to ensure atomic access to the variable

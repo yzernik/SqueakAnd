@@ -12,8 +12,13 @@ import java.util.List;
 @Dao
 public interface SqueakServerDao {
 
-    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_SERVER)
-    LiveData<List<SqueakServer>> getServers();
+    String getServersQuery = "SELECT * from " + SqueakRoomDatabase.TABLE_NAME_SERVER;
+
+    @Query(getServersQuery)
+    LiveData<List<SqueakServer>> getLiveServers();
+
+    @Query(getServersQuery)
+    List<SqueakServer> getServers();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(SqueakServer squeakServer);
