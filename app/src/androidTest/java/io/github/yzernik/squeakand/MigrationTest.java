@@ -51,8 +51,8 @@ public class MigrationTest {
 
     @Test
     public void migrationFrom1To2_containsCorrectData() throws IOException, InterruptedException {
-        // Create the database with version 2
-        SupportSQLiteDatabase db = helper.createDatabase(TEST_DB_NAME, 2);
+        // Create the database with version 1
+        SupportSQLiteDatabase db = helper.createDatabase(TEST_DB_NAME, 1);
         // Insert some data
         insertUser(SQUEAK_PROFILE.getName(), SQUEAK_PROFILE.getKeyPair(), db);
         //Prepare for the next version
