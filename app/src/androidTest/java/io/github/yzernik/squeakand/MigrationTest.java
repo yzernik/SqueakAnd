@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
+import androidx.room.migration.Migration;
 import androidx.room.testing.MigrationTestHelper;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory;
@@ -12,8 +13,6 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,25 +41,18 @@ public class MigrationTest {
 
     // Helper for creating Room databases and migrations
     @Rule
-    public MigrationTestHelper mMigrationTestHelper =
-            new MigrationTestHelper(InstrumentationRegistry.getInstrumentation(),
-                    SqueakRoomDatabase.class.getCanonicalName(),
-                    new FrameworkSQLiteOpenHelperFactory());
+    public MigrationTestHelper helper;
 
-    @Before
-    public void setUp() throws Exception {
-        // Nothing.
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        // Nothing.
+    public MigrationTest() {
+        helper = new MigrationTestHelper(InstrumentationRegistry.getInstrumentation(),
+                SqueakRoomDatabase.class.getCanonicalName(),
+                new FrameworkSQLiteOpenHelperFactory());
     }
 
     @Test
     public void migrationFrom1To2_containsCorrectData() throws IOException, InterruptedException {
         // Create the database with version 2
-        SupportSQLiteDatabase db = mMigrationTestHelper.createDatabase(TEST_DB_NAME, 2);
+        SupportSQLiteDatabase db = helper.createDatabase(TEST_DB_NAME, 2);
         // Insert some data
         insertUser(SQUEAK_PROFILE.getName(), SQUEAK_PROFILE.getKeyPair(), db);
         //Prepare for the next version
@@ -68,7 +60,7 @@ public class MigrationTest {
 
         // Re-open the database with version 2 and provide
         // MIGRATION_1_2 as the migration process.
-        mMigrationTestHelper.runMigrationsAndValidate(TEST_DB_NAME, 2, true,
+        helper.runMigrationsAndValidate(TEST_DB_NAME, 2, true,
                 MIGRATION_1_2);
 
         // MigrationTestHelper automatically verifies the schema changes, but not the data validity
@@ -95,8 +87,29 @@ public class MigrationTest {
                 .addMigrations(MIGRATION_1_2)
                 .build();
         // close the database and release any stream resources when the test finishes
-        mMigrationTestHelper.closeWhenFinished(database);
+        helper.closeWhenFinished(database);
         return database;
     }
+
+    @Test
+    public void migrateAll() throws IOException {
+        // Create earliest version of the database.
+        SupportSQLiteDatabase db = helper.createDatabase(TEST_DB_NAME, 1);
+        db.close();
+
+        // Open latest version of the database. Room will validate the schema
+        // once all migrations execute.
+        SqueakRoomDatabase appDb = Room.databaseBuilder(
+                InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                SqueakRoomDatabase.class,
+                TEST_DB_NAME)
+                .addMigrations(ALL_MIGRATIONS).build();
+        appDb.getOpenHelper().getWritableDatabase();
+        appDb.close();
+    }
+
+    // Array of all migrations
+    private static final Migration[] ALL_MIGRATIONS = new Migration[]{
+            MIGRATION_1_2};
 
 }
