@@ -82,7 +82,6 @@ public class ManageProfilesFragment extends Fragment implements ProfileListAdapt
 
     @Override
     public void handleItemClick(int id) {
-        // TODO: go to profile activity
         Log.i(getTag(), "Clicked on profile id: " + id);
         startActivity(new Intent(getActivity(), ViewProfileActivity.class).putExtra("profile_id", id));
     }

@@ -2,6 +2,7 @@ package io.github.yzernik.squeakand;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
@@ -9,6 +10,7 @@ import androidx.room.TypeConverters;
 import java.io.Serializable;
 
 import io.github.yzernik.squeakand.server.SqueakServerAddress;
+import io.github.yzernik.squeaklib.core.Signing;
 
 @Entity(
         tableName = SqueakRoomDatabase.TABLE_NAME_SERVER,
@@ -23,5 +25,20 @@ public class SqueakServer implements Serializable {
 
     @NonNull
     public SqueakServerAddress serverAddress;
+
+    @Ignore
+    public int getId() {
+        return server_id;
+    }
+
+    @Ignore
+    public String getName() {
+        return serverName;
+    }
+
+    @Ignore
+    public SqueakServerAddress getAddress() {
+        return serverAddress;
+    }
 
 }
