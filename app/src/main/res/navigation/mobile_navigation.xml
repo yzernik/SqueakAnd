@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_contacts" />
 
     <fragment
+        android:id="@+id/navigation_network"
+        android:name="io.github.yzernik.squeakand.ui.network.NetworkFragment"
+        android:label="Network"
+        tools:layout="@layout/fragment_network" />
+
+    <fragment
         android:id="@+id/navigation_notifications"
         android:name="io.github.yzernik.squeakand.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
