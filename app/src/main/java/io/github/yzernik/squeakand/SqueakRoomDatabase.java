@@ -44,7 +44,7 @@ abstract class SqueakRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             SqueakRoomDatabase.class, DB_NAME)
                             //.addCallback(sRoomDatabaseCallback)
-                            .addMigrations(MIGRATION_1_2)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                             .build();
                 }
             }
