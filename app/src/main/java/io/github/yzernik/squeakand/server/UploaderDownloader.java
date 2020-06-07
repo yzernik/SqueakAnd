@@ -68,7 +68,7 @@ public class UploaderDownloader {
         // For every server hash not in remote hashes, download.
         remoteHashes.removeAll(localHashes);
         Log.i(getClass().getName(), "Downloading number of squeaks: " + remoteHashes.size());
-        for (Sha256Hash hash: localHashes) {
+        for (Sha256Hash hash: remoteHashes) {
             Squeak squeak = download(hash);
             squeakDao.insert(new SqueakEntry(squeak));
         }
