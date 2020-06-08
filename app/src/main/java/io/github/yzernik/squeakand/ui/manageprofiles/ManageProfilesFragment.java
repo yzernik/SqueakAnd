@@ -30,7 +30,6 @@ public class ManageProfilesFragment extends Fragment implements ProfileListAdapt
 
     public static final int NEW_PROFILE_ACTIVITY_REQUEST_CODE = 1;
 
-    private Spinner mProfilesSpinner;
     private Button mCreateProfileButton;
 
     private ManageProfilesModel manageProfilesModel;
@@ -82,7 +81,6 @@ public class ManageProfilesFragment extends Fragment implements ProfileListAdapt
 
     @Override
     public void handleItemClick(int id) {
-        // TODO: go to profile activity
         Log.i(getTag(), "Clicked on profile id: " + id);
         startActivity(new Intent(getActivity(), ViewProfileActivity.class).putExtra("profile_id", id));
     }

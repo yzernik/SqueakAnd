@@ -1,6 +1,8 @@
 package io.github.yzernik.squeakand.server;
 
 
+import android.util.Log;
+
 import java.util.Objects;
 
 public class SqueakServerAddress {
@@ -24,6 +26,18 @@ public class SqueakServerAddress {
     @Override
     public String toString() {
         return host + ":" + port;
+    }
+
+    public static SqueakServerAddress fromString(String s) {
+        Log.i(SqueakServerAddress.class.getName(), "Getting address from string: " + s);
+
+        String[] pieces = s.split(":");
+        if (pieces.length != 2) {
+            throw new IllegalArgumentException();
+        }
+        String host = pieces[0];
+        int port = Integer.parseInt(pieces[1]);
+        return new SqueakServerAddress(host, port);
     }
 
     @Override

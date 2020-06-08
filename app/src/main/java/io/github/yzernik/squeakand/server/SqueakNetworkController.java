@@ -4,13 +4,14 @@ import android.util.Log;
 
 import org.bitcoinj.core.Sha256Hash;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.yzernik.squeakand.SqueakDao;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileDao;
+import io.github.yzernik.squeakand.SqueakServer;
+import io.github.yzernik.squeakand.SqueakServerDao;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 public class SqueakNetworkController {
@@ -20,10 +21,12 @@ public class SqueakNetworkController {
 
     private final SqueakDao squeakDao;
     private final SqueakProfileDao squeakProfileDao;
+    private final SqueakServerDao squeakServerDao;
 
-    public SqueakNetworkController(SqueakDao squeakDao, SqueakProfileDao squeakProfileDao) {
+    public SqueakNetworkController(SqueakDao squeakDao, SqueakProfileDao squeakProfileDao, SqueakServerDao squeakServerDao) {
         this.squeakDao = squeakDao;
         this.squeakProfileDao = squeakProfileDao;
+        this.squeakServerDao = squeakServerDao;
     }
 
     public void publish(Squeak squeak) {
@@ -51,8 +54,14 @@ public class SqueakNetworkController {
     }
 
     private List<SqueakServerAddress> getServers() {
+        /*
         SqueakServerAddress localServer = new SqueakServerAddress("10.0.2.2", 8774);
-        return Arrays.asList(localServer);
+        return Arrays.asList(localServer);*/
+
+        List<SqueakServer> servers = squeakServerDao.getServers();
+        return servers.stream()
+                .map(server -> server.serverAddress)
+                .collect(Collectors.toList());
     }
 
     private List<String> getUploadAddresses() {

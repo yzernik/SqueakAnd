@@ -37,10 +37,10 @@ public interface SqueakProfileDao {
     @Query(getSigningProfilesQuery)
     LiveData<List<SqueakProfile>> getLiveSigningProfiles();
 
-    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE uploadEnabled != 1")
+    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE uploadEnabled == 1")
     List<SqueakProfile> getProfilesToUpload();
 
-    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE downloadEnabled != 1")
+    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE downloadEnabled == 1")
     List<SqueakProfile> getProfilesToDownload();
 
     @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE keyPair IS NULL " + " ORDER BY profile_id ASC")
