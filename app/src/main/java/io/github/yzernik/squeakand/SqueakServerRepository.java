@@ -58,11 +58,15 @@ public class SqueakServerRepository {
     }
 
     public void insert(SqueakServer server) {
-        mSqueakServerDao.insert(server);
+        SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mSqueakServerDao.insert(server);
+        });
     }
 
     public void delete(SqueakServer server) {
-        mSqueakServerDao.delete(server);
+        SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mSqueakServerDao.delete(server);
+        });
     }
 
     public LiveData<List<SqueakServer>> getLiveServers() {

@@ -26,6 +26,15 @@ public class SqueakServer implements Serializable {
     @NonNull
     public SqueakServerAddress serverAddress;
 
+    public SqueakServer() {
+    }
+
+    @Ignore
+    public SqueakServer(String serverName, SqueakServerAddress serverAddress) {
+        this.serverName = serverName;
+        this.serverAddress = serverAddress;
+    }
+
     @Ignore
     public int getId() {
         return server_id;

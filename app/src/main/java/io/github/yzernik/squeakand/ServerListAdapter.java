@@ -32,6 +32,8 @@ public class ServerListAdapter extends RecyclerView.Adapter<ServerListAdapter.Se
                     clickListener.handleItemClick(mServers.get(getAdapterPosition()).getId());
                 }
             });
+
+            // TODO: maybe add click listener for delete button inside the card view.
         }
     }
 
@@ -46,7 +48,7 @@ public class ServerListAdapter extends RecyclerView.Adapter<ServerListAdapter.Se
 
     @Override
     public ServerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.profile_item_layout, parent, false);
+        View itemView = mInflater.inflate(R.layout.server_item_layout, parent, false);
         return new ServerViewHolder(itemView);
     }
 

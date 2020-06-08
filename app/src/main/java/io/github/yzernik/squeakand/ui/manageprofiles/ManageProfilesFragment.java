@@ -30,7 +30,6 @@ public class ManageProfilesFragment extends Fragment implements ProfileListAdapt
 
     public static final int NEW_PROFILE_ACTIVITY_REQUEST_CODE = 1;
 
-    private Spinner mProfilesSpinner;
     private Button mCreateProfileButton;
 
     private ManageProfilesModel manageProfilesModel;
