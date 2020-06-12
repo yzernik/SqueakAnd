@@ -10,6 +10,7 @@ import java.util.List;
 import io.github.yzernik.squeakand.server.ServerSyncer;
 import io.github.yzernik.squeakand.server.ServerUploader;
 import io.github.yzernik.squeakand.server.SqueakNetworkController;
+import io.github.yzernik.squeakand.server.SqueakServerAsyncClient;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 /**
@@ -78,8 +79,8 @@ public class SqueakServerRepository {
         return mSqueakServerDao.getLiveServers();
     }
 
-    public void sync() {
-        squeakNetworkController.sync();
+    public SqueakServerAsyncClient getSqueakServerAsyncClient() {
+        return new SqueakServerAsyncClient(squeakNetworkController);
     }
 
 }

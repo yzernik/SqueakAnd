@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -25,10 +24,10 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
+import io.github.yzernik.squeakand.server.SqueakServerAsyncClient;
 
 
 public class HomeFragment extends Fragment implements SqueakListAdapter.ClickListener {
@@ -105,6 +104,22 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
         // `client` here is an instance of Android Async HTTP
         // getHomeTimeline is an example endpoint.
         Log.i(getTag(), "Calling fetchTimelineAsync...");
+
+
+        SqueakServerAsyncClient asyncClient = homeViewModel.getSqueakServerAsyncClient();
+        asyncClient.syncTimeline(new SqueakServerAsyncClient.SqueakServerResponseHandler() {
+            @Override
+            public void onSuccess() {
+                // Now we call setRefreshing(false) to signal refresh has finished
+                swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Log.d("DEBUG", "Fetch timeline error: " + e.toString());
+            }
+        });
+
         /*
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             public void onSuccess(JSONArray json) {
