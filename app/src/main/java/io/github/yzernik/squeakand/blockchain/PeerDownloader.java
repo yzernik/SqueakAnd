@@ -6,7 +6,6 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,15 +26,17 @@ public class PeerDownloader {
     private static final int MAX_SERVERS = 100;
 
     // private MutableLiveData<List<ElectrumServerAddress>> liveServers;
+    private ElectrumDownloaderController electrumDownloaderController;
     private LiveElectrumPeersMap serversMap;
     private BlockingQueue<ElectrumServerAddress> peerCandidates = new LinkedBlockingQueue();
 
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    public PeerDownloader(LiveElectrumPeersMap peersMap) {
+    public PeerDownloader(ElectrumDownloaderController electrumDownloaderController) {
         // this.liveServers = liveServers;
-        this.serversMap = peersMap;
+        this.electrumDownloaderController = electrumDownloaderController;
+        this.serversMap = electrumDownloaderController.getPeersMap();
         this.executorService =  Executors.newFixedThreadPool(10);
     }
 

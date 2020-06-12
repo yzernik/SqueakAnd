@@ -1,17 +1,29 @@
 package io.github.yzernik.squeakand.blockchain;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public class ElectrumDownloaderConnection {
+import java.util.List;
+
+/**
+ * For controlling which electrum server to download from, and to
+ * maintain the list of available electrum servers in the network.
+ */
+public class ElectrumDownloaderController {
+
+    private MutableLiveData<List<ElectrumServerAddress>> liveServers;
+    private MutableLiveData<ServerUpdate> liveServerUpdate;
 
     private ElectrumServerAddress currentDownloadServer;
-    private MutableLiveData<ServerUpdate> liveServerUpdate;
     private LiveElectrumPeersMap peersMap;
 
-    public ElectrumDownloaderConnection(MutableLiveData<ServerUpdate> liveServerUpdate, LiveElectrumPeersMap peersMap) {
+
+    public ElectrumDownloaderController() {
+        this.liveServerUpdate = new MutableLiveData<>();
+        this.liveServers = new MutableLiveData<>();
+        this.peersMap = new LiveElectrumPeersMap(liveServers);
+
         this.currentDownloadServer = null;
-        this.liveServerUpdate = liveServerUpdate;
-        this.peersMap = peersMap;
         setStatusDisconnected();
     }
 
@@ -43,6 +55,18 @@ public class ElectrumDownloaderConnection {
                 null
         );
         liveServerUpdate.postValue(serverUpdate);
+    }
+
+    public MutableLiveData<ServerUpdate> getLiveServerUpdate() {
+        return liveServerUpdate;
+    }
+
+    public LiveElectrumPeersMap getPeersMap() {
+        return peersMap;
+    }
+
+    public LiveData<List<ElectrumServerAddress>> getLiveServers() {
+        return liveServers;
     }
 
     public synchronized void setCurrentDownloadServer(ElectrumServerAddress serverAddress) {

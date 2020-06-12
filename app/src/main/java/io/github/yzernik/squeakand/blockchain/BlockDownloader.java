@@ -20,12 +20,12 @@ import static org.bitcoinj.core.Utils.HEX;
 
 public class BlockDownloader {
 
-    private final ElectrumDownloaderConnection downloaderConnection;
+    private final ElectrumDownloaderController downloaderController;
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    BlockDownloader(ElectrumDownloaderConnection downloaderConnection) {
-        this.downloaderConnection = downloaderConnection;
+    BlockDownloader(ElectrumDownloaderController downloaderController) {
+        this.downloaderController = downloaderController;
         this.executorService = Executors.newCachedThreadPool();
     }
 
@@ -34,7 +34,7 @@ public class BlockDownloader {
             future.cancel(true);
         }
 
-        ElectrumServerAddress serverAddress = downloaderConnection.getCurrentDownloadServer();
+        ElectrumServerAddress serverAddress = downloaderController.getCurrentDownloadServer();
         // Start a new download task if the current server address is not null.
         if (serverAddress != null) {
             BlockDownloadTask newDownloadTask = new BlockDownloadTask(serverAddress);
@@ -93,18 +93,18 @@ public class BlockDownloader {
         }
 
         private void tryLoadLiveData(ElectrumClient electrumClient) throws ExecutionException, InterruptedException {
-            downloaderConnection.setStatusConnecting();
+            downloaderController.setStatusConnecting();
             Future<SubscribeHeadersResponse> responseFuture = electrumClient.subscribeHeaders(header -> {
                 Log.i(getClass().getName(), "Downloaded header: " + header);
                 BlockInfo blockInfo = parseHeaderResponse(header);
-                downloaderConnection.setStatusConnected(blockInfo);
+                downloaderController.setStatusConnected(blockInfo);
                 resetRetryCounter();
             });
             try {
                 responseFuture.get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
-                downloaderConnection.setStatusDisconnected();
+                downloaderController.setStatusDisconnected();
                 responseFuture.cancel(true);
                 throw e;
             }
