@@ -82,7 +82,6 @@ public class SqueakNetworkController {
 
     private void trySync() {
         List<SqueakServerAddress> serverAddresses = getServers();
-        List<String> uploadAddresses = getUploadAddresses();
 
         Log.i(getClass().getName(), "Doing another round of syncing with servers: " + serverAddresses);
         Log.i(getClass().getName(), "Doing another round of syncing with number of servers: " + serverAddresses.size());
