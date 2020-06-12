@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -32,6 +33,8 @@ import io.github.yzernik.squeakand.ViewSqueakActivity;
 
 public class HomeFragment extends Fragment implements SqueakListAdapter.ClickListener {
 
+    private SwipeRefreshLayout swipeContainer;
+
     private HomeViewModel homeViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -43,6 +46,8 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
         final SqueakListAdapter adapter = new SqueakListAdapter(root.getContext(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+
+        swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainer);
 
         // Get a new or existing ViewModel from the ViewModelProvider.
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
@@ -57,6 +62,18 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
                 adapter.setSqueaks(squeakEntriesWithProfile);
             }
         });
+
+        // Set the swipe action
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchTimelineAsync(0);
+            }
+        });
+
 
         FloatingActionButton fab = root.findViewById(R.id.home_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -81,5 +98,27 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
     public void handleItemClick(Sha256Hash hash) {
         // TODO: Go to the squeak view activity for the hash
         startActivity(new Intent(getActivity(), ViewSqueakActivity.class).putExtra("squeak_hash", hash.toString()));
+    }
+
+    public void fetchTimelineAsync(int page) {
+        // Send the network request to fetch the updated data
+        // `client` here is an instance of Android Async HTTP
+        // getHomeTimeline is an example endpoint.
+        Log.i(getTag(), "Calling fetchTimelineAsync...");
+        /*
+        client.getHomeTimeline(new JsonHttpResponseHandler() {
+            public void onSuccess(JSONArray json) {
+                // Remember to CLEAR OUT old items before appending in the new ones
+                adapter.clear();
+                // ...the data has come back, add new items to your adapter...
+                adapter.addAll(...);
+                // Now we call setRefreshing(false) to signal refresh has finished
+                swipeContainer.setRefreshing(false);
+            }
+
+            public void onFailure(Throwable e) {
+                Log.d("DEBUG", "Fetch timeline error: " + e.toString());
+            }
+        });*/
     }
 }

@@ -78,4 +78,8 @@ public class SqueakServerRepository {
         return mSqueakServerDao.getLiveServers();
     }
 
+    public void sync() {
+        squeakNetworkController.sync();
+    }
+
 }
