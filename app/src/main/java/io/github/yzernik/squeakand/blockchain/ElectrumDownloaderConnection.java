@@ -4,43 +4,53 @@ import androidx.lifecycle.MutableLiveData;
 
 public class ElectrumDownloaderConnection {
 
+    private ElectrumServerAddress currentDownloadServer;
     private MutableLiveData<ServerUpdate> liveServerUpdate;
     private LiveElectrumPeersMap peersMap;
 
     public ElectrumDownloaderConnection(MutableLiveData<ServerUpdate> liveServerUpdate, LiveElectrumPeersMap peersMap) {
+        this.currentDownloadServer = null;
         this.liveServerUpdate = liveServerUpdate;
         this.peersMap = peersMap;
-        setStatusDisconnected(null);
+        setStatusDisconnected();
     }
 
-    void setStatusConnected(ElectrumServerAddress serverAddress, BlockInfo blockInfo) {
+    void setStatusConnected(BlockInfo blockInfo) {
         ServerUpdate serverUpdate = new ServerUpdate(
                 ServerUpdate.ConnectionStatus.CONNECTED,
-                serverAddress,
+                currentDownloadServer,
                 blockInfo
         );
         liveServerUpdate.postValue(serverUpdate);
 
         // Add the connected address to the peers map
-        peersMap.putNewPeer(serverAddress);
+        peersMap.putNewPeer(currentDownloadServer);
     }
 
-    void setStatusDisconnected(ElectrumServerAddress serverAddress) {
+    void setStatusDisconnected() {
         ServerUpdate serverUpdate = new ServerUpdate(
                 ServerUpdate.ConnectionStatus.DISCONNECTED,
-                serverAddress,
+                currentDownloadServer,
                 null
         );
         liveServerUpdate.postValue(serverUpdate);
     }
 
-    void setStatusConnecting(ElectrumServerAddress serverAddress) {
+    void setStatusConnecting() {
         ServerUpdate serverUpdate = new ServerUpdate(
                 ServerUpdate.ConnectionStatus.CONNECTING,
-                serverAddress,
+                currentDownloadServer,
                 null
         );
         liveServerUpdate.postValue(serverUpdate);
+    }
+
+    public synchronized void setCurrentDownloadServer(ElectrumServerAddress serverAddress) {
+        currentDownloadServer = serverAddress;
+    }
+
+    public ElectrumServerAddress getCurrentDownloadServer() {
+        return currentDownloadServer;
     }
 
 }
