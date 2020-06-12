@@ -26,7 +26,7 @@ public class SqueakServerRepository {
     private SqueakServerDao mSqueakServerDao;
     private SqueakNetworkController squeakNetworkController;
 
-    private SqueakServerRepository(Application application) {
+    public SqueakServerRepository(Application application) {
         // Singleton constructor, only called by static method.
         this.application = application;
         SqueakRoomDatabase db = SqueakRoomDatabase.getDatabase(application);
@@ -66,6 +66,16 @@ public class SqueakServerRepository {
     public void insert(SqueakServer server) {
         SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
             mSqueakServerDao.insert(server);
+        });
+    }
+
+    public LiveData<SqueakServer> getSqueakServer(int id) {
+        return mSqueakServerDao.fetchServerById(id);
+    }
+
+    public void update(SqueakServer server) {
+        SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mSqueakServerDao.update(server);
         });
     }
 
