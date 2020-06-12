@@ -26,17 +26,17 @@ public class PeerDownloader {
     private static final int MAX_SERVERS = 100;
 
     // private MutableLiveData<List<ElectrumServerAddress>> liveServers;
-    private ElectrumDownloaderConnection electrumDownloaderConnection;
+    private ElectrumDownloaderController electrumDownloaderController;
     private LiveElectrumPeersMap serversMap;
     private BlockingQueue<ElectrumServerAddress> peerCandidates = new LinkedBlockingQueue();
 
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    public PeerDownloader(ElectrumDownloaderConnection electrumDownloaderConnection) {
+    public PeerDownloader(ElectrumDownloaderController electrumDownloaderController) {
         // this.liveServers = liveServers;
-        this.electrumDownloaderConnection = electrumDownloaderConnection;
-        this.serversMap = electrumDownloaderConnection.getPeersMap();
+        this.electrumDownloaderController = electrumDownloaderController;
+        this.serversMap = electrumDownloaderController.getPeersMap();
         this.executorService =  Executors.newFixedThreadPool(10);
     }
 

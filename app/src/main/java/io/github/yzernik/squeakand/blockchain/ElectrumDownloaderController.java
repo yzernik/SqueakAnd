@@ -5,7 +5,11 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
-public class ElectrumDownloaderConnection {
+/**
+ * For controlling which electrum server to download from, and to
+ * maintain the list of available electrum servers in the network.
+ */
+public class ElectrumDownloaderController {
 
     private MutableLiveData<List<ElectrumServerAddress>> liveServers;
     private MutableLiveData<ServerUpdate> liveServerUpdate;
@@ -14,7 +18,7 @@ public class ElectrumDownloaderConnection {
     private LiveElectrumPeersMap peersMap;
 
 
-    public ElectrumDownloaderConnection() {
+    public ElectrumDownloaderController() {
         this.liveServerUpdate = new MutableLiveData<>();
         this.liveServers = new MutableLiveData<>();
         this.peersMap = new LiveElectrumPeersMap(liveServers);

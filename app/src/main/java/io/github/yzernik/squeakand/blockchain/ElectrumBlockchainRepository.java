@@ -24,11 +24,11 @@ public class ElectrumBlockchainRepository {
     private PeerDownloader peerDownloader;
 
     // Controller
-    ElectrumDownloaderConnection downloaderConnection;
+    ElectrumDownloaderController downloaderConnection;
 
     private ElectrumBlockchainRepository(Application application) {
         // Singleton constructor, only called by static method.
-        downloaderConnection = new ElectrumDownloaderConnection();
+        downloaderConnection = new ElectrumDownloaderController();
         blockDownloader = new BlockDownloader(downloaderConnection);
         preferences = new Preferences(application);
         peerDownloader = new PeerDownloader(downloaderConnection);
