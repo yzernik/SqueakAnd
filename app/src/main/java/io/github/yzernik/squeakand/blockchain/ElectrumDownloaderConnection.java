@@ -8,9 +8,9 @@ public class ElectrumDownloaderConnection {
     private MutableLiveData<ServerUpdate> liveServerUpdate;
     private LiveElectrumPeersMap peersMap;
 
-    public ElectrumDownloaderConnection(MutableLiveData<ServerUpdate> liveServerUpdate, LiveElectrumPeersMap peersMap) {
+    public ElectrumDownloaderConnection(LiveElectrumPeersMap peersMap) {
         this.currentDownloadServer = null;
-        this.liveServerUpdate = liveServerUpdate;
+        this.liveServerUpdate = new MutableLiveData<>();
         this.peersMap = peersMap;
         setStatusDisconnected();
     }
@@ -43,6 +43,10 @@ public class ElectrumDownloaderConnection {
                 null
         );
         liveServerUpdate.postValue(serverUpdate);
+    }
+
+    public MutableLiveData<ServerUpdate> getLiveServerUpdate() {
+        return liveServerUpdate;
     }
 
     public synchronized void setCurrentDownloadServer(ElectrumServerAddress serverAddress) {

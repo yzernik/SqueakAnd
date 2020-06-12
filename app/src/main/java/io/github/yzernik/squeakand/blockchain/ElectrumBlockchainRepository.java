@@ -18,7 +18,6 @@ public class ElectrumBlockchainRepository {
     private static volatile ElectrumBlockchainRepository INSTANCE;
 
     // For handling download
-    private MutableLiveData<ServerUpdate> liveServerUpdate = new MutableLiveData<>();
     private BlockDownloader blockDownloader;
     private Preferences preferences;
 
@@ -32,7 +31,7 @@ public class ElectrumBlockchainRepository {
 
     private ElectrumBlockchainRepository(Application application) {
         // Singleton constructor, only called by static method.
-        downloaderConnection = new ElectrumDownloaderConnection(liveServerUpdate, peersMap);
+        downloaderConnection = new ElectrumDownloaderConnection(peersMap);
         blockDownloader = new BlockDownloader(downloaderConnection);
         preferences = new Preferences(application);
         peerDownloader = new PeerDownloader(peersMap);
@@ -79,7 +78,7 @@ public class ElectrumBlockchainRepository {
     }
 
     public LiveData<ServerUpdate> getServerUpdate() {
-        return liveServerUpdate;
+        return downloaderConnection.getLiveServerUpdate();
     }
 
     public LiveData<List<ElectrumServerAddress>> getElectrumServers() {
