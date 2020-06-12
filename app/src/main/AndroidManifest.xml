@@ -49,6 +49,10 @@
             android:name=".ViewProfileActivity"
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_view_profile" />
+        <activity
+            android:name=".ViewServerActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/activity_view_server" />
     </application>
 
 </manifest>

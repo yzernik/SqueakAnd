@@ -2,6 +2,7 @@ package io.github.yzernik.squeakand.ui.network;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.ServerListAdapter;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakServer;
+import io.github.yzernik.squeakand.ViewServerActivity;
 import io.github.yzernik.squeakand.server.SqueakServerAddress;
 
 public class NetworkFragment extends Fragment implements ServerListAdapter.ClickListener {
@@ -125,7 +127,7 @@ public class NetworkFragment extends Fragment implements ServerListAdapter.Click
     public void handleItemClick(int id) {
         // TODO: go to server activity
         Log.i(getTag(), "Clicked on server id: " + id);
-        // startActivity(new Intent(getActivity(), ViewServerActivity.class).putExtra("profile_id", id));
+        startActivity(new Intent(getActivity(), ViewServerActivity.class).putExtra("server_id", id));
     }
 
 }
