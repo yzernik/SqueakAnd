@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -41,6 +44,9 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // Enable the options menu
+        setHasOptionsMenu(true);
+
         final RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
         final SqueakListAdapter adapter = new SqueakListAdapter(root.getContext(), this);
         recyclerView.setAdapter(adapter);
@@ -73,7 +79,6 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
             }
         });
 
-
         FloatingActionButton fab = root.findViewById(R.id.home_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +102,25 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
     public void handleItemClick(Sha256Hash hash) {
         // TODO: Go to the squeak view activity for the hash
         startActivity(new Intent(getActivity(), ViewSqueakActivity.class).putExtra("squeak_hash", hash.toString()));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.home_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    // Set the refresh button action
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menu_refresh:
+                fetchTimelineAsync(0);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void fetchTimelineAsync(int page) {
