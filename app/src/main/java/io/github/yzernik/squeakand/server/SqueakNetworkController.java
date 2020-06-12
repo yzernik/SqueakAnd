@@ -22,18 +22,40 @@ public class SqueakNetworkController {
     private final SqueakDao squeakDao;
     private final SqueakProfileDao squeakProfileDao;
     private final SqueakServerDao squeakServerDao;
+    private UploadQueue uploadQueue;
 
     public SqueakNetworkController(SqueakDao squeakDao, SqueakProfileDao squeakProfileDao, SqueakServerDao squeakServerDao) {
         this.squeakDao = squeakDao;
         this.squeakProfileDao = squeakProfileDao;
         this.squeakServerDao = squeakServerDao;
+
+        // Create the upload queue
+        uploadQueue = new UploadQueue();
+    }
+
+    public void enqueueToPublish(Squeak squeak) {
+        uploadQueue.addSqueakToUpload(squeak);
+    }
+
+    /**
+     * This method runs until interrupted.
+     */
+    public void publishAllEnqueued() throws InterruptedException {
+        while (true) {
+            Squeak squeakToUpload = uploadQueue.getNextSqueakToUpload();
+            publish(squeakToUpload);
+        }
     }
 
     public void publish(Squeak squeak) {
         // Publish to all connected servers
         for (SqueakServerAddress serverAddress: getServers()) {
             UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeakDao);
-            uploaderDownloader.upload(squeak);
+            try {
+                uploaderDownloader.upload(squeak);
+            } catch (io.grpc.StatusRuntimeException e) {
+                Log.e(getClass().getName(),"Failed to upload to server " + serverAddress + " with error: " + e);
+            }
         }
     }
 

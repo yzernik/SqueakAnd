@@ -25,6 +25,7 @@ public class SqueakServerClient {
     private static final Logger logger = Logger.getLogger(SqueakServerClient.class.getName());
 
     private static final int LOOKUP_REQUEST_TIMEOUT_S = 2;
+    private static final int POST_REQUEST_TIMEOUT_S = 2;
 
     private final SqueakServerGrpc.SqueakServerBlockingStub blockingStub;
     private final SqueakServerGrpc.SqueakServerStub asyncStub;
@@ -85,7 +86,9 @@ public class SqueakServerClient {
                 .setSqueak(squeakMessage)
                 .build();
 
-        PostSqueakReply reply = blockingStub.postSqueak(request);
+        PostSqueakReply reply = blockingStub
+                .withDeadlineAfter(POST_REQUEST_TIMEOUT_S, TimeUnit.SECONDS)
+                .postSqueak(request);
 
         ByteString hashReplyBytes = reply.getHash();
         return Sha256Hash.wrap(hashReplyBytes.toByteArray());

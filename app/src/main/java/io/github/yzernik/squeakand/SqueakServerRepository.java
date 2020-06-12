@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 import io.github.yzernik.squeakand.server.ServerSyncer;
+import io.github.yzernik.squeakand.server.ServerUploader;
 import io.github.yzernik.squeakand.server.SqueakNetworkController;
 import io.github.yzernik.squeaklib.core.Squeak;
 
@@ -51,10 +52,14 @@ public class SqueakServerRepository {
         // Start the sync thread
         ServerSyncer syncer = new ServerSyncer(squeakNetworkController);
         syncer.startSyncTask();
+
+        // Start the upload thread
+        ServerUploader uploader = new ServerUploader(squeakNetworkController);
+        uploader.startUploadTask();
     }
 
     public void publishSqueak(Squeak squeak) {
-        squeakNetworkController.publish(squeak);
+        squeakNetworkController.enqueueToPublish(squeak);
     }
 
     public void insert(SqueakServer server) {
