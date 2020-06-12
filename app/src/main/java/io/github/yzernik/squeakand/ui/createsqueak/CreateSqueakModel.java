@@ -1,7 +1,6 @@
 package io.github.yzernik.squeakand.ui.createsqueak;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -16,16 +15,19 @@ import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileRepository;
 import io.github.yzernik.squeakand.SqueakRepository;
+import io.github.yzernik.squeakand.SqueakServerRepository;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.ServerUpdate;
 import io.github.yzernik.squeakand.preferences.Preferences;
+import io.github.yzernik.squeaklib.core.Squeak;
 
 public class CreateSqueakModel extends AndroidViewModel {
 
     private SqueakProfileRepository mProfileRepository;
     private SqueakRepository mSqueakRepository;
     private ElectrumBlockchainRepository blockchainRepository;
+    private SqueakServerRepository squeakServerRepository;
     private LiveData<List<SqueakProfile>> mAllSqueakSigningProfiles;
     private MutableLiveData<Integer> mSelectedSqueakProfileId;
     public Sha256Hash replyToHash;
@@ -36,6 +38,7 @@ public class CreateSqueakModel extends AndroidViewModel {
         mProfileRepository = new SqueakProfileRepository(application);
         mSqueakRepository = new SqueakRepository(application);
         blockchainRepository = ElectrumBlockchainRepository.getRepository(application);
+        squeakServerRepository = SqueakServerRepository.getRepository(application);
         mAllSqueakSigningProfiles = mProfileRepository.getAllSqueakSigningProfiles();
         mSelectedSqueakProfileId = new MutableLiveData<>();
         replyToHash = Sha256Hash.ZERO_HASH;
@@ -100,6 +103,10 @@ public class CreateSqueakModel extends AndroidViewModel {
 
     void insertSqueak(SqueakEntry squeakEntry) {
         mSqueakRepository.insert(squeakEntry);
+    }
+
+    void uploadSqueak(Squeak squeak) {
+        squeakServerRepository.publishSqueak(squeak);
     }
 
 }

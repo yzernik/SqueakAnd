@@ -242,6 +242,11 @@ public class CreateSqueakFragment extends Fragment {
             createSqueakModel.insertSqueak(new SqueakEntry(squeak));
             Log.i(getTag(), "Created and inserted squeak: " + squeak);
             Log.i(getTag(), "Created squeak with content: " + squeak.getDecryptedContentStr());
+
+            // Upload the squeak to the servers
+            createSqueakModel.uploadSqueak(squeak);
+            Log.i(getTag(), "Enqueued squeak to upload.");
+
             getActivity().finish();
         } catch (Exception e) {
             Log.e(getTag(), "Unable to create squeak: " + e);
