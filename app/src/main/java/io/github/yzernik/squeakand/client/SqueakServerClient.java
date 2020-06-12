@@ -5,6 +5,7 @@ import com.google.protobuf.ByteString;
 import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,8 @@ import io.grpc.Channel;
 public class SqueakServerClient {
     private static final Logger logger = Logger.getLogger(SqueakServerClient.class.getName());
 
+    private static final int LOOKUP_REQUEST_TIMEOUT_S = 2;
+
     private final SqueakServerGrpc.SqueakServerBlockingStub blockingStub;
     private final SqueakServerGrpc.SqueakServerStub asyncStub;
 
@@ -40,13 +43,13 @@ public class SqueakServerClient {
                 .setMaxBlock(maxBlock)
                 .build();
 
-        LookupSqueaksReply reply = blockingStub.lookupSqueaks(request);
+        LookupSqueaksReply reply = blockingStub
+                .withDeadlineAfter(LOOKUP_REQUEST_TIMEOUT_S, TimeUnit.SECONDS)
+                .lookupSqueaks(request);
 
         List<Sha256Hash> hashes = reply.getHashesList()
                 .stream()
-                .map(hashStr -> {
-            return Sha256Hash.wrap(hashStr.toByteArray());
-        })
+                .map(hashStr -> Sha256Hash.wrap(hashStr.toByteArray()))
                 .collect(Collectors.toList());
 
         return hashes;
