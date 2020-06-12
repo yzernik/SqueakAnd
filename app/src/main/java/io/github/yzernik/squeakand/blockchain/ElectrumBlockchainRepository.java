@@ -27,9 +27,12 @@ public class ElectrumBlockchainRepository {
     private LiveElectrumPeersMap peersMap = new LiveElectrumPeersMap(liveServers);
     private PeerDownloader peerDownloader;
 
+    // Controller
+    ElectrumDownloaderConnection downloaderConnection;
+
     private ElectrumBlockchainRepository(Application application) {
         // Singleton constructor, only called by static method.
-        ElectrumDownloaderConnection downloaderConnection = new ElectrumDownloaderConnection(liveServerUpdate, peersMap);
+        downloaderConnection = new ElectrumDownloaderConnection(liveServerUpdate, peersMap);
         blockDownloader = new BlockDownloader(downloaderConnection);
         preferences = new Preferences(application);
         peerDownloader = new PeerDownloader(peersMap);
@@ -62,7 +65,9 @@ public class ElectrumBlockchainRepository {
     public void setServer(ElectrumServerAddress serverAddress) {
         // Set up electrum client with server config, and load livedata.
         Log.i(getClass().getName(), "Setting electrum server: " + serverAddress);
-        blockDownloader.setElectrumServer(serverAddress);
+        // TODO: update the server address in the controller.
+        downloaderConnection.setCurrentDownloadServer(serverAddress);
+        blockDownloader.reset();
 
         // Save the server address in sharedpreferences
         preferences.saveElectrumServerAddress(serverAddress);

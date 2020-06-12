@@ -29,14 +29,18 @@ public class BlockDownloader {
         this.executorService = Executors.newCachedThreadPool();
     }
 
-    synchronized void setElectrumServer(ElectrumServerAddress serverAddress) {
+    synchronized void reset() {
         if (future != null) {
             future.cancel(true);
         }
 
-        BlockDownloadTask newDownloadTask = new BlockDownloadTask(serverAddress);
-        Log.i(getClass().getName(), "Submitting new download task.");
-        future = executorService.submit(newDownloadTask);
+        ElectrumServerAddress serverAddress = downloaderConnection.getCurrentDownloadServer();
+        // Start a new download task if the current server address is not null.
+        if (serverAddress != null) {
+            BlockDownloadTask newDownloadTask = new BlockDownloadTask(serverAddress);
+            Log.i(getClass().getName(), "Submitting new download task.");
+            future = executorService.submit(newDownloadTask);
+        }
     }
 
     private BlockInfo parseHeaderResponse(SubscribeHeadersResponse response) {
@@ -89,18 +93,18 @@ public class BlockDownloader {
         }
 
         private void tryLoadLiveData(ElectrumClient electrumClient) throws ExecutionException, InterruptedException {
-            downloaderConnection.setStatusConnecting(serverAddress);
+            downloaderConnection.setStatusConnecting();
             Future<SubscribeHeadersResponse> responseFuture = electrumClient.subscribeHeaders(header -> {
                 Log.i(getClass().getName(), "Downloaded header: " + header);
                 BlockInfo blockInfo = parseHeaderResponse(header);
-                downloaderConnection.setStatusConnected(serverAddress, blockInfo);
+                downloaderConnection.setStatusConnected(blockInfo);
                 resetRetryCounter();
             });
             try {
                 responseFuture.get();
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
-                downloaderConnection.setStatusDisconnected(serverAddress);
+                downloaderConnection.setStatusDisconnected();
                 responseFuture.cancel(true);
                 throw e;
             }
