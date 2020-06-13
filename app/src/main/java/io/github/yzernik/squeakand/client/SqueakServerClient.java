@@ -24,8 +24,9 @@ import io.grpc.Channel;
 public class SqueakServerClient {
     private static final Logger logger = Logger.getLogger(SqueakServerClient.class.getName());
 
-    private static final int LOOKUP_REQUEST_TIMEOUT_S = 20;
-    private static final int POST_REQUEST_TIMEOUT_S = 20;
+    private static final int LOOKUP_REQUEST_TIMEOUT_S = 10;
+    private static final int POST_REQUEST_TIMEOUT_S = 10;
+    private static final int GET_REQUEST_TIMEOUT_S = 10;
 
     private final SqueakServerGrpc.SqueakServerBlockingStub blockingStub;
     private final SqueakServerGrpc.SqueakServerStub asyncStub;
@@ -64,7 +65,9 @@ public class SqueakServerClient {
                 .setHash(squeakHashBytes)
                 .build();
 
-        GetSqueakReply reply = blockingStub.getSqueak(request);
+        GetSqueakReply reply = blockingStub
+                .withDeadlineAfter(GET_REQUEST_TIMEOUT_S, TimeUnit.SECONDS)
+                .getSqueak(request);
         io.github.yzernik.squeakserver.Squeak squeakMessage = reply.getSqueak();
         byte[] squeakBytes = squeakMessage.getSerializedSqueak().toByteArray();
         SqueakSerializer squeakSerializer = new SqueakSerializer(NetworkParameters.getNetworkParameters(), true);
