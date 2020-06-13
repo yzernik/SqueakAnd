@@ -6,6 +6,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
 
 import java.io.Serializable;
@@ -36,6 +37,7 @@ public class SqueakEntry implements Serializable {
     public byte[] dataKey;
     public String decryptedContentStr;
     public String authorAddress;
+    public Block block;
 
     public SqueakEntry() {
     }
