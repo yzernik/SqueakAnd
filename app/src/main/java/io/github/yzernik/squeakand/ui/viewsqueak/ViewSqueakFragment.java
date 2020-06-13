@@ -16,6 +16,7 @@ import org.bitcoinj.core.Sha256Hash;
 
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntry;
+import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 
 public class ViewSqueakFragment extends Fragment {
 
@@ -46,16 +47,20 @@ public class ViewSqueakFragment extends Fragment {
         txtSqueakText = root.findViewById(R.id.squeak_text);
         txtSqueakAuthor = root.findViewById(R.id.squeak_author);
 
-        todoViewModel.getSingleTodo(squeakHash).observe(getViewLifecycleOwner(), new Observer<SqueakEntry>() {
+        todoViewModel.getSingleTodo(squeakHash).observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
             @Override
-            public void onChanged(@Nullable SqueakEntry squeakEntry) {
-                if (squeakEntry == null) {
+            public void onChanged(@Nullable SqueakEntryWithProfile squeakEntryWithProfile) {
+                if (squeakEntryWithProfile == null) {
                     return;
                 }
 
-                txtSqueakHash.setText(squeakEntry.authorAddress);
-                txtSqueakText.setText(squeakEntry.getDecryptedContentStr());
-                txtSqueakAuthor.setText("Block #" + String.valueOf(squeakEntry.blockHeight));
+                String authorDisplayString = squeakEntryWithProfile.squeakEntry.authorAddress;
+                if (squeakEntryWithProfile.squeakProfile != null) {
+                    authorDisplayString = squeakEntryWithProfile.squeakProfile.getName();
+                }
+                txtSqueakHash.setText(authorDisplayString);
+                txtSqueakText.setText(squeakEntryWithProfile.squeakEntry.getDecryptedContentStr());
+                txtSqueakAuthor.setText("Block #" + String.valueOf(squeakEntryWithProfile.squeakEntry.blockHeight));
             }
         });
 

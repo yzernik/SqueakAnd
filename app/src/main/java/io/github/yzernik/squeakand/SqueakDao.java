@@ -18,7 +18,7 @@ public interface SqueakDao {
 
     String fetchSqueaksByAddressQuery = "SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE authorAddress = :address";
 
-    String fetchSqueakByHashQuery = "SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE hash = :squeakHash";
+    String fetchSqueakByHashQuery = "SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " LEFT JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" + " WHERE hash = :squeakHash";
 
     // LiveData is a data holder class that can be observed within a given lifecycle.
     // Always holds/caches latest version of data. Notifies its active observers when the
@@ -31,10 +31,10 @@ public interface SqueakDao {
     LiveData<List<SqueakEntryWithProfile>> getSqueaksWithProfile();
 
     @Query(fetchSqueakByHashQuery)
-    LiveData<SqueakEntry> fetchLiveSqueakByHash(Sha256Hash squeakHash);
+    LiveData<SqueakEntryWithProfile> fetchLiveSqueakByHash(Sha256Hash squeakHash);
 
     @Query(fetchSqueakByHashQuery)
-    SqueakEntry fetchSqueakByHash(Sha256Hash squeakHash);
+    SqueakEntryWithProfile fetchSqueakByHash(Sha256Hash squeakHash);
 
     @Query(fetchSqueaksByAddressQuery)
     LiveData<List<SqueakEntry>> fetchLiveSqueaksByAddress(String address);

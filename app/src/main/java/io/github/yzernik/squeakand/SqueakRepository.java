@@ -37,7 +37,7 @@ public class SqueakRepository {
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    public LiveData<SqueakEntry> getSqueak(Sha256Hash hash) {
+    public LiveData<SqueakEntryWithProfile> getSqueak(Sha256Hash hash) {
         return  mSqueakDao.fetchLiveSqueakByHash(hash);
     }
 
