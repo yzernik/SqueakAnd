@@ -1,11 +1,12 @@
 package io.github.yzernik.squeakand.blockchain;
 
 import org.bitcoinj.core.Block;
-import org.bitcoinj.params.MainNetParams;
+
+import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
 
 
 public class DummyBlockchain implements Blockchain {
-    private static final Block GENESIS_BLOCK = MainNetParams.get().getGenesisBlock();
+    private static final Block GENESIS_BLOCK = NetworkParameters.getNetworkParameters().getGenesisBlock();
     private static final int GENESIS_BLOCK_HEIGHT = 0;
 
     @Override
