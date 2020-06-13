@@ -133,7 +133,7 @@ public class SqueakDaoTest {
     }
 
     private Squeak createSqeakWithText(String text, Signing.BitcoinjKeyPair keyPair) throws Exception {
-        BlockInfo latestBlock = blockchain.getLatestBlock();
+        BlockInfo latestBlock = blockchain.getLatestBlockInfo();
         return Squeak.makeSqueakFromStr(
                 NetworkParameters.getNetworkParameters(),
                 keyPair,

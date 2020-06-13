@@ -1,19 +1,24 @@
 package io.github.yzernik.squeakand.blockchain;
 
+import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
 
 public class BlockInfo {
 
-    private Sha256Hash hash;
+    private Block block;
     private int height;
 
-    public BlockInfo(Sha256Hash hash, int height) {
-        this.hash = hash;
+    public BlockInfo(Block block, int height) {
+        this.block = block;
         this.height = height;
     }
 
+    public Block getBlock() {
+        return block;
+    }
+
     public Sha256Hash getHash() {
-        return hash;
+        return block.getHash();
     }
 
     public int getHeight() {
@@ -23,7 +28,7 @@ public class BlockInfo {
     @Override
     public String toString() {
         return "BlockInfo(" +
-                "hash: " + hash + ", " +
+                "hash: " + getHash() + ", " +
                 "height: " + height +
                 ")";
     }
