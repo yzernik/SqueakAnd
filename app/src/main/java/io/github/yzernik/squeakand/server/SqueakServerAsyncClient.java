@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException;
 
 public class SqueakServerAsyncClient {
 
-    private static final int SYNC_TIMELINE_TIMEOUT_S = 10;
+    private static final int SYNC_TIMELINE_TIMEOUT_S = 30;
 
     private SqueakNetworkController squeakNetworkController;
     private final ExecutorService executorService;
