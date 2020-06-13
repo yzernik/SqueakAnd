@@ -101,8 +101,8 @@ public class CreateSqueakModel extends AndroidViewModel {
         });
     }
 
-    void insertSqueak(SqueakEntry squeakEntry) {
-        mSqueakRepository.insert(squeakEntry);
+    void insertSqueak(Squeak squeak) {
+        mSqueakRepository.insert(squeak);
     }
 
     void uploadSqueak(Squeak squeak) {

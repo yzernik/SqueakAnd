@@ -8,6 +8,8 @@ import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
 
+import io.github.yzernik.squeaklib.core.Squeak;
+
 public class SqueakRepository {
 
     private SqueakDao mSqueakDao;
@@ -43,7 +45,11 @@ public class SqueakRepository {
 
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
-    public void insert(SqueakEntry squeakEntry) {
+    public void insert(Squeak squeak) {
+        // Validate the squeak
+        squeak.verify();
+        SqueakEntry squeakEntry = new SqueakEntry(squeak);
+
         SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
             mSqueakDao.insert(squeakEntry);
         });

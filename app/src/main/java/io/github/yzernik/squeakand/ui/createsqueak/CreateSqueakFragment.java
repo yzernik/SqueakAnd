@@ -25,7 +25,6 @@ import java.util.List;
 import io.github.yzernik.squeakand.ElectrumActivity;
 import io.github.yzernik.squeakand.ManageProfilesActivity;
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.ServerUpdate;
@@ -239,7 +238,7 @@ public class CreateSqueakFragment extends Fragment {
                     System.currentTimeMillis() / 1000,
                     createSqueakParams.getReplyToHash()
             );
-            createSqueakModel.insertSqueak(new SqueakEntry(squeak));
+            createSqueakModel.insertSqueak(squeak);
             Log.i(getTag(), "Created and inserted squeak: " + squeak);
             Log.i(getTag(), "Created squeak with content: " + squeak.getDecryptedContentStr());
 
