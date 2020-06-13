@@ -1,8 +1,8 @@
 package io.github.yzernik.squeakand.blockchain;
 
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.core.Block;
 
 public interface Blockchain {
-    BlockInfo getLatestBlock();
-    Sha256Hash getBlockHash(int blockHeight) throws BlockchainException;
+    BlockInfo getLatestBlockInfo();
+    Block getBlock(int blockHeight) throws BlockchainException;
 }

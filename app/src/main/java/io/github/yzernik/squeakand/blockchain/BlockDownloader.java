@@ -48,7 +48,7 @@ public class BlockDownloader {
         BitcoinSerializer bitcoinSerializer = new BitcoinSerializer(networkParameters, false);
         byte[] blockBytes = HEX.decode(response.hex);
         Block block = bitcoinSerializer.makeBlock(blockBytes);
-        return new BlockInfo(block.getHash(), response.height);
+        return new BlockInfo(block, response.height);
     }
 
     class BlockDownloadTask implements Callable<String> {
