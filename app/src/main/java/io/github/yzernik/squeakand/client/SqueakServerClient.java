@@ -24,8 +24,8 @@ import io.grpc.Channel;
 public class SqueakServerClient {
     private static final Logger logger = Logger.getLogger(SqueakServerClient.class.getName());
 
-    private static final int LOOKUP_REQUEST_TIMEOUT_S = 2;
-    private static final int POST_REQUEST_TIMEOUT_S = 2;
+    private static final int LOOKUP_REQUEST_TIMEOUT_S = 20;
+    private static final int POST_REQUEST_TIMEOUT_S = 20;
 
     private final SqueakServerGrpc.SqueakServerBlockingStub blockingStub;
     private final SqueakServerGrpc.SqueakServerStub asyncStub;

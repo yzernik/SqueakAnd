@@ -120,11 +120,18 @@ public class SqueakNetworkController {
     private void trySyncServer(SqueakServerAddress serverAddress) {
         UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeakDao);
 
-        // Sync uploads
-        uploaderDownloader.uploadSync(getUploadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
-
         // Sync downloads
         uploaderDownloader.downloadSync(getDownloadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
+
+        // TODO: Remove this. Temporary hack until channel can be shared for all requests to a single server.
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Sync uploads
+        uploaderDownloader.uploadSync(getUploadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
     }
 
 }
