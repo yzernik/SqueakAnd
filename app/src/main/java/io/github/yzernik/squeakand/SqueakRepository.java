@@ -33,7 +33,7 @@ public class SqueakRepository {
         SqueakRoomDatabase db = SqueakRoomDatabase.getDatabase(application);
         mSqueakDao = db.squeakDao();
         mAllSqueaks = mSqueakDao.getSqueaks();
-        mAllSqueaksWithProfile = mSqueakDao.getSqueaksWithProfile();
+        mAllSqueaksWithProfile = mSqueakDao.getTimelineSqueaksWithProfile();
         electrumBlockchainRepository = ElectrumBlockchainRepository.getRepository(application);
         squeaksController = new SqueaksController(mSqueakDao, electrumBlockchainRepository);
         blockVerifier = new SqueakBlockVerifier(squeaksController);
