@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.bitcoinj.core.Block;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -30,9 +31,28 @@ public class SqueaksController {
         this.electrumBlockchainRepository = electrumBlockchainRepository;
     }
 
+    /**
+     * Continually verify squeaks that have been added to the verification queue.
+     *
+     * This method does not stop until interrupted.
+     * @throws InterruptedException
+     */
     public void verifyAllEnqueued() throws InterruptedException {
         while (true) {
             Squeak squeakToVerify = verificationQueue.getNextSqueakToVerify();
+            verifyBlock(squeakToVerify);
+        }
+    }
+
+    /**
+     * Try to verify all unverified squeaks in the database.
+     * @throws InterruptedException
+     */
+    public void verifyOldSqueaks() throws InterruptedException {
+        // Get the list of unverified squeaks in the database.
+        List<SqueakEntry> squeakEntries = mSqueakDao.fetchUnverifiedSqueaks();
+        for (SqueakEntry squeakEntry: squeakEntries) {
+            Squeak squeakToVerify = squeakEntry.getSqueak();
             verifyBlock(squeakToVerify);
         }
     }

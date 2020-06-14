@@ -46,6 +46,9 @@ public interface SqueakDao {
     @Query(fetchSqueaksByAddressQuery)
     List<SqueakEntry> fetchSqueaksByAddress(String address);
 
+    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE block IS NULL")
+    List<SqueakEntry> fetchUnverifiedSqueaks();
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(SqueakEntry squeakEntry);
 
