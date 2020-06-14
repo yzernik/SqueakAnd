@@ -11,6 +11,7 @@ import java.util.concurrent.TimeoutException;
 
 import io.github.yzernik.squeakand.SqueakDao;
 import io.github.yzernik.squeakand.SqueakEntry;
+import io.github.yzernik.squeakand.SqueakRoomDatabase;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeaklib.core.Squeak;
 
@@ -23,9 +24,9 @@ public class SqueaksController {
     private ElectrumBlockchainRepository electrumBlockchainRepository;
 
 
-    public SqueaksController(SqueakDao mSqueakDao, SqueakBlockVerificationQueue verificationQueue, ElectrumBlockchainRepository electrumBlockchainRepository) {
+    public SqueaksController(SqueakDao mSqueakDao, ElectrumBlockchainRepository electrumBlockchainRepository) {
         this.mSqueakDao = mSqueakDao;
-        this.verificationQueue = verificationQueue;
+        this.verificationQueue = new SqueakBlockVerificationQueue();
         this.electrumBlockchainRepository = electrumBlockchainRepository;
     }
 
@@ -68,6 +69,20 @@ public class SqueaksController {
         // Update the squeak entry in the database with the matching block.
         SqueakEntry squeakEntry = new SqueakEntry(squeak, block);
         mSqueakDao.update(squeakEntry);
+    }
+
+    public void save(Squeak squeak) {
+        // Validate the squeak
+        squeak.verify();
+
+        // Insert the squeak in the database.
+        SqueakEntry squeakEntry = new SqueakEntry(squeak);
+        SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mSqueakDao.insert(squeakEntry);
+        });
+
+        // Add the squeak to the block verification queue
+        verificationQueue.addSqueakToVerify(squeak);
     }
 
 }

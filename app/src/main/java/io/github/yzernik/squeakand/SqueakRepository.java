@@ -10,7 +10,6 @@ import org.bitcoinj.core.Sha256Hash;
 import java.util.List;
 
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
-import io.github.yzernik.squeakand.squeaks.SqueakBlockVerificationQueue;
 import io.github.yzernik.squeakand.squeaks.SqueakBlockVerifier;
 import io.github.yzernik.squeakand.squeaks.SqueaksController;
 import io.github.yzernik.squeaklib.core.Squeak;
@@ -22,7 +21,6 @@ public class SqueakRepository {
     private SqueakDao mSqueakDao;
     private LiveData<List<SqueakEntry>> mAllSqueaks;
     private LiveData<List<SqueakEntryWithProfile>> mAllSqueaksWithProfile;
-    private SqueakBlockVerificationQueue verificationQueue;
     private ElectrumBlockchainRepository electrumBlockchainRepository;
     private SqueaksController squeaksController;
     private SqueakBlockVerifier blockVerifier;
@@ -36,9 +34,8 @@ public class SqueakRepository {
         mSqueakDao = db.squeakDao();
         mAllSqueaks = mSqueakDao.getSqueaks();
         mAllSqueaksWithProfile = mSqueakDao.getSqueaksWithProfile();
-        verificationQueue = new SqueakBlockVerificationQueue();
         electrumBlockchainRepository = ElectrumBlockchainRepository.getRepository(application);
-        squeaksController = new SqueaksController(mSqueakDao, verificationQueue, electrumBlockchainRepository);
+        squeaksController = new SqueaksController(mSqueakDao, electrumBlockchainRepository);
         blockVerifier = new SqueakBlockVerifier(squeaksController);
     }
 
@@ -76,22 +73,8 @@ public class SqueakRepository {
         return  mSqueakDao.fetchLiveSqueakByHash(hash);
     }
 
-    // You must call this on a non-UI thread or your app will throw an exception. Room ensures
-    // that you're not doing any long running operations on the main thread, blocking the UI.
     public void insert(Squeak squeak) {
-        // TODO: handle everything here inside the controller.
-
-        // Validate the squeak
-        squeak.verify();
-
-        // Insert the squeak in the database.
-        SqueakEntry squeakEntry = new SqueakEntry(squeak);
-        SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
-            mSqueakDao.insert(squeakEntry);
-        });
-
-        // Add the squeak to the block verification queue
-        verificationQueue.addSqueakToVerify(squeak);
+        squeaksController.save(squeak);
     }
 
 }
