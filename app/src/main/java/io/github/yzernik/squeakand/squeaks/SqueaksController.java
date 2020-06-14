@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import io.github.yzernik.squeakand.SqueakDao;
+import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeaklib.core.Squeak;
 
@@ -50,7 +51,7 @@ public class SqueaksController {
             Log.i(getClass().getName(), "Local block hash : " + squeak.getHashBlock());
             Log.i(getClass().getName(), "Electrum block hash : " + block.getHash());
             if (block.getHash().equals(squeak.getHashBlock())) {
-                markAsVerified(squeak);
+                markAsVerified(squeak, block);
             }
         } catch (ExecutionException | TimeoutException e) {
             e.printStackTrace();
@@ -59,10 +60,14 @@ public class SqueaksController {
 
     }
 
-    // Update the database entry for the given squeak with the valid block header.
-    private void markAsVerified(Squeak squeak) {
-        Log.i(getClass().getName(), "Setting squeak as verified: " + squeak);
-        // TODO
+    /**
+     * Update the database entry for the given squeak with the valid block header.
+     */
+    private void markAsVerified(Squeak squeak, Block block) {
+        Log.i(getClass().getName(), "Setting squeak as verified: " + squeak.getHash());
+        // Update the squeak entry in the database with the matching block.
+        SqueakEntry squeakEntry = new SqueakEntry(squeak, block);
+        mSqueakDao.update(squeakEntry);
     }
 
 }
