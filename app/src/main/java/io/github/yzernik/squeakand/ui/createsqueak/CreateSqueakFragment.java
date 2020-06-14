@@ -124,7 +124,7 @@ public class CreateSqueakFragment extends Fragment {
     private void showProfileAlertDialog(List<SqueakProfile> profiles) {
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Choose a profile");
+        builder.setTitle("Select a signing profile");
         // add a list
         ArrayList<String> displayValues=new ArrayList<>();
         for (SqueakProfile profile : profiles) {
@@ -268,8 +268,8 @@ public class CreateSqueakFragment extends Fragment {
 
     private void showMissingBlockHeaderAlert() {
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-        alertDialog.setTitle("Missing Block Header");
-        alertDialog.setMessage("Latest block header must be downloaded before a squeak can be created.");
+        alertDialog.setTitle("Missing Electrum connection");
+        alertDialog.setMessage("Electrum server connection is required to create a squeak.");
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
