@@ -46,5 +46,9 @@ public class SqueakAndApplication extends Application {
         SqueakServerRepository squeakServerRepository = SqueakServerRepository.getRepository(this);
         Log.i(getClass().getName(), "Calling squeakServerRepository.initialize...");
         squeakServerRepository.initialize();
+
+        // Initialize the squeaks repository
+        SqueakRepository squeakRepository = SqueakRepository.getRepository(this);
+        squeakRepository.initialize();
     }
 }

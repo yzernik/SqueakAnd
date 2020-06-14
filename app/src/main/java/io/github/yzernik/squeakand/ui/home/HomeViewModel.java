@@ -22,7 +22,7 @@ public class HomeViewModel extends AndroidViewModel {
 
     public HomeViewModel(Application application) {
         super(application);
-        mSqueakRepository = new SqueakRepository(application);
+        mSqueakRepository = SqueakRepository.getRepository(application);
         squeakServerRepository = SqueakServerRepository.getRepository(application);
         mAllSqueaks = mSqueakRepository.getAllSqueaks();
         mAllSqueaksWithProfile = mSqueakRepository.getAllSqueaksWithProfile();

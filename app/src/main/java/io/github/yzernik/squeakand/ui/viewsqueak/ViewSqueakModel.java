@@ -21,7 +21,7 @@ public class ViewSqueakModel extends AndroidViewModel {
 
     public ViewSqueakModel(Application application) {
         super(application);
-        mRepository = new SqueakRepository(application);
+        mRepository = SqueakRepository.getRepository(application);
     }
 
     public LiveData<SqueakEntryWithProfile> getSingleTodo(Sha256Hash hash) {
