@@ -5,9 +5,11 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 import io.github.yzernik.squeakand.preferences.Preferences;
 
@@ -23,6 +25,9 @@ public class ElectrumBlockchainRepository {
     // For handling peers
     private PeerDownloader peerDownloader;
 
+    // For making getheader requests to the electrum server
+    private BlockGetter blockGetter;
+
     // Controller
     ElectrumDownloaderController downloaderConnection;
 
@@ -32,6 +37,7 @@ public class ElectrumBlockchainRepository {
         blockDownloader = new BlockDownloader(downloaderConnection);
         preferences = new Preferences(application);
         peerDownloader = new PeerDownloader(downloaderConnection);
+        blockGetter = new BlockGetter(downloaderConnection);
     }
 
     public static ElectrumBlockchainRepository getRepository(Application application) {
@@ -69,9 +75,8 @@ public class ElectrumBlockchainRepository {
         preferences.saveElectrumServerAddress(serverAddress);
     }
 
-    public LiveData<Sha256Hash> getBlockHash(int blockHeight) {
-        // TODO
-        return null;
+    public Future<Block> getBlockHash(int blockHeight) {
+        return blockGetter.getBlockHeader(blockHeight);
     }
 
     public LiveData<ServerUpdate> getServerUpdate() {
