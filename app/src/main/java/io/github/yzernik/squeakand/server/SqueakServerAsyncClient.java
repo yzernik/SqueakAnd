@@ -29,18 +29,9 @@ public class SqueakServerAsyncClient {
             future.cancel(true);
         }
 
-        SyncTimelineTask syncTimelineTask = new SyncTimelineTask();
-        Log.i(getClass().getName(), "Submitting new server sync task.");
+        SyncTimelineTask syncTimelineTask = new SyncTimelineTask(responseHandler);
+        Log.i(getClass().getName(), "Submitting new sync timeline task.");
         future = executorService.submit(syncTimelineTask);
-
-        try {
-            int result = future.get(SYNC_TIMELINE_TIMEOUT_S, TimeUnit.SECONDS);
-            responseHandler.onSuccess();
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            e.printStackTrace();
-            responseHandler.onFailure(e);
-        }
-
     }
 
 
@@ -52,7 +43,10 @@ public class SqueakServerAsyncClient {
 
     class SyncTimelineTask implements Callable<Integer> {
 
-        SyncTimelineTask() {
+        private SqueakServerResponseHandler responseHandler;
+
+        SyncTimelineTask(SqueakServerResponseHandler responseHandler) {
+            this.responseHandler = responseHandler;
         }
 
         @Override
@@ -60,8 +54,10 @@ public class SqueakServerAsyncClient {
             Log.i(getClass().getName(), "Calling call.");
             try {
                 squeakNetworkController.sync();
+                responseHandler.onSuccess();
             } catch (Exception e) {
                 Log.e(getClass().getName(),"Failed to sync with servers with error: " + e);
+                responseHandler.onFailure(e);
                 throw e;
             }
             return 0;
