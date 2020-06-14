@@ -2,9 +2,13 @@ package io.github.yzernik.squeakand;
 
 import androidx.room.TypeConverter;
 
+import org.bitcoinj.core.BitcoinSerializer;
+import org.bitcoinj.core.Block;
 import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.MessageSerializer;
 import org.bitcoinj.core.Sha256Hash;
 
+import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
 import io.github.yzernik.squeakand.server.SqueakServerAddress;
 import io.github.yzernik.squeaklib.core.Signing;
 
@@ -64,6 +68,27 @@ public class Converters {
     @TypeConverter
     public static String serverAddressToString(SqueakServerAddress squeakServerAddress) {
         return squeakServerAddress.toString();
+    }
+
+    @TypeConverter
+    public static Block blockFromString(String s) {
+        if (s == null || s.isEmpty()) {
+            return null;
+        }
+
+        MessageSerializer serializer = new BitcoinSerializer(NetworkParameters.getNetworkParameters(), true);
+        byte[] bytes = HEX.decode(s);
+        return serializer.makeBlock(bytes);
+    }
+
+    @TypeConverter
+    public static String blockToString(Block block) {
+        if (block == null) {
+            return null;
+        }
+
+        byte[] bytes = block.bitcoinSerialize();
+        return HEX.encode(bytes);
     }
 
 }

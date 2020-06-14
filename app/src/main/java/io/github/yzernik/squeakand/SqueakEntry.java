@@ -6,6 +6,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
 
 import java.io.Serializable;
@@ -36,12 +37,18 @@ public class SqueakEntry implements Serializable {
     public byte[] dataKey;
     public String decryptedContentStr;
     public String authorAddress;
+    public Block block;
 
     public SqueakEntry() {
     }
 
     @Ignore
     public SqueakEntry(Squeak squeak) {
+        this(squeak, null);
+    }
+
+    @Ignore
+    public SqueakEntry(Squeak squeak, Block block) {
         this.hash = squeak.getHash();
         this.hashEncContent = squeak.getHashEncContent();
         this.hashReplySqk = squeak.getHashReplySqk();
@@ -61,6 +68,7 @@ public class SqueakEntry implements Serializable {
             this.decryptedContentStr = null;
         }
         this.authorAddress = squeak.getAddress().toString();
+        this.block = block;
     }
 
     @Ignore
@@ -80,6 +88,11 @@ public class SqueakEntry implements Serializable {
                 scriptSigBytes,
                 dataKey
         );
+    }
+
+    @Ignore
+    public Block getBlock() {
+        return this.block;
     }
 
     public String getDecryptedContentStr() {

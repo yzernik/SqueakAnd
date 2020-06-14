@@ -1,6 +1,7 @@
 package io.github.yzernik.squeakand.ui.viewsqueak;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,8 @@ public class ViewSqueakFragment extends Fragment {
                 if (squeakEntryWithProfile == null) {
                     return;
                 }
+                Log.i(getTag(), "Viewing squeak: " + squeakEntryWithProfile.squeakEntry.getSqueak());
+                Log.i(getTag(), "Viewing squeak block: " + squeakEntryWithProfile.squeakEntry.getBlock());
 
                 String authorDisplayString = squeakEntryWithProfile.squeakEntry.authorAddress;
                 if (squeakEntryWithProfile.squeakProfile != null) {

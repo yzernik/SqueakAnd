@@ -36,7 +36,7 @@ public class CreateSqueakModel extends AndroidViewModel {
     public CreateSqueakModel(Application application) {
         super(application);
         mProfileRepository = new SqueakProfileRepository(application);
-        mSqueakRepository = new SqueakRepository(application);
+        mSqueakRepository = SqueakRepository.getRepository(application);
         blockchainRepository = ElectrumBlockchainRepository.getRepository(application);
         squeakServerRepository = SqueakServerRepository.getRepository(application);
         mAllSqueakSigningProfiles = mProfileRepository.getAllSqueakSigningProfiles();
@@ -101,8 +101,8 @@ public class CreateSqueakModel extends AndroidViewModel {
         });
     }
 
-    void insertSqueak(SqueakEntry squeakEntry) {
-        mSqueakRepository.insert(squeakEntry);
+    void insertSqueak(Squeak squeak) {
+        mSqueakRepository.insert(squeak);
     }
 
     void uploadSqueak(Squeak squeak) {

@@ -44,11 +44,7 @@ public class BlockDownloader {
     }
 
     private BlockInfo parseHeaderResponse(SubscribeHeadersResponse response) {
-        NetworkParameters networkParameters = io.github.yzernik.squeakand.networkparameters.NetworkParameters.getNetworkParameters();
-        BitcoinSerializer bitcoinSerializer = new BitcoinSerializer(networkParameters, false);
-        byte[] blockBytes = HEX.decode(response.hex);
-        Block block = bitcoinSerializer.makeBlock(blockBytes);
-        return new BlockInfo(block, response.height);
+        return BlockUtil.parseHeaderResponse(response);
     }
 
     class BlockDownloadTask implements Callable<String> {

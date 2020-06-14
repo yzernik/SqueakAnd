@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.TypeConverters;
+import androidx.room.Update;
 
 import org.bitcoinj.core.Sha256Hash;
 
@@ -18,7 +19,7 @@ public interface SqueakDao {
 
     String fetchSqueaksByAddressQuery = "SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE authorAddress = :address";
 
-    String fetchSqueakByHashQuery = "SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " LEFT JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" + " WHERE hash = :squeakHash";
+    String fetchSqueakWithProfileByHashQuery = "SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " LEFT JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" + " WHERE hash = :squeakHash";
 
     // LiveData is a data holder class that can be observed within a given lifecycle.
     // Always holds/caches latest version of data. Notifies its active observers when the
@@ -30,11 +31,14 @@ public interface SqueakDao {
     @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " LEFT JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" + " ORDER BY blockHeight DESC, time DESC, decryptedContentStr DESC")
     LiveData<List<SqueakEntryWithProfile>> getSqueaksWithProfile();
 
-    @Query(fetchSqueakByHashQuery)
+    @Query(fetchSqueakWithProfileByHashQuery)
     LiveData<SqueakEntryWithProfile> fetchLiveSqueakByHash(Sha256Hash squeakHash);
 
-    @Query(fetchSqueakByHashQuery)
-    SqueakEntryWithProfile fetchSqueakByHash(Sha256Hash squeakHash);
+    @Query(fetchSqueakWithProfileByHashQuery)
+    SqueakEntryWithProfile fetchSqueakWithProfileByHash(Sha256Hash squeakHash);
+
+    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE hash = :squeakHash")
+    SqueakEntry fetchSqueakByHash(Sha256Hash squeakHash);
 
     @Query(fetchSqueaksByAddressQuery)
     LiveData<List<SqueakEntry>> fetchLiveSqueaksByAddress(String address);
@@ -42,8 +46,14 @@ public interface SqueakDao {
     @Query(fetchSqueaksByAddressQuery)
     List<SqueakEntry> fetchSqueaksByAddress(String address);
 
+    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE block IS NULL")
+    List<SqueakEntry> fetchUnverifiedSqueaks();
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(SqueakEntry squeakEntry);
+
+    @Update
+    void update(SqueakEntry squeakEntry);
 
     @Query("DELETE FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK)
     void deleteAll();

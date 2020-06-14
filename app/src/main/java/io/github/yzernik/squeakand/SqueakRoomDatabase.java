@@ -20,8 +20,8 @@ import java.util.concurrent.Executors;
  * app, consider exporting the schema to help you with migrations.
  */
 
-@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class}, version = 4)
-abstract class SqueakRoomDatabase extends RoomDatabase {
+@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class}, version = 5)
+public abstract class SqueakRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";
     public static final String TABLE_NAME_PROFILE = "profile";
@@ -36,7 +36,7 @@ abstract class SqueakRoomDatabase extends RoomDatabase {
     // marking the instance as volatile to ensure atomic access to the variable
     private static volatile SqueakRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
-    static final ExecutorService databaseWriteExecutor =
+    public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     static SqueakRoomDatabase getDatabase(final Context context) {
@@ -46,7 +46,7 @@ abstract class SqueakRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             SqueakRoomDatabase.class, DB_NAME)
                             //.addCallback(sRoomDatabaseCallback)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                             .build();
                 }
             }
@@ -180,6 +180,14 @@ abstract class SqueakRoomDatabase extends RoomDatabase {
                             "serverAddress TEXT NOT NULL)");
             database.execSQL(
                     "CREATE UNIQUE INDEX index_server_serverAddress ON server (serverAddress)");
+        }
+    };
+
+    @VisibleForTesting
+    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE squeak ADD COLUMN block TEXT");
         }
     };
 

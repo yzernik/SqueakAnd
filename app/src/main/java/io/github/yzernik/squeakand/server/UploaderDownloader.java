@@ -51,7 +51,7 @@ public class UploaderDownloader {
         localHashes.removeAll(remoteHashes);
         Log.i(getClass().getName(), "Uploading number of squeaks: " + localHashes.size());
         for (Sha256Hash hash: localHashes) {
-            Squeak squeak = squeakDao.fetchSqueakByHash(hash).squeakEntry.getSqueak();
+            Squeak squeak = squeakDao.fetchSqueakWithProfileByHash(hash).squeakEntry.getSqueak();
             upload(squeak);
         }
     }
