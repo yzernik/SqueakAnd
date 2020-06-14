@@ -31,6 +31,9 @@ public interface SqueakDao {
     @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " LEFT JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" + " ORDER BY blockHeight DESC, time DESC, decryptedContentStr DESC")
     LiveData<List<SqueakEntryWithProfile>> getSqueaksWithProfile();
 
+    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" + " WHERE profile.downloadEnabled=1" + " ORDER BY blockHeight DESC, time DESC, decryptedContentStr DESC")
+    LiveData<List<SqueakEntryWithProfile>> getTimelineSqueaksWithProfile();
+
     @Query(fetchSqueakWithProfileByHashQuery)
     LiveData<SqueakEntryWithProfile> fetchLiveSqueakByHash(Sha256Hash squeakHash);
 
