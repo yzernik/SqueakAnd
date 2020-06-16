@@ -1,2 +1,3 @@
+include ':Lndmobile'
 rootProject.name='SqueakAnd'
 include ':app'
