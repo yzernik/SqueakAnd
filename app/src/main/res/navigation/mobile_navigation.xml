@@ -24,6 +24,12 @@
         tools:layout="@layout/fragment_network" />
 
     <fragment
+        android:id="@+id/navigation_money"
+        android:name="io.github.yzernik.squeakand.ui.money.MoneyFragment"
+        android:label="Money"
+        tools:layout="@layout/fragment_money" />
+
+    <fragment
         android:id="@+id/navigation_notifications"
         android:name="io.github.yzernik.squeakand.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"

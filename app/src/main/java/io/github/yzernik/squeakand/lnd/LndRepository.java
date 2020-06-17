@@ -3,8 +3,6 @@ package io.github.yzernik.squeakand.lnd;
 import android.app.Application;
 import android.util.Log;
 
-import java.io.File;
-
 import io.github.yzernik.squeakand.blockchain.ElectrumDownloaderController;
 
 public class LndRepository {
@@ -37,6 +35,11 @@ public class LndRepository {
     public void initialize() {
         Log.i(getClass().getName(), "LndRepository: Calling initialize ...");
         lndClient.start();
+    }
+
+    public void getInfo() {
+        // TODO
+        lndClient.getInfo();
     }
 
 }
