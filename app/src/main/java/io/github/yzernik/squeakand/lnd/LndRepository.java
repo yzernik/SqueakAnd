@@ -9,15 +9,15 @@ public class LndRepository {
 
     private static volatile LndRepository INSTANCE;
 
-    private LndClient lndClient;
+    // private LndClient lndClient;
+    private LndController lndController;
 
     // Controller
     ElectrumDownloaderController downloaderConnection;
 
     private LndRepository(Application application) {
         // Singleton constructor, only called by static method.
-        String lndDir = application.getFilesDir() + "/.lnd";
-        lndClient = new LndClient(lndDir);
+        lndController = new LndController(application, "testnet");
 
     }
 
@@ -34,14 +34,25 @@ public class LndRepository {
 
     public void initialize() {
         Log.i(getClass().getName(), "LndRepository: Calling initialize ...");
-        lndClient.start();
+
+        // TODO: don't delete lnd dir on startup
+        lndController.rmLndDir();
+
+        lndController.start();
     }
+
+    public void initWallet() {
+        // TODO
+        Log.i(getClass().getName(), "Initializing wallet...");
+
+        // Generate the wallet seed and initialize the wallet.
+        lndController.initWallet();
+    }
+
 
     public void getInfo() {
         // TODO
         Log.i(getClass().getName(), "Getting info...");
-        lndClient.initWallet();
-        lndClient.getInfo();
     }
 
 }

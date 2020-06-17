@@ -6,6 +6,9 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import lndmobile.Callback;
 import lndmobile.Lndmobile;
@@ -18,19 +21,13 @@ public class LndClient {
 
     private static final String DEFAULT_NETWORK = "testnet";
 
-    private final String network;
-    private final String lndDirPath;
+    private final ExecutorService executorService;
 
-    public LndClient(String lndDirPath, String network) {
-        this.lndDirPath = lndDirPath;
-        this.network = network;
+    public LndClient() {
+        this.executorService = Executors.newCachedThreadPool();
     }
 
-    public LndClient(String lndDirPath) {
-        this(lndDirPath, DEFAULT_NETWORK);
-    }
-
-    public void start() {
+    public void start(String lndDirPath, String network) {
         String startString = String.format(
                 "--bitcoin.active --bitcoin.node=neutrino --bitcoin.%s --no-macaroons --lnddir=%s",
                 network,
@@ -48,7 +45,7 @@ public class LndClient {
 
                     @Override
                     public void onResponse(byte[] bytes) {
-                        Log.i(getClass().getName(), "Response from callback1: " + HEX.encode(bytes));
+                        Log.i(getClass().getName(), "Response from callback1: " + bytes);
                     }
                 },
                 new Callback() {
@@ -59,7 +56,7 @@ public class LndClient {
 
                     @Override
                     public void onResponse(byte[] bytes) {
-                        Log.i(getClass().getName(), "Response from callback2: " + HEX.encode(bytes));
+                        Log.i(getClass().getName(), "Response from callback2: " + bytes);
                     }
                 });
     }
@@ -79,60 +76,74 @@ public class LndClient {
 
             @Override
             public void onResponse(byte[] bytes) {
-                Log.i(getClass().getName(), "Response from getInfo callback: " + HEX.encode(bytes));
+                Log.i(getClass().getName(), "Response from getInfo callback: " + bytes);
             }
         });
 
         // Lndmobile.getInfo();
     }
 
-    public void initWallet() {
-        ByteString pw = ByteString.copyFromUtf8("somesuperstrongpw");
-        String[] cipherSeed = new String[]{
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8",
-                "9",
-                "10",
-                "11",
-                "12",
-                "13",
-                "14",
-                "15",
-                "16",
-                "17",
-                "18",
-                "19",
-                "20",
-                "21",
-                "22",
-                "23",
-                "24"};
+    public void initWallet(String password, List<String> seedWords, InitWalletCallBack callBack) {
+        ByteString pw = ByteString.copyFromUtf8(password);
         Walletunlocker.InitWalletRequest request = Walletunlocker.InitWalletRequest.newBuilder()
                 .setWalletPassword(pw)
-                .addAllCipherSeedMnemonic(Arrays.asList(cipherSeed))
+                .addAllCipherSeedMnemonic(seedWords)
                 .build();
 
         Lndmobile.initWallet(request.toByteArray(), new Callback() {
             @Override
             public void onError(Exception e) {
                 Log.e(getClass().getName(), "Error from initWallet callback: " + e);
+                callBack.onError(e);
             }
 
             @Override
             public void onResponse(byte[] bytes) {
                 try {
+                    Log.i(getClass().getName(), "Got response bytes: " + bytes);
+                    Log.i(getClass().getName(), "Got response encoded bytes: " + HEX.encode(bytes));
                     Walletunlocker.InitWalletResponse resp = Walletunlocker.InitWalletResponse.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got initWallet response: " + resp);
+                    callBack.onResponse(resp);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    public interface InitWalletCallBack {
+        public void onError(Exception e);
+        public void onResponse(Walletunlocker.InitWalletResponse response);
+    }
+
+    public void genSeed(GenSeedCallBack callBack) {
+        Walletunlocker.GenSeedRequest request = Walletunlocker.GenSeedRequest.newBuilder()
+                .build();
+
+        Lndmobile.genSeed(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from genSeed callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                try {
+                    Walletunlocker.GenSeedResponse resp = Walletunlocker.GenSeedResponse.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got genseed response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface GenSeedCallBack {
+        public void onError(Exception e);
+        public void onResponse(Walletunlocker.GenSeedResponse response);
     }
 
 }

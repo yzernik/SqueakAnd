@@ -16,6 +16,10 @@ public class MoneyViewModel  extends AndroidViewModel {
         this.lndRepository = LndRepository.getRepository(application);
     }
 
+    void initWallet() {
+        lndRepository.initWallet();
+    }
+
     void getInfo() {
         lndRepository.getInfo();
     }
