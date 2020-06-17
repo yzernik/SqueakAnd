@@ -57,4 +57,9 @@ public class LndClient {
                 });
     }
 
+    public void getInfo() {
+        // TODO: use a callback that returns a deserialized getinfo response.
+        // Lndmobile.getInfo();
+    }
+
 }
