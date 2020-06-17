@@ -22,6 +22,8 @@ public class MoneyFragment extends Fragment {
         // Get a new or existing ViewModel from the ViewModelProvider.
         moneyViewModel = new ViewModelProvider(this).get(MoneyViewModel.class);
 
+        moneyViewModel.getInfo();
+
         return root;
     }
 

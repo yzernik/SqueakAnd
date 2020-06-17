@@ -39,6 +39,8 @@ public class LndRepository {
 
     public void getInfo() {
         // TODO
+        Log.i(getClass().getName(), "Getting info...");
+        lndClient.initWallet();
         lndClient.getInfo();
     }
 
