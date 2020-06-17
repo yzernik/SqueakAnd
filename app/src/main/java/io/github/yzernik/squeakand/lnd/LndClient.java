@@ -5,17 +5,14 @@ import android.util.Log;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import lndmobile.Callback;
 import lndmobile.Lndmobile;
-import lnrpc.Lnd;
+import lnrpc.Rpc;
 import lnrpc.Walletunlocker;
-
-import static org.bitcoinj.core.Utils.HEX;
 
 public class LndClient {
 
@@ -61,26 +58,31 @@ public class LndClient {
                 });
     }
 
-    public void getInfo() {
-        // TODO: use a callback that returns a deserialized getinfo response.
-
-        Lnd.GetInfoRequest request = Lnd.GetInfoRequest.newBuilder()
-                .build();
-
-
+    public void getInfo(GetInfoCallBack callBack) {
+        Rpc.GetInfoRequest request = Rpc.GetInfoRequest.newBuilder().build();
         Lndmobile.getInfo(request.toByteArray(), new Callback() {
             @Override
             public void onError(Exception e) {
                 Log.e(getClass().getName(), "Error from getInfo callback: " + e);
+                callBack.onError(e);
             }
 
             @Override
             public void onResponse(byte[] bytes) {
-                Log.i(getClass().getName(), "Response from getInfo callback: " + bytes);
+                try {
+                    Rpc.GetInfoResponse resp = Rpc.GetInfoResponse.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got getInfo response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
             }
         });
+    }
 
-        // Lndmobile.getInfo();
+    public interface GetInfoCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.GetInfoResponse response);
     }
 
     public void initWallet(String password, List<String> seedWords, InitWalletCallBack callBack) {

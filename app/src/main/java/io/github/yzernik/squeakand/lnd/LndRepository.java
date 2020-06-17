@@ -3,7 +3,10 @@ package io.github.yzernik.squeakand.lnd;
 import android.app.Application;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+
 import io.github.yzernik.squeakand.blockchain.ElectrumDownloaderController;
+import lnrpc.Rpc;
 
 public class LndRepository {
 
@@ -50,9 +53,9 @@ public class LndRepository {
     }
 
 
-    public void getInfo() {
-        // TODO
+    public LiveData<Rpc.GetInfoResponse> getInfo() {
         Log.i(getClass().getName(), "Getting info...");
+        return lndController.getInfo();
     }
 
 }

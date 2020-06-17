@@ -3,12 +3,16 @@ package io.github.yzernik.squeakand.lnd;
 import android.app.Application;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import io.github.yzernik.squeakand.preferences.Preferences;
+import lnrpc.Rpc;
 import lnrpc.Walletunlocker;
 
 public class LndController {
@@ -23,7 +27,8 @@ public class LndController {
     private final Preferences preferences;
 
     public LndController(Application application, String network, String password) {
-        this.lndDir = application.getFilesDir() + "/.lnd";;
+        // this.lndDir = application.getFilesDir() + "/.lnd";
+        this.lndDir = application.getFilesDir().toString();
         this.network = network;
         this.password = password;
         this.lndClient = new LndClient();
@@ -93,6 +98,28 @@ public class LndController {
         });
 
     }
+
+    /**
+     * Get info.
+     */
+    public LiveData<Rpc.GetInfoResponse> getInfo() {
+        MutableLiveData<Rpc.GetInfoResponse> liveDataResponse = new MutableLiveData<>(null);
+
+        lndClient.getInfo(new LndClient.GetInfoCallBack() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error calling getInfo: " + e);
+            }
+
+            @Override
+            public void onResponse(Rpc.GetInfoResponse response) {
+                liveDataResponse.postValue(response);
+            }
+        });
+
+        return liveDataResponse;
+    }
+
 
     public void rmLndDir() {
         Path lndDirPath = Paths.get(lndDir);
