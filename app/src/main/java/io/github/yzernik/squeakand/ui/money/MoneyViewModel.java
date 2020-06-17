@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 
 import io.github.yzernik.squeakand.lnd.LndRepository;
 import lnrpc.Rpc;
+import lnrpc.Walletunlocker;
 
 public class MoneyViewModel  extends AndroidViewModel {
 
@@ -18,8 +19,8 @@ public class MoneyViewModel  extends AndroidViewModel {
         this.lndRepository = LndRepository.getRepository(application);
     }
 
-    void initWallet() {
-        lndRepository.initWallet();
+    LiveData<Walletunlocker.InitWalletResponse> initWallet() {
+        return lndRepository.initWallet();
     }
 
     LiveData<Rpc.GetInfoResponse> getInfo() {

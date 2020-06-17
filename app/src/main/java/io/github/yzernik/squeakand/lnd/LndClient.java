@@ -102,14 +102,15 @@ public class LndClient {
             @Override
             public void onResponse(byte[] bytes) {
                 Log.i(getClass().getName(), "Got initWallet response bytes: " + bytes);
-                callBack.onResponse();
+                Walletunlocker.InitWalletResponse response = Walletunlocker.InitWalletResponse.newBuilder().build();
+                callBack.onResponse(response);
             }
         });
     }
 
     public interface InitWalletCallBack {
         public void onError(Exception e);
-        public void onResponse();
+        public void onResponse(Walletunlocker.InitWalletResponse response);
     }
 
     public void genSeed(GenSeedCallBack callBack) {

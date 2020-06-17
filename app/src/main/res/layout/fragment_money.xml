@@ -23,11 +23,17 @@
             android:layout_height="wrap_content"
             android:text="Create new wallet" />
 
-        <TextView
-            android:id="@+id/money_text_view"
+        <Button
+            android:id="@+id/update_info_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Money here" />
+            android:text="Update info" />
+
+        <TextView
+            android:id="@+id/lightning_node_pubkey_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lightning node pubkey" />
 
     </LinearLayout>
 

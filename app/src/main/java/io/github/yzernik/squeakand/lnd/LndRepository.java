@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 
 import io.github.yzernik.squeakand.blockchain.ElectrumDownloaderController;
 import lnrpc.Rpc;
+import lnrpc.Walletunlocker;
 
 public class LndRepository {
 
@@ -44,12 +45,12 @@ public class LndRepository {
         lndController.start();
     }
 
-    public void initWallet() {
+    public LiveData<Walletunlocker.InitWalletResponse> initWallet() {
         // TODO
         Log.i(getClass().getName(), "Initializing wallet...");
 
         // Generate the wallet seed and initialize the wallet.
-        lndController.initWallet();
+        return lndController.initWallet();
     }
 
 

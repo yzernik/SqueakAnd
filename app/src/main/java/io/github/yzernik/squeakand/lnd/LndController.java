@@ -66,7 +66,8 @@ public class LndController {
     /**
      * Initialize the wallet using a new generated seed.
      */
-    public void initWallet() {
+    public LiveData<Walletunlocker.InitWalletResponse> initWallet() {
+        MutableLiveData<Walletunlocker.InitWalletResponse> liveDataResponse = new MutableLiveData<>(null);
 
         lndClient.genSeed(new LndClient.GenSeedCallBack() {
             @Override
@@ -89,14 +90,16 @@ public class LndController {
                     }
 
                     @Override
-                    public void onResponse() {
+                    public void onResponse(Walletunlocker.InitWalletResponse response) {
                         Log.i(getClass().getName(), "Got initWallet response.");
+                        liveDataResponse.postValue(response);
                     }
                 });
 
             }
         });
 
+        return liveDataResponse;
     }
 
     /**
