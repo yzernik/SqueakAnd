@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.util.Log;
 
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
+import io.github.yzernik.squeakand.lnd.LndRepository;
 
 public class SqueakAndApplication extends Application {
     // Called when the application is starting, before any other application objects have been created.
@@ -50,5 +51,9 @@ public class SqueakAndApplication extends Application {
         // Initialize the squeaks repository
         SqueakRepository squeakRepository = SqueakRepository.getRepository(this);
         squeakRepository.initialize();
+
+        // Initialize the lnd node
+        LndRepository lndRepository = LndRepository.getRepository(this);
+        lndRepository.initialize();
     }
 }
