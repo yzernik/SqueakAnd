@@ -25,7 +25,7 @@ public class LndClient {
 
     public void start() {
         String startString = String.format(
-                "--bitcoin.active --bitcoin.node=neutrino --bitcoin.%s --no-macaroons --datadir=%s",
+                "--bitcoin.active --bitcoin.node=neutrino --bitcoin.%s --no-macaroons --lnddir=%s",
                 network,
                 lndDirPath);
 
