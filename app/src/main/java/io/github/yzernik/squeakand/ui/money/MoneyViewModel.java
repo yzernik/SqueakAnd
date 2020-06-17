@@ -4,8 +4,11 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import io.github.yzernik.squeakand.lnd.LndRepository;
+import lnrpc.Rpc;
+import lnrpc.Walletunlocker;
 
 public class MoneyViewModel  extends AndroidViewModel {
 
@@ -16,8 +19,12 @@ public class MoneyViewModel  extends AndroidViewModel {
         this.lndRepository = LndRepository.getRepository(application);
     }
 
-    void getInfo() {
-        lndRepository.getInfo();
+    LiveData<Walletunlocker.InitWalletResponse> initWallet() {
+        return lndRepository.initWallet();
+    }
+
+    LiveData<Rpc.GetInfoResponse> getInfo() {
+        return lndRepository.getInfo();
     }
 
 }
