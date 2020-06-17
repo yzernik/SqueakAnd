@@ -24,23 +24,15 @@ public class LndClient {
     }
 
     public void start() {
-        String dataDir = lndDirPath + "/data";
-        String logDir = lndDirPath + "/logs";
-        String tlsCert = lndDirPath + "/tls.cert";
-        String tlsKey = lndDirPath + "/tls.key";
-
         String startString = String.format(
-                "--bitcoin.active --bitcoin.node=neutrino --bitcoin.%s --no-macaroons --datadir=%s --logdir=%s --tlscertpath=%s --tlskeypath=%s",
+                "--bitcoin.active --bitcoin.node=neutrino --bitcoin.%s --no-macaroons --datadir=%s",
                 network,
-                dataDir,
-                logDir,
-                tlsCert,
-                tlsKey);
+                lndDirPath);
 
         Log.i(getClass().getName(), "Starting lndmobile with lndDir: " + lndDirPath);
         Log.i(getClass().getName(), "Start string : " + startString);
         Lndmobile.start(
-                "--bitcoin.active --bitcoin.node=neutrino --bitcoin.testnet --no-macaroons",
+                startString,
                 new Callback() {
                     @Override
                     public void onError(Exception e) {
