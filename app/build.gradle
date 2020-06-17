@@ -91,6 +91,9 @@ dependencies {
     // TODO: Use snapshot build
     implementation 'io.github.yzernik.electrumclient:electrumclient:1.0.3'
 
+    // Lnd
+    implementation project(":Lndmobile")
+
     // GRPC
     // You need to build grpc-java to obtain these libraries below.
     implementation 'io.grpc:grpc-okhttp:1.29.0' // CURRENT_GRPC_VERSION
