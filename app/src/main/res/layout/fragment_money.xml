@@ -17,6 +17,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <Button
+            android:id="@+id/create_wallet_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create new wallet" />
+
         <TextView
             android:id="@+id/money_text_view"
             android:layout_width="match_parent"

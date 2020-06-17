@@ -99,22 +99,15 @@ public class LndClient {
 
             @Override
             public void onResponse(byte[] bytes) {
-                try {
-                    Log.i(getClass().getName(), "Got response bytes: " + bytes);
-                    Log.i(getClass().getName(), "Got response encoded bytes: " + HEX.encode(bytes));
-                    Walletunlocker.InitWalletResponse resp = Walletunlocker.InitWalletResponse.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got initWallet response: " + resp);
-                    callBack.onResponse(resp);
-                } catch (InvalidProtocolBufferException e) {
-                    e.printStackTrace();
-                }
+                Log.i(getClass().getName(), "Got initWallet response bytes: " + bytes);
+                callBack.onResponse();
             }
         });
     }
 
     public interface InitWalletCallBack {
         public void onError(Exception e);
-        public void onResponse(Walletunlocker.InitWalletResponse response);
+        public void onResponse();
     }
 
     public void genSeed(GenSeedCallBack callBack) {

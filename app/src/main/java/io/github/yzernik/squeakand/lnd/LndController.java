@@ -84,8 +84,8 @@ public class LndController {
                     }
 
                     @Override
-                    public void onResponse(Walletunlocker.InitWalletResponse response) {
-                        Log.i(getClass().getName(), "Got initWallet response: " + response);
+                    public void onResponse() {
+                        Log.i(getClass().getName(), "Got initWallet response.");
                     }
                 });
 
