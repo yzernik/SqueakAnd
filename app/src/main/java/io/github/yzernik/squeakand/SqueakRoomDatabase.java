@@ -20,13 +20,14 @@ import java.util.concurrent.Executors;
  * app, consider exporting the schema to help you with migrations.
  */
 
-@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class}, version = 5)
+@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class}, version = 6)
 public abstract class SqueakRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";
     public static final String TABLE_NAME_PROFILE = "profile";
     public static final String TABLE_NAME_SQUEAK = "squeak";
     public static final String TABLE_NAME_SERVER = "server";
+    public static final String TABLE_NAME_OFFER = "offer";
 
     abstract SqueakDao squeakDao();
     abstract SqueakProfileDao squeakProfileDao();
@@ -46,7 +47,7 @@ public abstract class SqueakRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             SqueakRoomDatabase.class, DB_NAME)
                             //.addCallback(sRoomDatabaseCallback)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
                             .build();
                 }
             }
@@ -188,6 +189,30 @@ public abstract class SqueakRoomDatabase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE squeak ADD COLUMN block TEXT");
+        }
+    };
+
+    @VisibleForTesting
+    static final Migration MIGRATION_5_6 = new Migration(5, 6) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "CREATE TABLE offer (" +
+                            "offerId INTEGER PRIMARY KEY NOT NULL," +
+                            "squeakHash TEXT NOT NULL," +
+                            "nonce TEXT NOT NULL," +
+                            "preimageHash TEXT NOT NULL," +
+                            "amount INT NOT NULL," +
+                            "paymentRequest TEXT NOT NULL," +
+                            "pubkey TEXT NOT NULL," +
+                            "host TEXT NOT NULL," +
+                            "port INT NOT NULL," +
+                            "squeakServerId INT NOT NULL," +
+                            "preimage TEXT)");
+            database.execSQL(
+                    "CREATE UNIQUE INDEX index_offer_squeakHash ON offer (squeakHash)");
+            database.execSQL(
+                    "CREATE UNIQUE INDEX index_offer_squeakServerId ON offer (squeakServerId)");
         }
     };
 
