@@ -201,4 +201,36 @@ public class LndClient {
         public void onResponse(Rpc.WalletBalanceResponse response);
     }
 
+    public void listChannels(ListChannelsCallBack callBack) {
+        Rpc.ListChannelsRequest request = Rpc.ListChannelsRequest.newBuilder().build();
+        Lndmobile.listChannels(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from listChannels callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    callBack.onError(new Exception("Null response."));
+                    return;
+                }
+
+                try {
+                    Rpc.ListChannelsResponse resp = Rpc.ListChannelsResponse.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got listChannels response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface ListChannelsCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.ListChannelsResponse response);
+    }
+
 }

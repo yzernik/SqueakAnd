@@ -76,6 +76,19 @@ public class MoneyFragment extends Fragment {
             }
         });
 
+        // Get channels
+        moneyViewModel.listChannels().observe(getViewLifecycleOwner(), new Observer<Rpc.ListChannelsResponse>() {
+            @Override
+            public void onChanged(Rpc.ListChannelsResponse response) {
+                if (response == null) {
+                    return;
+                }
+
+                Log.i(getTag(), "Got number of channels from listChannels response: " + response.getChannelsList().size());
+                // TODO: create a recyclerview with the channels.
+            }
+        });
+
     }
 
 }

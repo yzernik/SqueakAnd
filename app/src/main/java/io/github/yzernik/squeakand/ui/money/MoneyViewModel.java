@@ -26,4 +26,8 @@ public class MoneyViewModel  extends AndroidViewModel {
         return lndRepository.walletBalance();
     }
 
+    LiveData<Rpc.ListChannelsResponse> listChannels() {
+        return lndRepository.listChannels();
+    }
+
 }

@@ -72,8 +72,13 @@ public class LndRepository {
     }
 
     public LiveData<Rpc.WalletBalanceResponse> walletBalance() {
-        Log.i(getClass().getName(), "Getting wallet balance...");
+        Log.i(getClass().getName(), "Getting walletBalance...");
         return lndController.walletBalance();
+    }
+
+    public LiveData<Rpc.ListChannelsResponse> listChannels() {
+        Log.i(getClass().getName(), "Getting listChannels...");
+        return lndController.listChannels();
     }
 
 }

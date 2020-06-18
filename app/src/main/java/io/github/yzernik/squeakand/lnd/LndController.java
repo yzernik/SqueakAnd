@@ -169,4 +169,26 @@ public class LndController {
     }
 
 
+    /**
+     * List channels.
+     */
+    public LiveData<Rpc.ListChannelsResponse> listChannels() {
+        MutableLiveData<Rpc.ListChannelsResponse> liveDataResponse = new MutableLiveData<>(null);
+
+        lndClient.listChannels(new LndClient.ListChannelsCallBack() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error calling listChannels: " + e);
+            }
+
+            @Override
+            public void onResponse(Rpc.ListChannelsResponse response) {
+                liveDataResponse.postValue(response);
+            }
+        });
+
+        return liveDataResponse;
+    }
+
+
 }
