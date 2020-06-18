@@ -42,7 +42,16 @@ public class LndRepository {
         // TODO: don't delete lnd dir on startup
         lndController.rmLndDir();
 
+        // Start the lnd node
         lndController.start();
+
+        // Initialize the wallet
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        lndController.initWallet();
     }
 
     public LiveData<Walletunlocker.InitWalletResponse> initWallet() {
