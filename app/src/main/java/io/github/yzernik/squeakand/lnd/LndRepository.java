@@ -71,4 +71,9 @@ public class LndRepository {
         return lndController.getInfo();
     }
 
+    public LiveData<Rpc.WalletBalanceResponse> walletBalance() {
+        Log.i(getClass().getName(), "Getting wallet balance...");
+        return lndController.walletBalance();
+    }
+
 }

@@ -110,6 +110,22 @@ public class LndController {
         });
     }
 
+    public void rmLndDir() {
+        Path lndDirPath = Paths.get(lndDir);
+        Log.i(getClass().getName(), "Deleting lnd dir: " + lndDirPath);
+        deleteDirectory(lndDirPath.toFile());
+    }
+
+    private boolean deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectory(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
+    }
+
     /**
      * Get info.
      */
@@ -131,21 +147,25 @@ public class LndController {
         return liveDataResponse;
     }
 
+    /**
+     * Wallet balance.
+     */
+    public LiveData<Rpc.WalletBalanceResponse> walletBalance() {
+        MutableLiveData<Rpc.WalletBalanceResponse> liveDataResponse = new MutableLiveData<>(null);
 
-    public void rmLndDir() {
-        Path lndDirPath = Paths.get(lndDir);
-        Log.i(getClass().getName(), "Deleting lnd dir: " + lndDirPath);
-        deleteDirectory(lndDirPath.toFile());
-    }
-
-    private boolean deleteDirectory(File directoryToBeDeleted) {
-        File[] allContents = directoryToBeDeleted.listFiles();
-        if (allContents != null) {
-            for (File file : allContents) {
-                deleteDirectory(file);
+        lndClient.walletBalance(new LndClient.WalletBalanceCallBack() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error calling walletBalance: " + e);
             }
-        }
-        return directoryToBeDeleted.delete();
+
+            @Override
+            public void onResponse(Rpc.WalletBalanceResponse response) {
+                liveDataResponse.postValue(response);
+            }
+        });
+
+        return liveDataResponse;
     }
 
 
