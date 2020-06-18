@@ -152,7 +152,6 @@ public class CreateProfileFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String privateKeyString = privateKeyEditText.getText().toString();
                         if (privateKeyString == null || privateKeyString.isEmpty()) {
-                            // TODO show invalid private key alert
                             dialog.dismiss();
                             showInvalidPrivateKeyAlert();
                             return;
