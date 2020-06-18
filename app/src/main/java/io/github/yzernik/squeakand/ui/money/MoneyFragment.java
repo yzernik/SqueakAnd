@@ -1,7 +1,6 @@
 package io.github.yzernik.squeakand.ui.money;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,8 +52,6 @@ public class MoneyFragment extends Fragment {
                 if (response == null) {
                     return;
                 }
-
-                Log.i(getTag(), "Got block height from getInfo response: " + response.getBlockHeight());
                 mLightningNodePubKeyText.setText(response.getIdentityPubkey());
                 mSyncedToChainText.setText(Boolean.toString(response.getSyncedToChain()));
                 mSyncedToGraphText.setText(Boolean.toString(response.getSyncedToGraph()));
@@ -68,9 +65,6 @@ public class MoneyFragment extends Fragment {
                 if (response == null) {
                     return;
                 }
-
-                Log.i(getTag(), "Got confirmed balance from wallet balance response: " + response.getConfirmedBalance());
-                Log.i(getTag(), "Got total balance from wallet balance response: " + response.getTotalBalance());
                 mConfirmedBalance.setText(Long.toString(response.getConfirmedBalance()));
                 mTotalBalance.setText(Long.toString(response.getTotalBalance()));
             }
@@ -83,8 +77,17 @@ public class MoneyFragment extends Fragment {
                 if (response == null) {
                     return;
                 }
+                // TODO: create a recyclerview with the channels.
+            }
+        });
 
-                Log.i(getTag(), "Got number of channels from listChannels response: " + response.getChannelsList().size());
+        // New address
+        moneyViewModel.newAddress().observe(getViewLifecycleOwner(), new Observer<Rpc.NewAddressResponse>() {
+            @Override
+            public void onChanged(Rpc.NewAddressResponse response) {
+                if (response == null) {
+                    return;
+                }
                 // TODO: create a recyclerview with the channels.
             }
         });
