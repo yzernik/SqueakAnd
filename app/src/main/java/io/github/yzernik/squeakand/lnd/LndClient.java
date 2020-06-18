@@ -58,33 +58,6 @@ public class LndClient {
                 });
     }
 
-    public void getInfo(GetInfoCallBack callBack) {
-        Rpc.GetInfoRequest request = Rpc.GetInfoRequest.newBuilder().build();
-        Lndmobile.getInfo(request.toByteArray(), new Callback() {
-            @Override
-            public void onError(Exception e) {
-                Log.e(getClass().getName(), "Error from getInfo callback: " + e);
-                callBack.onError(e);
-            }
-
-            @Override
-            public void onResponse(byte[] bytes) {
-                try {
-                    Rpc.GetInfoResponse resp = Rpc.GetInfoResponse.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got getInfo response: " + resp);
-                    callBack.onResponse(resp);
-                } catch (InvalidProtocolBufferException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    public interface GetInfoCallBack {
-        public void onError(Exception e);
-        public void onResponse(Rpc.GetInfoResponse response);
-    }
-
     public void initWallet(String password, List<String> seedWords, InitWalletCallBack callBack) {
         ByteString pw = ByteString.copyFromUtf8(password);
         Walletunlocker.InitWalletRequest request = Walletunlocker.InitWalletRequest.newBuilder()
@@ -102,7 +75,7 @@ public class LndClient {
             @Override
             public void onResponse(byte[] bytes) {
                 Log.i(getClass().getName(), "Got initWallet response bytes: " + bytes);
-                Walletunlocker.InitWalletResponse response = Walletunlocker.InitWalletResponse.newBuilder().build();
+                Walletunlocker.InitWalletResponse response = Walletunlocker.InitWalletResponse.getDefaultInstance();
                 callBack.onResponse(response);
             }
         });
@@ -158,7 +131,7 @@ public class LndClient {
             @Override
             public void onResponse(byte[] bytes) {
                 Log.i(getClass().getName(), "Got unlockWallet response bytes: " + bytes);
-                Walletunlocker.UnlockWalletResponse response = Walletunlocker.UnlockWalletResponse.newBuilder().build();
+                Walletunlocker.UnlockWalletResponse response = Walletunlocker.UnlockWalletResponse.getDefaultInstance();
                 callBack.onResponse(response);
             }
         });
@@ -167,6 +140,33 @@ public class LndClient {
     public interface UnlockWalletCallBack {
         public void onError(Exception e);
         public void onResponse(Walletunlocker.UnlockWalletResponse response);
+    }
+
+    public void getInfo(GetInfoCallBack callBack) {
+        Rpc.GetInfoRequest request = Rpc.GetInfoRequest.newBuilder().build();
+        Lndmobile.getInfo(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from getInfo callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                try {
+                    Rpc.GetInfoResponse resp = Rpc.GetInfoResponse.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got getInfo response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface GetInfoCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.GetInfoResponse response);
     }
 
     public void walletBalance(WalletBalanceCallBack callBack) {
@@ -181,7 +181,9 @@ public class LndClient {
             @Override
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
-                    callBack.onError(new Exception("Null response."));
+                    Rpc.WalletBalanceResponse resp = Rpc.WalletBalanceResponse.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got walletBalance response: " + resp);
+                    callBack.onResponse(resp);
                     return;
                 }
 
@@ -218,7 +220,9 @@ public class LndClient {
             @Override
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
-                    callBack.onError(new Exception("Null response."));
+                    Rpc.ListChannelsResponse resp = Rpc.ListChannelsResponse.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got listChannels response: " + resp);
+                    callBack.onResponse(resp);
                     return;
                 }
 
