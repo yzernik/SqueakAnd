@@ -20,13 +20,20 @@ public class MoneyFragment extends Fragment {
     private MoneyViewModel moneyViewModel;
 
     private TextView mLightningNodePubKeyText;
+    private TextView mSyncedToChainText;
+    private TextView mSyncedToGraphText;
+    private TextView mConfirmedBalance;
+    private TextView mTotalBalance;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_money, container, false);
 
-        // mCreateWalletButton = root.findViewById(R.id.create_wallet_button);
         mLightningNodePubKeyText = root.findViewById(R.id.lightning_node_pubkey_text);
+        mSyncedToChainText = root.findViewById(R.id.synced_to_chain_text);
+        mSyncedToGraphText = root.findViewById(R.id.synced_to_graph_text);
+        mConfirmedBalance = root.findViewById(R.id.confirmed_balance_text);
+        mTotalBalance = root.findViewById(R.id.total_balance_text);
 
         // Get a new or existing ViewModel from the ViewModelProvider.
         moneyViewModel = new ViewModelProvider(this).get(MoneyViewModel.class);
@@ -38,6 +45,8 @@ public class MoneyFragment extends Fragment {
 
 
     private void updateGetInfo () {
+
+        // Get info
         moneyViewModel.getInfo().observe(getViewLifecycleOwner(), new Observer<Rpc.GetInfoResponse>() {
             @Override
             public void onChanged(Rpc.GetInfoResponse response) {
@@ -47,8 +56,39 @@ public class MoneyFragment extends Fragment {
 
                 Log.i(getTag(), "Got block height from getInfo response: " + response.getBlockHeight());
                 mLightningNodePubKeyText.setText(response.getIdentityPubkey());
+                mSyncedToChainText.setText(Boolean.toString(response.getSyncedToChain()));
+                mSyncedToGraphText.setText(Boolean.toString(response.getSyncedToGraph()));
             }
         });
+
+        // Get wallet balance
+        moneyViewModel.walletBalance().observe(getViewLifecycleOwner(), new Observer<Rpc.WalletBalanceResponse>() {
+            @Override
+            public void onChanged(Rpc.WalletBalanceResponse response) {
+                if (response == null) {
+                    return;
+                }
+
+                Log.i(getTag(), "Got confirmed balance from wallet balance response: " + response.getConfirmedBalance());
+                Log.i(getTag(), "Got total balance from wallet balance response: " + response.getTotalBalance());
+                mConfirmedBalance.setText(Long.toString(response.getConfirmedBalance()));
+                mTotalBalance.setText(Long.toString(response.getTotalBalance()));
+            }
+        });
+
+        // Get channels
+        moneyViewModel.listChannels().observe(getViewLifecycleOwner(), new Observer<Rpc.ListChannelsResponse>() {
+            @Override
+            public void onChanged(Rpc.ListChannelsResponse response) {
+                if (response == null) {
+                    return;
+                }
+
+                Log.i(getTag(), "Got number of channels from listChannels response: " + response.getChannelsList().size());
+                // TODO: create a recyclerview with the channels.
+            }
+        });
+
     }
 
 }

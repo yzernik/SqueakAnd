@@ -40,7 +40,7 @@ public class LndRepository {
         Log.i(getClass().getName(), "LndRepository: Calling initialize ...");
 
         // TODO: don't delete lnd dir on startup
-        lndController.rmLndDir();
+        // lndController.rmLndDir();
 
         // Start the lnd node
         lndController.start();
@@ -69,6 +69,16 @@ public class LndRepository {
     public LiveData<Rpc.GetInfoResponse> getInfo() {
         Log.i(getClass().getName(), "Getting info...");
         return lndController.getInfo();
+    }
+
+    public LiveData<Rpc.WalletBalanceResponse> walletBalance() {
+        Log.i(getClass().getName(), "Getting walletBalance...");
+        return lndController.walletBalance();
+    }
+
+    public LiveData<Rpc.ListChannelsResponse> listChannels() {
+        Log.i(getClass().getName(), "Getting listChannels...");
+        return lndController.listChannels();
     }
 
 }
