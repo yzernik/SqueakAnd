@@ -82,6 +82,17 @@ public class MoneyFragment extends Fragment {
             }
         });
 
+        // New address
+        moneyViewModel.newAddress().observe(getViewLifecycleOwner(), new Observer<Rpc.NewAddressResponse>() {
+            @Override
+            public void onChanged(Rpc.NewAddressResponse response) {
+                if (response == null) {
+                    return;
+                }
+                // TODO: create a recyclerview with the channels.
+            }
+        });
+
     }
 
 }

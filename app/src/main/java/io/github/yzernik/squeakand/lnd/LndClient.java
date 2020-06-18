@@ -238,4 +238,39 @@ public class LndClient {
         public void onResponse(Rpc.ListChannelsResponse response);
     }
 
+    public void newAddress(NewAddressCallBack callBack) {
+        Rpc.AddressType addressType = Rpc.AddressType.WITNESS_PUBKEY_HASH;
+        Rpc.NewAddressRequest request = Rpc.NewAddressRequest.newBuilder()
+                .setType(addressType)
+                .build();
+        Lndmobile.newAddress(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from newAddress callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    callBack.onError(new Exception("Null response."));
+                    return;
+                }
+
+                try {
+                    Rpc.NewAddressResponse resp = Rpc.NewAddressResponse.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got newAddress response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface NewAddressCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.NewAddressResponse response);
+    }
+
 }

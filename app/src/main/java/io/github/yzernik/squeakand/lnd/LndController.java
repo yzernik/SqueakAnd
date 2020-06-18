@@ -190,5 +190,26 @@ public class LndController {
         return liveDataResponse;
     }
 
+    /**
+     * New address.
+     */
+    public LiveData<Rpc.NewAddressResponse> newAddress() {
+        MutableLiveData<Rpc.NewAddressResponse> liveDataResponse = new MutableLiveData<>(null);
+
+        lndClient.newAddress(new LndClient.NewAddressCallBack() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error calling newAddress: " + e);
+            }
+
+            @Override
+            public void onResponse(Rpc.NewAddressResponse response) {
+                liveDataResponse.postValue(response);
+            }
+        });
+
+        return liveDataResponse;
+    }
+
 
 }

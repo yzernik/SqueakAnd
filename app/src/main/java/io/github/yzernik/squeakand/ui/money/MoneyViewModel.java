@@ -30,4 +30,8 @@ public class MoneyViewModel  extends AndroidViewModel {
         return lndRepository.listChannels();
     }
 
+    LiveData<Rpc.NewAddressResponse> newAddress() {
+        return lndRepository.newAddress();
+    }
+
 }

@@ -81,4 +81,9 @@ public class LndRepository {
         return lndController.listChannels();
     }
 
+    public LiveData<Rpc.NewAddressResponse> newAddress() {
+        Log.i(getClass().getName(), "Getting newAddress...");
+        return lndController.newAddress();
+    }
+
 }
