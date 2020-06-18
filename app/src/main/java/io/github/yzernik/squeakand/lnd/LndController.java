@@ -17,6 +17,9 @@ import lnrpc.Walletunlocker;
 
 public class LndController {
 
+
+    private static final String LND_DIR_RELATIVE_PATH = "/.lnd";
+
     // TODO: Use a real password.
     private static final String DEFAULT_PASSWORD = "somesuperstrongpw";
 
@@ -27,8 +30,7 @@ public class LndController {
     private final Preferences preferences;
 
     public LndController(Application application, String network, String password) {
-        // this.lndDir = application.getFilesDir() + "/.lnd";
-        this.lndDir = application.getFilesDir().toString();
+        this.lndDir = Paths.get(application.getFilesDir().toString(), LND_DIR_RELATIVE_PATH).toString();
         this.network = network;
         this.password = password;
         this.lndClient = new LndClient();
