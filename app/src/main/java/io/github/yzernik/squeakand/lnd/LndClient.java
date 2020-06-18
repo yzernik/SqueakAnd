@@ -142,4 +142,31 @@ public class LndClient {
         public void onResponse(Walletunlocker.GenSeedResponse response);
     }
 
+    public void unlockWallet(String password, UnlockWalletCallBack callBack) {
+        ByteString pw = ByteString.copyFromUtf8(password);
+        Walletunlocker.UnlockWalletRequest request = Walletunlocker.UnlockWalletRequest.newBuilder()
+                .setWalletPassword(pw)
+                .build();
+
+        Lndmobile.unlockWallet(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from unlockWallet callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                Log.i(getClass().getName(), "Got unlockWallet response bytes: " + bytes);
+                Walletunlocker.UnlockWalletResponse response = Walletunlocker.UnlockWalletResponse.newBuilder().build();
+                callBack.onResponse(response);
+            }
+        });
+    }
+
+    public interface UnlockWalletCallBack {
+        public void onError(Exception e);
+        public void onResponse(Walletunlocker.UnlockWalletResponse response);
+    }
+
 }

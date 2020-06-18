@@ -66,9 +66,7 @@ public class LndController {
     /**
      * Initialize the wallet using a new generated seed.
      */
-    public LiveData<Walletunlocker.InitWalletResponse> initWallet() {
-        MutableLiveData<Walletunlocker.InitWalletResponse> liveDataResponse = new MutableLiveData<>(null);
-
+    public void initWallet() {
         lndClient.genSeed(new LndClient.GenSeedCallBack() {
             @Override
             public void onError(Exception e) {
@@ -92,14 +90,24 @@ public class LndController {
                     @Override
                     public void onResponse(Walletunlocker.InitWalletResponse response) {
                         Log.i(getClass().getName(), "Got initWallet response.");
-                        liveDataResponse.postValue(response);
                     }
                 });
-
             }
         });
+    }
 
-        return liveDataResponse;
+    public void unlockWallet() {
+        lndClient.unlockWallet(password, new LndClient.UnlockWalletCallBack() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error calling unlockWallet: " + e);
+            }
+
+            @Override
+            public void onResponse(Walletunlocker.UnlockWalletResponse response) {
+                Log.i(getClass().getName(), "Got initWallet response.");
+            }
+        });
     }
 
     /**
