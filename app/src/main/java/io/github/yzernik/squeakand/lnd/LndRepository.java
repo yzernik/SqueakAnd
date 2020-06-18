@@ -40,7 +40,7 @@ public class LndRepository {
         Log.i(getClass().getName(), "LndRepository: Calling initialize ...");
 
         // TODO: don't delete lnd dir on startup
-        lndController.rmLndDir();
+        // lndController.rmLndDir();
 
         // Start the lnd node
         lndController.start();

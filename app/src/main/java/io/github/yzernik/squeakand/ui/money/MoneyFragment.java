@@ -20,6 +20,8 @@ public class MoneyFragment extends Fragment {
     private MoneyViewModel moneyViewModel;
 
     private TextView mLightningNodePubKeyText;
+    private TextView mSyncedToChainText;
+    private TextView mSyncedToGraphText;
     private TextView mConfirmedBalance;
     private TextView mTotalBalance;
 
@@ -28,6 +30,8 @@ public class MoneyFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_money, container, false);
 
         mLightningNodePubKeyText = root.findViewById(R.id.lightning_node_pubkey_text);
+        mSyncedToChainText = root.findViewById(R.id.synced_to_chain_text);
+        mSyncedToGraphText = root.findViewById(R.id.synced_to_graph_text);
         mConfirmedBalance = root.findViewById(R.id.confirmed_balance_text);
         mTotalBalance = root.findViewById(R.id.total_balance_text);
 
@@ -52,6 +56,8 @@ public class MoneyFragment extends Fragment {
 
                 Log.i(getTag(), "Got block height from getInfo response: " + response.getBlockHeight());
                 mLightningNodePubKeyText.setText(response.getIdentityPubkey());
+                mSyncedToChainText.setText(Boolean.toString(response.getSyncedToChain()));
+                mSyncedToGraphText.setText(Boolean.toString(response.getSyncedToGraph()));
             }
         });
 
