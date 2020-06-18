@@ -22,11 +22,14 @@ import androidx.lifecycle.ViewModelProvider;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
 
+import static org.bitcoinj.core.Utils.HEX;
+
 public class ViewProfileFragment extends Fragment {
 
     private TextView mProfileNameText;
     private TextView mProfileAddressText;
     private Switch mFollowingSwitch;
+    private Button mExportProfileButton;
     private Button mRenameProfileButton;
     private Button mDeleteProfileButton;
 
@@ -41,6 +44,7 @@ public class ViewProfileFragment extends Fragment {
         mProfileNameText = root.findViewById(R.id.view_profile_show_name);
         mProfileAddressText = root.findViewById(R.id.view_profile_show_address);
         mFollowingSwitch = root.findViewById(R.id.view_profile_following_switch);
+        mExportProfileButton = root.findViewById(R.id.view_profile_export_button);
         mRenameProfileButton = root.findViewById(R.id.view_profile_rename_button);
         mDeleteProfileButton = root.findViewById(R.id.view_profile_delete_button);
 
@@ -63,6 +67,14 @@ public class ViewProfileFragment extends Fragment {
                         squeakProfile.downloadEnabled = isChecked;
                         Log.i(getTag(), "New profile class: " + squeakProfile);
                         viewProfileModel.updateProfile(squeakProfile);
+                    }
+                });
+
+                // Setup the rename button.
+                mExportProfileButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showExportAlertDialog(inflater, squeakProfile);
                     }
                 });
 
@@ -112,13 +124,6 @@ public class ViewProfileFragment extends Fragment {
                     }
                 });
 
-/*        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Do nothing.
-            }
-        });*/
-
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -147,6 +152,52 @@ public class ViewProfileFragment extends Fragment {
 
 
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        alertDialog.show();
+    }
+
+    private void showExportAlertDialog(LayoutInflater inflater, SqueakProfile squeakProfile) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Export private key");
+        String msg = String.format("Are you sure you want to show the private key for %s?", squeakProfile.getName());
+        alertDialog.setMessage(msg);
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Show",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i(getTag(), "Showing private key for profile: " + squeakProfile);
+                        dialog.dismiss();
+
+                        // Show the private key
+                        showPrivateKeyAlertDialog(inflater, squeakProfile);
+                    }
+                });
+
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        alertDialog.show();
+    }
+
+    private void showPrivateKeyAlertDialog(LayoutInflater inflater, SqueakProfile squeakProfile) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Private key");
+        byte[] privKeyBytes = squeakProfile.getKeyPair().getEcKey().getPrivKeyBytes();
+        String privKeyString = HEX.encode(privKeyBytes);
+        String msg = String.format("Do not share this private key with anyone: %s", privKeyString);
+        alertDialog.setMessage(msg);
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Done",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

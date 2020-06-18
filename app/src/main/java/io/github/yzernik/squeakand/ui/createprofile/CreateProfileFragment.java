@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,8 +22,12 @@ import org.bitcoinj.core.ECKey;
 
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeakand.SqueakServer;
 import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
+import io.github.yzernik.squeakand.server.SqueakServerAddress;
 import io.github.yzernik.squeaklib.core.Signing;
+
+import static org.bitcoinj.core.Utils.HEX;
 
 public class CreateProfileFragment extends Fragment {
 
@@ -62,7 +67,7 @@ public class CreateProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.i(getTag(), "Import private key here.");
-                showUnsupportedImportAlert();
+                showImportPrivateKeyAlertDialog(inflater);
             }
         });
 
@@ -126,6 +131,60 @@ public class CreateProfileFragment extends Fragment {
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Missing key pair.");
         alertDialog.setMessage("Key pair must be generated or imported before a profile can be created.");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void showImportPrivateKeyAlertDialog(LayoutInflater inflater) {
+        final View view = inflater.inflate(R.layout.dialog_import_private_key, null);
+        android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Import private key");
+
+        final EditText privateKeyEditText = (EditText) view.findViewById(R.id.dialog_import_private_key_key_input);
+
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Import",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String privateKeyString = privateKeyEditText.getText().toString();
+                        if (privateKeyString == null || privateKeyString.isEmpty()) {
+                            dialog.dismiss();
+                            showInvalidPrivateKeyAlert();
+                            return;
+                        }
+
+                        try {
+                            byte[] privKeyBytes = HEX.decode(privateKeyString);
+                            ECKey ecKey = ECKey.fromPrivate(privKeyBytes);
+                            Log.i(getTag(), "Setting new private key");
+                            createProfileModel.setmKeyPair(ecKey);
+                        } catch (Exception e) {
+                            dialog.dismiss();
+                            showInvalidPrivateKeyAlert();
+                            return;
+                        }
+                    }
+                });
+
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        alertDialog.setView(view);
+        alertDialog.show();
+    }
+
+    private void showInvalidPrivateKeyAlert() {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Invalid private key");
+        alertDialog.setMessage("Imported private key is invalid.");
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
