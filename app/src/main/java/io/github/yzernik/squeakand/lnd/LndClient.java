@@ -202,7 +202,12 @@ public class LndClient {
     }
 
     public void listChannels(ListChannelsCallBack callBack) {
-        Rpc.ListChannelsRequest request = Rpc.ListChannelsRequest.newBuilder().build();
+        Rpc.ListChannelsRequest request = Rpc.ListChannelsRequest.newBuilder()
+                .setActiveOnly(false)
+                .setInactiveOnly(false)
+                .setPublicOnly(false)
+                .setPrivateOnly(false)
+                .build();
         Lndmobile.listChannels(request.toByteArray(), new Callback() {
             @Override
             public void onError(Exception e) {
