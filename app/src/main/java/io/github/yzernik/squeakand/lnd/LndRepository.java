@@ -5,9 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
-import io.github.yzernik.squeakand.blockchain.ElectrumDownloaderController;
 import lnrpc.Rpc;
-import lnrpc.Walletunlocker;
 
 public class LndRepository {
 
@@ -15,9 +13,6 @@ public class LndRepository {
 
     // private LndClient lndClient;
     private LndController lndController;
-
-    // Controller
-    ElectrumDownloaderController downloaderConnection;
 
     private LndRepository(Application application) {
         // Singleton constructor, only called by static method.
