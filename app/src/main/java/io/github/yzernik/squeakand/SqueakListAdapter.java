@@ -60,16 +60,9 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
     public void onBindViewHolder(SqueakViewHolder holder, int position) {
         if (mSqueaks != null) {
             SqueakEntryWithProfile currentEntry = mSqueaks.get(position);
-            String authorAddress = currentEntry.squeakEntry.authorAddress;
-            SqueakProfile authorProfile = currentEntry.squeakProfile;
-            String authorDisplay = authorAddress;
-            if (authorProfile != null) {
-                String authorName = currentEntry.squeakProfile.getName();
-                authorDisplay = authorName;
-            }
-            holder.txtSqueakHash.setText(authorDisplay);
+            holder.txtSqueakHash.setText(getAuthorDisplay(currentEntry));
             holder.txtSqueakText.setText(currentEntry.squeakEntry.getDecryptedContentStr());
-            holder.txtSqueakAuthor.setText("Block #" + String.valueOf(currentEntry.squeakEntry.blockHeight));
+            holder.txtSqueakAuthor.setText(getBlockDisplay(currentEntry));
         } else {
             // Covers the case of data not being ready yet.
             holder.txtSqueakHash.setText("No squeak");
@@ -88,6 +81,23 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
         if (mSqueaks != null)
             return mSqueaks.size();
         else return 0;
+    }
+
+    private String getAuthorDisplay(SqueakEntryWithProfile currentEntry) {
+        String authorAddress = currentEntry.squeakEntry.authorAddress;
+        SqueakProfile authorProfile = currentEntry.squeakProfile;
+        String authorDisplay = authorAddress;
+        if (authorProfile != null) {
+            String authorName = currentEntry.squeakProfile.getName();
+            authorDisplay = authorName;
+        }
+        return authorDisplay;
+    }
+
+    private String getBlockDisplay(SqueakEntryWithProfile currentEntry) {
+        long blockNumber = currentEntry.squeakEntry.blockHeight;
+        String timeAgo = TimeUtil.timeAgo(currentEntry.squeakEntry.block.getTime());
+        return String.format("Block #%d (%s)", blockNumber, timeAgo);
     }
 
     public interface ClickListener {
