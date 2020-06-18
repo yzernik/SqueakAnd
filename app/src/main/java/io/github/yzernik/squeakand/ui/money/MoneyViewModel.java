@@ -19,9 +19,10 @@ public class MoneyViewModel  extends AndroidViewModel {
         this.lndRepository = LndRepository.getRepository(application);
     }
 
+    /*
     LiveData<Walletunlocker.InitWalletResponse> initWallet() {
         return lndRepository.initWallet();
-    }
+    }*/
 
     LiveData<Rpc.GetInfoResponse> getInfo() {
         return lndRepository.getInfo();
