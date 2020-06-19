@@ -5,7 +5,12 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
+
 import lnrpc.Rpc;
+import lnrpc.Walletunlocker;
 
 public class LndRepository {
 
@@ -38,27 +43,27 @@ public class LndRepository {
         // lndController.rmLndDir();
 
         // Start the lnd node
-        lndController.start();
-
-        // Wait a few seconds for lnd to start
         try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
+            String startResult = lndController.start();
+            Log.i(getClass().getName(), "Started node with result: " + startResult);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
+            Log.i(getClass().getName(), "Failed to start lnd node.");
         }
 
         // Unlock the existing wallet
-        lndController.unlockWallet();
-
-        // Wait a few seconds
         try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
+            Walletunlocker.UnlockWalletResponse unlockResult = lndController.unlockWallet();
+            Log.i(getClass().getName(), "Unlocked wallet with result: " + unlockResult);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
+            Log.i(getClass().getName(), "Failed to unlock wallet.");
+            System.exit(1);
         }
 
+        /*
         // Initialize a new wallet
-        lndController.initWallet();
+        lndController.initWallet();*/
     }
 
     public LiveData<Rpc.GetInfoResponse> getInfo() {

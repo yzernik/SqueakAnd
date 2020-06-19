@@ -10,12 +10,19 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import io.github.yzernik.squeakand.preferences.Preferences;
 import lnrpc.Rpc;
 import lnrpc.Walletunlocker;
 
 public class LndController {
+
+    private static final long START_TIMEOUT_S = 10;
+    private static final long UNLOCK_TIMEOUT_S = 10;
 
 
     private static final String LND_DIR_RELATIVE_PATH = "/.lnd";
@@ -44,8 +51,9 @@ public class LndController {
     /**
      * Start the lnd node.
      */
-    public void start() {
-        lndClient.start(lndDir, network);
+    public String start() throws InterruptedException, ExecutionException, TimeoutException {
+        Future<String> startResultFuture = StartWalletTask.startWallet(lndClient, lndDir, network);
+        return startResultFuture.get(START_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
     public void genSeed() {
@@ -98,18 +106,9 @@ public class LndController {
         });
     }
 
-    public void unlockWallet() {
-        lndClient.unlockWallet(password, new LndClient.UnlockWalletCallBack() {
-            @Override
-            public void onError(Exception e) {
-                Log.e(getClass().getName(), "Error calling unlockWallet: " + e);
-            }
-
-            @Override
-            public void onResponse(Walletunlocker.UnlockWalletResponse response) {
-                Log.i(getClass().getName(), "Got initWallet response.");
-            }
-        });
+    public Walletunlocker.UnlockWalletResponse unlockWallet() throws InterruptedException, ExecutionException, TimeoutException {
+        Future<Walletunlocker.UnlockWalletResponse> unlockResultFuture = UnlockWalletTask.unlockWallet(lndClient, password);
+        return unlockResultFuture.get(START_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
     public void rmLndDir() {
