@@ -7,10 +7,12 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.server.ServerSyncer;
 import io.github.yzernik.squeakand.server.ServerUploader;
 import io.github.yzernik.squeakand.server.SqueakNetworkController;
 import io.github.yzernik.squeakand.server.SqueakServerAsyncClient;
+import io.github.yzernik.squeakand.squeaks.SqueaksController;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 /**
@@ -24,8 +26,10 @@ public class SqueakServerRepository {
     private SqueakDao mSqueakDao;
     private SqueakProfileDao mSqueakProfileDao;
     private SqueakServerDao mSqueakServerDao;
+    private SqueaksController squeaksController;
     private SqueakNetworkController squeakNetworkController;
 
+    // TODO: make singleton.
     public SqueakServerRepository(Application application) {
         // Singleton constructor, only called by static method.
         this.application = application;
@@ -33,7 +37,9 @@ public class SqueakServerRepository {
         mSqueakDao = db.squeakDao();
         mSqueakProfileDao = db.squeakProfileDao();
         mSqueakServerDao = db.squeakServerDao();
-        squeakNetworkController = new SqueakNetworkController(mSqueakDao, mSqueakProfileDao, mSqueakServerDao);
+        ElectrumBlockchainRepository electrumBlockchainRepository = ElectrumBlockchainRepository.getRepository(application);
+        squeaksController = new SqueaksController(mSqueakDao, electrumBlockchainRepository);
+        squeakNetworkController = new SqueakNetworkController(squeaksController, mSqueakProfileDao, mSqueakServerDao);
     }
 
     public static SqueakServerRepository getRepository(Application application) {

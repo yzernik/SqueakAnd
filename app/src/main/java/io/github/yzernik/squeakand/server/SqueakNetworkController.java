@@ -12,6 +12,7 @@ import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileDao;
 import io.github.yzernik.squeakand.SqueakServer;
 import io.github.yzernik.squeakand.SqueakServerDao;
+import io.github.yzernik.squeakand.squeaks.SqueaksController;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 public class SqueakNetworkController {
@@ -19,13 +20,14 @@ public class SqueakNetworkController {
     private static final int DEFAULT_MIN_BLOCK = 0;
     private static final int DEFAULT_MAX_BLOCK = 1000000000;
 
-    private final SqueakDao squeakDao;
+    // private final SqueakDao squeakDao;
+    private final SqueaksController squeaksController;
     private final SqueakProfileDao squeakProfileDao;
     private final SqueakServerDao squeakServerDao;
     private UploadQueue uploadQueue;
 
-    public SqueakNetworkController(SqueakDao squeakDao, SqueakProfileDao squeakProfileDao, SqueakServerDao squeakServerDao) {
-        this.squeakDao = squeakDao;
+    public SqueakNetworkController(SqueaksController squeaksController, SqueakProfileDao squeakProfileDao, SqueakServerDao squeakServerDao) {
+        this.squeaksController = squeaksController;
         this.squeakProfileDao = squeakProfileDao;
         this.squeakServerDao = squeakServerDao;
 
@@ -50,7 +52,7 @@ public class SqueakNetworkController {
     public void publish(Squeak squeak) {
         // Publish to all connected servers
         for (SqueakServerAddress serverAddress: getServers()) {
-            UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeakDao);
+            UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeaksController);
             try {
                 uploaderDownloader.upload(squeak);
             } catch (io.grpc.StatusRuntimeException e) {
@@ -62,7 +64,7 @@ public class SqueakNetworkController {
     public Squeak download(Sha256Hash hash) {
         // Try to download from all servers
         for (SqueakServerAddress serverAddress: getServers()) {
-            UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeakDao);
+            UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeaksController);
             Squeak squeak = uploaderDownloader.download(hash);
             if (squeak != null) {
                 return squeak;
@@ -118,7 +120,7 @@ public class SqueakNetworkController {
     }
 
     private void trySyncServer(SqueakServerAddress serverAddress) {
-        UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeakDao);
+        UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeaksController);
 
         // Sync downloads
         uploaderDownloader.downloadSync(getDownloadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);

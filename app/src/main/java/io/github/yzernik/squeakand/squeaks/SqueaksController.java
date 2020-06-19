@@ -3,6 +3,7 @@ package io.github.yzernik.squeakand.squeaks;
 import android.util.Log;
 
 import org.bitcoinj.core.Block;
+import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -12,6 +13,7 @@ import java.util.concurrent.TimeoutException;
 
 import io.github.yzernik.squeakand.SqueakDao;
 import io.github.yzernik.squeakand.SqueakEntry;
+import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakRoomDatabase;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeaklib.core.Squeak;
@@ -117,6 +119,14 @@ public class SqueaksController {
             // Mark the squeak as verified
             markAsVerified(squeak, block);
         });
+    }
+
+    public List<SqueakEntry> fetchSqueaksByAddress(String address) {
+        return mSqueakDao.fetchSqueaksByAddress(address);
+    }
+
+    public SqueakEntryWithProfile fetchSqueakWithProfileByHash(Sha256Hash squeakHash) {
+        return mSqueakDao.fetchSqueakWithProfileByHash(squeakHash);
     }
 
 }

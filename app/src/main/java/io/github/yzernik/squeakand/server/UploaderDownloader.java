@@ -11,6 +11,7 @@ import java.util.Set;
 import io.github.yzernik.squeakand.SqueakDao;
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.client.SqueakRPCClient;
+import io.github.yzernik.squeakand.squeaks.SqueaksController;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 public class UploaderDownloader {
@@ -19,12 +20,12 @@ public class UploaderDownloader {
     private static final int DEFAULT_MAX_BLOCK = 1000000000;
 
     private final SqueakServerAddress serverAddress;
-    private final SqueakDao squeakDao;
+    private final SqueaksController squeaksController;
     private final SqueakRPCClient client;
 
-    public UploaderDownloader(SqueakServerAddress serverAddress, SqueakDao squeakDao) {
+    public UploaderDownloader(SqueakServerAddress serverAddress, SqueaksController squeaksController) {
         this.serverAddress = serverAddress;
-        this.squeakDao = squeakDao;
+        this.squeaksController = squeaksController;
         client = new SqueakRPCClient(serverAddress.getHost(), serverAddress.getPort());
     }
 
@@ -51,7 +52,7 @@ public class UploaderDownloader {
         localHashes.removeAll(remoteHashes);
         Log.i(getClass().getName(), "Uploading number of squeaks: " + localHashes.size());
         for (Sha256Hash hash: localHashes) {
-            Squeak squeak = squeakDao.fetchSqueakWithProfileByHash(hash).squeakEntry.getSqueak();
+            Squeak squeak = squeaksController.fetchSqueakWithProfileByHash(hash).squeakEntry.getSqueak();
             upload(squeak);
         }
     }
@@ -70,7 +71,7 @@ public class UploaderDownloader {
         Log.i(getClass().getName(), "Downloading number of squeaks: " + remoteHashes.size());
         for (Sha256Hash hash: remoteHashes) {
             Squeak squeak = download(hash);
-            squeakDao.insert(new SqueakEntry(squeak));
+            squeaksController.save(squeak);
         }
     }
 
@@ -84,7 +85,7 @@ public class UploaderDownloader {
         Set<Sha256Hash> localHashes = new HashSet<>();
         for (String address: uploadAddresses) {
             // TODO: include block range in DAO method.
-            List<SqueakEntry> squeakEntries = squeakDao.fetchSqueaksByAddress(address);
+            List<SqueakEntry> squeakEntries = squeaksController.fetchSqueaksByAddress(address);
             for (SqueakEntry squeakEntry: squeakEntries) {
                 localHashes.add(squeakEntry.hash);
             }
