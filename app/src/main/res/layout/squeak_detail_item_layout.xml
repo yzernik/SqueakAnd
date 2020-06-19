@@ -35,7 +35,20 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:ellipsize="end" />
+                    android:ellipsize="end"
+                    app:layout_constraintHorizontal_bias="0.0"/>
+
+                <TextView
+                    android:id="@+id/squeak_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
+                    app:layout_constraintStart_toEndOf="@+id/squeak_item_address"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/black" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -45,19 +58,9 @@
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/squeak_address_box"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/squeak_address_box"
                 app:layout_constraintHorizontal_bias="0.0">
-
-                <TextView
-                    android:id="@+id/squeak_author"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginRight="8dp"
-                    android:textAllCaps="true"
-                    android:textColor="@android:color/black" />
 
                 <TextView
                     android:id="@+id/squeak_text"
@@ -67,8 +70,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginRight="8dp"
-                    android:ellipsize="end"
-                    android:maxLines="1" />
+ />
 
                 <TextView
                     android:id="@+id/squeak_block"

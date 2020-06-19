@@ -6,6 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.notifications.NotificationsFragment">
 
-    <include layout="@layout/squeak_item_layout" />
+    <include layout="@layout/squeak_detail_item_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
