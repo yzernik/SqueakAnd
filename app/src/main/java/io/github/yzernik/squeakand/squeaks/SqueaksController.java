@@ -105,4 +105,18 @@ public class SqueaksController {
         verificationQueue.addSqueakToVerify(squeak);
     }
 
+    public void saveWithBlock(Squeak squeak, Block block) {
+        // Validate the squeak
+        squeak.verify();
+
+        // Insert the squeak in the database.
+        SqueakEntry squeakEntry = new SqueakEntry(squeak);
+        SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
+            // Insert the squeak
+            mSqueakDao.insert(squeakEntry);
+            // Mark the squeak as verified
+            markAsVerified(squeak, block);
+        });
+    }
+
 }

@@ -26,6 +26,7 @@ import io.github.yzernik.squeakand.ElectrumActivity;
 import io.github.yzernik.squeakand.ManageProfilesActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeakand.ViewSqueakActivity;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.ServerUpdate;
 import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
@@ -205,6 +206,11 @@ public class CreateSqueakFragment extends Fragment {
         startActivity(intent);
     }
 
+    public void startViewSqueak(Squeak squeak) {
+        Intent intent = new Intent(getActivity(), ViewSqueakActivity.class).putExtra("squeak_hash", squeak.getHash().toString());
+        startActivity(intent);
+    }
+
     private void createSqueak(CreateSqueakParams createSqueakParams, String squeakText) {
         if (TextUtils.isEmpty(squeakText)) {
             showEmptyTextAlert();
@@ -238,7 +244,7 @@ public class CreateSqueakFragment extends Fragment {
                     System.currentTimeMillis() / 1000,
                     createSqueakParams.getReplyToHash()
             );
-            createSqueakModel.insertSqueak(squeak);
+            createSqueakModel.insertSqueak(squeak, blockTip.getBlock());
             Log.i(getTag(), "Created and inserted squeak: " + squeak);
             Log.i(getTag(), "Created squeak with content: " + squeak.getDecryptedContentStr());
 
@@ -246,7 +252,9 @@ public class CreateSqueakFragment extends Fragment {
             createSqueakModel.uploadSqueak(squeak);
             Log.i(getTag(), "Enqueued squeak to upload.");
 
+            // Finish the current activity and start the view squeak activity.
             getActivity().finish();
+            startViewSqueak(squeak);
         } catch (Exception e) {
             Log.e(getTag(), "Unable to create squeak: " + e);
         }

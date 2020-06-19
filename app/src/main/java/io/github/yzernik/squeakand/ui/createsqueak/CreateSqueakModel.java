@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
@@ -101,8 +102,8 @@ public class CreateSqueakModel extends AndroidViewModel {
         });
     }
 
-    void insertSqueak(Squeak squeak) {
-        mSqueakRepository.insert(squeak);
+    void insertSqueak(Squeak squeak, Block block) {
+        mSqueakRepository.insertWithBlock(squeak, block);
     }
 
     void uploadSqueak(Squeak squeak) {

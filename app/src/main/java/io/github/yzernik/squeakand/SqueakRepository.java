@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
@@ -79,6 +80,10 @@ public class SqueakRepository {
 
     public void insert(Squeak squeak) {
         squeaksController.save(squeak);
+    }
+
+    public void insertWithBlock(Squeak squeak, Block block) {
+        squeaksController.saveWithBlock(squeak, block);
     }
 
 }
