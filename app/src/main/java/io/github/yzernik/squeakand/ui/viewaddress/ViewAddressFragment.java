@@ -32,6 +32,7 @@ import io.github.yzernik.squeakand.ViewSqueakActivity;
 public class ViewAddressFragment extends Fragment implements SqueakListAdapter.ClickListener {
 
     private TextView addressTextView;
+    private TextView profileNameTextView;
     private FrameLayout missingProfileBanner;
     private FrameLayout presentProfileBanner;
 
@@ -53,6 +54,7 @@ public class ViewAddressFragment extends Fragment implements SqueakListAdapter.C
         addressTextView = root.findViewById(R.id.address_string_text);
         missingProfileBanner = root.findViewById(R.id.address_profile_missing_layout);
         presentProfileBanner = root.findViewById(R.id.address_profile_present_layout);
+        profileNameTextView = root.findViewById(R.id.address_profile_name_text);
 
         viewAddressModel = new ViewModelProvider(getActivity()).get(ViewAddressModel.class);
 
@@ -76,6 +78,7 @@ public class ViewAddressFragment extends Fragment implements SqueakListAdapter.C
                     missingProfileBanner.setVisibility(View.VISIBLE);
                 } else {
                     presentProfileBanner.setVisibility(View.VISIBLE);
+                    profileNameTextView.setText(profile.getName());
                 }
 
             }
