@@ -28,6 +28,7 @@ public class ViewProfileFragment extends Fragment {
 
     private TextView mProfileNameText;
     private TextView mProfileAddressText;
+    private Switch mSharingSwitch;
     private Switch mFollowingSwitch;
     private Button mExportProfileButton;
     private Button mRenameProfileButton;
@@ -43,6 +44,7 @@ public class ViewProfileFragment extends Fragment {
 
         mProfileNameText = root.findViewById(R.id.view_profile_show_name);
         mProfileAddressText = root.findViewById(R.id.view_profile_show_address);
+        mSharingSwitch = root.findViewById(R.id.view_profile_sharing_switch);
         mFollowingSwitch = root.findViewById(R.id.view_profile_following_switch);
         mExportProfileButton = root.findViewById(R.id.view_profile_export_button);
         mRenameProfileButton = root.findViewById(R.id.view_profile_rename_button);
@@ -60,6 +62,18 @@ public class ViewProfileFragment extends Fragment {
                 mProfileNameText.setText(squeakProfile.getName());
                 mProfileAddressText.setText(squeakProfile.getAddress());
 
+                // Set up the sharing switch
+                mSharingSwitch.setChecked(squeakProfile.uploadEnabled);
+                mSharingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        squeakProfile.uploadEnabled = isChecked;
+                        Log.i(getTag(), "New profile class: " + squeakProfile);
+                        viewProfileModel.updateProfile(squeakProfile);
+                    }
+                });
+
+                // Set up the following switch
                 mFollowingSwitch.setChecked(squeakProfile.downloadEnabled);
                 mFollowingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
