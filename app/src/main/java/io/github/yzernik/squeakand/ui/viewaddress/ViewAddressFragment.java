@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -16,7 +17,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.bitcoinj.core.Sha256Hash;
 
@@ -26,13 +26,14 @@ import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
 import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.ViewAddressActivity;
+import io.github.yzernik.squeakand.ViewProfileActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
 
 public class ViewAddressFragment extends Fragment implements SqueakListAdapter.ClickListener {
 
     private TextView addressTextView;
     private TextView profileNameTextView;
+    private Button editProfileButton;
     private FrameLayout missingProfileBanner;
     private FrameLayout presentProfileBanner;
 
@@ -55,6 +56,7 @@ public class ViewAddressFragment extends Fragment implements SqueakListAdapter.C
         missingProfileBanner = root.findViewById(R.id.address_profile_missing_layout);
         presentProfileBanner = root.findViewById(R.id.address_profile_present_layout);
         profileNameTextView = root.findViewById(R.id.address_profile_name_text);
+        editProfileButton = root.findViewById(R.id.address_edit_profile_button);
 
         viewAddressModel = new ViewModelProvider(getActivity()).get(ViewAddressModel.class);
 
@@ -79,6 +81,12 @@ public class ViewAddressFragment extends Fragment implements SqueakListAdapter.C
                 } else {
                     presentProfileBanner.setVisibility(View.VISIBLE);
                     profileNameTextView.setText(profile.getName());
+                    editProfileButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(getActivity(), ViewProfileActivity.class).putExtra("profile_id", profile.getProfileId()));
+                        }
+                    });
                 }
 
             }

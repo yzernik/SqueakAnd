@@ -81,6 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Export private key"
+                android:visibility="gone"
                 android:layout_gravity="left|center_vertical"/>
 
         </FrameLayout>
