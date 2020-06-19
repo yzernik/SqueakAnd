@@ -1,9 +1,11 @@
 package io.github.yzernik.squeakand;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -17,27 +19,40 @@ import java.util.List;
 public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.SqueakViewHolder> {
 
     class SqueakViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtSqueakBlockNumber;
+        public TextView txtSqueakAddress;
         public TextView txtSqueakHash;
         public TextView txtSqueakText;
         public TextView txtSqueakAuthor;
         public CardView squeakCardView;
+        public LinearLayout squeakAddressBox;
 
         public SqueakViewHolder(View view) {
             super(view);
 
-            txtSqueakBlockNumber = view.findViewById(R.id.squeak_block_number);
+            txtSqueakAddress = view.findViewById(R.id.squeak_item_address);
             txtSqueakHash = view.findViewById(R.id.squeak_hash);
             txtSqueakText = view.findViewById(R.id.squeak_text);
             txtSqueakAuthor = view.findViewById(R.id.squeak_author);
             squeakCardView = view.findViewById(R.id.squeakCardView);
+            squeakAddressBox = view.findViewById(R.id.squeak_address_box);
 
             squeakCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.i(getClass().getName(), "Handling click on squeak.");
                     clickListener.handleItemClick(mSqueaks.get(getAdapterPosition()).squeakEntry.hash);
                 }
             });
+
+            txtSqueakAddress.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(getClass().getName(), "Handling click on squeak address.");
+                    clickListener.handleItemAddressClick(mSqueaks.get(getAdapterPosition()).squeakEntry.authorAddress);
+                }
+            });
+
+
         }
     }
 
@@ -63,6 +78,7 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
             holder.txtSqueakHash.setText(getAuthorDisplay(currentEntry));
             holder.txtSqueakText.setText(currentEntry.squeakEntry.getDecryptedContentStr());
             holder.txtSqueakAuthor.setText(getBlockDisplay(currentEntry));
+            holder.txtSqueakAddress.setText(currentEntry.squeakEntry.authorAddress);
         } else {
             // Covers the case of data not being ready yet.
             holder.txtSqueakHash.setText("No squeak");
@@ -102,6 +118,7 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
 
     public interface ClickListener {
         void handleItemClick(Sha256Hash hash);
+        void handleItemAddressClick(String address);
     }
 }
 

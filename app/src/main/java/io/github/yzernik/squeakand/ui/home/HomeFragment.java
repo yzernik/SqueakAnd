@@ -29,6 +29,7 @@ import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
+import io.github.yzernik.squeakand.ViewAddressActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
 import io.github.yzernik.squeakand.server.SqueakServerAsyncClient;
 
@@ -100,8 +101,13 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
 
     @Override
     public void handleItemClick(Sha256Hash hash) {
-        // TODO: Go to the squeak view activity for the hash
         startActivity(new Intent(getActivity(), ViewSqueakActivity.class).putExtra("squeak_hash", hash.toString()));
+    }
+
+    @Override
+    public void handleItemAddressClick(String address) {
+        // TODO: Go to the squeak address view activity for the hash
+        startActivity(new Intent(getActivity(), ViewAddressActivity.class).putExtra("squeak_address", address));
     }
 
     @Override
