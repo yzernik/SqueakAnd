@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider;
 import org.bitcoinj.core.Sha256Hash;
 
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 
 public class ViewSqueakFragment extends Fragment {
@@ -44,9 +43,9 @@ public class ViewSqueakFragment extends Fragment {
         todoViewModel = new ViewModelProvider(this).get(ViewSqueakModel.class);
 
         txtSqueakAddress = root.findViewById(R.id.squeak_item_address);
-        txtSqueakHash = root.findViewById(R.id.squeak_hash);
+        txtSqueakHash = root.findViewById(R.id.squeak_author);
         txtSqueakText = root.findViewById(R.id.squeak_text);
-        txtSqueakAuthor = root.findViewById(R.id.squeak_author);
+        txtSqueakAuthor = root.findViewById(R.id.squeak_block);
 
         todoViewModel.getSingleTodo(squeakHash).observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
             @Override

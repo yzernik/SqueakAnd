@@ -20,9 +20,9 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
 
     class SqueakViewHolder extends RecyclerView.ViewHolder {
         public TextView txtSqueakAddress;
-        public TextView txtSqueakHash;
-        public TextView txtSqueakText;
         public TextView txtSqueakAuthor;
+        public TextView txtSqueakText;
+        public TextView txtSqueakBlock;
         public CardView squeakCardView;
         public LinearLayout squeakAddressBox;
 
@@ -30,9 +30,9 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
             super(view);
 
             txtSqueakAddress = view.findViewById(R.id.squeak_item_address);
-            txtSqueakHash = view.findViewById(R.id.squeak_hash);
-            txtSqueakText = view.findViewById(R.id.squeak_text);
             txtSqueakAuthor = view.findViewById(R.id.squeak_author);
+            txtSqueakText = view.findViewById(R.id.squeak_text);
+            txtSqueakBlock = view.findViewById(R.id.squeak_block);
             squeakCardView = view.findViewById(R.id.squeakCardView);
             squeakAddressBox = view.findViewById(R.id.squeak_address_box);
 
@@ -75,13 +75,13 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
     public void onBindViewHolder(SqueakViewHolder holder, int position) {
         if (mSqueaks != null) {
             SqueakEntryWithProfile currentEntry = mSqueaks.get(position);
-            holder.txtSqueakHash.setText(getAuthorDisplay(currentEntry));
+            holder.txtSqueakAuthor.setText(getAuthorDisplay(currentEntry));
             holder.txtSqueakText.setText(currentEntry.squeakEntry.getDecryptedContentStr());
-            holder.txtSqueakAuthor.setText(getBlockDisplay(currentEntry));
+            holder.txtSqueakBlock.setText(getBlockDisplay(currentEntry));
             holder.txtSqueakAddress.setText(currentEntry.squeakEntry.authorAddress);
         } else {
             // Covers the case of data not being ready yet.
-            holder.txtSqueakHash.setText("No squeak");
+            holder.txtSqueakAuthor.setText("No squeak");
         }
     }
 
