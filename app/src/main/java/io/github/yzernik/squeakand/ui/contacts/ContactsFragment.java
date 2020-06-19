@@ -22,6 +22,7 @@ import io.github.yzernik.squeakand.NewContactActivity;
 import io.github.yzernik.squeakand.ProfileListAdapter;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeakand.ViewAddressActivity;
 import io.github.yzernik.squeakand.ViewProfileActivity;
 
 public class ContactsFragment extends Fragment implements ProfileListAdapter.ClickListener {
@@ -64,10 +65,10 @@ public class ContactsFragment extends Fragment implements ProfileListAdapter.Cli
     }
 
     @Override
-    public void handleItemClick(int id) {
+    public void handleItemClick(SqueakProfile profile) {
         // TODO: go to profile activity
-        Log.i(getTag(), "Clicked on contact profile id: " + id);
-        startActivity(new Intent(getActivity(), ViewProfileActivity.class).putExtra("profile_id", id));
+        Log.i(getTag(), "Clicked on contact profile id: " + profile.getProfileId());
+        startActivity(new Intent(getActivity(), ViewAddressActivity.class).putExtra("squeak_address", profile.getAddress()));
     }
 
 }

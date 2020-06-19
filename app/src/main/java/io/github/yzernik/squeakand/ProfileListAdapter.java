@@ -28,7 +28,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clickListener.handleItemClick(mProfiles.get(getAdapterPosition()).getProfileId());
+                    clickListener.handleItemClick(mProfiles.get(getAdapterPosition()));
                 }
             });
         }
@@ -78,7 +78,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
 
 
     public interface ClickListener {
-        void handleItemClick(int id);
+        void handleItemClick(SqueakProfile profile);
     }
 
 }
