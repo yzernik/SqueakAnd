@@ -31,7 +31,7 @@ public class ViewSqueakFragment extends Fragment {
     private TextView txtSqueakText;
     private TextView txtSqueakBlock;
     private CardView squeakCardView;
-    private LinearLayout squeakAddressBox;
+    private View squeakAddressBox;
 
     // private EditText mEditTodoView;
     private ViewSqueakModel todoViewModel;

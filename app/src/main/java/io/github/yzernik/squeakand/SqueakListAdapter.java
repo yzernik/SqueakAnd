@@ -24,7 +24,7 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
         public TextView txtSqueakText;
         public TextView txtSqueakBlock;
         public CardView squeakCardView;
-        public LinearLayout squeakAddressBox;
+        public View squeakAddressBox;
 
         public SqueakViewHolder(View view) {
             super(view);
