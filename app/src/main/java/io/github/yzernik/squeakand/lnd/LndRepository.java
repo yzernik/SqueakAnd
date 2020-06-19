@@ -39,31 +39,34 @@ public class LndRepository {
     public void initialize() {
         Log.i(getClass().getName(), "LndRepository: Calling initialize ...");
 
-        // TODO: don't delete lnd dir on startup
-        // lndController.rmLndDir();
+        // Initialize everything in the background thread.
+        new Thread( new Runnable() { @Override public void run() {
 
-        // Start the lnd node
-        try {
-            String startResult = lndController.start();
-            Log.i(getClass().getName(), "Started node with result: " + startResult);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-            Log.i(getClass().getName(), "Failed to start lnd node.");
-        }
+            // Start the lnd node
+            try {
+                String startResult = lndController.start();
+                Log.i(getClass().getName(), "Started node with result: " + startResult);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                e.printStackTrace();
+                Log.i(getClass().getName(), "Failed to start lnd node.");
+                System.exit(1);
+            }
 
-        // Unlock the existing wallet
-        try {
-            Walletunlocker.UnlockWalletResponse unlockResult = lndController.unlockWallet();
-            Log.i(getClass().getName(), "Unlocked wallet with result: " + unlockResult);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-            Log.i(getClass().getName(), "Failed to unlock wallet.");
-            System.exit(1);
-        }
+            // Unlock the existing wallet
+            try {
+                Walletunlocker.UnlockWalletResponse unlockResult = lndController.unlockWallet();
+                Log.i(getClass().getName(), "Unlocked wallet with result: " + unlockResult);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                e.printStackTrace();
+                Log.i(getClass().getName(), "Failed to unlock wallet.");
+                System.exit(1);
+            }
 
-        /*
-        // Initialize a new wallet
-        lndController.initWallet();*/
+            /*
+            // Initialize a new wallet
+            lndController.initWallet();*/
+
+        }}).start();
     }
 
     public LiveData<Rpc.GetInfoResponse> getInfo() {

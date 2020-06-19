@@ -69,6 +69,33 @@ public class LndClient {
         public void onResponse2();
     }
 
+    public void stop(StopCallBack callBack) {
+        Rpc.StopRequest request = Rpc.StopRequest.newBuilder().build();
+        Lndmobile.stopDaemon(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from stopDaemon callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                try {
+                    Rpc.StopResponse resp = Rpc.StopResponse.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got stopDaemon response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface StopCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.StopResponse response);
+    }
+
     public void initWallet(String password, List<String> seedWords, InitWalletCallBack callBack) {
         ByteString pw = ByteString.copyFromUtf8(password);
         Walletunlocker.InitWalletRequest request = Walletunlocker.InitWalletRequest.newBuilder()

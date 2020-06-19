@@ -22,6 +22,7 @@ import lnrpc.Walletunlocker;
 public class LndController {
 
     private static final long START_TIMEOUT_S = 10;
+    private static final long STOP_TIMEOUT_S = 30;
     private static final long UNLOCK_TIMEOUT_S = 10;
 
 
@@ -54,6 +55,14 @@ public class LndController {
     public String start() throws InterruptedException, ExecutionException, TimeoutException {
         Future<String> startResultFuture = StartWalletTask.startWallet(lndClient, lndDir, network);
         return startResultFuture.get(START_TIMEOUT_S, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Start the lnd node.
+     */
+    public Rpc.StopResponse stop() throws InterruptedException, ExecutionException, TimeoutException {
+        Future<Rpc.StopResponse> stopResultFuture = StopDaemonTask.stopDaemon(lndClient);
+        return stopResultFuture.get(STOP_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
     public void genSeed() {
@@ -108,7 +117,7 @@ public class LndController {
 
     public Walletunlocker.UnlockWalletResponse unlockWallet() throws InterruptedException, ExecutionException, TimeoutException {
         Future<Walletunlocker.UnlockWalletResponse> unlockResultFuture = UnlockWalletTask.unlockWallet(lndClient, password);
-        return unlockResultFuture.get(START_TIMEOUT_S, TimeUnit.SECONDS);
+        return unlockResultFuture.get(UNLOCK_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
     public void rmLndDir() {
