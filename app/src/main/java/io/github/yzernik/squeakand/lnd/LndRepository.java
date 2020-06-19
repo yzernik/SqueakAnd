@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
@@ -52,19 +53,39 @@ public class LndRepository {
                 System.exit(1);
             }
 
+            // Unlock the wallet
+            boolean walletUnlocked = false;
+
             // Unlock the existing wallet
             try {
                 Walletunlocker.UnlockWalletResponse unlockResult = lndController.unlockWallet();
                 Log.i(getClass().getName(), "Unlocked wallet with result: " + unlockResult);
+                walletUnlocked = true;
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 e.printStackTrace();
                 Log.i(getClass().getName(), "Failed to unlock wallet.");
+                // System.exit(1);
+            }
+
+            if (walletUnlocked) {
+                return;
+            }
+
+            // Create a new wallet
+            try {
+                String[] seedWords = lndController.genSeed();
+                Walletunlocker.InitWalletResponse initWalletResult = lndController.initWallet(seedWords);
+                Log.i(getClass().getName(), "Initialized wallet with result: " + initWalletResult);
+                walletUnlocked = true;
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                e.printStackTrace();
+                Log.i(getClass().getName(), "Failed to initialize wallet.");
+            }
+
+            if (!walletUnlocked) {
                 System.exit(1);
             }
 
-            /*
-            // Initialize a new wallet
-            lndController.initWallet();*/
 
         }}).start();
     }

@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -22,8 +23,10 @@ import lnrpc.Walletunlocker;
 public class LndController {
 
     private static final long START_TIMEOUT_S = 10;
-    private static final long STOP_TIMEOUT_S = 30;
+    private static final long STOP_TIMEOUT_S = 10;
     private static final long UNLOCK_TIMEOUT_S = 10;
+    private static final long GEN_SEED_TIMEOUT_S = 10;
+    private static final long INIT_WALLET_TIMEOUT_S = 10;
 
 
     private static final String LND_DIR_RELATIVE_PATH = "/.lnd";
@@ -65,6 +68,7 @@ public class LndController {
         return stopResultFuture.get(STOP_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
+    /*
     public void genSeed() {
         lndClient.genSeed(new LndClient.GenSeedCallBack() {
             @Override
@@ -80,7 +84,7 @@ public class LndController {
                 preferences.saveWalletSeed(seedWords);
             }
         });
-    }
+    }*/
 
     /**
      * Initialize the wallet using a new generated seed.
@@ -118,6 +122,31 @@ public class LndController {
     public Walletunlocker.UnlockWalletResponse unlockWallet() throws InterruptedException, ExecutionException, TimeoutException {
         Future<Walletunlocker.UnlockWalletResponse> unlockResultFuture = UnlockWalletTask.unlockWallet(lndClient, password);
         return unlockResultFuture.get(UNLOCK_TIMEOUT_S, TimeUnit.SECONDS);
+    }
+
+    public String[] genSeed() throws InterruptedException, ExecutionException, TimeoutException {
+        Future<Walletunlocker.GenSeedResponse> genSeedResultFuture = GenSeedTask.genSeed(lndClient);
+        Walletunlocker.GenSeedResponse response = genSeedResultFuture.get(GEN_SEED_TIMEOUT_S, TimeUnit.SECONDS);
+        List<String> seedWordsList = response.getCipherSeedMnemonicList();
+        String[] seedWords = new String[seedWordsList.size()];
+        seedWordsList.toArray(seedWords);
+        return seedWords;
+
+        // TODO: Only save the seed words after completing initWallet.
+
+        /*        List<String> seedWordsList = response.getCipherSeedMnemonicList();
+        String[] seedWords = new String[seedWordsList.size()];
+        seedWordsList.toArray(seedWords);
+        preferences.saveWalletSeed(seedWords);*/
+    }
+
+    public Walletunlocker.InitWalletResponse initWallet(String[] seedWords) throws InterruptedException, ExecutionException, TimeoutException {
+        List<String> seedWordsList = Arrays.asList(seedWords);
+        Future<Walletunlocker.InitWalletResponse> initWalletResultFuture = InitWalletTask.initWallet(lndClient, password, seedWordsList);
+        Walletunlocker.InitWalletResponse response = initWalletResultFuture.get(INIT_WALLET_TIMEOUT_S, TimeUnit.SECONDS);
+        // Save the seed words after completing initWallet.
+        preferences.saveWalletSeed(seedWords);
+        return response;
     }
 
     public void rmLndDir() {
