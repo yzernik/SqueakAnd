@@ -9,13 +9,24 @@ import androidx.lifecycle.MutableLiveData;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import io.github.yzernik.squeakand.preferences.Preferences;
 import lnrpc.Rpc;
 import lnrpc.Walletunlocker;
 
 public class LndController {
+
+    private static final long START_TIMEOUT_S = 10;
+    private static final long STOP_TIMEOUT_S = 10;
+    private static final long UNLOCK_TIMEOUT_S = 10;
+    private static final long GEN_SEED_TIMEOUT_S = 10;
+    private static final long INIT_WALLET_TIMEOUT_S = 10;
 
 
     private static final String LND_DIR_RELATIVE_PATH = "/.lnd";
@@ -44,10 +55,20 @@ public class LndController {
     /**
      * Start the lnd node.
      */
-    public void start() {
-        lndClient.start(lndDir, network);
+    public String start() throws InterruptedException, ExecutionException, TimeoutException {
+        Future<String> startResultFuture = StartWalletTask.startWallet(lndClient, lndDir, network);
+        return startResultFuture.get(START_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
+    /**
+     * Start the lnd node.
+     */
+    public Rpc.StopResponse stop() throws InterruptedException, ExecutionException, TimeoutException {
+        Future<Rpc.StopResponse> stopResultFuture = StopDaemonTask.stopDaemon(lndClient);
+        return stopResultFuture.get(STOP_TIMEOUT_S, TimeUnit.SECONDS);
+    }
+
+    /*
     public void genSeed() {
         lndClient.genSeed(new LndClient.GenSeedCallBack() {
             @Override
@@ -63,7 +84,7 @@ public class LndController {
                 preferences.saveWalletSeed(seedWords);
             }
         });
-    }
+    }*/
 
     /**
      * Initialize the wallet using a new generated seed.
@@ -98,18 +119,34 @@ public class LndController {
         });
     }
 
-    public void unlockWallet() {
-        lndClient.unlockWallet(password, new LndClient.UnlockWalletCallBack() {
-            @Override
-            public void onError(Exception e) {
-                Log.e(getClass().getName(), "Error calling unlockWallet: " + e);
-            }
+    public Walletunlocker.UnlockWalletResponse unlockWallet() throws InterruptedException, ExecutionException, TimeoutException {
+        Future<Walletunlocker.UnlockWalletResponse> unlockResultFuture = UnlockWalletTask.unlockWallet(lndClient, password);
+        return unlockResultFuture.get(UNLOCK_TIMEOUT_S, TimeUnit.SECONDS);
+    }
 
-            @Override
-            public void onResponse(Walletunlocker.UnlockWalletResponse response) {
-                Log.i(getClass().getName(), "Got initWallet response.");
-            }
-        });
+    public String[] genSeed() throws InterruptedException, ExecutionException, TimeoutException {
+        Future<Walletunlocker.GenSeedResponse> genSeedResultFuture = GenSeedTask.genSeed(lndClient);
+        Walletunlocker.GenSeedResponse response = genSeedResultFuture.get(GEN_SEED_TIMEOUT_S, TimeUnit.SECONDS);
+        List<String> seedWordsList = response.getCipherSeedMnemonicList();
+        String[] seedWords = new String[seedWordsList.size()];
+        seedWordsList.toArray(seedWords);
+        return seedWords;
+
+        // TODO: Only save the seed words after completing initWallet.
+
+        /*        List<String> seedWordsList = response.getCipherSeedMnemonicList();
+        String[] seedWords = new String[seedWordsList.size()];
+        seedWordsList.toArray(seedWords);
+        preferences.saveWalletSeed(seedWords);*/
+    }
+
+    public Walletunlocker.InitWalletResponse initWallet(String[] seedWords) throws InterruptedException, ExecutionException, TimeoutException {
+        List<String> seedWordsList = Arrays.asList(seedWords);
+        Future<Walletunlocker.InitWalletResponse> initWalletResultFuture = InitWalletTask.initWallet(lndClient, password, seedWordsList);
+        Walletunlocker.InitWalletResponse response = initWalletResultFuture.get(INIT_WALLET_TIMEOUT_S, TimeUnit.SECONDS);
+        // Save the seed words after completing initWallet.
+        preferences.saveWalletSeed(seedWords);
+        return response;
     }
 
     public void rmLndDir() {

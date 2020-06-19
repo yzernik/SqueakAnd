@@ -24,7 +24,7 @@ public class LndClient {
         this.executorService = Executors.newCachedThreadPool();
     }
 
-    public void start(String lndDirPath, String network) {
+    public void start(String lndDirPath, String network, StartCallBack callBack) {
         String startString = String.format(
                 "--bitcoin.active --bitcoin.node=neutrino --bitcoin.%s --no-macaroons --lnddir=%s",
                 network,
@@ -38,24 +38,62 @@ public class LndClient {
                     @Override
                     public void onError(Exception e) {
                         Log.e(getClass().getName(), "Error from callback1: " + e);
+                        callBack.onError1(e);
                     }
 
                     @Override
                     public void onResponse(byte[] bytes) {
                         Log.i(getClass().getName(), "Response from callback1: " + bytes);
+                        callBack.onResponse1();
                     }
                 },
                 new Callback() {
                     @Override
                     public void onError(Exception e) {
                         Log.e(getClass().getName(), "Error from callback1: " + e);
+                        callBack.onError2(e);
                     }
 
                     @Override
                     public void onResponse(byte[] bytes) {
                         Log.i(getClass().getName(), "Response from callback2: " + bytes);
+                        callBack.onResponse2();
                     }
                 });
+    }
+
+    public interface StartCallBack {
+        public void onError1(Exception e);
+        public void onResponse1();
+        public void onError2(Exception e);
+        public void onResponse2();
+    }
+
+    public void stop(StopCallBack callBack) {
+        Rpc.StopRequest request = Rpc.StopRequest.newBuilder().build();
+        Lndmobile.stopDaemon(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from stopDaemon callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                try {
+                    Rpc.StopResponse resp = Rpc.StopResponse.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got stopDaemon response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface StopCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.StopResponse response);
     }
 
     public void initWallet(String password, List<String> seedWords, InitWalletCallBack callBack) {

@@ -5,7 +5,13 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
+
 import lnrpc.Rpc;
+import lnrpc.Walletunlocker;
 
 public class LndRepository {
 
@@ -34,31 +40,54 @@ public class LndRepository {
     public void initialize() {
         Log.i(getClass().getName(), "LndRepository: Calling initialize ...");
 
-        // TODO: don't delete lnd dir on startup
-        // lndController.rmLndDir();
+        // Initialize everything in the background thread.
+        new Thread( new Runnable() { @Override public void run() {
 
-        // Start the lnd node
-        lndController.start();
+            // Start the lnd node
+            try {
+                String startResult = lndController.start();
+                Log.i(getClass().getName(), "Started node with result: " + startResult);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                e.printStackTrace();
+                Log.i(getClass().getName(), "Failed to start lnd node.");
+                System.exit(1);
+            }
 
-        // Wait a few seconds for lnd to start
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            // Unlock the wallet
+            boolean walletUnlocked = false;
 
-        // Unlock the existing wallet
-        lndController.unlockWallet();
+            // Unlock the existing wallet
+            try {
+                Walletunlocker.UnlockWalletResponse unlockResult = lndController.unlockWallet();
+                Log.i(getClass().getName(), "Unlocked wallet with result: " + unlockResult);
+                walletUnlocked = true;
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                e.printStackTrace();
+                Log.i(getClass().getName(), "Failed to unlock wallet.");
+                // System.exit(1);
+            }
 
-        // Wait a few seconds
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            if (walletUnlocked) {
+                return;
+            }
 
-        // Initialize a new wallet
-        lndController.initWallet();
+            // Create a new wallet
+            try {
+                String[] seedWords = lndController.genSeed();
+                Walletunlocker.InitWalletResponse initWalletResult = lndController.initWallet(seedWords);
+                Log.i(getClass().getName(), "Initialized wallet with result: " + initWalletResult);
+                walletUnlocked = true;
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                e.printStackTrace();
+                Log.i(getClass().getName(), "Failed to initialize wallet.");
+            }
+
+            if (!walletUnlocked) {
+                System.exit(1);
+            }
+
+
+        }}).start();
     }
 
     public LiveData<Rpc.GetInfoResponse> getInfo() {
