@@ -106,7 +106,6 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
 
     @Override
     public void handleItemAddressClick(String address) {
-        // TODO: Go to the squeak address view activity for the hash
         startActivity(new Intent(getActivity(), ViewAddressActivity.class).putExtra("squeak_address", address));
     }
 
