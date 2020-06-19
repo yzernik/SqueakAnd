@@ -1,5 +1,6 @@
 package io.github.yzernik.squeakand.ui.viewsqueak;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,8 @@ import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.TimeUtil;
+import io.github.yzernik.squeakand.ViewAddressActivity;
+import io.github.yzernik.squeakand.ViewProfileActivity;
 
 public class ViewSqueakFragment extends Fragment {
 
@@ -80,6 +83,13 @@ public class ViewSqueakFragment extends Fragment {
                 txtSqueakText.setText(squeakEntryWithProfile.squeakEntry.getDecryptedContentStr());
                 txtSqueakBlock.setText(getBlockDisplay(squeakEntryWithProfile));
                 txtSqueakAddress.setText(squeakEntryWithProfile.squeakEntry.authorAddress);
+
+                squeakAddressBox.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(getActivity(), ViewAddressActivity.class).putExtra("squeak_address", squeakEntryWithProfile.squeakEntry.authorAddress));
+                    }
+                });
             }
         });
 
