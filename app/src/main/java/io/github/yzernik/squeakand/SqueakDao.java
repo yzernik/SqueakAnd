@@ -43,8 +43,8 @@ public interface SqueakDao {
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE hash = :squeakHash")
     SqueakEntry fetchSqueakByHash(Sha256Hash squeakHash);
 
-    @Query(fetchSqueaksByAddressQuery)
-    LiveData<List<SqueakEntry>> fetchLiveSqueaksByAddress(String address);
+    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " LEFT JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" + " WHERE squeak.authorAddress = :address AND squeak.block IS NOT NULL" + " ORDER BY blockHeight DESC, time DESC, decryptedContentStr DESC")
+    LiveData<List<SqueakEntryWithProfile>> fetchLiveSqueaksByAddress(String address);
 
     @Query(fetchSqueaksByAddressQuery)
     List<SqueakEntry> fetchSqueaksByAddress(String address);

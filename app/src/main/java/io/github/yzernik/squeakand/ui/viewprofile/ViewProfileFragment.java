@@ -70,13 +70,16 @@ public class ViewProfileFragment extends Fragment {
                     }
                 });
 
-                // Setup the rename button.
-                mExportProfileButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showExportAlertDialog(inflater, squeakProfile);
-                    }
-                });
+                // Setup the export button.
+                if (squeakProfile.isSigningProfile()) {
+                    mExportProfileButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showExportAlertDialog(inflater, squeakProfile);
+                        }
+                    });
+                    mExportProfileButton.setVisibility(View.VISIBLE);
+                }
 
                 // Setup the rename button.
                 mRenameProfileButton.setOnClickListener(new View.OnClickListener() {

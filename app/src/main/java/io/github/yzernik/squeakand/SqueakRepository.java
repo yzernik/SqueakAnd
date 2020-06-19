@@ -73,6 +73,10 @@ public class SqueakRepository {
         return  mSqueakDao.fetchLiveSqueakByHash(hash);
     }
 
+    public LiveData<List<SqueakEntryWithProfile>> getSqueaksByAuthor(String address) {
+        return mSqueakDao.fetchLiveSqueaksByAddress(address);
+    }
+
     public void insert(Squeak squeak) {
         squeaksController.save(squeak);
     }

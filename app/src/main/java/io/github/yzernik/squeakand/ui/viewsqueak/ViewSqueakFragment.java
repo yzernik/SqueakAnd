@@ -21,7 +21,7 @@ import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 
 public class ViewSqueakFragment extends Fragment {
 
-    TextView txtSqueakBlockNumber;
+    TextView txtSqueakAddress;
     TextView txtSqueakHash;
     TextView txtSqueakText;
     TextView txtSqueakAuthor;
@@ -43,7 +43,7 @@ public class ViewSqueakFragment extends Fragment {
         // Get a new or existing ViewModel from the ViewModelProvider.
         todoViewModel = new ViewModelProvider(this).get(ViewSqueakModel.class);
 
-        txtSqueakBlockNumber = root.findViewById(R.id.squeak_block_number);
+        txtSqueakAddress = root.findViewById(R.id.squeak_item_address);
         txtSqueakHash = root.findViewById(R.id.squeak_hash);
         txtSqueakText = root.findViewById(R.id.squeak_text);
         txtSqueakAuthor = root.findViewById(R.id.squeak_author);
