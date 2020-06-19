@@ -71,7 +71,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginBottom="8dp"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textIsSelectable="true" />
 
                 <TextView
