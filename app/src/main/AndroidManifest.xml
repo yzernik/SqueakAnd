@@ -53,6 +53,10 @@
             android:name=".ViewServerActivity"
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_view_server" />
+        <activity
+            android:name=".ViewAddressActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/activity_view_address" />
     </application>
 
 </manifest>
