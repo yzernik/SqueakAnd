@@ -18,6 +18,8 @@ public class SqueakProfileRepository {
     // dependency. This adds complexity and much more code, and this sample is not about testing.
     // See the BasicSample in the android-architecture-components repository at
     // https://github.com/googlesamples
+
+    // TODO: make a singleton.
     public SqueakProfileRepository(Application application) {
         SqueakRoomDatabase db = SqueakRoomDatabase.getDatabase(application);
         mSqueakProfileDao = db.squeakProfileDao();
@@ -44,6 +46,10 @@ public class SqueakProfileRepository {
     // Observed LiveData will notify the observer when the data has changed.
     public LiveData<SqueakProfile> getSqueakProfile(int id) {
         return mSqueakProfileDao.fetchProfileById(id);
+    }
+
+    public LiveData<SqueakProfile> getSqueakProfileByAddress(String address) {
+        return mSqueakProfileDao.fetchProfileByAddress(address);
     }
 
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures

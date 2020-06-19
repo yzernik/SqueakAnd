@@ -49,6 +49,9 @@ public interface SqueakProfileDao {
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE profile_id = :profileId")
     LiveData<SqueakProfile> fetchProfileById(int profileId);
 
+    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " WHERE address = :address")
+    LiveData<SqueakProfile> fetchProfileByAddress(String address);
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(SqueakProfile squeakProfile);
 
