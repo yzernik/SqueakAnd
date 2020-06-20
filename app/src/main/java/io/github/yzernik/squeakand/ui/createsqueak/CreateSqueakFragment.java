@@ -52,7 +52,7 @@ public class CreateSqueakFragment extends Fragment {
 
         mSelectProfileButton = root.findViewById(R.id.select_profile_button);
         mLatestBlockHeightButton = root.findViewById(R.id.latest_block_height_button);
-        mTextInput = root.findViewById(R.id.squeak_text);
+        mTextInput = root.findViewById(R.id.squeak_text_input);
         button = root.findViewById(R.id.btnDone);
 
         // Get the replyTo hash if there is one.

@@ -35,6 +35,7 @@ public class ViewSqueakFragment extends Fragment {
     private TextView txtSqueakAuthor;
     private TextView txtSqueakText;
     private TextView txtSqueakBlock;
+    private View squeakActionBox;
     private ImageButton replyImageButton;
     private CardView squeakCardView;
     private View squeakAddressBox;
@@ -62,7 +63,11 @@ public class ViewSqueakFragment extends Fragment {
         txtSqueakBlock = root.findViewById(R.id.squeak_block);
         squeakCardView = root.findViewById(R.id.squeakCardView);
         squeakAddressBox = root.findViewById(R.id.squeak_address_box);
+        squeakActionBox = root.findViewById(R.id.squeak_action_box);
         replyImageButton = root.findViewById(R.id.reply_image_button);
+
+        // Make the action bar visible.
+        squeakActionBox.setVisibility(View.VISIBLE);
 
         todoViewModel.getSingleTodo(squeakHash).observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
             @Override

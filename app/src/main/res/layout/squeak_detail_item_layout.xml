@@ -106,7 +106,8 @@
                 android:layout_marginBottom="8dp"
                 android:orientation="vertical"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/squeak_block_box" >
+                app:layout_constraintTop_toBottomOf="@+id/squeak_block_box"
+                android:visibility="gone">
 
                 <ImageButton
                     android:id="@+id/reply_image_button"
