@@ -37,6 +37,19 @@ public interface SqueakDao {
     @Query(fetchSqueakWithProfileByHashQuery)
     LiveData<SqueakEntryWithProfile> fetchLiveSqueakByHash(Sha256Hash squeakHash);
 
+    @Query("WITH RECURSIVE\n" +
+            "  is_thread_ancestor(n) AS (\n" +
+            "    VALUES(:squeakHash)\n" +
+            "    UNION\n" +
+            "    SELECT hashReplySqk FROM squeak, is_thread_ancestor\n" +
+            "     WHERE squeak.hash=is_thread_ancestor.n\n" +
+            "  )\n" +
+            "SELECT * FROM squeak, is_thread_ancestor\n" +
+            " JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" +
+            " WHERE squeak.block IS NOT NULL AND " +
+            "squeak.hash=is_thread_ancestor.n;")
+    LiveData<List<SqueakEntryWithProfile>> fetchLiveSqueakReplyAncestorsByHash(Sha256Hash squeakHash);
+
     @Query(fetchSqueakWithProfileByHashQuery)
     SqueakEntryWithProfile fetchSqueakWithProfileByHash(Sha256Hash squeakHash);
 

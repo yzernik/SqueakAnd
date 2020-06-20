@@ -16,21 +16,28 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.bitcoinj.core.Sha256Hash;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakDisplayUtil;
+import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
+import io.github.yzernik.squeakand.SqueakListAdapter;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.TimeUtil;
 import io.github.yzernik.squeakand.ViewAddressActivity;
 import io.github.yzernik.squeakand.ViewProfileActivity;
+import io.github.yzernik.squeakand.ViewSqueakActivity;
 
-public class ViewSqueakFragment extends Fragment {
+public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.ClickListener {
 
     private TextView txtSqueakAddress;
     private TextView txtSqueakAuthor;
@@ -69,6 +76,13 @@ public class ViewSqueakFragment extends Fragment {
 
         // Make the action bar visible.
         squeakActionBox.setVisibility(View.VISIBLE);
+
+        // Set up the thread recycler view
+        final RecyclerView recyclerView = root.findViewById(R.id.thread_recycler_view);
+        final SqueakListAdapter adapter = new SqueakListAdapter(root.getContext(), this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+
 
         todoViewModel.getSingleTodo(squeakHash).observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
             @Override
@@ -112,24 +126,39 @@ public class ViewSqueakFragment extends Fragment {
             }
         });
 
+        todoViewModel.getThreadAncestorSqueaks(squeakHash).observe(getViewLifecycleOwner(), new Observer<List<SqueakEntryWithProfile>>() {
+            @Override
+            public void onChanged(@Nullable List<SqueakEntryWithProfile> threadAncestorSqueaks) {
+                // TODO: Handle thread ancestor squeaks.
+                Log.i(getTag(), "Got result from thread ancestor query: " + threadAncestorSqueaks);
+                Log.i(getTag(), "Got result from thread ancestor query (size): " + threadAncestorSqueaks.size());
+                for (SqueakEntryWithProfile squeakEntryWithProfile: threadAncestorSqueaks) {
+                    Log.i(getTag(), "Ancestor squeak: " + squeakEntryWithProfile.squeakEntry.getSqueak());
+                }
+
+                // Drop the current squeak from the thread ancestor list.
+                if (threadAncestorSqueaks.size() > 0) {
+                    threadAncestorSqueaks.remove(0);
+                }
+                // Reverse the list
+                Collections.reverse(threadAncestorSqueaks);
+
+                // Update the cached copy of the squeaks in the adapter.
+                adapter.setSqueaks(threadAncestorSqueaks);
+            }
+        });
+
         return root;
     }
 
-    private String getBlockDisplay(SqueakEntryWithProfile currentEntry) {
-        long blockNumber = currentEntry.squeakEntry.blockHeight;
-        Date blockTime = currentEntry.squeakEntry.block.getTime();
-        return String.format("Block #%d (%s)", blockNumber, blockTime.toString());
+    @Override
+    public void handleItemClick(Sha256Hash hash) {
+        startActivity(new Intent(getActivity(), ViewSqueakActivity.class).putExtra("squeak_hash", hash.toString()));
     }
 
-    private String getAuthorDisplay(SqueakEntryWithProfile currentEntry) {
-        String authorAddress = currentEntry.squeakEntry.authorAddress;
-        SqueakProfile authorProfile = currentEntry.squeakProfile;
-        String authorDisplay = authorAddress;
-        if (authorProfile != null) {
-            String authorName = currentEntry.squeakProfile.getName();
-            authorDisplay = authorName;
-        }
-        return authorDisplay;
+    @Override
+    public void handleItemAddressClick(String address) {
+        startActivity(new Intent(getActivity(), ViewAddressActivity.class).putExtra("squeak_address", address));
     }
 
 }
