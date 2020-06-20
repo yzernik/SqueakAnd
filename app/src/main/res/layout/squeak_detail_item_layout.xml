@@ -56,23 +56,23 @@
                 android:id="@+id/squeak_text_box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:orientation="vertical"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/squeak_address_box">
+                app:layout_constraintTop_toBottomOf="@+id/squeak_address_box" >
 
                 <TextView
                     android:id="@+id/squeak_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:textIsSelectable="true"
                     android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textIsSelectable="true" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
