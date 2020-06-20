@@ -22,7 +22,7 @@ import lnrpc.Walletunlocker;
 
 public class LndController {
 
-    private static final long START_TIMEOUT_S = 10;
+    private static final long START_TIMEOUT_S = 30;
     private static final long STOP_TIMEOUT_S = 10;
     private static final long UNLOCK_TIMEOUT_S = 10;
     private static final long GEN_SEED_TIMEOUT_S = 10;
