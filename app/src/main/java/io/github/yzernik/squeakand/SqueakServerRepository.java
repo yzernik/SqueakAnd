@@ -28,8 +28,7 @@ public class SqueakServerRepository {
     private SqueaksController squeaksController;
     private SqueakNetworkController squeakNetworkController;
 
-    // TODO: make singleton.
-    public SqueakServerRepository(Application application) {
+    private SqueakServerRepository(Application application) {
         // Singleton constructor, only called by static method.
         this.application = application;
         SqueakRoomDatabase db = SqueakRoomDatabase.getDatabase(application);

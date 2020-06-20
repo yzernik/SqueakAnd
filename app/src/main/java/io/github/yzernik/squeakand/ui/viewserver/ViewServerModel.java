@@ -15,7 +15,7 @@ public class ViewServerModel extends AndroidViewModel {
 
     public ViewServerModel(@NonNull Application application) {
         super(application);
-        mRepository = new SqueakServerRepository(application);
+        mRepository = SqueakServerRepository.getRepository(application);
     }
 
     public LiveData<SqueakServer> getSqueakServer(int serverId) {
