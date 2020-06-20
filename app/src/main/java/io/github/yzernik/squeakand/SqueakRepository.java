@@ -86,4 +86,8 @@ public class SqueakRepository {
         squeaksController.saveWithBlock(squeak, block);
     }
 
+    public LiveData<List<SqueakEntry>> getThreadAncestorSqueaks(Sha256Hash hash) {
+        return mSqueakDao.fetchLiveSqueakThreadByHash(hash);
+    }
+
 }
