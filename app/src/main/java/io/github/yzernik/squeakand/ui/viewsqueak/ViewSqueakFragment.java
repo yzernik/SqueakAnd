@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,7 +21,9 @@ import org.bitcoinj.core.Sha256Hash;
 
 import java.util.Date;
 
+import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.SqueakDisplayUtil;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.TimeUtil;
@@ -33,6 +36,8 @@ public class ViewSqueakFragment extends Fragment {
     private TextView txtSqueakAuthor;
     private TextView txtSqueakText;
     private TextView txtSqueakBlock;
+    private View squeakActionBox;
+    private ImageButton replyImageButton;
     private CardView squeakCardView;
     private View squeakAddressBox;
 
@@ -59,6 +64,11 @@ public class ViewSqueakFragment extends Fragment {
         txtSqueakBlock = root.findViewById(R.id.squeak_block);
         squeakCardView = root.findViewById(R.id.squeakCardView);
         squeakAddressBox = root.findViewById(R.id.squeak_address_box);
+        squeakActionBox = root.findViewById(R.id.squeak_action_box);
+        replyImageButton = root.findViewById(R.id.reply_image_button);
+
+        // Make the action bar visible.
+        squeakActionBox.setVisibility(View.VISIBLE);
 
         todoViewModel.getSingleTodo(squeakHash).observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
             @Override
@@ -79,15 +89,24 @@ public class ViewSqueakFragment extends Fragment {
                 txtSqueakText.setText(squeakEntryWithProfile.squeakEntry.getDecryptedContentStr());
                 txtSqueakAuthor.setText("Block #" + String.valueOf(squeakEntryWithProfile.squeakEntry.blockHeight));*/
 
-                txtSqueakAuthor.setText(getAuthorDisplay(squeakEntryWithProfile));
-                txtSqueakText.setText(squeakEntryWithProfile.squeakEntry.getDecryptedContentStr());
-                txtSqueakBlock.setText(getBlockDisplay(squeakEntryWithProfile));
-                txtSqueakAddress.setText(squeakEntryWithProfile.squeakEntry.authorAddress);
+                txtSqueakAuthor.setText(SqueakDisplayUtil.getAuthorText(squeakEntryWithProfile));
+                txtSqueakText.setText(SqueakDisplayUtil.getSqueakText(squeakEntryWithProfile));
+                txtSqueakBlock.setText(SqueakDisplayUtil.getBlockText(squeakEntryWithProfile));
+                txtSqueakAddress.setText(SqueakDisplayUtil.getAddressText(squeakEntryWithProfile));
 
+                // Go to the view address activity on author address click.
                 squeakAddressBox.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         startActivity(new Intent(getActivity(), ViewAddressActivity.class).putExtra("squeak_address", squeakEntryWithProfile.squeakEntry.authorAddress));
+                    }
+                });
+
+                // Go to the create squeak activity on reply button click.
+                replyImageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(getActivity(), CreateSqueakActivity.class).putExtra("reply_to_hash", squeakEntryWithProfile.squeakEntry.hash.toString()));
                     }
                 });
             }

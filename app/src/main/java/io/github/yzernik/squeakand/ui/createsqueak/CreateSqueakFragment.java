@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,8 +17,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.textfield.TextInputLayout;
+
+import org.bitcoinj.core.Sha256Hash;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,8 @@ import java.util.List;
 import io.github.yzernik.squeakand.ElectrumActivity;
 import io.github.yzernik.squeakand.ManageProfilesActivity;
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.SqueakDisplayUtil;
+import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
@@ -41,6 +47,7 @@ public class CreateSqueakFragment extends Fragment {
     private Button mLatestBlockHeightButton;
     private TextInputLayout mTextInput;
     private Button button;
+    private View replyToSqueakBox;
 
     private CreateSqueakModel createSqueakModel;
 
@@ -50,13 +57,35 @@ public class CreateSqueakFragment extends Fragment {
 
         mSelectProfileButton = root.findViewById(R.id.select_profile_button);
         mLatestBlockHeightButton = root.findViewById(R.id.latest_block_height_button);
-        mTextInput = root.findViewById(R.id.squeak_text);
+        mTextInput = root.findViewById(R.id.squeak_text_input);
         button = root.findViewById(R.id.btnDone);
+        replyToSqueakBox = root.findViewById(R.id.reply_to_squeak_box);
+
+        // Get the replyTo hash if there is one.
+        Sha256Hash replyToHash = null;
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            String replyToHashStr = this.getArguments().getString("reply_to_hash");
+            if (replyToHashStr != null) {
+                replyToHash = Sha256Hash.wrap(replyToHashStr);
+            }
+        }
+
+        // createSqueakModel = new ViewModelProvider(getActivity()).get(CreateSqueakModel.class);
+
+        createSqueakModel = ViewModelProviders.of(this,
+                new CreateSqueakModelFactory(getActivity().getApplication(), replyToHash))
+                .get(CreateSqueakModel.class);
+
+        if (replyToHash != null) {
+            // Show the replyTo squeak.
+            showReplyToSqueak(root, replyToHash);
+        }
+
+        Log.i(getTag(), "Starting CreateSqueakFragment with replyToHash: " + replyToHash);
 
         // Start the fragment with the text input in focus.
         mTextInput.requestFocus();
-
-        createSqueakModel = new ViewModelProvider(getActivity()).get(CreateSqueakModel.class);
 
         createSqueakModel.getSelectedSqueakProfile().observe(getViewLifecycleOwner(), new Observer<SqueakProfile>() {
             @Override
@@ -115,6 +144,29 @@ public class CreateSqueakFragment extends Fragment {
         });
 
         return root;
+    }
+
+
+    private void fillInReplyToSqueak(View root, SqueakEntryWithProfile squeakEntryWithProfile) {
+        TextView txtSqueakAddress = root.findViewById(R.id.squeak_item_address);
+        TextView txtSqueakAuthor = root.findViewById(R.id.squeak_author);
+        TextView txtSqueakText = root.findViewById(R.id.squeak_text);
+        TextView txtSqueakBlock = root.findViewById(R.id.squeak_block);
+
+        txtSqueakAuthor.setText(SqueakDisplayUtil.getAuthorText(squeakEntryWithProfile));
+        txtSqueakText.setText(SqueakDisplayUtil.getSqueakText(squeakEntryWithProfile));
+        txtSqueakBlock.setText(SqueakDisplayUtil.getBlockText(squeakEntryWithProfile));
+        txtSqueakAddress.setText(SqueakDisplayUtil.getAddressText(squeakEntryWithProfile));
+    }
+
+    private void showReplyToSqueak(View root, Sha256Hash replyToHash) {
+        replyToSqueakBox.setVisibility(View.VISIBLE);
+        createSqueakModel.getSqueakByHash(replyToHash).observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
+            @Override
+            public void onChanged(@Nullable final SqueakEntryWithProfile squeakEntryWithProfile) {
+                fillInReplyToSqueak(root, squeakEntryWithProfile);
+            }
+        });
     }
 
 

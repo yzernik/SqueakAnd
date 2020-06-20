@@ -13,6 +13,7 @@ import org.bitcoinj.core.Sha256Hash;
 import java.util.List;
 
 import io.github.yzernik.squeakand.SqueakEntry;
+import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileRepository;
 import io.github.yzernik.squeakand.SqueakRepository;
@@ -34,7 +35,7 @@ public class CreateSqueakModel extends AndroidViewModel {
     public Sha256Hash replyToHash;
     private Preferences preferences;
 
-    public CreateSqueakModel(Application application) {
+    public CreateSqueakModel(Application application, Sha256Hash replyToHash) {
         super(application);
         mProfileRepository = new SqueakProfileRepository(application);
         mSqueakRepository = SqueakRepository.getRepository(application);
@@ -42,7 +43,7 @@ public class CreateSqueakModel extends AndroidViewModel {
         squeakServerRepository = SqueakServerRepository.getRepository(application);
         mAllSqueakSigningProfiles = mProfileRepository.getAllSqueakSigningProfiles();
         mSelectedSqueakProfileId = new MutableLiveData<>();
-        replyToHash = Sha256Hash.ZERO_HASH;
+        this.replyToHash = (replyToHash == null) ? Sha256Hash.ZERO_HASH : replyToHash;
         preferences = new Preferences(application);
 
         // Set the initial value of squeakprofile id
@@ -108,6 +109,10 @@ public class CreateSqueakModel extends AndroidViewModel {
 
     void uploadSqueak(Squeak squeak) {
         squeakServerRepository.publishSqueak(squeak);
+    }
+
+    LiveData<SqueakEntryWithProfile> getSqueakByHash(Sha256Hash squeakHash) {
+        return mSqueakRepository.getSqueak(squeakHash);
     }
 
 }
