@@ -1,6 +1,7 @@
 package io.github.yzernik.squeakand;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -19,9 +20,17 @@ public class CreateSqueakActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_squeak);
 
+        // Get the transferred data from source activity.
+        String replyToHashStr = getIntent().getStringExtra("reply_to_hash");
+        Log.i(getCallingPackage(), "replyToHashStr in onCreate: " + replyToHashStr);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("reply_to_hash", replyToHashStr);
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment createTodoFragment = new CreateSqueakFragment();
-        transaction.replace(R.id.create_squeak_fragment_frame, createTodoFragment);
+        Fragment createSqueakFragment = new CreateSqueakFragment();
+        createSqueakFragment.setArguments(bundle);
+        transaction.replace(R.id.create_squeak_fragment_frame, createSqueakFragment);
         transaction.commit();
     }
 }

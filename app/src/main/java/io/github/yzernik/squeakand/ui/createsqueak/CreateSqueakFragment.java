@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.bitcoinj.core.Sha256Hash;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +54,15 @@ public class CreateSqueakFragment extends Fragment {
         mLatestBlockHeightButton = root.findViewById(R.id.latest_block_height_button);
         mTextInput = root.findViewById(R.id.squeak_text);
         button = root.findViewById(R.id.btnDone);
+
+        // Get the replyTo hash if there is one.
+        Sha256Hash replyToHash = null;
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            String replyToHashStr = this.getArguments().getString("reply_to_hash");
+            replyToHash = Sha256Hash.wrap(replyToHashStr);
+        }
+        Log.i(getTag(), "Starting CreateSqueakFragment with replyToHash: " + replyToHash);
 
         // Start the fragment with the text input in focus.
         mTextInput.requestFocus();
