@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData;
 
 import org.bitcoinj.core.Sha256Hash;
 
+import java.util.List;
+
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakRepository;
@@ -26,6 +28,10 @@ public class ViewSqueakModel extends AndroidViewModel {
 
     public LiveData<SqueakEntryWithProfile> getSingleTodo(Sha256Hash hash) {
         return mRepository.getSqueak(hash);
+    }
+
+    public LiveData<List<SqueakEntry>> getThreadAncestorSqueaks(Sha256Hash hash) {
+        return mRepository.getThreadAncestorSqueaks(hash);
     }
 
 }

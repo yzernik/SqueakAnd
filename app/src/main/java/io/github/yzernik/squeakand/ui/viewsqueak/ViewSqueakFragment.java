@@ -20,10 +20,12 @@ import androidx.lifecycle.ViewModelProvider;
 import org.bitcoinj.core.Sha256Hash;
 
 import java.util.Date;
+import java.util.List;
 
 import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakDisplayUtil;
+import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.TimeUtil;
@@ -112,24 +114,19 @@ public class ViewSqueakFragment extends Fragment {
             }
         });
 
+        todoViewModel.getThreadAncestorSqueaks(squeakHash).observe(getViewLifecycleOwner(), new Observer<List<SqueakEntry>>() {
+            @Override
+            public void onChanged(@Nullable List<SqueakEntry> threadAncestorSqueaks) {
+                // TODO: Handle thread ancestor squeaks.
+                Log.i(getTag(), "Got result from thread ancestor query: " + threadAncestorSqueaks);
+                Log.i(getTag(), "Got result from thread ancestor query (size): " + threadAncestorSqueaks.size());
+                for (SqueakEntry squeakEntry: threadAncestorSqueaks) {
+                    Log.i(getTag(), "Ancestor squeak: " + squeakEntry.getSqueak());
+                }
+            }
+        });
+
         return root;
-    }
-
-    private String getBlockDisplay(SqueakEntryWithProfile currentEntry) {
-        long blockNumber = currentEntry.squeakEntry.blockHeight;
-        Date blockTime = currentEntry.squeakEntry.block.getTime();
-        return String.format("Block #%d (%s)", blockNumber, blockTime.toString());
-    }
-
-    private String getAuthorDisplay(SqueakEntryWithProfile currentEntry) {
-        String authorAddress = currentEntry.squeakEntry.authorAddress;
-        SqueakProfile authorProfile = currentEntry.squeakProfile;
-        String authorDisplay = authorAddress;
-        if (authorProfile != null) {
-            String authorName = currentEntry.squeakProfile.getName();
-            authorDisplay = authorName;
-        }
-        return authorDisplay;
     }
 
 }
