@@ -42,6 +42,7 @@ public class SqueaksController {
     public void verifyAllEnqueued() throws InterruptedException {
         while (true) {
             Squeak squeakToVerify = verificationQueue.getNextSqueakToVerify();
+            Log.i(getClass().getName(), "Verifying squeak from queue: " + squeakToVerify);
             verifyBlock(squeakToVerify);
         }
     }

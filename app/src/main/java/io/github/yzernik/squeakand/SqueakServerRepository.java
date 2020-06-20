@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.server.ServerSyncer;
 import io.github.yzernik.squeakand.server.ServerUploader;
 import io.github.yzernik.squeakand.server.SqueakNetworkController;
@@ -37,8 +36,8 @@ public class SqueakServerRepository {
         mSqueakDao = db.squeakDao();
         mSqueakProfileDao = db.squeakProfileDao();
         mSqueakServerDao = db.squeakServerDao();
-        ElectrumBlockchainRepository electrumBlockchainRepository = ElectrumBlockchainRepository.getRepository(application);
-        squeaksController = new SqueaksController(mSqueakDao, electrumBlockchainRepository);
+        SqueakRepository squeakRepository = SqueakRepository.getRepository(application);
+        squeaksController = squeakRepository.getController();
         squeakNetworkController = new SqueakNetworkController(squeaksController, mSqueakProfileDao, mSqueakServerDao);
     }
 
