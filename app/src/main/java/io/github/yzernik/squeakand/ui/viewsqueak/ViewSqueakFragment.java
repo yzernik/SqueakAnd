@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,19 +21,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.bitcoinj.core.Sha256Hash;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakDisplayUtil;
-import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
-import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.TimeUtil;
 import io.github.yzernik.squeakand.ViewAddressActivity;
-import io.github.yzernik.squeakand.ViewProfileActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
 
 public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.ClickListener {
