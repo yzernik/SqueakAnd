@@ -1,6 +1,9 @@
 package io.github.yzernik.squeakand;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class SqueakDisplayUtil {
 
@@ -22,11 +25,17 @@ public class SqueakDisplayUtil {
     public static String getBlockText(SqueakEntryWithProfile entryWithProfile) {
         long blockNumber = entryWithProfile.squeakEntry.blockHeight;
         Date blockTime = entryWithProfile.squeakEntry.block.getTime();
-        return String.format("Block #%d (%s)", blockNumber, blockTime.toString());
+        return String.format("Block #%d (%s)", blockNumber, getDateString(blockTime));
     }
 
     public static String getAddressText(SqueakEntryWithProfile entryWithProfile) {
         return entryWithProfile.squeakEntry.authorAddress;
+    }
+
+    private static String getDateString(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("h:mm aa - dd MMM yyyy", Locale.ENGLISH);
+        System.out.println("Given date and time in AM/PM: "+ sdf.format(date));
+        return sdf.format(date);
     }
 
 }
