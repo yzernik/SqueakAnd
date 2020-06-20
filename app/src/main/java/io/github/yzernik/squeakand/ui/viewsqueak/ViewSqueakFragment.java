@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.bitcoinj.core.Sha256Hash;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -137,8 +138,10 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
 
                 // Drop the current squeak from the thread ancestor list.
                 if (threadAncestorSqueaks.size() > 0) {
-                    // threadAncestorSqueaks.remove(0);
+                    threadAncestorSqueaks.remove(0);
                 }
+                // Reverse the list
+                Collections.reverse(threadAncestorSqueaks);
 
                 // Update the cached copy of the squeaks in the adapter.
                 adapter.setSqueaks(threadAncestorSqueaks);
