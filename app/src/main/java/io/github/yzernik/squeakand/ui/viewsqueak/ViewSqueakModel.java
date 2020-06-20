@@ -30,7 +30,7 @@ public class ViewSqueakModel extends AndroidViewModel {
         return mRepository.getSqueak(hash);
     }
 
-    public LiveData<List<SqueakEntry>> getThreadAncestorSqueaks(Sha256Hash hash) {
+    public LiveData<List<SqueakEntryWithProfile>> getThreadAncestorSqueaks(Sha256Hash hash) {
         return mRepository.getThreadAncestorSqueaks(hash);
     }
 
