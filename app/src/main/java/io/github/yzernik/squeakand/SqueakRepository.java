@@ -87,7 +87,7 @@ public class SqueakRepository {
     }
 
     public LiveData<List<SqueakEntry>> getThreadAncestorSqueaks(Sha256Hash hash) {
-        return mSqueakDao.fetchLiveSqueakThreadByHash(hash);
+        return mSqueakDao.fetchLiveSqueakReplyAncestorsByHash(hash);
     }
 
 }
