@@ -90,4 +90,8 @@ public class SqueakRepository {
         return mSqueakDao.fetchLiveSqueakReplyAncestorsByHash(hash);
     }
 
+    public SqueaksController getController() {
+        return squeaksController;
+    }
+
 }

@@ -40,8 +40,7 @@ public class SqueakBlockVerifier {
 
         @Override
         public String call() throws InterruptedException {
-            Log.i(getClass().getName(), "Calling call.");
-
+            Log.i(getClass().getName(), "Calling call in VerifyNewSqueaksTask.");
             squeaksController.verifyAllEnqueued();
             return null;
         }
@@ -58,9 +57,14 @@ public class SqueakBlockVerifier {
         public String call() throws InterruptedException {
             Log.i(getClass().getName(), "Calling call.");
             while (true) {
-                squeaksController.verifyOldSqueaks();
-                // Sleep until the next verify.
-                Thread.sleep(DEFAULT_VERIFY_SLEEP_INTERVAL_MS);
+                try {
+                    Log.i(getClass().getName(), "Calling VerifyOldSqueaksTask.");
+                    squeaksController.verifyOldSqueaks();
+                    // Sleep until the next verify.
+                    Thread.sleep(DEFAULT_VERIFY_SLEEP_INTERVAL_MS);
+                } catch (Exception e) {
+                    Log.e(getClass().getName(), "Failed in calling VerifyOldSqueaksTask: " + e);
+                }
             }
         }
 
