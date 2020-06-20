@@ -23,6 +23,7 @@ import java.util.Date;
 
 import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.SqueakDisplayUtil;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.TimeUtil;
@@ -88,10 +89,10 @@ public class ViewSqueakFragment extends Fragment {
                 txtSqueakText.setText(squeakEntryWithProfile.squeakEntry.getDecryptedContentStr());
                 txtSqueakAuthor.setText("Block #" + String.valueOf(squeakEntryWithProfile.squeakEntry.blockHeight));*/
 
-                txtSqueakAuthor.setText(getAuthorDisplay(squeakEntryWithProfile));
-                txtSqueakText.setText(squeakEntryWithProfile.squeakEntry.getDecryptedContentStr());
-                txtSqueakBlock.setText(getBlockDisplay(squeakEntryWithProfile));
-                txtSqueakAddress.setText(squeakEntryWithProfile.squeakEntry.authorAddress);
+                txtSqueakAuthor.setText(SqueakDisplayUtil.getAuthorText(squeakEntryWithProfile));
+                txtSqueakText.setText(SqueakDisplayUtil.getSqueakText(squeakEntryWithProfile));
+                txtSqueakBlock.setText(SqueakDisplayUtil.getBlockText(squeakEntryWithProfile));
+                txtSqueakAddress.setText(SqueakDisplayUtil.getAddressText(squeakEntryWithProfile));
 
                 // Go to the view address activity on author address click.
                 squeakAddressBox.setOnClickListener(new View.OnClickListener() {
