@@ -30,11 +30,7 @@
                 android:orientation="vertical"
                 android:paddingLeft="20dp"
                 android:paddingTop="20dp"
-                android:paddingRight="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:paddingRight="20dp" >
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/squeak_text_input"
