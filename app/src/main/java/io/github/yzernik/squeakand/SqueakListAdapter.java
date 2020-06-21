@@ -22,7 +22,6 @@ abstract public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListA
         public TextView txtSqueakText;
         public TextView txtSqueakBlock;
         public View squeakCardView;
-        public View squeakAddressBox;
         public View replyToLine;
         public View replyFromLine;
 
@@ -34,7 +33,6 @@ abstract public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListA
             txtSqueakText = view.findViewById(R.id.squeak_text);
             txtSqueakBlock = view.findViewById(R.id.squeak_block);
             squeakCardView = view.findViewById(R.id.squeakCardView);
-            squeakAddressBox = view.findViewById(R.id.squeak_address_box);
             replyToLine = view.findViewById(R.id.squeak_item_replyto_line);
             replyFromLine = view.findViewById(R.id.squeak_item_replyfrom_line);
 
