@@ -42,6 +42,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
     private ImageButton replyImageButton;
     private CardView squeakCardView;
     private View squeakAddressBox;
+    public View replyToLine;
 
     // private EditText mEditTodoView;
     private ViewSqueakModel todoViewModel;
@@ -68,6 +69,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
         squeakAddressBox = root.findViewById(R.id.squeak_address_box);
         squeakActionBox = root.findViewById(R.id.squeakActionCardView);
         replyImageButton = root.findViewById(R.id.reply_image_button);
+        replyToLine = root.findViewById(R.id.squeak_item_replyto_line);
 
         // Make the action bar visible.
         // squeakActionBox.setVisibility(View.VISIBLE);
@@ -102,6 +104,13 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
                 txtSqueakText.setText(SqueakDisplayUtil.getSqueakText(squeakEntryWithProfile));
                 txtSqueakBlock.setText(SqueakDisplayUtil.getBlockText(squeakEntryWithProfile));
                 txtSqueakAddress.setText(SqueakDisplayUtil.getAddressText(squeakEntryWithProfile));
+
+                // Set the visibility of the replyTo line.
+                if (squeakEntryWithProfile.squeakEntry.isReply()) {
+                    replyToLine.setVisibility(View.VISIBLE);
+                } else {
+                    replyToLine.setVisibility(View.INVISIBLE);
+                }
 
                 // Go to the view address activity on author address click.
                 squeakAddressBox.setOnClickListener(new View.OnClickListener() {
