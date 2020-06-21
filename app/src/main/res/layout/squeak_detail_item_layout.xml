@@ -85,7 +85,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textIsSelectable="true" />
 
         <TextView
