@@ -28,6 +28,7 @@ import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakDisplayUtil;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
+import io.github.yzernik.squeakand.ThreadSqueakListAdapter;
 import io.github.yzernik.squeakand.ViewAddressActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
 
@@ -73,7 +74,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
 
         // Set up the thread recycler view
         final RecyclerView recyclerView = root.findViewById(R.id.thread_recycler_view);
-        final SqueakListAdapter adapter = new SqueakListAdapter(root.getContext(), this);
+        final SqueakListAdapter adapter = new ThreadSqueakListAdapter(root.getContext(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 

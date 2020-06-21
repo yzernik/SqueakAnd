@@ -29,6 +29,7 @@ import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
+import io.github.yzernik.squeakand.TimelineSqueakListAdapter;
 import io.github.yzernik.squeakand.ViewAddressActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
 import io.github.yzernik.squeakand.server.SqueakServerAsyncClient;
@@ -49,7 +50,7 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
         setHasOptionsMenu(true);
 
         final RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
-        final SqueakListAdapter adapter = new SqueakListAdapter(root.getContext(), this);
+        final SqueakListAdapter adapter = new TimelineSqueakListAdapter(root.getContext(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 

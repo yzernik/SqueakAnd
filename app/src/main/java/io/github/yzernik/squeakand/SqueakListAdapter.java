@@ -14,7 +14,7 @@ import org.bitcoinj.core.Sha256Hash;
 import java.util.List;
 
 
-public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.SqueakViewHolder> {
+abstract public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.SqueakViewHolder> {
 
     class SqueakViewHolder extends RecyclerView.ViewHolder {
         public TextView txtSqueakAddress;
@@ -24,6 +24,7 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
         public View squeakCardView;
         public View squeakAddressBox;
         public View replyToLine;
+        public View replyFromLine;
 
         public SqueakViewHolder(View view) {
             super(view);
@@ -35,6 +36,7 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
             squeakCardView = view.findViewById(R.id.squeakCardView);
             squeakAddressBox = view.findViewById(R.id.squeak_address_box);
             replyToLine = view.findViewById(R.id.squeak_item_replyto_line);
+            replyFromLine = view.findViewById(R.id.squeak_item_replyfrom_line);
 
             squeakCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -67,7 +69,8 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
 
     @Override
     public SqueakViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.squeak_item_layout, parent, false);
+        int cardLayout = getSqueakItemLayout();
+        View itemView = mInflater.inflate(cardLayout, parent, false);
         return new SqueakViewHolder(itemView);
     }
 
@@ -85,6 +88,13 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
                 holder.replyToLine.setVisibility(View.VISIBLE);
             } else {
                 holder.replyToLine.setVisibility(View.INVISIBLE);
+            }
+
+            // Set the visibility of the replyFrom line.
+            if (itemsHaveReply()) {
+                holder.replyFromLine.setVisibility(View.VISIBLE);
+            } else {
+                holder.replyFromLine.setVisibility(View.INVISIBLE);
             }
 
         } else {
@@ -111,6 +121,11 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
         void handleItemClick(Sha256Hash hash);
         void handleItemAddressClick(String address);
     }
+
+    abstract public int getSqueakItemLayout();
+
+    abstract boolean itemsHaveReply();
+
 }
 
 

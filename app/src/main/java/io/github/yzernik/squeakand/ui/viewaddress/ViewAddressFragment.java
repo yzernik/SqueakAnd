@@ -26,6 +26,7 @@ import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
 import io.github.yzernik.squeakand.SqueakProfile;
+import io.github.yzernik.squeakand.TimelineSqueakListAdapter;
 import io.github.yzernik.squeakand.ViewProfileActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
 
@@ -48,7 +49,7 @@ public class ViewAddressFragment extends Fragment implements SqueakListAdapter.C
         Log.i(getTag(), "Starting ViewAddressFragment with squeak address: " + squeakAddress);
 
         final RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
-        final SqueakListAdapter adapter = new SqueakListAdapter(root.getContext(), this);
+        final SqueakListAdapter adapter = new TimelineSqueakListAdapter(root.getContext(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
