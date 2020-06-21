@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/squeakCardView"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="1dp">
 
@@ -26,32 +26,39 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/squeak_author"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:layout_marginTop="16dp"
-                android:textAllCaps="true"
-                android:textColor="@android:color/black"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintStart_toEndOf="@+id/squeak_item_address"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" >
 
-            <TextView
-                android:id="@+id/squeak_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                app:layout_constraintStart_toStartOf="@+id/squeak_author"
-                app:layout_constraintTop_toBottomOf="@+id/squeak_author" />
+                <TextView
+                    android:id="@+id/squeak_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/black" />
 
-            <TextView
-                android:id="@+id/squeak_block"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/holo_red_dark"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/squeak_text" />
+                <TextView
+                    android:id="@+id/squeak_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="3" />
+
+                <TextView
+                    android:id="@+id/squeak_block"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@android:color/holo_red_dark" />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
