@@ -20,6 +20,14 @@
             android:layout_height="wrap_content"
             android:padding="8dp">
 
+            <View
+                android:layout_width="1dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="40dp"
+                android:background="@android:color/black"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/squeak_address_box"
                 android:layout_width="wrap_content"
