@@ -31,9 +31,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingTop="20dp"
-                android:paddingRight="20dp" >
+                android:padding="12dp" >
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/squeak_text_input"
@@ -46,8 +44,6 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:layout_editor_absoluteX="1dp"
-                        tools:layout_editor_absoluteY="280dp"
                         android:inputType="textCapSentences|textMultiLine"
                         android:lines="5" />
 
@@ -66,9 +62,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -87,9 +81,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:layout_width="wrap_content"
