@@ -65,11 +65,11 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
         txtSqueakBlock = root.findViewById(R.id.squeak_block);
         squeakCardView = root.findViewById(R.id.squeakCardView);
         squeakAddressBox = root.findViewById(R.id.squeak_address_box);
-        squeakActionBox = root.findViewById(R.id.squeak_action_box);
+        squeakActionBox = root.findViewById(R.id.squeakActionCardView);
         replyImageButton = root.findViewById(R.id.reply_image_button);
 
         // Make the action bar visible.
-        squeakActionBox.setVisibility(View.VISIBLE);
+        // squeakActionBox.setVisibility(View.VISIBLE);
 
         // Set up the thread recycler view
         final RecyclerView recyclerView = root.findViewById(R.id.thread_recycler_view);

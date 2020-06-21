@@ -26,6 +26,8 @@
 
                 <include layout="@layout/squeak_detail_item_layout" />
 
+                <include layout="@layout/squeak_action_box_layout" />
+
             </LinearLayout>
         </ScrollView>
 
