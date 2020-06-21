@@ -16,15 +16,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/squeak_item_address"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="0dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:ellipsize="end"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" >
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="20dp"
+                    android:background="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/squeak_item_address"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:ellipsize="end"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -32,7 +46,6 @@
                 android:orientation="vertical"
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="72dp"
-                app:layout_constraintStart_toEndOf="@+id/squeak_item_address"
                 app:layout_constraintTop_toTopOf="parent" >
 
                 <TextView
