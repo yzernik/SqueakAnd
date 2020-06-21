@@ -22,8 +22,9 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
         public TextView txtSqueakAuthor;
         public TextView txtSqueakText;
         public TextView txtSqueakBlock;
-        public CardView squeakCardView;
+        public View squeakCardView;
         public View squeakAddressBox;
+        public View replyToLine;
 
         public SqueakViewHolder(View view) {
             super(view);
@@ -34,6 +35,7 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
             txtSqueakBlock = view.findViewById(R.id.squeak_block);
             squeakCardView = view.findViewById(R.id.squeakCardView);
             squeakAddressBox = view.findViewById(R.id.squeak_address_box);
+            replyToLine = view.findViewById(R.id.squeak_item_replyto_line);
 
             squeakCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -78,6 +80,19 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
             holder.txtSqueakText.setText(SqueakDisplayUtil.getSqueakText(currentEntry));
             holder.txtSqueakBlock.setText(SqueakDisplayUtil.getBlockTextTimeAgo(currentEntry));
             holder.txtSqueakAddress.setText(SqueakDisplayUtil.getAddressText(currentEntry));
+
+            String replyHashString = currentEntry.squeakEntry.hashReplySqk.toString();
+            String nullHashString = Sha256Hash.ZERO_HASH.toString();
+            Log.i(getClass().getName(), "Checking squeak with text: " + currentEntry.squeakEntry.decryptedContentStr);
+            Log.i(getClass().getName(), "Checking squeak reply hash: " + replyHashString);
+            Log.i(getClass().getName(), "Sha256Hash.ZERO_HASH: " + nullHashString);
+            if (currentEntry.squeakEntry.isReply()) {
+                Log.i(getClass().getName(), "Is a reply: " + currentEntry.squeakEntry.decryptedContentStr);
+                holder.replyToLine.setVisibility(View.VISIBLE);
+            } else {
+                Log.i(getClass().getName(), "Is not a reply: " + currentEntry.squeakEntry.decryptedContentStr);
+            }
+
         } else {
             // Covers the case of data not being ready yet.
             holder.txtSqueakAuthor.setText("No squeak");

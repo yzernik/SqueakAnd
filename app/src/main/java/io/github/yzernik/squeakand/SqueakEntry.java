@@ -95,6 +95,11 @@ public class SqueakEntry implements Serializable {
         return this.block;
     }
 
+    @Ignore
+    public boolean isReply() {
+        return !hashReplySqk.equals(Sha256Hash.ZERO_HASH);
+    }
+
     public String getDecryptedContentStr() {
         return decryptedContentStr;
     }
