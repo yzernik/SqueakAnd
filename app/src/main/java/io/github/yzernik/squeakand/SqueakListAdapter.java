@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.bitcoinj.core.Sha256Hash;
@@ -81,16 +80,11 @@ public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListAdapter.Sq
             holder.txtSqueakBlock.setText(SqueakDisplayUtil.getBlockTextTimeAgo(currentEntry));
             holder.txtSqueakAddress.setText(SqueakDisplayUtil.getAddressText(currentEntry));
 
-            String replyHashString = currentEntry.squeakEntry.hashReplySqk.toString();
-            String nullHashString = Sha256Hash.ZERO_HASH.toString();
-            Log.i(getClass().getName(), "Checking squeak with text: " + currentEntry.squeakEntry.decryptedContentStr);
-            Log.i(getClass().getName(), "Checking squeak reply hash: " + replyHashString);
-            Log.i(getClass().getName(), "Sha256Hash.ZERO_HASH: " + nullHashString);
+            // Set the visibility of the replyTo line.
             if (currentEntry.squeakEntry.isReply()) {
-                Log.i(getClass().getName(), "Is a reply: " + currentEntry.squeakEntry.decryptedContentStr);
                 holder.replyToLine.setVisibility(View.VISIBLE);
             } else {
-                Log.i(getClass().getName(), "Is not a reply: " + currentEntry.squeakEntry.decryptedContentStr);
+                holder.replyToLine.setVisibility(View.INVISIBLE);
             }
 
         } else {
