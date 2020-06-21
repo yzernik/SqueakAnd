@@ -152,11 +152,19 @@ public class CreateSqueakFragment extends Fragment {
         TextView txtSqueakAuthor = root.findViewById(R.id.squeak_author);
         TextView txtSqueakText = root.findViewById(R.id.squeak_text);
         TextView txtSqueakBlock = root.findViewById(R.id.squeak_block);
+        View replyToLine = root.findViewById(R.id.squeak_item_replyto_line);
 
         txtSqueakAuthor.setText(SqueakDisplayUtil.getAuthorText(squeakEntryWithProfile));
         txtSqueakText.setText(SqueakDisplayUtil.getSqueakText(squeakEntryWithProfile));
         txtSqueakBlock.setText(SqueakDisplayUtil.getBlockText(squeakEntryWithProfile));
         txtSqueakAddress.setText(SqueakDisplayUtil.getAddressText(squeakEntryWithProfile));
+
+        // Set the visibility of the replyTo line.
+        if (squeakEntryWithProfile.squeakEntry.isReply()) {
+            replyToLine.setVisibility(View.VISIBLE);
+        } else {
+            replyToLine.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void showReplyToSqueak(View root, Sha256Hash replyToHash) {
