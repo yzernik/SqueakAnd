@@ -17,6 +17,7 @@ import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakRoomDatabase;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeaklib.core.Squeak;
+import io.github.yzernik.squeaklib.core.VerificationException;
 
 public class SqueaksController {
 
@@ -96,7 +97,12 @@ public class SqueaksController {
 
     public void save(Squeak squeak) {
         // Validate the squeak
-        squeak.verify(true);
+        try {
+            validateSqueak(squeak);
+        } catch (VerificationException e) {
+            e.printStackTrace();
+            return;
+        }
 
         // TODO: Remove this after testing
         squeak.clearDataKey();
@@ -113,7 +119,12 @@ public class SqueaksController {
 
     public void saveWithBlock(Squeak squeak, Block block) {
         // Validate the squeak
-        squeak.verify(true);
+        try {
+            validateSqueak(squeak);
+        } catch (VerificationException e) {
+            e.printStackTrace();
+            return;
+        }
 
         // Insert the squeak in the database.
         SqueakEntry squeakEntry = new SqueakEntry(squeak);
@@ -131,6 +142,19 @@ public class SqueaksController {
 
     public SqueakEntryWithProfile fetchSqueakWithProfileByHash(Sha256Hash squeakHash) {
         return mSqueakDao.fetchSqueakWithProfileByHash(squeakHash);
+    }
+
+    /**
+     * Rase an exception if the squeak is invalid.
+     * @param squeak
+     * @throws VerificationException
+     */
+    private void validateSqueak(Squeak squeak) throws VerificationException {
+        if(squeak.getDataKey() == null) {
+            squeak.verify(true);
+        } else {
+            squeak.verify(false);
+        }
     }
 
 }
