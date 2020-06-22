@@ -57,6 +57,10 @@
             android:name=".ViewAddressActivity"
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_view_address" />
+        <activity
+            android:name=".BuySqueakActivity"
+            android:parentActivityName=".ViewSqueakActivity"
+            android:label="@string/activity_buy_squeak" />
     </application>
 
 </manifest>
