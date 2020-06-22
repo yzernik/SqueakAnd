@@ -1,5 +1,7 @@
 package io.github.yzernik.squeakand.server;
 
+import android.util.Log;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -14,6 +16,7 @@ public class UploadQueue {
     }
 
     public void addSqueakToUpload(Squeak squeak) {
+        Log.i(getClass().getName(), "Added squeak to queue: " + squeak.getHash());
         queue.add(squeak);
     }
 

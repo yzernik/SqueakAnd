@@ -186,6 +186,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
             @Override
             public void onSuccess() {
                 // Now we call setRefreshing(false) to signal refresh has finished
+                Log.i(getTag(), "Finished fetching ancestors with success.");
                 swipeContainer.setRefreshing(false);
             }
 

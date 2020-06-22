@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.yzernik.squeakand.SqueakDao;
+import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileDao;
 import io.github.yzernik.squeakand.SqueakServer;
@@ -36,6 +37,7 @@ public class SqueakNetworkController {
     }
 
     public void enqueueToPublish(Squeak squeak) {
+        Log.i(getClass().getName(), "Added squeak to queue: " + squeak.getHash());
         uploadQueue.addSqueakToUpload(squeak);
     }
 
@@ -45,6 +47,7 @@ public class SqueakNetworkController {
     public void publishAllEnqueued() throws InterruptedException {
         while (true) {
             Squeak squeakToUpload = uploadQueue.getNextSqueakToUpload();
+            Log.i(getClass().getName(), "Got squeak from queue to publish: " + squeakToUpload.getHash());
             publish(squeakToUpload);
         }
     }
@@ -61,13 +64,20 @@ public class SqueakNetworkController {
         }
     }
 
-    public Squeak download(Sha256Hash hash) {
-        // Try to download from all servers
+    public Squeak fetch(Sha256Hash hash) {
+        // Try to download from all servers if the squeak is not already in the local database
+        SqueakEntryWithProfile squeakEntryWithProfile = squeaksController.fetchSqueakWithProfileByHash(hash);
+        if (squeakEntryWithProfile != null) {
+            return squeakEntryWithProfile.squeakEntry.getSqueak();
+        }
+
         for (SqueakServerAddress serverAddress: getServers()) {
             UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeaksController);
-            Squeak squeak = uploaderDownloader.download(hash);
-            if (squeak != null) {
-                return squeak;
+            Squeak squeak = null;
+            try {
+                return uploaderDownloader.download(hash);
+            } catch (io.grpc.StatusRuntimeException e) {
+                Log.e(getClass().getName(),"Failed to download " + hash + " from server " + serverAddress + " with error: " + e);
             }
         }
         return null;
@@ -129,13 +139,33 @@ public class SqueakNetworkController {
         uploaderDownloader.uploadSync(getUploadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
     }
 
-    public void fetchThreadAncestors(Sha256Hash squeakHash) {
-        // TODO
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    /**
+     * Fetch squeaks in the thread going backwards until {@code numAncestors}
+     * @param squeakHash
+     * @param numAncestors
+     */
+    public void fetchThreadAncestors(Sha256Hash squeakHash, int numAncestors) {
+        int numDownloaded = 0;
+        Sha256Hash currentReplyTo = squeakHash;
+        while (numDownloaded < numAncestors) {
+            Log.i(getClass().getName(), "Fetching ancestor squeak hash: " + currentReplyTo);
+            Squeak replyTo = fetch(currentReplyTo);
+            if (replyTo == null) {
+                // Finish because fetch squeak failed
+                return;
+            }
+
+            Log.i(getClass().getName(), "Got ancestor squeak with hash: " + replyTo.getHash());
+            currentReplyTo = replyTo.getHashReplySqk();
+            numDownloaded++;
+            Log.i(getClass().getName(), "Number of ancestors fetched: " + numDownloaded);
+
+            if(currentReplyTo.equals(Sha256Hash.ZERO_HASH)) {
+                // Finish because current squeak is not a reply.
+                return;
+            }
         }
+
     }
 
 }

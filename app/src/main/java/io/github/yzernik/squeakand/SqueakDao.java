@@ -45,7 +45,7 @@ public interface SqueakDao {
             "     WHERE squeak.hash=is_thread_ancestor.n\n" +
             "  )\n" +
             "SELECT * FROM squeak, is_thread_ancestor\n" +
-            " JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" +
+            " LEFT JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" +
             " WHERE squeak.block IS NOT NULL AND " +
             "squeak.hash=is_thread_ancestor.n;")
     LiveData<List<SqueakEntryWithProfile>> fetchLiveSqueakReplyAncestorsByHash(Sha256Hash squeakHash);

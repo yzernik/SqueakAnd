@@ -15,6 +15,7 @@ import java.util.concurrent.TimeoutException;
 public class SqueakServerAsyncClient {
 
     private static final int SYNC_TIMELINE_TIMEOUT_S = 30;
+    private static final int DEFAULT_NUM_THREAD_ANCESTORS = 10;
 
     private SqueakNetworkController squeakNetworkController;
     private final ExecutorService executorService;
@@ -79,7 +80,7 @@ public class SqueakServerAsyncClient {
         @Override
         public Integer call() {
             try {
-                squeakNetworkController.fetchThreadAncestors(squeakHash);
+                squeakNetworkController.fetchThreadAncestors(squeakHash, DEFAULT_NUM_THREAD_ANCESTORS);
                 Log.i(getClass().getName(),"Fetched thread ancestors.");
                 responseHandler.onSuccess();
             } catch (Exception e) {

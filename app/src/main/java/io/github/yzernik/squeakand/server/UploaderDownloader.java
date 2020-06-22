@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.github.yzernik.squeakand.SqueakDao;
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.client.SqueakRPCClient;
 import io.github.yzernik.squeakand.squeaks.SqueaksController;
@@ -36,7 +35,9 @@ public class UploaderDownloader {
 
     public Squeak download(Sha256Hash hash) {
         // Download the squeak to the server.
-        return client.getSqueak(hash);
+        Squeak squeak = client.getSqueak(hash);
+        squeaksController.save(squeak);
+        return squeak;
     }
 
     public void uploadSync(List<String> uploadAddresses, int minBlock, int maxBlock) {
@@ -51,8 +52,8 @@ public class UploaderDownloader {
         // For every local hash not in server hashes, upload.
         localHashes.removeAll(remoteHashes);
         Log.i(getClass().getName(), "Uploading number of squeaks: " + localHashes.size());
-        for (Sha256Hash hash: localHashes) {
-            Squeak squeak = squeaksController.fetchSqueakWithProfileByHash(hash).squeakEntry.getSqueak();
+        for (Sha256Hash squeakHash: localHashes) {
+            Squeak squeak = squeaksController.fetchSqueakWithProfileByHash(squeakHash).squeakEntry.getSqueak();
             upload(squeak);
         }
     }
@@ -70,8 +71,7 @@ public class UploaderDownloader {
         remoteHashes.removeAll(localHashes);
         Log.i(getClass().getName(), "Downloading number of squeaks: " + remoteHashes.size());
         for (Sha256Hash hash: remoteHashes) {
-            Squeak squeak = download(hash);
-            squeaksController.save(squeak);
+            download(hash);
         }
     }
 
