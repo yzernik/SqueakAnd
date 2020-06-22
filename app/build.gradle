@@ -78,6 +78,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.archLifecycleVersion"
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$rootProject.archLifecycleVersion"
 
+    // View pager
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+
     // UI
     implementation "com.google.android.material:material:$rootProject.materialVersion"
 
