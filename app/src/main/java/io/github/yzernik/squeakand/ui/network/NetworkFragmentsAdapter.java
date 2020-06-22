@@ -8,8 +8,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import io.github.yzernik.squeakand.ui.electrum.ElectrumFragment;
 
-public class DemoCollectionAdapter extends FragmentStateAdapter {
-    public DemoCollectionAdapter(Fragment fragment) {
+public class NetworkFragmentsAdapter extends FragmentStateAdapter {
+    public NetworkFragmentsAdapter(Fragment fragment) {
         super(fragment);
     }
 
@@ -27,7 +27,7 @@ public class DemoCollectionAdapter extends FragmentStateAdapter {
     }
 
     private Fragment getDemoObjectFragment() {
-        Fragment fragment = new DemoObjectFragment();
+        Fragment fragment = new SqueakServersFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;

@@ -16,9 +16,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import io.github.yzernik.squeakand.R;
 
 public class NetworkFragment extends Fragment {
-    // When requested, this adapter returns a DemoObjectFragment,
-    // representing an object in the collection.
-    DemoCollectionAdapter demoCollectionAdapter;
+    NetworkFragmentsAdapter networkFragmentsAdapter;
     ViewPager2 viewPager;
 
     @Nullable
@@ -30,9 +28,9 @@ public class NetworkFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        demoCollectionAdapter = new DemoCollectionAdapter(this);
+        networkFragmentsAdapter = new NetworkFragmentsAdapter(this);
         viewPager = view.findViewById(R.id.pager);
-        viewPager.setAdapter(demoCollectionAdapter);
+        viewPager.setAdapter(networkFragmentsAdapter);
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         new TabLayoutMediator(tabLayout, viewPager,

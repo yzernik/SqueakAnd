@@ -23,12 +23,11 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.ServerListAdapter;
-import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakServer;
 import io.github.yzernik.squeakand.ViewServerActivity;
 import io.github.yzernik.squeakand.server.SqueakServerAddress;
 
-public class DemoObjectFragment extends Fragment implements ServerListAdapter.ClickListener {
+public class SqueakServersFragment extends Fragment implements ServerListAdapter.ClickListener {
 
     private NetworkViewModel networkViewModel;
 
@@ -132,7 +131,6 @@ public class DemoObjectFragment extends Fragment implements ServerListAdapter.Cl
 
     @Override
     public void handleItemClick(int id) {
-        // TODO: go to server activity
         Log.i(getTag(), "Clicked on server id: " + id);
         startActivity(new Intent(getActivity(), ViewServerActivity.class).putExtra("server_id", id));
     }
