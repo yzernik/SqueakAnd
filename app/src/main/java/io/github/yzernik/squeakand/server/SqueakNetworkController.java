@@ -7,7 +7,6 @@ import org.bitcoinj.core.Sha256Hash;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.github.yzernik.squeakand.SqueakDao;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileDao;
