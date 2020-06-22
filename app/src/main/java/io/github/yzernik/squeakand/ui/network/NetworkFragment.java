@@ -43,9 +43,9 @@ public class NetworkFragment extends Fragment {
     private String getTabName(int position) {
         switch(position) {
             case 0:
-                return "Squeak";
+                return "Squeak Connection";
             case 1:
-                return "Electrum";
+                return "Electrum Connection";
             default:
                 return null;
         }
