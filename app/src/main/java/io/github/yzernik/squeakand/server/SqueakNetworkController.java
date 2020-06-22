@@ -129,4 +129,13 @@ public class SqueakNetworkController {
         uploaderDownloader.uploadSync(getUploadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
     }
 
+    public void fetchThreadAncestors(Sha256Hash squeakHash) {
+        // TODO
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

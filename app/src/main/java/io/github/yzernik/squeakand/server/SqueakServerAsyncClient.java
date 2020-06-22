@@ -2,6 +2,8 @@ package io.github.yzernik.squeakand.server;
 
 import android.util.Log;
 
+import org.bitcoinj.core.Sha256Hash;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -16,22 +18,22 @@ public class SqueakServerAsyncClient {
 
     private SqueakNetworkController squeakNetworkController;
     private final ExecutorService executorService;
-    private Future<Integer> future = null;
 
     public SqueakServerAsyncClient(SqueakNetworkController squeakNetworkController) {
         this.squeakNetworkController = squeakNetworkController;
-        this.executorService =  Executors.newFixedThreadPool(10);
+        this.executorService =  Executors.newCachedThreadPool();
     }
 
     public void syncTimeline(SqueakServerResponseHandler responseHandler) {
-        // TODO: start the sync task, and handle the result using the response handler.
-        if (future != null) {
-            future.cancel(true);
-        }
-
         SyncTimelineTask syncTimelineTask = new SyncTimelineTask(responseHandler);
         Log.i(getClass().getName(), "Submitting new sync timeline task.");
-        future = executorService.submit(syncTimelineTask);
+        executorService.submit(syncTimelineTask);
+    }
+
+    public void fetchThreadAncestors(Sha256Hash squeakHash, SqueakServerResponseHandler responseHandler) {
+        FetchThreadAncestorsTask fetchThreadAncestorsTask = new FetchThreadAncestorsTask(squeakHash, responseHandler);
+        Log.i(getClass().getName(), "Submitting new fetch thread ancestors task.");
+        executorService.submit(fetchThreadAncestorsTask);
     }
 
 
@@ -57,6 +59,31 @@ public class SqueakServerAsyncClient {
                 responseHandler.onSuccess();
             } catch (Exception e) {
                 Log.e(getClass().getName(),"Failed to sync with servers with error: " + e);
+                responseHandler.onFailure(e);
+                throw e;
+            }
+            return 0;
+        }
+    }
+
+    class FetchThreadAncestorsTask implements Callable<Integer> {
+
+        private Sha256Hash squeakHash;
+        private SqueakServerResponseHandler responseHandler;
+
+        FetchThreadAncestorsTask(Sha256Hash squeakHash, SqueakServerResponseHandler responseHandler) {
+            this.responseHandler = responseHandler;
+            this.squeakHash = squeakHash;
+        }
+
+        @Override
+        public Integer call() {
+            try {
+                squeakNetworkController.fetchThreadAncestors(squeakHash);
+                Log.i(getClass().getName(),"Fetched thread ancestors.");
+                responseHandler.onSuccess();
+            } catch (Exception e) {
+                Log.e(getClass().getName(),"Failed to fetch thread ancestors with error: " + e);
                 responseHandler.onFailure(e);
                 throw e;
             }

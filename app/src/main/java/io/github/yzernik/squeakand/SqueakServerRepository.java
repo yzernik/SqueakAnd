@@ -27,6 +27,7 @@ public class SqueakServerRepository {
     private SqueakServerDao mSqueakServerDao;
     private SqueaksController squeaksController;
     private SqueakNetworkController squeakNetworkController;
+    private SqueakServerAsyncClient asyncClient;
 
     private SqueakServerRepository(Application application) {
         // Singleton constructor, only called by static method.
@@ -38,6 +39,7 @@ public class SqueakServerRepository {
         SqueakRepository squeakRepository = SqueakRepository.getRepository(application);
         squeaksController = squeakRepository.getController();
         squeakNetworkController = new SqueakNetworkController(squeaksController, mSqueakProfileDao, mSqueakServerDao);
+        this.asyncClient = new SqueakServerAsyncClient(squeakNetworkController);
     }
 
     public static SqueakServerRepository getRepository(Application application) {
@@ -94,7 +96,7 @@ public class SqueakServerRepository {
     }
 
     public SqueakServerAsyncClient getSqueakServerAsyncClient() {
-        return new SqueakServerAsyncClient(squeakNetworkController);
+        return asyncClient;
     }
 
 }
