@@ -19,19 +19,20 @@ public class ContactsFragmentsAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch(position) {
             case 0:
+                return getContactsFragment();
+            case 1:
                 return getManageProfilesFragment();
             default:
                 return null;
         }
     }
 
-
-    /*    private Fragment getDemoObjectFragment() {
-        Fragment fragment = new SqueakServersFragment();
+    private Fragment getContactsFragment() {
+        Fragment fragment = new ContactsContactsFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
-    }*/
+    }
 
     private Fragment getManageProfilesFragment() {
         Fragment fragment = new ManageProfilesFragment();
@@ -42,6 +43,6 @@ public class ContactsFragmentsAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 2;
     }
 }

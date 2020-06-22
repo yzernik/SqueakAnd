@@ -41,6 +41,8 @@ public class ContactsFragment extends Fragment {
     private String getTabName(int position) {
         switch(position) {
             case 0:
+                return "Contacts";
+            case 1:
                 return "Signing Profiles";
             default:
                 return null;
