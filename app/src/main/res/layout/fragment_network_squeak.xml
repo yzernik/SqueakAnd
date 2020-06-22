@@ -26,7 +26,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/serversRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="331dp" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
