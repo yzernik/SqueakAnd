@@ -28,7 +28,7 @@ public class ContactsFragmentsAdapter extends FragmentStateAdapter {
     }
 
     private Fragment getContactsFragment() {
-        Fragment fragment = new ContactsContactsFragment();
+        Fragment fragment = new ManageContactsFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;

@@ -24,7 +24,7 @@ import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.ViewAddressActivity;
 
-public class ContactsContactsFragment extends Fragment implements ProfileListAdapter.ClickListener {
+public class ManageContactsFragment extends Fragment implements ProfileListAdapter.ClickListener {
 
     private Button mAddContactButton;
 
@@ -33,7 +33,7 @@ public class ContactsContactsFragment extends Fragment implements ProfileListAda
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         contactsViewModel = new ViewModelProvider(this).get(ContactsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_contacts_contacts, container, false);
+        View root = inflater.inflate(R.layout.fragment_manage_contacts, container, false);
 
         final RecyclerView recyclerView = root.findViewById(R.id.contactsRecyclerView);
         final ProfileListAdapter adapter = new ProfileListAdapter(root.getContext(), this);
