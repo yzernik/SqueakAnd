@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,7 +58,10 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
         }
 
         // Get a new or existing ViewModel from the ViewModelProvider.
-        todoViewModel = new ViewModelProvider(this).get(ViewSqueakModel.class);
+        // todoViewModel = new ViewModelProvider(this).get(ViewSqueakModel.class);
+        todoViewModel = ViewModelProviders.of(this,
+                new ViewSqueakModelFactory(getActivity().getApplication(), squeakHash))
+                .get(ViewSqueakModel.class);
 
         txtSqueakAddress = root.findViewById(R.id.squeak_item_address);
         txtSqueakAuthor = root.findViewById(R.id.squeak_author);
@@ -76,7 +79,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
 
-        todoViewModel.getSingleTodo(squeakHash).observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
+        todoViewModel.getSingleTodo().observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
             @Override
             public void onChanged(@Nullable SqueakEntryWithProfile squeakEntryWithProfile) {
                 if (squeakEntryWithProfile == null) {
@@ -125,7 +128,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
             }
         });
 
-        todoViewModel.getThreadAncestorSqueaks(squeakHash).observe(getViewLifecycleOwner(), new Observer<List<SqueakEntryWithProfile>>() {
+        todoViewModel.getThreadAncestorSqueaks().observe(getViewLifecycleOwner(), new Observer<List<SqueakEntryWithProfile>>() {
             @Override
             public void onChanged(@Nullable List<SqueakEntryWithProfile> threadAncestorSqueaks) {
                 // TODO: Handle thread ancestor squeaks.

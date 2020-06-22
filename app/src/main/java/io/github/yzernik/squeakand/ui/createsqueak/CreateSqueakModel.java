@@ -111,8 +111,8 @@ public class CreateSqueakModel extends AndroidViewModel {
         squeakServerRepository.publishSqueak(squeak);
     }
 
-    LiveData<SqueakEntryWithProfile> getSqueakByHash(Sha256Hash squeakHash) {
-        return mSqueakRepository.getSqueak(squeakHash);
+    LiveData<SqueakEntryWithProfile> getReplyToSqueak() {
+        return mSqueakRepository.getSqueak(replyToHash);
     }
 
 }
