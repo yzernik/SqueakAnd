@@ -100,6 +100,9 @@ abstract public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListA
             if (!currentEntry.squeakEntry.hasDataKey()) {
                 holder.txtSqueakText.setVisibility(View.GONE);
                 holder.squeakCardView.setBackgroundColor(Color.parseColor("lightgray"));
+            } else {
+                holder.txtSqueakText.setVisibility(View.VISIBLE);
+                holder.squeakCardView.setBackgroundColor(Color.parseColor("white"));
             }
 
         } else {
