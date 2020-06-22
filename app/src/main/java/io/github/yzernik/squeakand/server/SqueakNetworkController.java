@@ -160,6 +160,7 @@ public class SqueakNetworkController {
             numDownloaded++;
             Log.i(getClass().getName(), "Number of ancestors fetched: " + numDownloaded);
 
+            // TODO: use the isReply method of squeak when it is available.
             if(currentReplyTo.equals(Sha256Hash.ZERO_HASH)) {
                 // Finish because current squeak is not a reply.
                 return;
