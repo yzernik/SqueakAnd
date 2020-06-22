@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.bitcoinj.core.Sha256Hash;
 
@@ -31,6 +32,7 @@ import io.github.yzernik.squeakand.SqueakListAdapter;
 import io.github.yzernik.squeakand.ThreadSqueakListAdapter;
 import io.github.yzernik.squeakand.ViewAddressActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
+import io.github.yzernik.squeakand.server.SqueakServerAsyncClient;
 
 public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.ClickListener {
 
@@ -42,6 +44,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
     private CardView squeakCardView;
     private View squeakAddressBox;
     public View replyToLine;
+    private SwipeRefreshLayout swipeContainer;
 
     // private EditText mEditTodoView;
     private ViewSqueakModel todoViewModel;
@@ -71,6 +74,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
         squeakAddressBox = root.findViewById(R.id.squeak_address_box);
         replyImageButton = root.findViewById(R.id.reply_image_button);
         replyToLine = root.findViewById(R.id.squeak_item_replyto_line);
+        swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipe_view_squeak_container);
 
         // Set up the thread recycler view
         final RecyclerView recyclerView = root.findViewById(R.id.thread_recycler_view);
@@ -125,6 +129,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
                         startActivity(new Intent(getActivity(), CreateSqueakActivity.class).putExtra("reply_to_hash", squeakEntryWithProfile.squeakEntry.hash.toString()));
                     }
                 });
+                
             }
         });
 
@@ -136,7 +141,23 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
                 Log.i(getTag(), "Got result from thread ancestor query (size): " + threadAncestorSqueaks.size());
                 for (SqueakEntryWithProfile squeakEntryWithProfile: threadAncestorSqueaks) {
                     Log.i(getTag(), "Ancestor squeak: " + squeakEntryWithProfile.squeakEntry.getSqueak());
+                    Log.i(getTag(), "Ancestor squeak text: " + squeakEntryWithProfile.squeakEntry.decryptedContentStr);
                 }
+
+                // Set the swipe down action
+                SqueakEntryWithProfile firstAncestor = threadAncestorSqueaks.get(threadAncestorSqueaks.size() - 1);
+                Sha256Hash firstAncestorHash = firstAncestor.squeakEntry.hash;
+
+                // Set the swipe action
+                swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        // Your code to refresh the list here.
+                        // Make sure you call swipeContainer.setRefreshing(false)
+                        // once the network request has completed successfully.
+                        fetchThreadAsync(firstAncestorHash);
+                    }
+                });
 
                 // Drop the current squeak from the thread ancestor list.
                 if (threadAncestorSqueaks.size() > 0) {
@@ -161,6 +182,26 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
     @Override
     public void handleItemAddressClick(String address) {
         startActivity(new Intent(getActivity(), ViewAddressActivity.class).putExtra("squeak_address", address));
+    }
+
+    public void fetchThreadAsync(Sha256Hash squeakHash) {
+        Log.i(getTag(), "Calling fetchThreadAsync...");
+
+        SqueakServerAsyncClient asyncClient = todoViewModel.getAsyncClient();
+        asyncClient.fetchThreadAncestors(squeakHash, new SqueakServerAsyncClient.SqueakServerResponseHandler() {
+            @Override
+            public void onSuccess() {
+                // Now we call setRefreshing(false) to signal refresh has finished
+                Log.i(getTag(), "Finished fetching ancestors with success.");
+                swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Log.d("DEBUG", "Fetch thread error: " + e.toString());
+            }
+        });
+
     }
 
 }
