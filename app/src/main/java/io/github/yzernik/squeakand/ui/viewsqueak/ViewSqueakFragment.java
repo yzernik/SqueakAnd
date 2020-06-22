@@ -1,11 +1,13 @@
 package io.github.yzernik.squeakand.ui.viewsqueak;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -34,6 +36,9 @@ import io.github.yzernik.squeakand.ViewAddressActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
 import io.github.yzernik.squeakand.server.SqueakServerAsyncClient;
 
+import static android.graphics.Color.DKGRAY;
+import static android.graphics.Color.GRAY;
+
 public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.ClickListener {
 
     private TextView txtSqueakAddress;
@@ -45,6 +50,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
     private View squeakAddressBox;
     public View replyToLine;
     private SwipeRefreshLayout swipeContainer;
+    private Button buyButton;
 
     // private EditText mEditTodoView;
     private ViewSqueakModel todoViewModel;
@@ -75,6 +81,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
         replyImageButton = root.findViewById(R.id.reply_image_button);
         replyToLine = root.findViewById(R.id.squeak_item_replyto_line);
         swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipe_view_squeak_container);
+        buyButton = root.findViewById(R.id.squeak_buy_button);
 
         // Set up the thread recycler view
         final RecyclerView recyclerView = root.findViewById(R.id.thread_recycler_view);
@@ -129,6 +136,13 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
                         startActivity(new Intent(getActivity(), CreateSqueakActivity.class).putExtra("reply_to_hash", squeakEntryWithProfile.squeakEntry.hash.toString()));
                     }
                 });
+
+                // Show buy button if data key is missing.
+                if (!squeakEntryWithProfile.squeakEntry.hasDataKey()) {
+                    txtSqueakText.setVisibility(View.GONE);
+                    buyButton.setVisibility(View.VISIBLE);
+                    squeakCardView.setBackgroundColor(Color.parseColor("lightgray"));
+                }
                 
             }
         });

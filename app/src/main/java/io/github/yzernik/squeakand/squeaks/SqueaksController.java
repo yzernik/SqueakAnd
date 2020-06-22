@@ -96,7 +96,10 @@ public class SqueaksController {
 
     public void save(Squeak squeak) {
         // Validate the squeak
-        squeak.verify();
+        squeak.verify(true);
+
+        // TODO: Remove this after testing
+        squeak.clearDataKey();
 
         // Insert the squeak in the database.
         SqueakEntry squeakEntry = new SqueakEntry(squeak);
@@ -110,7 +113,7 @@ public class SqueaksController {
 
     public void saveWithBlock(Squeak squeak, Block block) {
         // Validate the squeak
-        squeak.verify();
+        squeak.verify(true);
 
         // Insert the squeak in the database.
         SqueakEntry squeakEntry = new SqueakEntry(squeak);

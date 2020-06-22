@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone">
 
-                <include layout="@layout/squeak_detail_item_layout" />
+                <include layout="@layout/squeak_reply_item_card_layout" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
