@@ -20,6 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
 import java.util.List;
 
 import io.github.yzernik.squeakand.R;
@@ -47,5 +50,10 @@ public class NetworkFragment extends Fragment {
         demoCollectionAdapter = new DemoCollectionAdapter(this);
         viewPager = view.findViewById(R.id.pager);
         viewPager.setAdapter(demoCollectionAdapter);
+
+        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> tab.setText("Squeak Servers")
+        ).attach();
     }
 }
