@@ -43,7 +43,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="24sp"
                         android:layout_gravity="left|center_vertical"
-                        android:text="No profile for address" />
+                        android:text="No profile" />
                     <Button
                         android:id="@+id/address_create_profile_button"
                         android:layout_width="wrap_content"

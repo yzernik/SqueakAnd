@@ -22,6 +22,8 @@ import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.NewContactActivity;
+import io.github.yzernik.squeakand.NewProfileActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
@@ -34,6 +36,7 @@ public class ViewAddressFragment extends Fragment implements SqueakListAdapter.C
 
     private TextView addressTextView;
     private TextView profileNameTextView;
+    private Button createProfileButton;
     private Button editProfileButton;
     private FrameLayout missingProfileBanner;
     private FrameLayout presentProfileBanner;
@@ -57,6 +60,7 @@ public class ViewAddressFragment extends Fragment implements SqueakListAdapter.C
         missingProfileBanner = root.findViewById(R.id.address_profile_missing_layout);
         presentProfileBanner = root.findViewById(R.id.address_profile_present_layout);
         profileNameTextView = root.findViewById(R.id.address_profile_name_text);
+        createProfileButton = root.findViewById(R.id.address_create_profile_button);
         editProfileButton = root.findViewById(R.id.address_edit_profile_button);
 
         viewAddressModel = new ViewModelProvider(getActivity()).get(ViewAddressModel.class);
@@ -78,8 +82,17 @@ public class ViewAddressFragment extends Fragment implements SqueakListAdapter.C
             @Override
             public void onChanged(@Nullable final SqueakProfile profile) {
                 if (profile == null) {
+                    presentProfileBanner.setVisibility(View.GONE);
                     missingProfileBanner.setVisibility(View.VISIBLE);
+                    createProfileButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(getActivity(), NewContactActivity.class).putExtra("squeak_address", squeakAddress));
+                        }
+                    });
+
                 } else {
+                    missingProfileBanner.setVisibility(View.GONE);
                     presentProfileBanner.setVisibility(View.VISIBLE);
                     profileNameTextView.setText(profile.getName());
                     editProfileButton.setOnClickListener(new View.OnClickListener() {
