@@ -129,17 +129,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
                         startActivity(new Intent(getActivity(), CreateSqueakActivity.class).putExtra("reply_to_hash", squeakEntryWithProfile.squeakEntry.hash.toString()));
                     }
                 });
-
-                // Set the swipe action
-                swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        // Your code to refresh the list here.
-                        // Make sure you call swipeContainer.setRefreshing(false)
-                        // once the network request has completed successfully.
-                        fetchThreadAsync(squeakEntryWithProfile.squeakEntry.hash);
-                    }
-                });
+                
             }
         });
 
@@ -151,7 +141,23 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
                 Log.i(getTag(), "Got result from thread ancestor query (size): " + threadAncestorSqueaks.size());
                 for (SqueakEntryWithProfile squeakEntryWithProfile: threadAncestorSqueaks) {
                     Log.i(getTag(), "Ancestor squeak: " + squeakEntryWithProfile.squeakEntry.getSqueak());
+                    Log.i(getTag(), "Ancestor squeak text: " + squeakEntryWithProfile.squeakEntry.decryptedContentStr);
                 }
+
+                // Set the swipe down action
+                SqueakEntryWithProfile firstAncestor = threadAncestorSqueaks.get(threadAncestorSqueaks.size() - 1);
+                Sha256Hash firstAncestorHash = firstAncestor.squeakEntry.hash;
+
+                // Set the swipe action
+                swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        // Your code to refresh the list here.
+                        // Make sure you call swipeContainer.setRefreshing(false)
+                        // once the network request has completed successfully.
+                        fetchThreadAsync(firstAncestorHash);
+                    }
+                });
 
                 // Drop the current squeak from the thread ancestor list.
                 if (threadAncestorSqueaks.size() > 0) {

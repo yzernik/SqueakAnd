@@ -158,6 +158,7 @@ public class SqueakNetworkController {
             currentReplyTo = replyTo.getHashReplySqk();
             numDownloaded++;
             Log.i(getClass().getName(), "Number of ancestors fetched: " + numDownloaded);
+            Log.i(getClass().getName(), "New currentReplyTo: " + currentReplyTo);
 
             // TODO: use the isReply method of squeak when it is available.
             if(currentReplyTo.equals(Sha256Hash.ZERO_HASH)) {
