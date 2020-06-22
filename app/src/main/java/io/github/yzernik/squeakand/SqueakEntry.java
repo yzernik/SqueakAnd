@@ -62,11 +62,7 @@ public class SqueakEntry implements Serializable {
         this.encContent = squeak.getEncContent();
         this.scriptSigBytes = squeak.getScriptSigBytes();
         this.dataKey = squeak.getDataKey();
-        try {
-            this.decryptedContentStr = squeak.getDecryptedContentStr();
-        } catch (Exception e) {
-            this.decryptedContentStr = null;
-        }
+        this.decryptedContentStr = getDecryptedContentStr(squeak);
         this.authorAddress = squeak.getAddress().toString();
         this.block = block;
     }
@@ -100,6 +96,16 @@ public class SqueakEntry implements Serializable {
         return !hashReplySqk.equals(Sha256Hash.ZERO_HASH);
     }
 
+    @Ignore
+    private String getDecryptedContentStr(Squeak squeak) {
+        try {
+            return squeak.getDecryptedContentStr();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Ignore
     public String getDecryptedContentStr() {
         return decryptedContentStr;
     }
