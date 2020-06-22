@@ -34,10 +34,19 @@ public class CreateContactFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_create_contact, container, false);
 
+        String squeakAddress = null;
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            squeakAddress = this.getArguments().getString("squeak_address");
+        }
+
         mContactNameInput = root.findViewById(R.id.new_contact_name_input);
         mContactAddressInput = root.findViewById(R.id.new_contact_address_input);
         mGetAddressFromQRCodeButton = root.findViewById(R.id.contact_address_from_qr_code_button);
         mCreateContactButton = root.findViewById(R.id.create_contact_finish_button);
+
+        // Start the text input field with the squeak address passed from the activity intent.
+        mContactAddressInput.getEditText().setText(squeakAddress);
 
         // Start the fragment with the contact name input in focus.
         mContactNameInput.requestFocus();

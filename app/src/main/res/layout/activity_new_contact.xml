@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".NewContactActivity">
 
-    <fragment android:name="io.github.yzernik.squeakand.ui.createcontact.CreateContactFragment"
-        android:id="@+id/new_contact_fragment"
-        android:layout_weight="2"
+    <FrameLayout
+        android:id="@+id/create_contact_fragment_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
