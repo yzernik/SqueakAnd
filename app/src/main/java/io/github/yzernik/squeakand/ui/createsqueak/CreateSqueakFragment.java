@@ -2,6 +2,7 @@ package io.github.yzernik.squeakand.ui.createsqueak;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -153,6 +154,9 @@ public class CreateSqueakFragment extends Fragment {
         TextView txtSqueakText = root.findViewById(R.id.squeak_text);
         TextView txtSqueakBlock = root.findViewById(R.id.squeak_block);
         View replyToLine = root.findViewById(R.id.squeak_item_replyto_line);
+        View squeakCardView = root.findViewById(R.id.squeakCardView);
+
+
 
         txtSqueakAuthor.setText(SqueakDisplayUtil.getAuthorText(squeakEntryWithProfile));
         txtSqueakText.setText(SqueakDisplayUtil.getSqueakText(squeakEntryWithProfile));
@@ -164,6 +168,12 @@ public class CreateSqueakFragment extends Fragment {
             replyToLine.setVisibility(View.VISIBLE);
         } else {
             replyToLine.setVisibility(View.INVISIBLE);
+        }
+
+        // Show buy button if data key is missing.
+        if (!squeakEntryWithProfile.squeakEntry.hasDataKey()) {
+            txtSqueakText.setVisibility(View.GONE);
+            squeakCardView.setBackgroundColor(Color.parseColor("lightgray"));
         }
     }
 

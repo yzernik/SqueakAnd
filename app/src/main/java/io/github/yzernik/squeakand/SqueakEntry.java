@@ -110,4 +110,9 @@ public class SqueakEntry implements Serializable {
         return decryptedContentStr;
     }
 
+    @Ignore
+    public boolean hasDataKey() {
+        return dataKey != null;
+    }
+
 }
