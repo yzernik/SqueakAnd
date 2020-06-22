@@ -79,7 +79,7 @@ public class CreateSqueakFragment extends Fragment {
 
         if (replyToHash != null) {
             // Show the replyTo squeak.
-            showReplyToSqueak(root, replyToHash);
+            showReplyToSqueak(root);
         }
 
         Log.i(getTag(), "Starting CreateSqueakFragment with replyToHash: " + replyToHash);
@@ -167,9 +167,9 @@ public class CreateSqueakFragment extends Fragment {
         }
     }
 
-    private void showReplyToSqueak(View root, Sha256Hash replyToHash) {
+    private void showReplyToSqueak(View root) {
         replyToSqueakBox.setVisibility(View.VISIBLE);
-        createSqueakModel.getSqueakByHash(replyToHash).observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
+        createSqueakModel.getReplyToSqueak().observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
             @Override
             public void onChanged(@Nullable final SqueakEntryWithProfile squeakEntryWithProfile) {
                 fillInReplyToSqueak(root, squeakEntryWithProfile);
