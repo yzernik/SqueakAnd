@@ -79,7 +79,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
 
-        todoViewModel.getSingleTodo().observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
+        todoViewModel.getSqueak().observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
             @Override
             public void onChanged(@Nullable SqueakEntryWithProfile squeakEntryWithProfile) {
                 if (squeakEntryWithProfile == null) {
