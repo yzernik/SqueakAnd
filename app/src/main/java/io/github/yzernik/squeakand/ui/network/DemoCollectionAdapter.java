@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import io.github.yzernik.squeakand.ui.electrum.ElectrumFragment;
+
 public class DemoCollectionAdapter extends FragmentStateAdapter {
     public DemoCollectionAdapter(Fragment fragment) {
         super(fragment);
@@ -17,22 +19,29 @@ public class DemoCollectionAdapter extends FragmentStateAdapter {
         switch(position) {
             case 0:
                 return getDemoObjectFragment();
+            case 1:
+                return getElectrumFragment();
             default:
                 return null;
         }
     }
 
     private Fragment getDemoObjectFragment() {
-        // Return a NEW fragment instance in createFragment(int)
         Fragment fragment = new DemoObjectFragment();
         Bundle args = new Bundle();
-        // Our object is just an integer :-P
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    private Fragment getElectrumFragment() {
+        Fragment fragment = new ElectrumFragment();
+        Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 2;
     }
 }

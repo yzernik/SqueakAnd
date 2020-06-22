@@ -36,7 +36,18 @@ public class NetworkFragment extends Fragment {
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> tab.setText("Squeak Servers")
+                (tab, position) -> tab.setText(getTabName(position))
         ).attach();
+    }
+
+    private String getTabName(int position) {
+        switch(position) {
+            case 0:
+                return "Squeak";
+            case 1:
+                return "Electrum";
+            default:
+                return null;
+        }
     }
 }
