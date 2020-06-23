@@ -11,6 +11,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import io.github.yzernik.squeakand.Offer;
+import io.github.yzernik.squeakand.OfferDao;
 import io.github.yzernik.squeakand.SqueakDao;
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
@@ -24,12 +26,14 @@ public class SqueaksController {
     private static final long GET_BLOCK_HEADER_TIMEOUT_S = 10;
 
     private SqueakDao mSqueakDao;
+    private OfferDao offerDao;
     private SqueakBlockVerificationQueue verificationQueue;
     private ElectrumBlockchainRepository electrumBlockchainRepository;
 
 
-    public SqueaksController(SqueakDao mSqueakDao, ElectrumBlockchainRepository electrumBlockchainRepository) {
+    public SqueaksController(SqueakDao mSqueakDao, OfferDao offerDao, ElectrumBlockchainRepository electrumBlockchainRepository) {
         this.mSqueakDao = mSqueakDao;
+        this.offerDao = offerDao;
         this.verificationQueue = new SqueakBlockVerificationQueue();
         this.electrumBlockchainRepository = electrumBlockchainRepository;
     }
@@ -155,6 +159,10 @@ public class SqueaksController {
         } else {
             squeak.verify(false);
         }
+    }
+
+    public void saveOffer(Offer offer) {
+        offerDao.insert(offer);
     }
 
 }
