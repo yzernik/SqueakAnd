@@ -26,6 +26,7 @@ import org.bitcoinj.core.Sha256Hash;
 import java.util.Collections;
 import java.util.List;
 
+import io.github.yzernik.squeakand.BuySqueakActivity;
 import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakDisplayUtil;
@@ -142,6 +143,14 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
                     txtSqueakText.setVisibility(View.GONE);
                     buyButton.setVisibility(View.VISIBLE);
                     squeakCardView.setBackgroundColor(Color.parseColor("lightgray"));
+
+                    buyButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(getActivity(), BuySqueakActivity.class).putExtra("squeak_hash", squeakEntryWithProfile.squeakEntry.hash.toString()));
+                        }
+                    });
+
                 }
                 
             }
