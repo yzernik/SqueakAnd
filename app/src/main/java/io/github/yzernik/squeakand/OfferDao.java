@@ -23,6 +23,9 @@ public interface OfferDao {
     @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_OFFER  + " WHERE squeakHash = :squeakHash" + " ORDER BY offerId ASC")
     LiveData<List<Offer>> fetchOffersBySqueakHash(Sha256Hash squeakHash);
 
+    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_OFFER  + " WHERE squeakHash = :squeakHash AND squeakServerId = :serverId" + " ORDER BY offerId ASC")
+    List<Offer> fetchOffersBySqueakHashAndServerId(Sha256Hash squeakHash, int serverId);
+
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_OFFER + " WHERE offerId = :offerId")
     LiveData<Offer> fetchOfferById(int offerId);
 
