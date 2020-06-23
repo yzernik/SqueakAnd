@@ -9,15 +9,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
 import io.github.yzernik.squeaklib.core.Squeak;
 import io.github.yzernik.squeaklib.core.SqueakSerializer;
+import io.github.yzernik.squeakserver.BuySqueakReply;
+import io.github.yzernik.squeakserver.BuySqueakRequest;
 import io.github.yzernik.squeakserver.GetSqueakReply;
 import io.github.yzernik.squeakserver.GetSqueakRequest;
 import io.github.yzernik.squeakserver.LookupSqueaksReply;
 import io.github.yzernik.squeakserver.LookupSqueaksRequest;
 import io.github.yzernik.squeakserver.PostSqueakReply;
 import io.github.yzernik.squeakserver.PostSqueakRequest;
+import io.github.yzernik.squeakserver.SqueakBuyOffer;
 import io.github.yzernik.squeakserver.SqueakServerGrpc;
 import io.grpc.Channel;
 
@@ -27,6 +31,7 @@ public class SqueakServerClient {
     private static final int LOOKUP_REQUEST_TIMEOUT_S = 10;
     private static final int POST_REQUEST_TIMEOUT_S = 10;
     private static final int GET_REQUEST_TIMEOUT_S = 10;
+    private static final int BUY_REQUEST_TIMEOUT_S = 10;
 
     private final SqueakServerGrpc.SqueakServerBlockingStub blockingStub;
     private final SqueakServerGrpc.SqueakServerStub asyncStub;
@@ -95,6 +100,41 @@ public class SqueakServerClient {
 
         ByteString hashReplyBytes = reply.getHash();
         return Sha256Hash.wrap(hashReplyBytes.toByteArray());
+    }
+
+    public Offer buySqueak(Sha256Hash hash) {
+        logger.info("*** BuySqueak: hash: " + hash);
+
+        ByteString squeakHashBytes = ByteString.copyFrom(hash.getBytes());
+        BuySqueakRequest request = BuySqueakRequest.newBuilder()
+                .setHash(squeakHashBytes)
+                .build();
+
+        BuySqueakReply reply = blockingStub
+                .withDeadlineAfter(BUY_REQUEST_TIMEOUT_S, TimeUnit.SECONDS)
+                .buySqueak(request);
+        SqueakBuyOffer buyOfferMessage = reply.getOffer();
+
+        Sha256Hash squeakHash = Sha256Hash.wrap(buyOfferMessage.getSqueakHash().toByteArray());
+        byte[] nonce = buyOfferMessage.getNonce().toByteArray();
+        Sha256Hash preimageHash = Sha256Hash.wrap(buyOfferMessage.getPreimageHash().toByteArray());
+        long amount = buyOfferMessage.getAmount();
+        String paymentRequest = buyOfferMessage.getPaymentRequest();
+        String pubkey = buyOfferMessage.getPubkey();
+        String host = buyOfferMessage.getHost();
+        int port = buyOfferMessage.getPort();
+
+        return new Offer(
+                squeakHash,
+                nonce,
+                preimageHash,
+                amount,
+                paymentRequest,
+                pubkey,
+                host,
+                port,
+                -1
+        );
     }
 
 }
