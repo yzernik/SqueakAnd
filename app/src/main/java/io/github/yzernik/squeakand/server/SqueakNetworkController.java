@@ -54,9 +54,9 @@ public class SqueakNetworkController {
     public void publish(Squeak squeak) {
         // Publish to all connected servers
         for (SqueakServerAddress serverAddress: getServers()) {
-            UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeaksController);
+            SqueakServerController squeakServerController = new SqueakServerController(serverAddress, squeaksController);
             try {
-                uploaderDownloader.upload(squeak);
+                squeakServerController.upload(squeak);
             } catch (io.grpc.StatusRuntimeException e) {
                 Log.e(getClass().getName(),"Failed to upload to server " + serverAddress + " with error: " + e);
             }
@@ -71,10 +71,10 @@ public class SqueakNetworkController {
         }
 
         for (SqueakServerAddress serverAddress: getServers()) {
-            UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeaksController);
+            SqueakServerController squeakServerController = new SqueakServerController(serverAddress, squeaksController);
             Squeak squeak = null;
             try {
-                return uploaderDownloader.download(hash);
+                return squeakServerController.download(hash);
             } catch (io.grpc.StatusRuntimeException e) {
                 Log.e(getClass().getName(),"Failed to download " + hash + " from server " + serverAddress + " with error: " + e);
             }
@@ -85,9 +85,9 @@ public class SqueakNetworkController {
     public void getOffers(Sha256Hash squeakHash) {
         // Try to get offers from all servers
         for (SqueakServerAddress serverAddress: getServers()) {
-            UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeaksController);
+            SqueakServerController squeakServerController = new SqueakServerController(serverAddress, squeaksController);
             try {
-                uploaderDownloader.getOffer(squeakHash);
+                squeakServerController.getOffer(squeakHash);
             } catch (io.grpc.StatusRuntimeException e) {
                 Log.e(getClass().getName(),"Failed to get offer for hash " + squeakHash + " from server " + serverAddress + " with error: " + e);
             }
@@ -141,13 +141,13 @@ public class SqueakNetworkController {
     }
 
     private void trySyncServer(SqueakServerAddress serverAddress) {
-        UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeaksController);
+        SqueakServerController squeakServerController = new SqueakServerController(serverAddress, squeaksController);
 
         // Sync downloads
-        uploaderDownloader.downloadSync(getDownloadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
+        squeakServerController.downloadSync(getDownloadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
 
         // Sync uploads
-        uploaderDownloader.uploadSync(getUploadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
+        squeakServerController.uploadSync(getUploadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
     }
 
     /**

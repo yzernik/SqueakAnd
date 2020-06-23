@@ -14,7 +14,7 @@ import io.github.yzernik.squeakand.client.SqueakRPCClient;
 import io.github.yzernik.squeakand.squeaks.SqueaksController;
 import io.github.yzernik.squeaklib.core.Squeak;
 
-public class UploaderDownloader {
+public class SqueakServerController {
 
     private static final int DEFAULT_MIN_BLOCK = 0;
     private static final int DEFAULT_MAX_BLOCK = 1000000000;
@@ -23,7 +23,7 @@ public class UploaderDownloader {
     private final SqueaksController squeaksController;
     private final SqueakRPCClient client;
 
-    public UploaderDownloader(SqueakServerAddress serverAddress, SqueaksController squeaksController) {
+    public SqueakServerController(SqueakServerAddress serverAddress, SqueaksController squeaksController) {
         this.serverAddress = serverAddress;
         this.squeaksController = squeaksController;
         client = new SqueakRPCClient(serverAddress.getHost(), serverAddress.getPort());
