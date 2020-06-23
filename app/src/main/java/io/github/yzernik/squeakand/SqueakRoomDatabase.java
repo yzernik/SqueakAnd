@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
  * app, consider exporting the schema to help you with migrations.
  */
 
-@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class, Offer.class}, version = 7)
+@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class, Offer.class}, version = 8)
 public abstract class SqueakRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";
@@ -48,7 +48,7 @@ public abstract class SqueakRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             SqueakRoomDatabase.class, DB_NAME)
                             //.addCallback(sRoomDatabaseCallback)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8)
                             .build();
                 }
             }
@@ -247,6 +247,24 @@ public abstract class SqueakRoomDatabase extends RoomDatabase {
                     "CREATE UNIQUE INDEX index_offer_squeakHash ON offer (squeakHash)");
             database.execSQL(
                     "CREATE UNIQUE INDEX index_offer_squeakServerId ON offer (squeakServerId)");
+        }
+    };
+
+    @VisibleForTesting
+    static final Migration MIGRATION_7_8 = new Migration(7, 8) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Drop the existing offer indices
+            database.execSQL(
+                    "DROP INDEX index_offer_squeakServerId");
+            database.execSQL(
+                    "DROP INDEX index_offer_squeakHash");
+
+            // Recreate the offer indices without unique constraint
+            database.execSQL(
+                    "CREATE INDEX index_offer_squeakHash ON offer (squeakHash)");
+            database.execSQL(
+                    "CREATE INDEX index_offer_squeakServerId ON offer (squeakServerId)");
         }
     };
 
