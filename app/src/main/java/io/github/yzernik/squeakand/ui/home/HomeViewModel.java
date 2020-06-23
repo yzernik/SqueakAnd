@@ -11,7 +11,7 @@ import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakRepository;
 import io.github.yzernik.squeakand.SqueakServerRepository;
-import io.github.yzernik.squeakand.server.SqueakServerAsyncClient;
+import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 
 public class HomeViewModel extends AndroidViewModel {
 
@@ -36,7 +36,7 @@ public class HomeViewModel extends AndroidViewModel {
         return mAllSqueaksWithProfile;
     }
 
-    public SqueakServerAsyncClient getSqueakServerAsyncClient() {
+    public SqueakNetworkAsyncClient getSqueakServerAsyncClient() {
         return squeakServerRepository.getSqueakServerAsyncClient();
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 import io.github.yzernik.squeakand.server.ServerSyncer;
 import io.github.yzernik.squeakand.server.ServerUploader;
 import io.github.yzernik.squeakand.server.SqueakNetworkController;
-import io.github.yzernik.squeakand.server.SqueakServerAsyncClient;
+import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 import io.github.yzernik.squeakand.squeaks.SqueaksController;
 import io.github.yzernik.squeaklib.core.Squeak;
 
@@ -27,7 +27,7 @@ public class SqueakServerRepository {
     private SqueakServerDao mSqueakServerDao;
     private SqueaksController squeaksController;
     private SqueakNetworkController squeakNetworkController;
-    private SqueakServerAsyncClient asyncClient;
+    private SqueakNetworkAsyncClient asyncClient;
 
     private SqueakServerRepository(Application application) {
         // Singleton constructor, only called by static method.
@@ -39,7 +39,7 @@ public class SqueakServerRepository {
         SqueakRepository squeakRepository = SqueakRepository.getRepository(application);
         squeaksController = squeakRepository.getController();
         squeakNetworkController = new SqueakNetworkController(squeaksController, mSqueakProfileDao, mSqueakServerDao);
-        this.asyncClient = new SqueakServerAsyncClient(squeakNetworkController);
+        this.asyncClient = new SqueakNetworkAsyncClient(squeakNetworkController);
     }
 
     public static SqueakServerRepository getRepository(Application application) {
@@ -95,7 +95,7 @@ public class SqueakServerRepository {
         return mSqueakServerDao.getLiveServers();
     }
 
-    public SqueakServerAsyncClient getSqueakServerAsyncClient() {
+    public SqueakNetworkAsyncClient getSqueakServerAsyncClient() {
         return asyncClient;
     }
 

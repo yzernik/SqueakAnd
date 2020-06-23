@@ -8,7 +8,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SqueakServerAsyncClient {
+public class SqueakNetworkAsyncClient {
 
     private static final int SYNC_TIMELINE_TIMEOUT_S = 30;
     private static final int DEFAULT_NUM_THREAD_ANCESTORS = 10;
@@ -16,7 +16,7 @@ public class SqueakServerAsyncClient {
     private SqueakNetworkController squeakNetworkController;
     private final ExecutorService executorService;
 
-    public SqueakServerAsyncClient(SqueakNetworkController squeakNetworkController) {
+    public SqueakNetworkAsyncClient(SqueakNetworkController squeakNetworkController) {
         this.squeakNetworkController = squeakNetworkController;
         this.executorService =  Executors.newCachedThreadPool();
     }

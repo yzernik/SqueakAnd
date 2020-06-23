@@ -53,12 +53,12 @@ public class SqueakNetworkController {
 
     public void publish(Squeak squeak) {
         // Publish to all connected servers
-        for (SqueakServerAddress serverAddress: getServers()) {
-            SqueakServerController squeakServerController = new SqueakServerController(serverAddress, squeaksController);
+        for (SqueakServer server: getServers()) {
+            SqueakServerController squeakServerController = new SqueakServerController(server, squeaksController);
             try {
                 squeakServerController.upload(squeak);
             } catch (io.grpc.StatusRuntimeException e) {
-                Log.e(getClass().getName(),"Failed to upload to server " + serverAddress + " with error: " + e);
+                Log.e(getClass().getName(),"Failed to upload to server " + server.serverAddress + " with error: " + e);
             }
         }
     }
@@ -70,13 +70,13 @@ public class SqueakNetworkController {
             return squeakEntryWithProfile.squeakEntry.getSqueak();
         }
 
-        for (SqueakServerAddress serverAddress: getServers()) {
-            SqueakServerController squeakServerController = new SqueakServerController(serverAddress, squeaksController);
+        for (SqueakServer server: getServers()) {
+            SqueakServerController squeakServerController = new SqueakServerController(server, squeaksController);
             Squeak squeak = null;
             try {
                 return squeakServerController.download(hash);
             } catch (io.grpc.StatusRuntimeException e) {
-                Log.e(getClass().getName(),"Failed to download " + hash + " from server " + serverAddress + " with error: " + e);
+                Log.e(getClass().getName(),"Failed to download " + hash + " from server " + server + " with error: " + e);
             }
         }
         return null;
@@ -84,12 +84,12 @@ public class SqueakNetworkController {
 
     public void getOffers(Sha256Hash squeakHash) {
         // Try to get offers from all servers
-        for (SqueakServerAddress serverAddress: getServers()) {
-            SqueakServerController squeakServerController = new SqueakServerController(serverAddress, squeaksController);
+        for (SqueakServer server: getServers()) {
+            SqueakServerController squeakServerController = new SqueakServerController(server, squeaksController);
             try {
                 squeakServerController.getOffer(squeakHash);
             } catch (io.grpc.StatusRuntimeException e) {
-                Log.e(getClass().getName(),"Failed to get offer for hash " + squeakHash + " from server " + serverAddress + " with error: " + e);
+                Log.e(getClass().getName(),"Failed to get offer for hash " + squeakHash + " from server " + server + " with error: " + e);
             }
         }
     }
@@ -98,15 +98,11 @@ public class SqueakNetworkController {
         trySync();
     }
 
-    private List<SqueakServerAddress> getServers() {
+    private List<SqueakServer> getServers() {
         /*
         SqueakServerAddress localServer = new SqueakServerAddress("10.0.2.2", 8774);
         return Arrays.asList(localServer);*/
-
-        List<SqueakServer> servers = squeakServerDao.getServers();
-        return servers.stream()
-                .map(server -> server.serverAddress)
-                .collect(Collectors.toList());
+        return squeakServerDao.getServers();
     }
 
     private List<String> getUploadAddresses() {
@@ -126,22 +122,22 @@ public class SqueakNetworkController {
     }
 
     private void trySync() {
-        List<SqueakServerAddress> serverAddresses = getServers();
+        List<SqueakServer> servers = getServers();
 
-        Log.i(getClass().getName(), "Doing another round of syncing with servers: " + serverAddresses);
-        Log.i(getClass().getName(), "Doing another round of syncing with number of servers: " + serverAddresses.size());
-        for (SqueakServerAddress serverAddress: serverAddresses) {
+        Log.i(getClass().getName(), "Doing another round of syncing with servers: " + servers);
+        Log.i(getClass().getName(), "Doing another round of syncing with number of servers: " + servers.size());
+        for (SqueakServer server: servers) {
             try {
-                trySyncServer(serverAddress);
+                trySyncServer(server);
             } catch (io.grpc.StatusRuntimeException e) {
-                Log.e(getClass().getName(),"Failed to sync with server " + serverAddress + " with error: " + e);
+                Log.e(getClass().getName(),"Failed to sync with server " + server + " with error: " + e);
             }
         }
         Log.i(getClass().getName(), "Finished round of syncing.");
     }
 
-    private void trySyncServer(SqueakServerAddress serverAddress) {
-        SqueakServerController squeakServerController = new SqueakServerController(serverAddress, squeaksController);
+    private void trySyncServer(SqueakServer server) {
+        SqueakServerController squeakServerController = new SqueakServerController(server, squeaksController);
 
         // Sync downloads
         squeakServerController.downloadSync(getDownloadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);

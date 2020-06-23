@@ -10,6 +10,7 @@ import java.util.Set;
 
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.SqueakEntry;
+import io.github.yzernik.squeakand.SqueakServer;
 import io.github.yzernik.squeakand.client.SqueakRPCClient;
 import io.github.yzernik.squeakand.squeaks.SqueaksController;
 import io.github.yzernik.squeaklib.core.Squeak;
@@ -19,13 +20,14 @@ public class SqueakServerController {
     private static final int DEFAULT_MIN_BLOCK = 0;
     private static final int DEFAULT_MAX_BLOCK = 1000000000;
 
-    private final SqueakServerAddress serverAddress;
+    private final SqueakServer server;
     private final SqueaksController squeaksController;
     private final SqueakRPCClient client;
 
-    public SqueakServerController(SqueakServerAddress serverAddress, SqueaksController squeaksController) {
-        this.serverAddress = serverAddress;
+    public SqueakServerController(SqueakServer server, SqueaksController squeaksController) {
+        this.server = server;
         this.squeaksController = squeaksController;
+        SqueakServerAddress serverAddress = server.serverAddress;
         client = new SqueakRPCClient(serverAddress.getHost(), serverAddress.getPort());
     }
 
@@ -45,7 +47,7 @@ public class SqueakServerController {
         // Download the buy offer to the server.
         Offer offer = client.buySqueak(hash);
         // TODO: save the offer in the database.
-        Log.i(getClass().getName(), "Got offer: " + offer + " from server: " + serverAddress);
+        Log.i(getClass().getName(), "Got offer: " + offer + " from server: " + server.serverAddress);
         return offer;
     }
 

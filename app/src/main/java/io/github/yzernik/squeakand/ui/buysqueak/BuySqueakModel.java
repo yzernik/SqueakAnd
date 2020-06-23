@@ -12,7 +12,7 @@ import java.util.List;
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.OfferRepository;
 import io.github.yzernik.squeakand.SqueakServerRepository;
-import io.github.yzernik.squeakand.server.SqueakServerAsyncClient;
+import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 
 
 public class BuySqueakModel extends AndroidViewModel {
@@ -40,7 +40,7 @@ public class BuySqueakModel extends AndroidViewModel {
         return mAllOffers;
     }
 
-    public SqueakServerAsyncClient getAsyncClient() {
+    public SqueakNetworkAsyncClient getAsyncClient() {
         return squeakServerRepository.getSqueakServerAsyncClient();
     }
 
