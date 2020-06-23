@@ -165,8 +165,8 @@ public class SqueaksController {
         offerDao.insert(offer);
     }
 
-    public void getOfferForSqueakAndServer(Sha256Hash squeakHash, int serverId) {
-        List<Offer> offers = offerDao.fetchOffersBySqueakHashAndServerId(squeakHash, serverId);
+    public Offer getOfferForSqueakAndServer(Sha256Hash squeakHash, int serverId) {
+        return offerDao.fetchOfferBySqueakHashAndServerId(squeakHash, serverId);
     }
 
 }
