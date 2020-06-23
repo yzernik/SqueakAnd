@@ -46,11 +46,11 @@ public class SqueakServerController {
     public Offer getOffer(Sha256Hash hash) {
         // Download the buy offer to the server.
         Offer offer = client.buySqueak(hash);
-        // TODO: save the offer in the database.
         offer.setSqueakServerId(server.getId());
-        squeaksController.saveOffer(offer);
-
         Log.i(getClass().getName(), "Got offer: " + offer + " from server: " + server.serverAddress);
+
+        // TODO: save the offer in the database.
+        squeaksController.saveOffer(offer);
         return offer;
     }
 

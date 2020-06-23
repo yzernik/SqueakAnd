@@ -13,7 +13,7 @@ import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
 import io.github.yzernik.squeaklib.core.Signing;
 
 @Entity(tableName = SqueakRoomDatabase.TABLE_NAME_OFFER,
-        indices = {@Index(value = {"squeakHash"}, unique = true), @Index(value = {"squeakServerId"}, unique = true)})
+        indices = {@Index(value = {"squeakHash"}), @Index(value = {"squeakServerId"})})
 @TypeConverters({Converters.class})
 public class Offer {
 
@@ -94,5 +94,21 @@ public class Offer {
     public int squeakServerId;
 
     public byte[] preimage;
+
+    @Override
+    public String toString() {
+        return "Offer("
+                + "squeakHash: " + squeakHash + ", "
+                + "nonce: " + nonce + ", "
+                + "preimageHash: " + preimageHash + ", "
+                + "amount: " + amount + ", "
+                + "paymentRequest: " + paymentRequest + ", "
+                + "pubkey: " + pubkey + ", "
+                + "host: " + host + ", "
+                + "port: " + port + ", "
+                + "squeakServerId: " + squeakServerId + ", "
+                + "preimage: " + preimage
+                + ")";
+    }
 
 }
