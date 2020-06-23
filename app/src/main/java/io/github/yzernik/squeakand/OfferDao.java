@@ -6,6 +6,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.TypeConverters;
 import androidx.room.Update;
 
 import org.bitcoinj.core.Sha256Hash;
@@ -13,6 +14,7 @@ import org.bitcoinj.core.Sha256Hash;
 import java.util.List;
 
 @Dao
+@TypeConverters({Converters.class})
 public interface OfferDao {
 
     @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_OFFER + " ORDER BY offerId ASC")

@@ -43,7 +43,6 @@ public class Offer {
     @NonNull
     public int squeakServerId;
 
-    @NonNull
     public byte[] preimage;
 
 }

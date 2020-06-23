@@ -51,6 +51,7 @@ public class BuySqueakFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Offer> offers) {
                 Log.i(getTag(), "Got offers: " + offers);
+                txtOfferCount.setText("Number of offers: " + offers.size());
             }
         });
 
