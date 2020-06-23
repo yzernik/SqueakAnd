@@ -82,6 +82,18 @@ public class SqueakNetworkController {
         return null;
     }
 
+    public void getOffers(Sha256Hash squeakHash) {
+        // Try to get offers from all servers
+        for (SqueakServerAddress serverAddress: getServers()) {
+            UploaderDownloader uploaderDownloader = new UploaderDownloader(serverAddress, squeaksController);
+            try {
+                uploaderDownloader.getOffer(squeakHash);
+            } catch (io.grpc.StatusRuntimeException e) {
+                Log.e(getClass().getName(),"Failed to get offer for hash " + squeakHash + " from server " + serverAddress + " with error: " + e);
+            }
+        }
+    }
+
     public void sync() {
         trySync();
     }

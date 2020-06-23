@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.client.SqueakRPCClient;
 import io.github.yzernik.squeakand.squeaks.SqueaksController;
@@ -38,6 +39,14 @@ public class UploaderDownloader {
         Squeak squeak = client.getSqueak(hash);
         squeaksController.save(squeak);
         return squeak;
+    }
+
+    public Offer getOffer(Sha256Hash hash) {
+        // Download the buy offer to the server.
+        Offer offer = client.buySqueak(hash);
+        // TODO: save the offer in the database.
+        Log.i(getClass().getName(), "Got offer: " + offer + " from server: " + serverAddress);
+        return offer;
     }
 
     public void uploadSync(List<String> uploadAddresses, int minBlock, int maxBlock) {

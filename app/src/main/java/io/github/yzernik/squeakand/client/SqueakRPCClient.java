@@ -5,6 +5,7 @@ import org.bitcoinj.core.Sha256Hash;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeaklib.core.Squeak;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -53,6 +54,16 @@ public class SqueakRPCClient {
         try {
             SqueakServerClient client = new SqueakServerClient(channel);
             return client.postSqueak(squeak);
+        } finally {
+            channel.shutdown();
+        }
+    }
+
+    public Offer buySqueak(Sha256Hash hash) {
+        ManagedChannel channel = getChannel();
+        try {
+            SqueakServerClient client = new SqueakServerClient(channel);
+            return client.buySqueak(hash);
         } finally {
             channel.shutdown();
         }
