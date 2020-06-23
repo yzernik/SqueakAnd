@@ -44,12 +44,17 @@ public class SqueakServerController {
     }
 
     public Offer getOffer(Sha256Hash hash) {
+        // Check if there is already an offer in the local database
+        Offer localOffer = squeaksController.getOfferForSqueakAndServer(hash, server.getId());
+        if (localOffer != null) {
+            Log.i(getClass().getName(), "Got offer: " + localOffer + " from local database.");
+            return localOffer;
+        }
+
         // Download the buy offer to the server.
         Offer offer = client.buySqueak(hash);
         offer.setSqueakServerId(server.getId());
         Log.i(getClass().getName(), "Got offer: " + offer + " from server: " + server.serverAddress);
-
-        // TODO: save the offer in the database.
         squeaksController.saveOffer(offer);
         return offer;
     }

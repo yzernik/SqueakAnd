@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
  * app, consider exporting the schema to help you with migrations.
  */
 
-@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class, Offer.class}, version = 8)
+@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class, Offer.class}, version = 9)
 public abstract class SqueakRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";
@@ -48,7 +48,7 @@ public abstract class SqueakRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             SqueakRoomDatabase.class, DB_NAME)
                             //.addCallback(sRoomDatabaseCallback)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9)
                             .build();
                 }
             }
@@ -265,6 +265,41 @@ public abstract class SqueakRoomDatabase extends RoomDatabase {
                     "CREATE INDEX index_offer_squeakHash ON offer (squeakHash)");
             database.execSQL(
                     "CREATE INDEX index_offer_squeakServerId ON offer (squeakServerId)");
+        }
+    };
+
+    @VisibleForTesting
+    static final Migration MIGRATION_8_9 = new Migration(8, 9) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Drop the existing offer table
+            database.execSQL(
+                    "DROP TABLE offer");
+            // Drop the existing offer indices
+            database.execSQL(
+                    "DROP INDEX IF EXISTS index_offer_squeakServerId");
+            database.execSQL(
+                    "DROP INDEX IF EXISTS index_offer_squeakHash");
+            database.execSQL(
+                    "DROP INDEX IF EXISTS index_offer_squeakHash_squeakServerId");
+
+            // Create the table again
+            database.execSQL(
+                    "CREATE TABLE offer (" +
+                            "offerId INTEGER PRIMARY KEY NOT NULL," +
+                            "squeakHash TEXT NOT NULL," +
+                            "nonce BLOB NOT NULL," +
+                            "preimageHash TEXT NOT NULL," +
+                            "amount INTEGER NOT NULL," +
+                            "paymentRequest TEXT NOT NULL," +
+                            "pubkey TEXT NOT NULL," +
+                            "host TEXT NOT NULL," +
+                            "port INTEGER NOT NULL," +
+                            "squeakServerId INTEGER NOT NULL," +
+                            "preimage BLOB)");
+            // Create the new offer index
+            database.execSQL(
+                    "CREATE UNIQUE INDEX index_offer_squeakHash_squeakServerId ON offer (squeakHash, squeakServerId)");
         }
     };
 
