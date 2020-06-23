@@ -35,10 +35,7 @@ import io.github.yzernik.squeakand.SqueakListAdapter;
 import io.github.yzernik.squeakand.ThreadSqueakListAdapter;
 import io.github.yzernik.squeakand.ViewAddressActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
-import io.github.yzernik.squeakand.server.SqueakServerAsyncClient;
-
-import static android.graphics.Color.DKGRAY;
-import static android.graphics.Color.GRAY;
+import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 
 public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.ClickListener {
 
@@ -210,8 +207,8 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
     public void fetchThreadAsync(Sha256Hash squeakHash) {
         Log.i(getTag(), "Calling fetchThreadAsync...");
 
-        SqueakServerAsyncClient asyncClient = todoViewModel.getAsyncClient();
-        asyncClient.fetchThreadAncestors(squeakHash, new SqueakServerAsyncClient.SqueakServerResponseHandler() {
+        SqueakNetworkAsyncClient asyncClient = todoViewModel.getAsyncClient();
+        asyncClient.fetchThreadAncestors(squeakHash, new SqueakNetworkAsyncClient.SqueakServerResponseHandler() {
             @Override
             public void onSuccess() {
                 // Now we call setRefreshing(false) to signal refresh has finished

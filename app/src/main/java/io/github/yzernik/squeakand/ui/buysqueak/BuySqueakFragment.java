@@ -19,6 +19,7 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 
 public class BuySqueakFragment extends Fragment {
 
@@ -55,7 +56,31 @@ public class BuySqueakFragment extends Fragment {
             }
         });
 
+        // Start loading offers when the fragment starts.
+        getOffersAsync();
+
         return root;
+    }
+
+    public void getOffersAsync() {
+        Log.i(getTag(), "Calling getOffersAsync...");
+
+        SqueakNetworkAsyncClient asyncClient = buySqueakModel.getAsyncClient();
+        asyncClient.getOffers(buySqueakModel.getSqueakHash(), new SqueakNetworkAsyncClient.SqueakServerResponseHandler() {
+            @Override
+            public void onSuccess() {
+                Log.i(getTag(), "Finished getting offers with success.");
+
+                // TODO: show the progress has finished
+                // swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Log.d("DEBUG", "Get offers error: " + e.toString());
+            }
+        });
+
     }
 
 

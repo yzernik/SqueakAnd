@@ -8,7 +8,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SqueakServerAsyncClient {
+public class SqueakNetworkAsyncClient {
 
     private static final int SYNC_TIMELINE_TIMEOUT_S = 30;
     private static final int DEFAULT_NUM_THREAD_ANCESTORS = 10;
@@ -16,7 +16,7 @@ public class SqueakServerAsyncClient {
     private SqueakNetworkController squeakNetworkController;
     private final ExecutorService executorService;
 
-    public SqueakServerAsyncClient(SqueakNetworkController squeakNetworkController) {
+    public SqueakNetworkAsyncClient(SqueakNetworkController squeakNetworkController) {
         this.squeakNetworkController = squeakNetworkController;
         this.executorService =  Executors.newCachedThreadPool();
     }
@@ -31,6 +31,12 @@ public class SqueakServerAsyncClient {
         FetchThreadAncestorsTask fetchThreadAncestorsTask = new FetchThreadAncestorsTask(squeakHash, responseHandler);
         Log.i(getClass().getName(), "Submitting new fetch thread ancestors task.");
         executorService.submit(fetchThreadAncestorsTask);
+    }
+
+    public void getOffers(Sha256Hash squeakHash, SqueakServerResponseHandler responseHandler) {
+        GetOffersTask getOffersTask = new GetOffersTask(squeakHash, responseHandler);
+        Log.i(getClass().getName(), "Submitting new get offers task.");
+        executorService.submit(getOffersTask);
     }
 
 
@@ -87,5 +93,33 @@ public class SqueakServerAsyncClient {
             return 0;
         }
     }
+
+
+    class GetOffersTask implements Callable<Integer> {
+
+        private Sha256Hash squeakHash;
+        private SqueakServerResponseHandler responseHandler;
+
+        GetOffersTask(Sha256Hash squeakHash, SqueakServerResponseHandler responseHandler) {
+            this.responseHandler = responseHandler;
+            this.squeakHash = squeakHash;
+        }
+
+        @Override
+        public Integer call() {
+            try {
+                squeakNetworkController.getOffers(squeakHash);
+                Log.i(getClass().getName(),"Fetched offers from servers.");
+                responseHandler.onSuccess();
+            } catch (Exception e) {
+                Log.e(getClass().getName(),"Failed to fetch offers with error: " + e);
+                responseHandler.onFailure(e);
+                throw e;
+            }
+            return 0;
+        }
+    }
+
+
 
 }

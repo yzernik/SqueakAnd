@@ -20,6 +20,7 @@ public class SqueakRepository {
     private static volatile SqueakRepository INSTANCE;
 
     private SqueakDao mSqueakDao;
+    private OfferDao mOfferDao;
     private LiveData<List<SqueakEntry>> mAllSqueaks;
     private LiveData<List<SqueakEntryWithProfile>> mAllSqueaksWithProfile;
     private ElectrumBlockchainRepository electrumBlockchainRepository;
@@ -33,10 +34,11 @@ public class SqueakRepository {
     private SqueakRepository(Application application) {
         SqueakRoomDatabase db = SqueakRoomDatabase.getDatabase(application);
         mSqueakDao = db.squeakDao();
+        mOfferDao = db.offerDao();
         mAllSqueaks = mSqueakDao.getSqueaks();
         mAllSqueaksWithProfile = mSqueakDao.getTimelineSqueaksWithProfile();
         electrumBlockchainRepository = ElectrumBlockchainRepository.getRepository(application);
-        squeaksController = new SqueaksController(mSqueakDao, electrumBlockchainRepository);
+        squeaksController = new SqueaksController(mSqueakDao, mOfferDao, electrumBlockchainRepository);
         blockVerifier = new SqueakBlockVerifier(squeaksController);
     }
 

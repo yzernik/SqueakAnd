@@ -32,7 +32,7 @@ import io.github.yzernik.squeakand.SqueakListAdapter;
 import io.github.yzernik.squeakand.TimelineSqueakListAdapter;
 import io.github.yzernik.squeakand.ViewAddressActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
-import io.github.yzernik.squeakand.server.SqueakServerAsyncClient;
+import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 
 
 public class HomeFragment extends Fragment implements SqueakListAdapter.ClickListener {
@@ -136,8 +136,8 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
         Log.i(getTag(), "Calling fetchTimelineAsync...");
 
 
-        SqueakServerAsyncClient asyncClient = homeViewModel.getSqueakServerAsyncClient();
-        asyncClient.syncTimeline(new SqueakServerAsyncClient.SqueakServerResponseHandler() {
+        SqueakNetworkAsyncClient asyncClient = homeViewModel.getSqueakServerAsyncClient();
+        asyncClient.syncTimeline(new SqueakNetworkAsyncClient.SqueakServerResponseHandler() {
             @Override
             public void onSuccess() {
                 // Now we call setRefreshing(false) to signal refresh has finished
