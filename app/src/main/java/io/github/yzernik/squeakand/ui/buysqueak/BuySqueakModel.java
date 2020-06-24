@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 
 import org.bitcoinj.core.Sha256Hash;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.OfferRepository;
+import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakServerRepository;
 import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 
@@ -38,6 +40,20 @@ public class BuySqueakModel extends AndroidViewModel {
 
     public LiveData<List<Offer>> getOffers() {
         return mAllOffers;
+    }
+
+    public LiveData<Offer> getBestOffer() {
+        return Transformations.map(mAllOffers, offers -> {
+            Offer bestOffer = null;
+            for (Offer offer: offers) {
+                if (bestOffer == null) {
+                    bestOffer = offer;
+                } else if (offer.amount < bestOffer.amount){
+                    bestOffer = offer;
+                }
+            }
+            return bestOffer;
+        });
     }
 
     public SqueakNetworkAsyncClient getAsyncClient() {

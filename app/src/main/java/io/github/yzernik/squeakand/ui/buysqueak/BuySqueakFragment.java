@@ -1,10 +1,12 @@
 package io.github.yzernik.squeakand.ui.buysqueak;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +18,9 @@ import androidx.lifecycle.ViewModelProviders;
 import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
+import java.util.Locale;
 
+import io.github.yzernik.squeakand.NewProfileActivity;
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
@@ -25,6 +29,7 @@ public class BuySqueakFragment extends Fragment {
 
     private TextView txtSqueakHash;
     private TextView txtOfferCount;
+    private Button btnPayBestOffer;
 
     private BuySqueakModel buySqueakModel;
 
@@ -45,6 +50,7 @@ public class BuySqueakFragment extends Fragment {
 
         txtSqueakHash = root.findViewById(R.id.buy_squeak_hash);
         txtOfferCount = root.findViewById(R.id.buy_squeak_offers_count_text);
+        btnPayBestOffer = root.findViewById(R.id.buy_squeak_buy_button);
 
         txtSqueakHash.setText(squeakHash.toString());
 
@@ -53,6 +59,25 @@ public class BuySqueakFragment extends Fragment {
             public void onChanged(@Nullable List<Offer> offers) {
                 Log.i(getTag(), "Got offers: " + offers);
                 txtOfferCount.setText("Number of offers: " + offers.size());
+            }
+        });
+
+        buySqueakModel.getBestOffer().observe(getViewLifecycleOwner(), new Observer<Offer>() {
+            @Override
+            public void onChanged(@Nullable Offer offer) {
+                if(offer == null) {
+                    return;
+                }
+
+                Log.i(getTag(), "Got best offer: " + offer);
+                String buyBtnText = String.format(Locale.ENGLISH, "Pay %d satoshis to buy the squeak.", offer.amount);
+                btnPayBestOffer.setText(buyBtnText);
+                btnPayBestOffer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        System.out.println("Buy button clicked");
+                    }
+                });
             }
         });
 
