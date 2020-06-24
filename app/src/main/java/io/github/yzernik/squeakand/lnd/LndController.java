@@ -28,6 +28,7 @@ public class LndController {
     private static final long WALLET_BALANCE_TIMEOUT_S = 10;
     private static final long LIST_CHANNELS_TIMEOUT_S = 10;
     private static final long NEW_ADDRESS_TIMEOUT_S = 10;
+    private static final long SEND_PAYMENT_TIMEOUT_S = 10;
 
 
     private static final String LND_DIR_RELATIVE_PATH = "/.lnd";
@@ -224,6 +225,21 @@ public class LndController {
     public Rpc.NewAddressResponse newAddress() throws InterruptedException, ExecutionException, TimeoutException {
         Future<Rpc.NewAddressResponse> newAddressResultFuture = newAddressAsync();
         return newAddressResultFuture.get(NEW_ADDRESS_TIMEOUT_S, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Send payment async.
+     */
+    public Future<Rpc.SendResponse> sendPaymentAsync(String paymentRequest) {
+        return SendPaymentTask.sendPayment(paymentRequest, lndClient);
+    }
+
+    /**
+     * Send payment.
+     */
+    public Rpc.SendResponse sendPayment(String paymentRequest) throws InterruptedException, ExecutionException, TimeoutException {
+        Future<Rpc.SendResponse> sendPaymentResultFuture = sendPaymentAsync(paymentRequest);
+        return sendPaymentResultFuture.get(SEND_PAYMENT_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
 }
