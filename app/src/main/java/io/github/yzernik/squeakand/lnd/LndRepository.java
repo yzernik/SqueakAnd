@@ -96,9 +96,9 @@ public class LndRepository {
         MutableLiveData<Rpc.GetInfoResponse> liveGetInfoResponse = new MutableLiveData<>();
         try {
             Future<Rpc.GetInfoResponse> responseFuture = lndController.getInfoAsync();
-            Rpc.GetInfoResponse getInfoResponse = responseFuture.get();
-            liveGetInfoResponse.postValue(getInfoResponse);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            Rpc.GetInfoResponse response = responseFuture.get();
+            liveGetInfoResponse.postValue(response);
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return liveGetInfoResponse;
@@ -106,17 +106,41 @@ public class LndRepository {
 
     public LiveData<Rpc.WalletBalanceResponse> walletBalance() {
         Log.i(getClass().getName(), "Getting walletBalance...");
-        return lndController.walletBalance();
+        MutableLiveData<Rpc.WalletBalanceResponse> liveWalletBalanceResponse = new MutableLiveData<>();
+        try {
+            Future<Rpc.WalletBalanceResponse> responseFuture = lndController.walletBalanceAsync();
+            Rpc.WalletBalanceResponse response = responseFuture.get();
+            liveWalletBalanceResponse.postValue(response);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return liveWalletBalanceResponse;
     }
 
     public LiveData<Rpc.ListChannelsResponse> listChannels() {
         Log.i(getClass().getName(), "Getting listChannels...");
-        return lndController.listChannels();
+        MutableLiveData<Rpc.ListChannelsResponse> liveListChannelsResponse = new MutableLiveData<>();
+        try {
+            Future<Rpc.ListChannelsResponse> responseFuture = lndController.listChannelsAsync();
+            Rpc.ListChannelsResponse response = responseFuture.get();
+            liveListChannelsResponse.postValue(response);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return liveListChannelsResponse;
     }
 
     public LiveData<Rpc.NewAddressResponse> newAddress() {
         Log.i(getClass().getName(), "Getting newAddress...");
-        return lndController.newAddress();
+        MutableLiveData<Rpc.NewAddressResponse> liveNewAddressResponse = new MutableLiveData<>();
+        try {
+            Future<Rpc.NewAddressResponse> responseFuture = lndController.newAddressAsync();
+            Rpc.NewAddressResponse response = responseFuture.get();
+            liveNewAddressResponse.postValue(response);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return liveNewAddressResponse;
     }
 
 }
