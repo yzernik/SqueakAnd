@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -92,7 +93,15 @@ public class LndRepository {
 
     public LiveData<Rpc.GetInfoResponse> getInfo() {
         Log.i(getClass().getName(), "Getting info...");
-        return lndController.getInfo();
+        MutableLiveData<Rpc.GetInfoResponse> liveGetInfoResponse = new MutableLiveData<>();
+        try {
+            Future<Rpc.GetInfoResponse> responseFuture = lndController.getInfoAsync();
+            Rpc.GetInfoResponse getInfoResponse = responseFuture.get();
+            liveGetInfoResponse.postValue(getInfoResponse);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }
+        return liveGetInfoResponse;
     }
 
     public LiveData<Rpc.WalletBalanceResponse> walletBalance() {

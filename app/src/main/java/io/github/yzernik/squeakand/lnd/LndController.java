@@ -27,6 +27,7 @@ public class LndController {
     private static final long UNLOCK_TIMEOUT_S = 10;
     private static final long GEN_SEED_TIMEOUT_S = 10;
     private static final long INIT_WALLET_TIMEOUT_S = 10;
+    private static final long GET_INFO_TIMEOUT_S = 10;
 
 
     private static final String LND_DIR_RELATIVE_PATH = "/.lnd";
@@ -168,22 +169,16 @@ public class LndController {
     /**
      * Get info.
      */
-    public LiveData<Rpc.GetInfoResponse> getInfo() {
-        MutableLiveData<Rpc.GetInfoResponse> liveDataResponse = new MutableLiveData<>(null);
+    public Future<Rpc.GetInfoResponse> getInfoAsync() throws InterruptedException, ExecutionException, TimeoutException {
+        return GetInfoTask.getInfo(lndClient);
+    }
 
-        lndClient.getInfo(new LndClient.GetInfoCallBack() {
-            @Override
-            public void onError(Exception e) {
-                Log.e(getClass().getName(), "Error calling getInfo: " + e);
-            }
-
-            @Override
-            public void onResponse(Rpc.GetInfoResponse response) {
-                liveDataResponse.postValue(response);
-            }
-        });
-
-        return liveDataResponse;
+    /**
+     * Get info.
+     */
+    public Rpc.GetInfoResponse getInfo() throws InterruptedException, ExecutionException, TimeoutException {
+        Future<Rpc.GetInfoResponse> getInfoResultFuture = getInfoAsync();
+        return getInfoResultFuture.get(GET_INFO_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
     /**
