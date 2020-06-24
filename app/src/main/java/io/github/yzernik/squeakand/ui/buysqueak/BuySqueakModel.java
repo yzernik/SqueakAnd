@@ -14,7 +14,10 @@ import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.OfferRepository;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakServerRepository;
+import io.github.yzernik.squeakand.lnd.LndAsyncClient;
+import io.github.yzernik.squeakand.lnd.LndRepository;
 import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
+import lnrpc.Rpc;
 
 
 public class BuySqueakModel extends AndroidViewModel {
@@ -24,6 +27,7 @@ public class BuySqueakModel extends AndroidViewModel {
 
     private OfferRepository offerRepository;
     private SqueakServerRepository squeakServerRepository;
+    private LndRepository lndRepository;
 
 
     public BuySqueakModel(Application application, Sha256Hash squeakHash) {
@@ -31,6 +35,7 @@ public class BuySqueakModel extends AndroidViewModel {
         this.squeakHash = squeakHash;
         this.offerRepository = OfferRepository.getRepository(application);
         squeakServerRepository = SqueakServerRepository.getRepository(application);
+        this.lndRepository = LndRepository.getRepository(application);
         this.mAllOffers = offerRepository.getOffersForSqueak(squeakHash);
     }
 
@@ -58,6 +63,10 @@ public class BuySqueakModel extends AndroidViewModel {
 
     public SqueakNetworkAsyncClient getAsyncClient() {
         return squeakServerRepository.getSqueakServerAsyncClient();
+    }
+
+    public LndAsyncClient getLndAsyncClient() {
+        return lndRepository.getLndAsyncClient();
     }
 
 }

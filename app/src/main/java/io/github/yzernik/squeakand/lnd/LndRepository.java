@@ -23,11 +23,13 @@ public class LndRepository {
     // private LndClient lndClient;
     private LndController lndController;
     private ExecutorService executorService;
+    private LndAsyncClient lndAsyncClient;
 
     private LndRepository(Application application) {
         // Singleton constructor, only called by static method.
         this.lndController = new LndController(application, "testnet");
         this.executorService = Executors.newCachedThreadPool();
+        this.lndAsyncClient = new LndAsyncClient(lndController);
     }
 
     public static LndRepository getRepository(Application application) {
@@ -39,6 +41,10 @@ public class LndRepository {
             }
         }
         return INSTANCE;
+    }
+
+    public LndAsyncClient getLndAsyncClient() {
+        return lndAsyncClient;
     }
 
     public void initialize() {

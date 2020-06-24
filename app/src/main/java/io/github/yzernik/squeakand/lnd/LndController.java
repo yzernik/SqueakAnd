@@ -54,6 +54,10 @@ public class LndController {
         this(application, network, DEFAULT_PASSWORD);
     }
 
+    public LndClient getLndClient() {
+        return lndClient;
+    }
+
     /**
      * Start the lnd node.
      */

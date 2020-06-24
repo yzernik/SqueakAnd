@@ -23,7 +23,9 @@ import java.util.Locale;
 import io.github.yzernik.squeakand.NewProfileActivity;
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.lnd.LndAsyncClient;
 import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
+import lnrpc.Rpc;
 
 public class BuySqueakFragment extends Fragment {
 
@@ -76,6 +78,18 @@ public class BuySqueakFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         System.out.println("Buy button clicked");
+                        LndAsyncClient lndAsyncClient = buySqueakModel.getLndAsyncClient();
+                        lndAsyncClient.sendPayment(offer.paymentRequest, new LndAsyncClient.PaymentResponseHandler() {
+                            @Override
+                            public void onSuccess(Rpc.SendResponse response) {
+                                Log.i(getTag(), "Completed payment successfully with response: " + response);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable e) {
+                                Log.e(getTag(), "Payment failed with failure: " + e);
+                            }
+                        });
                     }
                 });
             }
