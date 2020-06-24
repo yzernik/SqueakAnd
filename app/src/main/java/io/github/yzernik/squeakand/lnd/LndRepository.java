@@ -166,4 +166,22 @@ public class LndRepository {
         return liveNewAddressResponse;
     }
 
+    public LiveData<Rpc.SendResponse> sendPayment(String paymentRequest) {
+        Log.i(getClass().getName(), "Getting sendResponse...");
+        MutableLiveData<Rpc.SendResponse> liveSendResponse = new MutableLiveData<>();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Future<Rpc.SendResponse> responseFuture = lndController.sendPaymentAsync(paymentRequest);
+                    Rpc.SendResponse response = responseFuture.get();
+                    liveSendResponse.postValue(response);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return liveSendResponse;
+    }
+
 }
