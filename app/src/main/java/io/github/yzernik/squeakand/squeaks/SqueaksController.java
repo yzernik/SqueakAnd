@@ -169,4 +169,8 @@ public class SqueaksController {
         return offerDao.fetchOfferBySqueakHashAndServerId(squeakHash, serverId);
     }
 
+    public void deleteOffer(Offer offer) {
+        offerDao.delete(offer);
+    }
+
 }

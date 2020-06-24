@@ -48,7 +48,12 @@ public class SqueakServerController {
         Offer localOffer = squeaksController.getOfferForSqueakAndServer(hash, server.getId());
         if (localOffer != null) {
             Log.i(getClass().getName(), "Got offer: " + localOffer + " from local database.");
-            return localOffer;
+            // TODO: If the offer is expired, delete it.
+            if (true) {
+                squeaksController.deleteOffer(localOffer);
+            } else {
+                return localOffer;
+            }
         }
 
         // Download the buy offer to the server.
@@ -65,7 +70,7 @@ public class SqueakServerController {
         Set<Sha256Hash> remoteHashes = getRemoteHashes(uploadAddresses, minBlock, maxBlock);
         Log.i(getClass().getName(), "Upload server number of hashes: " + remoteHashes.size());
 
-        Set<Sha256Hash> localHashes = getLocalHashes(uploadAddresses, minBlock, maxBlock);
+        Set<Sha256Hash> localHashes = getLocalHashes(uploadAddresses, minBlock, maxBlock, true);
         Log.i(getClass().getName(), "Upload local number of hashes: " + localHashes.size());
 
         // For every local hash not in server hashes, upload.
@@ -100,15 +105,21 @@ public class SqueakServerController {
     }
 
 
-    private Set<Sha256Hash> getLocalHashes(List<String> uploadAddresses, int minBlock, int maxBlock) {
+    private Set<Sha256Hash> getLocalHashes(List<String> uploadAddresses, int minBlock, int maxBlock, boolean onlyUnlocked) {
         Set<Sha256Hash> localHashes = new HashSet<>();
         for (String address: uploadAddresses) {
             // TODO: include block range in DAO method.
             List<SqueakEntry> squeakEntries = squeaksController.fetchSqueaksByAddress(address);
             for (SqueakEntry squeakEntry: squeakEntries) {
-                localHashes.add(squeakEntry.hash);
+                if (!onlyUnlocked || squeakEntry.hasDataKey()) {
+                    localHashes.add(squeakEntry.hash);
+                }
             }
         }
         return localHashes;
+    }
+
+    private Set<Sha256Hash> getLocalHashes(List<String> uploadAddresses, int minBlock, int maxBlock) {
+        return getLocalHashes(uploadAddresses, minBlock, maxBlock, false);
     }
 }
