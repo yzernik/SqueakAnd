@@ -315,4 +315,38 @@ public class LndClient {
         public void onResponse(Rpc.NewAddressResponse response);
     }
 
+    public void sendPayment(String paymentRequest, SendPaymentCallBack callBack) {
+        Rpc.SendRequest request = Rpc.SendRequest.newBuilder()
+                .setPaymentRequest(paymentRequest)
+                .build();
+        Lndmobile.sendPaymentSync(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from sendPayment callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    callBack.onError(new Exception("Null response."));
+                    return;
+                }
+
+                try {
+                    Rpc.SendResponse resp = Rpc.SendResponse.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got sendPayment response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface SendPaymentCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.SendResponse response);
+    }
+
 }
