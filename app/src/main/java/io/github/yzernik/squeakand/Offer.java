@@ -111,4 +111,11 @@ public class Offer {
                 + ")";
     }
 
+    public void setPreimage(byte[] preimage) {
+        if (!Sha256Hash.of(preimage).equals(preimageHash)) {
+            throw new IllegalArgumentException("Invalid preimage");
+        }
+        this.preimage = preimage;
+    }
+
 }

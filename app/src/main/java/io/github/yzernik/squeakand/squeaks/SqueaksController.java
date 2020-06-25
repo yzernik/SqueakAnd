@@ -18,8 +18,10 @@ import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakRoomDatabase;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
+import io.github.yzernik.squeakand.lnd.LndController;
 import io.github.yzernik.squeaklib.core.Squeak;
 import io.github.yzernik.squeaklib.core.VerificationException;
+import lnrpc.Rpc;
 
 public class SqueaksController {
 
@@ -29,13 +31,15 @@ public class SqueaksController {
     private OfferDao offerDao;
     private SqueakBlockVerificationQueue verificationQueue;
     private ElectrumBlockchainRepository electrumBlockchainRepository;
+    private LndController lndController;
 
 
-    public SqueaksController(SqueakDao mSqueakDao, OfferDao offerDao, ElectrumBlockchainRepository electrumBlockchainRepository) {
+    public SqueaksController(SqueakDao mSqueakDao, OfferDao offerDao, ElectrumBlockchainRepository electrumBlockchainRepository, LndController lndController) {
         this.mSqueakDao = mSqueakDao;
         this.offerDao = offerDao;
         this.verificationQueue = new SqueakBlockVerificationQueue();
         this.electrumBlockchainRepository = electrumBlockchainRepository;
+        this.lndController = lndController;
     }
 
     /**
@@ -140,6 +144,15 @@ public class SqueaksController {
         });
     }
 
+    public void setDataKey(SqueakEntry squeakEntry, byte[] preimage) {
+        Log.i(getClass().getName(), "Setting data key for squeak: " + squeakEntry.getSqueak().getHash());
+        Squeak squeak = squeakEntry.getSqueak();
+        squeak.setDataKey(preimage);
+        squeak.verify();
+        SqueakEntry newSqueakEntry = new SqueakEntry(squeak, squeakEntry.block);
+        mSqueakDao.update(newSqueakEntry);
+    }
+
     public List<SqueakEntry> fetchSqueaksByAddress(String address) {
         return mSqueakDao.fetchSqueaksByAddress(address);
     }
@@ -171,6 +184,30 @@ public class SqueaksController {
 
     public void deleteOffer(Offer offer) {
         offerDao.delete(offer);
+    }
+
+    public Rpc.SendResponse payOffer(Offer offer) {
+        try {
+            Rpc.SendResponse sendResponse = lndController.sendPayment(offer.paymentRequest);
+            if (sendResponse.getPaymentPreimage() == null) {
+                // Handle failed payment
+                Log.e(getClass().getName(), "Failed payment: " + sendResponse.getPaymentError());
+            } else{
+                // Handle successful payment
+                byte[] preimage = sendResponse.getPaymentPreimage().toByteArray();
+
+                // Set the offer as complete
+                offer.setPreimage(preimage);
+
+                // Set the squeak data key
+                SqueakEntry squeakEntry = mSqueakDao.fetchSqueakByHash(offer.squeakHash);
+                setDataKey(squeakEntry, preimage);
+            }
+            return sendResponse;
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

@@ -43,6 +43,10 @@ public class LndRepository {
         return INSTANCE;
     }
 
+    public LndController getLndController() {
+        return lndController;
+    }
+
     public LndAsyncClient getLndAsyncClient() {
         return lndAsyncClient;
     }
