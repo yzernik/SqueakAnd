@@ -392,4 +392,40 @@ public class LndClient {
         public void onResponse(Rpc.ConnectPeerResponse response);
     }
 
+    public void openChannel(String pubkey, long amount, OpenChannelCallBack callBack) {
+        Rpc.OpenChannelRequest request = Rpc.OpenChannelRequest.newBuilder()
+                .setNodePubkeyString(pubkey)
+                .setLocalFundingAmount(amount)
+                .build();
+        Lndmobile.openChannelSync(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from openChannelSync callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.ChannelPoint resp = Rpc.ChannelPoint.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got ChannelPoint response: " + resp);
+                    callBack.onResponse(resp);
+                }
+
+                try {
+                    Rpc.ChannelPoint resp = Rpc.ChannelPoint.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got ChannelPoint response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface OpenChannelCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.ChannelPoint response);
+    }
+
 }

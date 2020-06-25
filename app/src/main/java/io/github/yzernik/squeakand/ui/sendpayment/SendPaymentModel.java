@@ -30,4 +30,8 @@ public class SendPaymentModel extends AndroidViewModel {
         return lndRepository.connectPeer(pubkey, host);
     }
 
+    public LiveData<Rpc.ChannelPoint> openChannel(String pubkey, long amount) {
+        return lndRepository.openChannel(pubkey, amount);
+    }
+
 }

@@ -213,4 +213,22 @@ public class LndRepository {
         return liveConnectPeerResponse;
     }
 
+    public LiveData<Rpc.ChannelPoint> openChannel(String pubkey, long amount) {
+        Log.i(getClass().getName(), "Getting openChannel...");
+        MutableLiveData<Rpc.ChannelPoint> liveOpenChannelResponse = new MutableLiveData<>();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Future<Rpc.ChannelPoint> responseFuture = lndController.openChannelAsync(pubkey, amount);
+                    Rpc.ChannelPoint response = responseFuture.get();
+                    liveOpenChannelResponse.postValue(response);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return liveOpenChannelResponse;
+    }
+
 }
