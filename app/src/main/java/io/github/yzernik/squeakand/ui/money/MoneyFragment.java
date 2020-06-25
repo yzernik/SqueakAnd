@@ -50,7 +50,18 @@ public class MoneyFragment extends Fragment {
         mReceiveBitcoinsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showReceiveAddressAlertDialog(inflater, "fake_address");
+
+                // New address
+                moneyViewModel.newAddress().observe(getViewLifecycleOwner(), new Observer<Rpc.NewAddressResponse>() {
+                    @Override
+                    public void onChanged(Rpc.NewAddressResponse response) {
+                        if (response == null) {
+                            return;
+                        }
+                        String address = response.getAddress();
+                        showReceiveAddressAlertDialog(inflater, address);
+                    }
+                });
             }
         });
 
@@ -96,23 +107,13 @@ public class MoneyFragment extends Fragment {
             }
         });
 
-        // New address
-        moneyViewModel.newAddress().observe(getViewLifecycleOwner(), new Observer<Rpc.NewAddressResponse>() {
-            @Override
-            public void onChanged(Rpc.NewAddressResponse response) {
-                if (response == null) {
-                    return;
-                }
-                // TODO: create a recyclerview with the channels.
-            }
-        });
-
     }
 
     private void showReceiveAddressAlertDialog(LayoutInflater inflater, String receiveAddress) {
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Receive bitcoins");
-        // alertDialog.setMessage(msg);
+        String msg = String.format("Receive address: %s", receiveAddress);
+        alertDialog.setMessage(msg);
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Done",
                 new DialogInterface.OnClickListener() {
