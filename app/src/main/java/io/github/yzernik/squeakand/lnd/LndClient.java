@@ -295,7 +295,9 @@ public class LndClient {
             @Override
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
-                    callBack.onError(new Exception("Null response."));
+                    Rpc.NewAddressResponse resp = Rpc.NewAddressResponse.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got walletBalance response: " + resp);
+                    callBack.onResponse(resp);
                     return;
                 }
 
@@ -329,7 +331,9 @@ public class LndClient {
             @Override
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
-                    callBack.onError(new Exception("Null response."));
+                    Rpc.SendResponse resp = Rpc.SendResponse.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got SendResponse response: " + resp);
+                    callBack.onResponse(resp);
                     return;
                 }
 
@@ -347,6 +351,45 @@ public class LndClient {
     public interface SendPaymentCallBack {
         public void onError(Exception e);
         public void onResponse(Rpc.SendResponse response);
+    }
+
+    public void connectPeer(String pubkey, String host, ConnectPeerCallBack callBack) {
+        Rpc.LightningAddress lightningAddress = Rpc.LightningAddress.newBuilder()
+                .setPubkey(pubkey)
+                .setHost(host)
+                .build();
+        Rpc.ConnectPeerRequest request = Rpc.ConnectPeerRequest.newBuilder()
+                .setAddr(lightningAddress)
+                .build();
+        Lndmobile.connectPeer(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from connectPeer callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.ConnectPeerResponse resp = Rpc.ConnectPeerResponse.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got ConnectPeerResponse response: " + resp);
+                    callBack.onResponse(resp);
+                }
+
+                try {
+                    Rpc.ConnectPeerResponse resp = Rpc.ConnectPeerResponse.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got ConnectPeerResponse response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface ConnectPeerCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.ConnectPeerResponse response);
     }
 
 }
