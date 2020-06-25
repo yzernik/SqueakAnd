@@ -3,10 +3,12 @@ package io.github.yzernik.squeakand.ui.money;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -109,6 +111,8 @@ public class MoneyFragment extends Fragment {
 
     }
 
+
+    /*
     private void showReceiveAddressAlertDialog(LayoutInflater inflater, String receiveAddress) {
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Receive bitcoins");
@@ -122,6 +126,26 @@ public class MoneyFragment extends Fragment {
                     }
                 });
 
+        alertDialog.show();
+    }*/
+
+
+    private void showReceiveAddressAlertDialog(LayoutInflater inflater, String receiveAddress) {
+        final View view = inflater.inflate(R.layout.dialog_receive_bitcoins, null);
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Receive bitcoins");
+
+        final TextView receiveBitoinsAddressText = (TextView) view.findViewById(R.id.receive_bitcoins_address);
+        receiveBitoinsAddressText.setText(receiveAddress);
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Done",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        alertDialog.setView(view);
         alertDialog.show();
     }
 
