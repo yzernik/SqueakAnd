@@ -27,7 +27,10 @@ public interface OfferDao {
     Offer fetchOfferBySqueakHashAndServerId(Sha256Hash squeakHash, int serverId);
 
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_OFFER + " WHERE offerId = :offerId")
-    LiveData<Offer> fetchOfferById(int offerId);
+    LiveData<Offer> fetchLiveOfferById(int offerId);
+
+    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_OFFER + " WHERE offerId = :offerId")
+    Offer fetchOfferById(int offerId);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Offer offer);

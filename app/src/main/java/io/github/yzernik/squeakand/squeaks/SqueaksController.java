@@ -189,7 +189,8 @@ public class SqueaksController {
     public Rpc.SendResponse payOffer(Offer offer) {
         try {
             Rpc.SendResponse sendResponse = lndController.sendPayment(offer.paymentRequest);
-            if (sendResponse.getPaymentPreimage() == null) {
+            Log.e(getClass().getName(), "sendResponse.getPaymentPreimage: " + sendResponse.getPaymentPreimage());
+            if (sendResponse.getPaymentPreimage().isEmpty()) {
                 // Handle failed payment
                 Log.e(getClass().getName(), "Failed payment: " + sendResponse.getPaymentError());
             } else{

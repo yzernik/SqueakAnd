@@ -108,12 +108,13 @@ public class SqueakRepository {
         return squeaksController;
     }
 
-    public LiveData<Rpc.SendResponse> buyOffer(Offer offer) {
+    public LiveData<Rpc.SendResponse> buyOffer(int offerId) {
         Log.i(getClass().getName(), "Buying offer...");
         MutableLiveData<Rpc.SendResponse> liveSendResponse = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
+                Offer offer = mOfferDao.fetchOfferById(offerId);
                 Rpc.SendResponse response = squeaksController.payOffer(offer);
                 liveSendResponse.postValue(response);
             }
