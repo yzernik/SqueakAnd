@@ -33,6 +33,8 @@ public class SendPaymentFragment extends Fragment {
             offerId = this.getArguments().getInt("offer_id");
         }
 
+        Log.i(getTag(), "Starting sendpayment fragment with offerId: " + offerId);
+
         sendPaymentModel = ViewModelProviders.of(this,
                 new SendPaymentModelFactory(getActivity().getApplication(), offerId))
                 .get(SendPaymentModel.class);
