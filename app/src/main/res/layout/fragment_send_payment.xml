@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.buysqueak.BuySqueakFragment">
+    tools:context=".ui.sendpayment.SendPaymentFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,22 +12,13 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/buy_squeak_offers_count_text"
+            android:id="@+id/send_payment_offer"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/buy_squeak_hash"
+            android:id="@+id/send_payment_payment_result_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/buy_squeak_buy_button"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </LinearLayout>

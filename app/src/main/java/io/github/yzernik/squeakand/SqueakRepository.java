@@ -4,16 +4,23 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
+import io.github.yzernik.squeakand.lnd.LndRepository;
 import io.github.yzernik.squeakand.squeaks.SqueakBlockVerifier;
 import io.github.yzernik.squeakand.squeaks.SqueaksController;
 import io.github.yzernik.squeaklib.core.Squeak;
+import lnrpc.Rpc;
 
 public class SqueakRepository {
 
@@ -24,8 +31,11 @@ public class SqueakRepository {
     private LiveData<List<SqueakEntry>> mAllSqueaks;
     private LiveData<List<SqueakEntryWithProfile>> mAllSqueaksWithProfile;
     private ElectrumBlockchainRepository electrumBlockchainRepository;
+    private LndRepository lndRepository;
     private SqueaksController squeaksController;
     private SqueakBlockVerifier blockVerifier;
+    private ExecutorService executorService;
+
 
     // Note that in order to unit test the TodoRepository, you have to remove the Application
     // dependency. This adds complexity and much more code, and this sample is not about testing.
@@ -38,8 +48,10 @@ public class SqueakRepository {
         mAllSqueaks = mSqueakDao.getSqueaks();
         mAllSqueaksWithProfile = mSqueakDao.getTimelineSqueaksWithProfile();
         electrumBlockchainRepository = ElectrumBlockchainRepository.getRepository(application);
-        squeaksController = new SqueaksController(mSqueakDao, mOfferDao, electrumBlockchainRepository);
+        lndRepository = LndRepository.getRepository(application);
+        squeaksController = new SqueaksController(mSqueakDao, mOfferDao, electrumBlockchainRepository, lndRepository.getLndController());
         blockVerifier = new SqueakBlockVerifier(squeaksController);
+        this.executorService = Executors.newCachedThreadPool();
     }
 
     public static SqueakRepository getRepository(Application application) {
@@ -94,6 +106,20 @@ public class SqueakRepository {
 
     public SqueaksController getController() {
         return squeaksController;
+    }
+
+    public LiveData<Rpc.SendResponse> buyOffer(int offerId) {
+        Log.i(getClass().getName(), "Buying offer...");
+        MutableLiveData<Rpc.SendResponse> liveSendResponse = new MutableLiveData<>();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                Offer offer = mOfferDao.fetchOfferById(offerId);
+                Rpc.SendResponse response = squeaksController.payOffer(offer);
+                liveSendResponse.postValue(response);
+            }
+        });
+        return liveSendResponse;
     }
 
 }

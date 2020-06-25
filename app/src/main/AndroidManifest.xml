@@ -61,6 +61,10 @@
             android:name=".BuySqueakActivity"
             android:parentActivityName=".ViewSqueakActivity"
             android:label="@string/activity_buy_squeak" />
+        <activity
+            android:name=".SendPaymentActivity"
+            android:parentActivityName=".BuySqueakActivity"
+            android:label="@string/activity_send_payment" />
     </application>
 
 </manifest>
