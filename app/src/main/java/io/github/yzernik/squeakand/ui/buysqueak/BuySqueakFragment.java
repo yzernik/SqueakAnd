@@ -23,15 +23,11 @@ import org.bitcoinj.core.Sha256Hash;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.yzernik.squeakand.NewProfileActivity;
+import io.github.yzernik.squeakand.BuySqueakActivity;
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.lnd.LndAsyncClient;
+import io.github.yzernik.squeakand.SendPaymentActivity;
 import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
-import lnrpc.Rpc;
-
-import static org.bitcoinj.core.Utils.HEX;
 
 public class BuySqueakFragment extends Fragment {
 
@@ -86,6 +82,8 @@ public class BuySqueakFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         System.out.println("Buy button clicked");
+
+                        /*
                         Context context = getContext();
                         LndAsyncClient lndAsyncClient = buySqueakModel.getLndAsyncClient();
                         lndAsyncClient.sendPayment(offer.paymentRequest, new LndAsyncClient.PaymentResponseHandler() {
@@ -102,7 +100,11 @@ public class BuySqueakFragment extends Fragment {
                                 Log.e(getTag(), "Payment failed with failure: " + e);
                                 showFailedPaymentAlertDialog(context, e.getMessage());
                             }
-                        });
+                        });*/
+
+
+                        // Start the send payment activity
+                        startSendPaymentActivity(offer);
                     }
                 });
             }
@@ -150,6 +152,10 @@ public class BuySqueakFragment extends Fragment {
                 });
 
         alertDialog.show();
+    }
+
+    private void startSendPaymentActivity(Offer offer) {
+        startActivity(new Intent(getActivity(), SendPaymentActivity.class).putExtra("offer_id", offer.getOfferId()));
     }
 
 
