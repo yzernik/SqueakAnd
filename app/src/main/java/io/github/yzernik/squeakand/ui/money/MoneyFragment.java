@@ -1,9 +1,14 @@
 package io.github.yzernik.squeakand.ui.money;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,7 +17,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.SqueakProfile;
 import lnrpc.Rpc;
+
+import static org.bitcoinj.core.Utils.HEX;
 
 public class MoneyFragment extends Fragment {
 
@@ -23,6 +31,7 @@ public class MoneyFragment extends Fragment {
     private TextView mSyncedToGraphText;
     private TextView mConfirmedBalance;
     private TextView mTotalBalance;
+    private Button mReceiveBitcoinsButton;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -33,11 +42,30 @@ public class MoneyFragment extends Fragment {
         mSyncedToGraphText = root.findViewById(R.id.synced_to_graph_text);
         mConfirmedBalance = root.findViewById(R.id.confirmed_balance_text);
         mTotalBalance = root.findViewById(R.id.total_balance_text);
+        mReceiveBitcoinsButton = root.findViewById(R.id.receive_bitcoins_button);
 
         // Get a new or existing ViewModel from the ViewModelProvider.
         moneyViewModel = new ViewModelProvider(this).get(MoneyViewModel.class);
 
         updateGetInfo();
+
+        mReceiveBitcoinsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // New address
+                moneyViewModel.newAddress().observe(getViewLifecycleOwner(), new Observer<Rpc.NewAddressResponse>() {
+                    @Override
+                    public void onChanged(Rpc.NewAddressResponse response) {
+                        if (response == null) {
+                            return;
+                        }
+                        String address = response.getAddress();
+                        showReceiveAddressAlertDialog(inflater, address);
+                    }
+                });
+            }
+        });
 
         return root;
     }
@@ -81,17 +109,44 @@ public class MoneyFragment extends Fragment {
             }
         });
 
-        // New address
-        moneyViewModel.newAddress().observe(getViewLifecycleOwner(), new Observer<Rpc.NewAddressResponse>() {
-            @Override
-            public void onChanged(Rpc.NewAddressResponse response) {
-                if (response == null) {
-                    return;
-                }
-                // TODO: create a recyclerview with the channels.
-            }
-        });
+    }
 
+
+    /*
+    private void showReceiveAddressAlertDialog(LayoutInflater inflater, String receiveAddress) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Receive bitcoins");
+        String msg = String.format("Receive address: %s", receiveAddress);
+        alertDialog.setMessage(msg);
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Done",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        alertDialog.show();
+    }*/
+
+
+    private void showReceiveAddressAlertDialog(LayoutInflater inflater, String receiveAddress) {
+        final View view = inflater.inflate(R.layout.dialog_receive_bitcoins, null);
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Receive bitcoins");
+
+        final TextView receiveBitoinsAddressText = (TextView) view.findViewById(R.id.receive_bitcoins_address);
+        receiveBitoinsAddressText.setText(receiveAddress);
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Done",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        alertDialog.setView(view);
+        alertDialog.show();
     }
 
 }
