@@ -194,4 +194,63 @@ public class LndRepository {
         return liveSendResponse;
     }
 
+
+    public LiveData<Rpc.ConnectPeerResponse> connectPeer(String pubkey, String host) {
+        Log.i(getClass().getName(), "Getting connectPeer...");
+        MutableLiveData<Rpc.ConnectPeerResponse> liveConnectPeerResponse = new MutableLiveData<>();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Future<Rpc.ConnectPeerResponse> responseFuture = lndController.connectPeerAsync(pubkey, host);
+                    Rpc.ConnectPeerResponse response = responseFuture.get();
+                    liveConnectPeerResponse.postValue(response);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return liveConnectPeerResponse;
+    }
+
+    public LiveData<Rpc.ChannelPoint> openChannel(String pubkey, long amount) {
+        Log.i(getClass().getName(), "Getting openChannel...");
+        MutableLiveData<Rpc.ChannelPoint> liveOpenChannelResponse = new MutableLiveData<>();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Future<Rpc.ChannelPoint> responseFuture = lndController.openChannelAsync(pubkey, amount);
+                    Rpc.ChannelPoint response = responseFuture.get();
+                    liveOpenChannelResponse.postValue(response);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return liveOpenChannelResponse;
+    }
+
+    public LiveData<Rpc.ChannelEventUpdate> subscribeChannelEvents() {
+        Log.i(getClass().getName(), "Getting subscribeChannelEvents...");
+        MutableLiveData<Rpc.ChannelEventUpdate> liveChannelEvents = new MutableLiveData<>();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                lndController.subscribeChannelEvents(new LndClient.SubscribeChannelEventsRecvStream() {
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(getClass().getName(), "Failed to get channel event: " + e);
+                    }
+
+                    @Override
+                    public void onUpdate(Rpc.ChannelEventUpdate update) {
+                        liveChannelEvents.postValue(update);
+                    }
+                });
+            }
+        });
+        return liveChannelEvents;
+    }
+
 }

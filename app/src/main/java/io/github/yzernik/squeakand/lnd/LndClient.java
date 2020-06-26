@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 
 import lndmobile.Callback;
 import lndmobile.Lndmobile;
+import lndmobile.RecvStream;
 import lnrpc.Rpc;
 import lnrpc.Walletunlocker;
 
@@ -295,7 +296,9 @@ public class LndClient {
             @Override
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
-                    callBack.onError(new Exception("Null response."));
+                    Rpc.NewAddressResponse resp = Rpc.NewAddressResponse.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got walletBalance response: " + resp);
+                    callBack.onResponse(resp);
                     return;
                 }
 
@@ -329,7 +332,9 @@ public class LndClient {
             @Override
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
-                    callBack.onError(new Exception("Null response."));
+                    Rpc.SendResponse resp = Rpc.SendResponse.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got SendResponse response: " + resp);
+                    callBack.onResponse(resp);
                     return;
                 }
 
@@ -347,6 +352,117 @@ public class LndClient {
     public interface SendPaymentCallBack {
         public void onError(Exception e);
         public void onResponse(Rpc.SendResponse response);
+    }
+
+    public void connectPeer(String pubkey, String host, ConnectPeerCallBack callBack) {
+        Rpc.LightningAddress lightningAddress = Rpc.LightningAddress.newBuilder()
+                .setPubkey(pubkey)
+                .setHost(host)
+                .build();
+        Rpc.ConnectPeerRequest request = Rpc.ConnectPeerRequest.newBuilder()
+                .setAddr(lightningAddress)
+                .build();
+        Lndmobile.connectPeer(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from connectPeer callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.ConnectPeerResponse resp = Rpc.ConnectPeerResponse.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got ConnectPeerResponse response: " + resp);
+                    callBack.onResponse(resp);
+                    return;
+                }
+
+                try {
+                    Rpc.ConnectPeerResponse resp = Rpc.ConnectPeerResponse.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got ConnectPeerResponse response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface ConnectPeerCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.ConnectPeerResponse response);
+    }
+
+    public void openChannel(String pubkey, long amount, OpenChannelCallBack callBack) {
+        Rpc.OpenChannelRequest request = Rpc.OpenChannelRequest.newBuilder()
+                .setNodePubkeyString(pubkey)
+                .setLocalFundingAmount(amount)
+                .build();
+        Lndmobile.openChannelSync(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from openChannelSync callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.ChannelPoint resp = Rpc.ChannelPoint.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got ChannelPoint response: " + resp);
+                    callBack.onResponse(resp);
+                    return;
+                }
+
+                try {
+                    Rpc.ChannelPoint resp = Rpc.ChannelPoint.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got ChannelPoint response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface OpenChannelCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.ChannelPoint response);
+    }
+
+    public void subscribeChannelEvents(SubscribeChannelEventsRecvStream callBack) {
+        Rpc.ChannelEventSubscription request = Rpc.ChannelEventSubscription.newBuilder().build();
+        Lndmobile.subscribeChannelEvents(request.toByteArray(), new RecvStream() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from subscribeChannelEvents RecvStream: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.ChannelEventUpdate update = Rpc.ChannelEventUpdate.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got ChannelEventUpdate update: " + update);
+                    callBack.onUpdate(update);
+                    return;
+                }
+
+                try {
+                    Rpc.ChannelEventUpdate update = Rpc.ChannelEventUpdate.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got ChannelPoint update: " + update);
+                    callBack.onUpdate(update);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface SubscribeChannelEventsRecvStream {
+        public void onError(Exception e);
+        public void onUpdate(Rpc.ChannelEventUpdate update);
     }
 
 }

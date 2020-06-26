@@ -40,4 +40,8 @@ public class OfferRepository {
         return mOfferDao.fetchOffersBySqueakHash(squeakHash);
     }
 
+    public LiveData<Offer> getOffer(int offerId) {
+        return mOfferDao.fetchLiveOfferById(offerId);
+    }
+
 }

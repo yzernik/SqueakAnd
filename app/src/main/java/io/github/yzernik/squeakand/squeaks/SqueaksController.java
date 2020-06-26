@@ -18,6 +18,7 @@ import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakRoomDatabase;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
+import io.github.yzernik.squeakand.crypto.CryptoUtil;
 import io.github.yzernik.squeakand.lnd.LndController;
 import io.github.yzernik.squeaklib.core.Squeak;
 import io.github.yzernik.squeaklib.core.VerificationException;
@@ -201,10 +202,49 @@ public class SqueaksController {
                 offer.setPreimage(preimage);
 
                 // Set the squeak data key
+                byte[] dataKey = CryptoUtil.xor(offer.nonce, preimage);
                 SqueakEntry squeakEntry = mSqueakDao.fetchSqueakByHash(offer.squeakHash);
-                setDataKey(squeakEntry, preimage);
+                setDataKey(squeakEntry, dataKey);
             }
             return sendResponse;
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Rpc.ConnectPeerResponse connectPeerToOffer(Offer offer) {
+        try {
+            Rpc.ConnectPeerResponse connectPeerResponse = lndController.connectPeer(offer.pubkey, offer.host);
+            Log.e(getClass().getName(), "connectPeerResponse: " + connectPeerResponse);
+            return connectPeerResponse;
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public Rpc.ChannelPoint openChannelToOffer(Offer offer, long amount) {
+        try {
+            Rpc.ChannelPoint openChannelResponse = lndController.openChannel(offer.pubkey, amount);
+            Log.e(getClass().getName(), "openChannelResponse: " + openChannelResponse);
+            return openChannelResponse;
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Rpc.Channel getChannelToOffer(Offer offer) {
+        try {
+            Rpc.ListChannelsResponse listChannelsResponse = lndController.listChannels();
+            for (Rpc.Channel channel: listChannelsResponse.getChannelsList()) {
+                if (channel.getRemotePubkey().equals(offer.pubkey)) {
+                    return channel;
+                }
+            }
+            return null;
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
             return null;
