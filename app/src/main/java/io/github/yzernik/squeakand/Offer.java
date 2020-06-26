@@ -93,6 +93,9 @@ public class Offer {
     @NonNull
     public int squeakServerId;
 
+    @NonNull
+    public boolean hasValidPreimage;
+
     public byte[] preimage;
 
     @Override
@@ -107,6 +110,7 @@ public class Offer {
                 + "host: " + host + ", "
                 + "port: " + port + ", "
                 + "squeakServerId: " + squeakServerId + ", "
+                + "hasValidPreimage: " + hasValidPreimage + ", "
                 + "preimage: " + preimage
                 + ")";
     }
@@ -122,6 +126,16 @@ public class Offer {
             throw new IllegalArgumentException("Invalid preimage");
         }
         this.preimage = preimage;
+    }
+
+    @Ignore
+    public void setHasValidPreimage(boolean hasValidPreimage) {
+        this.hasValidPreimage = hasValidPreimage;
+    }
+
+    @Ignore
+    public boolean getHasValidPreimage() {
+        return hasValidPreimage;
     }
 
 }

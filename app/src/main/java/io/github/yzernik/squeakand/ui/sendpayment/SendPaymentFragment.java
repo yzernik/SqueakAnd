@@ -75,6 +75,11 @@ public class SendPaymentFragment extends Fragment {
                     return;
                 }
 
+                // Finish the activity if payment succeeded
+                if (!response.getPaymentPreimage().isEmpty()) {
+                    getActivity().finish();
+                }
+
                 Log.i(getTag(), "Got payment response: " + response);
                 txtSendPaymentResult.setText("Payment response error: " + response.getPaymentError());
             }
