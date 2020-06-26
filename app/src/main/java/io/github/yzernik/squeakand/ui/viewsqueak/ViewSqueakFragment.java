@@ -148,6 +148,10 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
                         }
                     });
 
+                } else {
+                    txtSqueakText.setVisibility(View.VISIBLE);
+                    buyButton.setVisibility(View.GONE);
+                    squeakCardView.setBackgroundColor(Color.parseColor("white"));
                 }
                 
             }
