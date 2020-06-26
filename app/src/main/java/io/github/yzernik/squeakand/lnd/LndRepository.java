@@ -231,4 +231,26 @@ public class LndRepository {
         return liveOpenChannelResponse;
     }
 
+    public LiveData<Rpc.ChannelEventUpdate> subscribeChannelEvents() {
+        Log.i(getClass().getName(), "Getting subscribeChannelEvents...");
+        MutableLiveData<Rpc.ChannelEventUpdate> liveChannelEvents = new MutableLiveData<>();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                lndController.subscribeChannelEvents(new LndClient.SubscribeChannelEventsRecvStream() {
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(getClass().getName(), "Failed to get channel event: " + e);
+                    }
+
+                    @Override
+                    public void onUpdate(Rpc.ChannelEventUpdate update) {
+                        liveChannelEvents.postValue(update);
+                    }
+                });
+            }
+        });
+        return liveChannelEvents;
+    }
+
 }

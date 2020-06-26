@@ -18,6 +18,7 @@ import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakRoomDatabase;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
+import io.github.yzernik.squeakand.crypto.CryptoUtil;
 import io.github.yzernik.squeakand.lnd.LndController;
 import io.github.yzernik.squeaklib.core.Squeak;
 import io.github.yzernik.squeaklib.core.VerificationException;
@@ -201,8 +202,9 @@ public class SqueaksController {
                 offer.setPreimage(preimage);
 
                 // Set the squeak data key
+                byte[] dataKey = CryptoUtil.xor(offer.nonce, preimage);
                 SqueakEntry squeakEntry = mSqueakDao.fetchSqueakByHash(offer.squeakHash);
-                setDataKey(squeakEntry, preimage);
+                setDataKey(squeakEntry, dataKey);
             }
             return sendResponse;
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -223,9 +225,9 @@ public class SqueaksController {
     }
 
 
-    public Rpc.ChannelPoint openChannelToOffer(Offer offer) {
+    public Rpc.ChannelPoint openChannelToOffer(Offer offer, long amount) {
         try {
-            Rpc.ChannelPoint openChannelResponse = lndController.openChannel(offer.pubkey, offer.amount);
+            Rpc.ChannelPoint openChannelResponse = lndController.openChannel(offer.pubkey, amount);
             Log.e(getClass().getName(), "openChannelResponse: " + openChannelResponse);
             return openChannelResponse;
         } catch (InterruptedException | ExecutionException | TimeoutException e) {

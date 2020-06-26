@@ -274,8 +274,16 @@ public class LndController {
      * Open channel.
      */
     public Rpc.ChannelPoint openChannel(String pubkey, long amount) throws InterruptedException, ExecutionException, TimeoutException {
+        Log.i(getClass().getName(), "Openning channel with pubkey: " + pubkey + ", funding amount: " + amount);
         Future<Rpc.ChannelPoint> openChannelResultFuture = openChannelAsync(pubkey, amount);
         return openChannelResultFuture.get(OPEN_CHANNEL_TIMEOUT_S, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Open channel async.
+     */
+    public void subscribeChannelEvents(LndClient.SubscribeChannelEventsRecvStream recvStream) {
+        lndClient.subscribeChannelEvents(recvStream);
     }
 
 }

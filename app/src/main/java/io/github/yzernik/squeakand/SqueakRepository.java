@@ -136,20 +136,35 @@ public class SqueakRepository {
         return liveConnectPeerResponse;
     }
 
-    public LiveData<Rpc.ChannelPoint> openOfferChannel(int offerId) {
+    public LiveData<Rpc.ChannelPoint> openOfferChannel(int offerId, long amount) {
         Log.i(getClass().getName(), "Opening channel...");
         MutableLiveData<Rpc.ChannelPoint> liveOpenChannelResponse = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
                 Offer offer = mOfferDao.fetchOfferById(offerId);
-                Rpc.ChannelPoint response = squeaksController.openChannelToOffer(offer);
+
+                // Connect to the offer node
+                squeaksController.connectPeerToOffer(offer);
+
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                // Open the channel to the node
+                Rpc.ChannelPoint response = squeaksController.openChannelToOffer(offer, amount);
+
                 liveOpenChannelResponse.postValue(response);
             }
         });
         return liveOpenChannelResponse;
     }
 
+
+    /*
     public LiveData<Rpc.Channel> getOfferChannel(int offerId) {
         Log.i(getClass().getName(), "Getting offer channel...");
         MutableLiveData<Rpc.Channel> liveChannelResponse = new MutableLiveData<>();
@@ -162,6 +177,6 @@ public class SqueakRepository {
             }
         });
         return liveChannelResponse;
-    }
+    }*/
 
 }

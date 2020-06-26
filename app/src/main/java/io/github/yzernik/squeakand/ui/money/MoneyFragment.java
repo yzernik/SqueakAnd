@@ -106,6 +106,7 @@ public class MoneyFragment extends Fragment {
                     return;
                 }
                 // TODO: create a recyclerview with the channels.
+                Log.i(getTag(), "Got channels: " + response.getChannelsList());
             }
         });
 

@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 
 import lndmobile.Callback;
 import lndmobile.Lndmobile;
+import lndmobile.RecvStream;
 import lnrpc.Rpc;
 import lnrpc.Walletunlocker;
 
@@ -374,6 +375,7 @@ public class LndClient {
                     Rpc.ConnectPeerResponse resp = Rpc.ConnectPeerResponse.getDefaultInstance();
                     Log.i(getClass().getName(), "Got ConnectPeerResponse response: " + resp);
                     callBack.onResponse(resp);
+                    return;
                 }
 
                 try {
@@ -410,6 +412,7 @@ public class LndClient {
                     Rpc.ChannelPoint resp = Rpc.ChannelPoint.getDefaultInstance();
                     Log.i(getClass().getName(), "Got ChannelPoint response: " + resp);
                     callBack.onResponse(resp);
+                    return;
                 }
 
                 try {
@@ -426,6 +429,40 @@ public class LndClient {
     public interface OpenChannelCallBack {
         public void onError(Exception e);
         public void onResponse(Rpc.ChannelPoint response);
+    }
+
+    public void subscribeChannelEvents(SubscribeChannelEventsRecvStream callBack) {
+        Rpc.ChannelEventSubscription request = Rpc.ChannelEventSubscription.newBuilder().build();
+        Lndmobile.subscribeChannelEvents(request.toByteArray(), new RecvStream() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from subscribeChannelEvents RecvStream: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.ChannelEventUpdate update = Rpc.ChannelEventUpdate.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got ChannelEventUpdate update: " + update);
+                    callBack.onUpdate(update);
+                    return;
+                }
+
+                try {
+                    Rpc.ChannelEventUpdate update = Rpc.ChannelEventUpdate.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got ChannelPoint update: " + update);
+                    callBack.onUpdate(update);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface SubscribeChannelEventsRecvStream {
+        public void onError(Exception e);
+        public void onUpdate(Rpc.ChannelEventUpdate update);
     }
 
 }
