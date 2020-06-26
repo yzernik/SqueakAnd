@@ -42,6 +42,8 @@ public class MoneyFragment extends Fragment {
         switch(position) {
             case 0:
                 return "Balance";
+            case 1:
+                return "Channels";
             default:
                 return null;
         }

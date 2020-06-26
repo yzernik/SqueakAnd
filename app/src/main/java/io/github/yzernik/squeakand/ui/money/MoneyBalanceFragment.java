@@ -3,7 +3,6 @@ package io.github.yzernik.squeakand.ui.money;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,6 +93,8 @@ public class MoneyBalanceFragment extends Fragment {
             }
         });
 
+
+        /*
         // Get channels
         moneyViewModel.listChannels().observe(getViewLifecycleOwner(), new Observer<Rpc.ListChannelsResponse>() {
             @Override
@@ -119,7 +120,7 @@ public class MoneyBalanceFragment extends Fragment {
                     Log.i(getTag(), "Got peer: " + peer);
                 }
             }
-        });
+        });*/
 
     }
 
