@@ -211,4 +211,42 @@ public class SqueaksController {
         }
     }
 
+    public Rpc.ConnectPeerResponse connectPeerToOffer(Offer offer) {
+        try {
+            Rpc.ConnectPeerResponse connectPeerResponse = lndController.connectPeer(offer.pubkey, offer.host);
+            Log.e(getClass().getName(), "connectPeerResponse: " + connectPeerResponse);
+            return connectPeerResponse;
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public Rpc.ChannelPoint openChannelToOffer(Offer offer) {
+        try {
+            Rpc.ChannelPoint openChannelResponse = lndController.openChannel(offer.pubkey, offer.amount);
+            Log.e(getClass().getName(), "openChannelResponse: " + openChannelResponse);
+            return openChannelResponse;
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Rpc.Channel getChannelToOffer(Offer offer) {
+        try {
+            Rpc.ListChannelsResponse listChannelsResponse = lndController.listChannels();
+            for (Rpc.Channel channel: listChannelsResponse.getChannelsList()) {
+                if (channel.getRemotePubkey().equals(offer.pubkey)) {
+                    return channel;
+                }
+            }
+            return null;
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

@@ -44,6 +44,12 @@ public class SendPaymentFragment extends Fragment {
 
         txtSendPaymentOffer.setText("Offer id: " + offerId);
 
+        sendPayment();
+
+        return root;
+    }
+
+    private void sendPayment() {
         sendPaymentModel.sendPayment().observe(getViewLifecycleOwner(), new Observer<Rpc.SendResponse>() {
             @Override
             public void onChanged(@Nullable Rpc.SendResponse response) {
@@ -55,8 +61,19 @@ public class SendPaymentFragment extends Fragment {
                 txtSendPaymentResult.setText("Payment response error: " + response.getPaymentError());
             }
         });
+    }
 
-        return root;
+    private void openChannel() {
+        sendPaymentModel.connectPeer().observe(getViewLifecycleOwner(), new Observer<Rpc.ConnectPeerResponse>() {
+            @Override
+            public void onChanged(@Nullable Rpc.ConnectPeerResponse response) {
+                if (response == null) {
+                    return;
+                }
+
+                Log.i(getTag(), "Got connectPeer response: " + response);
+            }
+        });
     }
 
 }
