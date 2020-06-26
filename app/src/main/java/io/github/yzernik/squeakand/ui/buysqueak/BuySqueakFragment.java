@@ -62,7 +62,20 @@ public class BuySqueakFragment extends Fragment {
         buySqueakModel.getOffers().observe(getViewLifecycleOwner(), new Observer<List<Offer>>() {
             @Override
             public void onChanged(@Nullable List<Offer> offers) {
+                if (offers == null) {
+                    return;
+                }
+
                 Log.i(getTag(), "Got offers: " + offers);
+
+                // Finish the activity if any offer is already completed.
+                for (Offer offer: offers) {
+                    Log.i(getTag(), "Checking offer for valid preimage: " + offer);
+                    if (offer.getHasValidPreimage()) {
+                        getActivity().finish();
+                    }
+                }
+
                 txtOfferCount.setText("Number of offers: " + offers.size());
             }
         });

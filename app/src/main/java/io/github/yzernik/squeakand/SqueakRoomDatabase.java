@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
  * app, consider exporting the schema to help you with migrations.
  */
 
-@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class, Offer.class}, version = 9)
+@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class, Offer.class}, version = 10)
 public abstract class SqueakRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";
@@ -48,7 +48,7 @@ public abstract class SqueakRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             SqueakRoomDatabase.class, DB_NAME)
                             //.addCallback(sRoomDatabaseCallback)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10)
                             .build();
                 }
             }
@@ -300,6 +300,14 @@ public abstract class SqueakRoomDatabase extends RoomDatabase {
             // Create the new offer index
             database.execSQL(
                     "CREATE UNIQUE INDEX index_offer_squeakHash_squeakServerId ON offer (squeakHash, squeakServerId)");
+        }
+    };
+
+    @VisibleForTesting
+    static final Migration MIGRATION_9_10 = new Migration(9, 10) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE offer ADD COLUMN hasValidPreimage INTEGER NOT NULL DEFAULT 0");
         }
     };
 

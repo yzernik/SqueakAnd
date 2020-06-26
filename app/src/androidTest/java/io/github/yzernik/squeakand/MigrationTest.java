@@ -31,6 +31,7 @@ import static io.github.yzernik.squeakand.SqueakRoomDatabase.MIGRATION_5_6;
 import static io.github.yzernik.squeakand.SqueakRoomDatabase.MIGRATION_6_7;
 import static io.github.yzernik.squeakand.SqueakRoomDatabase.MIGRATION_7_8;
 import static io.github.yzernik.squeakand.SqueakRoomDatabase.MIGRATION_8_9;
+import static io.github.yzernik.squeakand.SqueakRoomDatabase.MIGRATION_9_10;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
@@ -117,6 +118,6 @@ public class MigrationTest {
 
     // Array of all migrations
     private static final Migration[] ALL_MIGRATIONS = new Migration[]{
-            MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9};
+            MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10};
 
 }

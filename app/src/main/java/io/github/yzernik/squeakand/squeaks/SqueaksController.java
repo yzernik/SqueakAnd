@@ -154,6 +154,11 @@ public class SqueaksController {
         mSqueakDao.update(newSqueakEntry);
     }
 
+    public void setOfferHasValidPreimage(Offer offer, boolean hasValidPreimage) {
+        offer.setHasValidPreimage(hasValidPreimage);
+        offerDao.update(offer);
+    }
+
     public List<SqueakEntry> fetchSqueaksByAddress(String address) {
         return mSqueakDao.fetchSqueaksByAddress(address);
     }
@@ -201,15 +206,32 @@ public class SqueaksController {
                 // Set the offer as complete
                 offer.setPreimage(preimage);
 
-                // Set the squeak data key
+                // Set the squeak data key if valid
                 byte[] dataKey = CryptoUtil.xor(offer.nonce, preimage);
                 SqueakEntry squeakEntry = mSqueakDao.fetchSqueakByHash(offer.squeakHash);
-                setDataKey(squeakEntry, dataKey);
+
+                Squeak squeak = squeakEntry.getSqueak();
+                if (isValidDataKey(squeak, dataKey)) {
+                    setOfferHasValidPreimage(offer, true);
+                    setDataKey(squeakEntry, dataKey);
+                } else {
+                    setOfferHasValidPreimage(offer, false);
+                }
             }
             return sendResponse;
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private boolean isValidDataKey(Squeak squeak, byte[] dataKey) {
+        squeak.setDataKey(dataKey);
+        try {
+            squeak.verify();
+            return true;
+        } catch (VerificationException e) {
+            return false;
         }
     }
 
