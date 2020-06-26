@@ -17,12 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/lightning_node_pubkey_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="No node pubkey" />
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -59,6 +53,28 @@
 
             <TextView
                 android:id="@+id/synced_to_graph_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textIsSelectable="true"
+                android:layout_gravity="right|center_vertical"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unconfirmed balance (satoshis):"
+                android:layout_gravity="left|center_vertical"/>
+
+            <TextView
+                android:id="@+id/unconfirmed_balance_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""

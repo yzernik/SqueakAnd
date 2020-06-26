@@ -26,10 +26,10 @@ public class MoneyFragment extends Fragment {
 
     private MoneyViewModel moneyViewModel;
 
-    private TextView mLightningNodePubKeyText;
     private TextView mSyncedToChainText;
     private TextView mSyncedToGraphText;
     private TextView mConfirmedBalance;
+    private TextView mUnconfirmedBalance;
     private TextView mTotalBalance;
     private Button mReceiveBitcoinsButton;
 
@@ -37,10 +37,10 @@ public class MoneyFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_money, container, false);
 
-        mLightningNodePubKeyText = root.findViewById(R.id.lightning_node_pubkey_text);
         mSyncedToChainText = root.findViewById(R.id.synced_to_chain_text);
         mSyncedToGraphText = root.findViewById(R.id.synced_to_graph_text);
         mConfirmedBalance = root.findViewById(R.id.confirmed_balance_text);
+        mUnconfirmedBalance = root.findViewById(R.id.unconfirmed_balance_text);
         mTotalBalance = root.findViewById(R.id.total_balance_text);
         mReceiveBitcoinsButton = root.findViewById(R.id.receive_bitcoins_button);
 
@@ -80,7 +80,6 @@ public class MoneyFragment extends Fragment {
                 if (response == null) {
                     return;
                 }
-                mLightningNodePubKeyText.setText(response.getIdentityPubkey());
                 mSyncedToChainText.setText(Boolean.toString(response.getSyncedToChain()));
                 mSyncedToGraphText.setText(Boolean.toString(response.getSyncedToGraph()));
             }
@@ -93,6 +92,7 @@ public class MoneyFragment extends Fragment {
                 if (response == null) {
                     return;
                 }
+                mUnconfirmedBalance.setText(Long.toString(response.getUnconfirmedBalance()));
                 mConfirmedBalance.setText(Long.toString(response.getConfirmedBalance()));
                 mTotalBalance.setText(Long.toString(response.getTotalBalance()));
             }
