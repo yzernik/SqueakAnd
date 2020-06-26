@@ -110,6 +110,21 @@ public class MoneyFragment extends Fragment {
             }
         });
 
+        // Get peers
+        moneyViewModel.listPeers().observe(getViewLifecycleOwner(), new Observer<Rpc.ListPeersResponse>() {
+            @Override
+            public void onChanged(Rpc.ListPeersResponse response) {
+                if (response == null) {
+                    return;
+                }
+                // TODO: create a recyclerview with the channels.
+                Log.i(getTag(), "Got number of peers: " + response.getPeersList());
+                for (Rpc.Peer peer: response.getPeersList()) {
+                    Log.i(getTag(), "Got peer: " + peer);
+                }
+            }
+        });
+
     }
 
 

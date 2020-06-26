@@ -394,6 +394,42 @@ public class LndClient {
         public void onResponse(Rpc.ConnectPeerResponse response);
     }
 
+    public void listPeers(ListPeersCallBack callBack) {
+        Rpc.ListPeersRequest request = Rpc.ListPeersRequest.newBuilder()
+                .setLatestError(true)
+                .build();
+        Lndmobile.listPeers(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from listPeers callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.ListPeersResponse resp = Rpc.ListPeersResponse.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got listPeers response: " + resp);
+                    callBack.onResponse(resp);
+                    return;
+                }
+
+                try {
+                    Rpc.ListPeersResponse resp = Rpc.ListPeersResponse.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got listPeers response: " + resp);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface ListPeersCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.ListPeersResponse response);
+    }
+
     public void openChannel(String pubkey, long amount, OpenChannelCallBack callBack) {
         Rpc.OpenChannelRequest request = Rpc.OpenChannelRequest.newBuilder()
                 .setNodePubkeyString(pubkey)

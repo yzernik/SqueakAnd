@@ -30,6 +30,7 @@ public class LndController {
     private static final long NEW_ADDRESS_TIMEOUT_S = 10;
     private static final long SEND_PAYMENT_TIMEOUT_S = 10;
     private static final long CONNECT_PEER_TIMEOUT_S = 10;
+    private static final long LIST_PEERS_TIMEOUT_S = 10;
     private static final long OPEN_CHANNEL_TIMEOUT_S = 10;
 
 
@@ -261,6 +262,21 @@ public class LndController {
     public Rpc.ConnectPeerResponse connectPeer(String pubkey, String host) throws InterruptedException, ExecutionException, TimeoutException {
         Future<Rpc.ConnectPeerResponse> connectPeerResultFuture = connectPeerAsync(pubkey, host);
         return connectPeerResultFuture.get(CONNECT_PEER_TIMEOUT_S, TimeUnit.SECONDS);
+    }
+
+    /**
+     * List peers async.
+     */
+    public Future<Rpc.ListPeersResponse> listPeersAsync() {
+        return ListPeersTask.listPeers(lndClient);
+    }
+
+    /**
+     * List peers.
+     */
+    public Rpc.ListPeersResponse listPeers() throws InterruptedException, ExecutionException, TimeoutException {
+        Future<Rpc.ListPeersResponse> listPeersResultFuture = listPeersAsync();
+        return listPeersResultFuture.get(LIST_PEERS_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
     /**
