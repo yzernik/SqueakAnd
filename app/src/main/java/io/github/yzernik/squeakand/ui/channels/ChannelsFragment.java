@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -55,6 +56,12 @@ public class ChannelsFragment extends Fragment implements ChannelListAdapter.Cli
         return root;
     }
 
+    private void closeChannel(Rpc.Channel channel) {
+        String channelPointString = channel.getChannelPoint();
+        LiveData<Rpc.ClosedChannelUpdate> closeChannelUpdates = channelsViewModel.closeChannel(channelPointString);
+
+    }
+
     @Override
     public void handleItemClick(Rpc.Channel channel) {
         // TODO: go to view channel activity
@@ -62,10 +69,8 @@ public class ChannelsFragment extends Fragment implements ChannelListAdapter.Cli
 
     @Override
     public void handleItemCloseClick(Rpc.Channel channel) {
-        // TODO: close the channel here
         Log.i(getTag(), "Closing channel: " + channel);
-        String channelPointString = channel.getChannelPoint();
-        channelsViewModel.closeChannel(channelPointString);
+        closeChannel(channel);
     }
 
 }
