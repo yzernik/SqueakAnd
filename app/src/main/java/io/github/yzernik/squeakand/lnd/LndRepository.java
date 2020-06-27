@@ -6,7 +6,9 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -303,6 +305,49 @@ public class LndRepository {
             }
         });
         return liveCloseChannel;
+    }
+
+    public LiveData<Set<String>> liveConnectedPeers() {
+        Log.i(getClass().getName(), "Getting connected peers...");
+        MutableLiveData<Set<String>> livePeers = new MutableLiveData<>();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    Rpc.ListPeersResponse listPeersResponse = lndController.listPeers();
+                    Set<String> connectedPeers = new HashSet<>();
+
+                    // Add the initial peers to the set.
+                    for (Rpc.Peer peer: listPeersResponse.getPeersList()) {
+                        connectedPeers.add(peer.getPubKey());
+                    }
+                    livePeers.postValue(connectedPeers);
+
+                    // Keep the set updated with the results from the updates.
+                    lndController.subscribePeerEvents(new LndClient.SubscribePeerEventsRecvStream() {
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e(getClass().getName(), "Failed to get peer event update: " + e);
+                        }
+
+                        @Override
+                        public void onUpdate(Rpc.PeerEvent update) {
+                            if (update.getType().equals(Rpc.PeerEvent.EventType.PEER_ONLINE)) {
+                                connectedPeers.add(update.getPubKey());
+                            } else {
+                                connectedPeers.remove(update.getPubKey());
+                            }
+                            livePeers.postValue(connectedPeers);
+                        }
+                    });
+
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return livePeers;
     }
 
 }

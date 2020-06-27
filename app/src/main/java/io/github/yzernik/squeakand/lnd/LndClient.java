@@ -538,4 +538,40 @@ public class LndClient {
         public void onUpdate(Rpc.ClosedChannelUpdate update);
     }
 
+
+    public void subscribePeerEvents(SubscribePeerEventsRecvStream callBack) {
+        Rpc.PeerEventSubscription request = Rpc.PeerEventSubscription.newBuilder().build();
+        Lndmobile.subscribePeerEvents(request.toByteArray(), new RecvStream() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from subscribePeerEvents RecvStream: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.PeerEvent update = Rpc.PeerEvent.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got PeerEvent update: " + update);
+                    callBack.onUpdate(update);
+                    return;
+                }
+
+                try {
+                    Rpc.PeerEvent update = Rpc.PeerEvent.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got PeerEvent update: " + update);
+                    callBack.onUpdate(update);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface SubscribePeerEventsRecvStream {
+        public void onError(Exception e);
+        public void onUpdate(Rpc.PeerEvent update);
+    }
+
+
 }
