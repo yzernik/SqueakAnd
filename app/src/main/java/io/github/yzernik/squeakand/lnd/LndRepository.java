@@ -271,7 +271,7 @@ public class LndRepository {
         return liveChannelEvents;
     }
 
-    public LiveData<Rpc.ClosedChannelUpdate> closeChannel(String channelPointString) {
+    public LiveData<Rpc.ClosedChannelUpdate> closeChannel(String channelPointString, boolean force) {
         String[] parts = channelPointString.split(":");
         String fundingTx = parts[0];
         int outputIndex = Integer.parseInt(parts[1]);
@@ -280,16 +280,16 @@ public class LndRepository {
                 .setFundingTxidStr(fundingTx)
                 .setOutputIndex(outputIndex)
                 .build();
-        return closeChannel(channelPoint);
+        return closeChannel(channelPoint, force);
     }
 
-    public LiveData<Rpc.ClosedChannelUpdate> closeChannel(Rpc.ChannelPoint channelPoint) {
+    public LiveData<Rpc.ClosedChannelUpdate> closeChannel(Rpc.ChannelPoint channelPoint, boolean force) {
         Log.i(getClass().getName(), "Getting closeChannel...");
         MutableLiveData<Rpc.ClosedChannelUpdate> liveCloseChannel = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                lndController.closeChannel(channelPoint, new LndClient.CloseChannelEventsRecvStream() {
+                lndController.closeChannel(channelPoint, force, new LndClient.CloseChannelEventsRecvStream() {
                     @Override
                     public void onError(Exception e) {
                         Log.e(getClass().getName(), "Failed to get close channel update: " + e);

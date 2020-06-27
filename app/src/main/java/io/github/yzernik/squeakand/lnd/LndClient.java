@@ -501,9 +501,10 @@ public class LndClient {
         public void onUpdate(Rpc.ChannelEventUpdate update);
     }
 
-    public void closeChannel(Rpc.ChannelPoint channelPoint, CloseChannelEventsRecvStream callBack) {
+    public void closeChannel(Rpc.ChannelPoint channelPoint, boolean force, CloseChannelEventsRecvStream callBack) {
         Rpc.CloseChannelRequest request = Rpc.CloseChannelRequest.newBuilder()
                 .setChannelPoint(channelPoint)
+                .setForce(force)
                 .build();
         Lndmobile.closeChannel(request.toByteArray(), new RecvStream() {
             @Override
