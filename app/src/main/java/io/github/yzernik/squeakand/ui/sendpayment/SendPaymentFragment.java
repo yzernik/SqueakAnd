@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import java.util.Set;
+
 import io.github.yzernik.squeakand.R;
 import lnrpc.Rpc;
 
@@ -20,6 +22,7 @@ public class SendPaymentFragment extends Fragment {
 
     private TextView txtSendPaymentOffer;
     private TextView txtSendPaymentResult;
+    private TextView txtOfferPeerStatus;
     private TextView txtChannelToOfferNode;
 
     private SendPaymentModel sendPaymentModel;
@@ -42,6 +45,7 @@ public class SendPaymentFragment extends Fragment {
 
         txtSendPaymentOffer = root.findViewById(R.id.send_payment_offer);
         txtSendPaymentResult = root.findViewById(R.id.send_payment_payment_result_text);
+        txtOfferPeerStatus = root.findViewById(R.id.send_payment_offer_peer_status_text);
         txtChannelToOfferNode = root.findViewById(R.id.channel_to_offer_node_text);
 
         txtSendPaymentOffer.setText("Offer id: " + offerId);
@@ -71,6 +75,21 @@ public class SendPaymentFragment extends Fragment {
 
                 // TODO: remove
                 // openChannel(20000);
+            }
+        });
+
+        sendPaymentModel.liveConnectedPeers().observe(getViewLifecycleOwner(), new Observer<Set<String>>() {
+            @Override
+            public void onChanged(@Nullable Set<String> connectedPeers) {
+                if (connectedPeers == null) {
+                    return;
+                }
+
+                Log.i(getTag(), "Got number of connected peers: " + connectedPeers.size());
+                txtOfferPeerStatus.setText("Got number of connected peers: " + connectedPeers.size());
+                for (String peerPubkey: connectedPeers) {
+                    Log.i(getTag(), "Got connected peer pubkey: " + peerPubkey);
+                }
             }
         });
 

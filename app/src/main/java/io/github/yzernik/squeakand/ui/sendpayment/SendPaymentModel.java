@@ -7,6 +7,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import java.util.Set;
+
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.OfferRepository;
 import io.github.yzernik.squeakand.SqueakRepository;
@@ -97,6 +99,10 @@ public class SendPaymentModel extends AndroidViewModel {
         });*/
 
         return liveInitialOfferChannel();
+    }
+
+    public LiveData<Set<String>> liveConnectedPeers() {
+        return lndRepository.liveConnectedPeers();
     }
 
 

@@ -309,4 +309,11 @@ public class LndController {
         lndClient.closeChannel(channelPoint, force, recvStream);
     }
 
+    /**
+     * Subscribe peer events.
+     */
+    public void subscribePeerEvents(LndClient.SubscribePeerEventsRecvStream recvStream) {
+        lndClient.subscribePeerEvents(recvStream);
+    }
+
 }
