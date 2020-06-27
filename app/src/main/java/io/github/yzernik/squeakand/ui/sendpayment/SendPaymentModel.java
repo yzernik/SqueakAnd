@@ -1,6 +1,7 @@
 package io.github.yzernik.squeakand.ui.sendpayment;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -40,11 +41,9 @@ public class SendPaymentModel extends AndroidViewModel {
         return squeakRepository.buyOffer(offerId);
     }
 
-
-    /*
     public LiveData<Rpc.ConnectPeerResponse> connectPeer() {
         return squeakRepository.connectPeer(offerId);
-    }*/
+    }
 
     public LiveData<Rpc.ChannelPoint> openChannel(long amount) {
         return squeakRepository.openOfferChannel(offerId, amount);
@@ -55,7 +54,10 @@ public class SendPaymentModel extends AndroidViewModel {
         return Transformations.switchMap(liveChannelsList, channelsList -> {
             return Transformations.map(liveOffer, offer -> {
                 for (Rpc.Channel channel: channelsList.getChannelsList()) {
+                    Log.i(getClass().getName(), "channel.getRemotePubkey: " + channel.getRemotePubkey());
+                    Log.i(getClass().getName(), "offer.pubkey: " + offer.pubkey);
                     if (channel.getRemotePubkey().equals(offer.pubkey)) {
+                        Log.i(getClass().getName(), "Found channel for offer: " + channel);
                         return channel;
                     }
                 }
@@ -70,8 +72,10 @@ public class SendPaymentModel extends AndroidViewModel {
             return Transformations.map(liveOffer, offer -> {
                 Rpc.Channel openChannel = update.getOpenChannel();
                 if (openChannel.getRemotePubkey().equals(offer.pubkey)) {
+                    Log.i(getClass().getName(), "Found opened channel for offer: " + openChannel);
                     return openChannel;
                 }
+
                 return null;
             });
         });
@@ -79,14 +83,20 @@ public class SendPaymentModel extends AndroidViewModel {
 
     // TODO: move this logic to repository, use pubkey as parameter.
     public LiveData<Rpc.Channel> liveOfferChannel () {
-        return Transformations.switchMap(liveInitialOfferChannel(), initialOfferChannel -> {
+/*        return Transformations.switchMap(liveInitialOfferChannel(), initialOfferChannel -> {
             return Transformations.map(liveSubscribedOfferChannel(), subscribedOfferChannel -> {
+
+                Log.i(getClass().getName(), "Inside transformation (initialOfferChannel): " + initialOfferChannel);
+                Log.i(getClass().getName(), "Inside transformation (subscribedOfferChannel): " + subscribedOfferChannel);
+
                 if (subscribedOfferChannel != null) {
                     return subscribedOfferChannel;
                 }
                 return initialOfferChannel;
             });
-        });
+        });*/
+
+        return liveInitialOfferChannel();
     }
 
 

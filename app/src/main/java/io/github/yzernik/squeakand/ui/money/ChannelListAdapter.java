@@ -19,6 +19,7 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
 
     class ChannelViewHolder extends RecyclerView.ViewHolder {
         public TextView txtChannelPubkey;
+        public TextView txtChannelIsActive;
         public TextView txtChannelCapacity;
         public TextView txtChannelLocalBalance;
         public TextView txtChannelRemoteBalance;
@@ -29,6 +30,7 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
             super(view);
 
             txtChannelPubkey = view.findViewById(R.id.channel_item_pubkey_text);
+            txtChannelIsActive = view.findViewById(R.id.channel_item_is_active_text);
             txtChannelCapacity = view.findViewById(R.id.channel_item_capacity_text);
             txtChannelLocalBalance = view.findViewById(R.id.channel_item_local_balance_text);
             txtChannelRemoteBalance = view.findViewById(R.id.channel_item_remote_balance_text);
@@ -72,6 +74,7 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
         if (mChannels != null) {
             Rpc.Channel current = mChannels.get(position);
             holder.txtChannelPubkey.setText(current.getRemotePubkey());
+            holder.txtChannelIsActive.setText("Is Active: " + current.getActive());
             holder.txtChannelCapacity.setText("Capacity: " + current.getCapacity());
             holder.txtChannelLocalBalance.setText("Local balance: " + current.getLocalBalance());
             holder.txtChannelRemoteBalance.setText("Remote balance: " + current.getRemoteBalance());

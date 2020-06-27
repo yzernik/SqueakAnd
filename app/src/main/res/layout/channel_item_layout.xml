@@ -25,6 +25,11 @@
                 android:layout_width="match_parent" />
 
             <TextView
+                android:id="@+id/channel_item_is_active_text"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent" />
+
+            <TextView
                 android:id="@+id/channel_item_capacity_text"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent" />
