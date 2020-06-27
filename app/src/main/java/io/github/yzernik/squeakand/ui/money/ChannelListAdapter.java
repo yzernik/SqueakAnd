@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -18,12 +19,20 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
 
     class ChannelViewHolder extends RecyclerView.ViewHolder {
         public TextView txtChannelPubkey;
+        public TextView txtChannelCapacity;
+        public TextView txtChannelLocalBalance;
+        public TextView txtChannelRemoteBalance;
+        public Button btnChannelClose;
         public CardView cardView;
 
         public ChannelViewHolder(View view) {
             super(view);
 
             txtChannelPubkey = view.findViewById(R.id.channel_item_pubkey_text);
+            txtChannelCapacity = view.findViewById(R.id.channel_item_capacity_text);
+            txtChannelLocalBalance = view.findViewById(R.id.channel_item_local_balance_text);
+            txtChannelRemoteBalance = view.findViewById(R.id.channel_item_remote_balance_text);
+            btnChannelClose = view.findViewById(R.id.channel_item_close_button);
             cardView = view.findViewById(R.id.channelCardView);
 
             cardView.setOnClickListener(new View.OnClickListener() {
@@ -56,6 +65,9 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
         if (mChannels != null) {
             Rpc.Channel current = mChannels.get(position);
             holder.txtChannelPubkey.setText(current.getRemotePubkey());
+            holder.txtChannelCapacity.setText("Capacity: " + current.getCapacity());
+            holder.txtChannelLocalBalance.setText("Local balance: " + current.getLocalBalance());
+            holder.txtChannelRemoteBalance.setText("Remote balance: " + current.getRemoteBalance());
         } else {
             // Covers the case of data not being ready yet.
             holder.txtChannelPubkey.setText("No pubkey");

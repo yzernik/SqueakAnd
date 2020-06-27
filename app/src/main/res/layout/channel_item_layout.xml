@@ -24,6 +24,27 @@
                 android:layout_height="match_parent"
                 android:layout_width="match_parent" />
 
+            <TextView
+                android:id="@+id/channel_item_capacity_text"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent" />
+
+            <TextView
+                android:id="@+id/channel_item_local_balance_text"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent" />
+
+            <TextView
+                android:id="@+id/channel_item_remote_balance_text"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent" />
+
+            <Button
+                android:id="@+id/channel_item_close_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Close channel" />
+
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

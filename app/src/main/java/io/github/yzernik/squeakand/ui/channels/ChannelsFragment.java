@@ -1,6 +1,7 @@
 package io.github.yzernik.squeakand.ui.channels;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,10 @@ public class ChannelsFragment extends Fragment implements ChannelListAdapter.Cli
             public void onChanged(@Nullable final Rpc.ListChannelsResponse listChannelsResponse) {
                 if (listChannelsResponse == null) {
                     return;
+                }
+
+                for (Rpc.Channel channel: listChannelsResponse.getChannelsList()) {
+                    Log.i(getTag(), "Got channel: " + channel);
                 }
 
                 // Update the cached copy of the profiles in the adapter.
