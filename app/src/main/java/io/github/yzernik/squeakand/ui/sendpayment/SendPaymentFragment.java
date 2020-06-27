@@ -46,6 +46,9 @@ public class SendPaymentFragment extends Fragment {
 
         txtSendPaymentOffer.setText("Offer id: " + offerId);
 
+        // TODO: remove this. Connect peer is used here because channels become inactive when peer is not connected.
+        sendPaymentModel.connectPeer();
+
         sendPaymentModel.liveOfferChannel().observe(getViewLifecycleOwner(), new Observer<Rpc.Channel>() {
             @Override
             public void onChanged(@Nullable Rpc.Channel channel) {
@@ -55,14 +58,21 @@ public class SendPaymentFragment extends Fragment {
 
                 Log.i(getTag(), "Got channel to offer node: " + channel);
                 txtChannelToOfferNode.setText("Channelpoint" + channel.getChannelPoint() + ", localbalance: "  + channel.getLocalBalance());
+
+                Log.i(getTag(), "channel.getActive(): " + channel.getActive());
+
+                // Send payment when fragment starts
+                if (channel.getActive()) {
+                    // TODO: check local balance against offer price
+                    // if (channel.getLocalBalance() < offerAmount)
+
+                    sendPayment();
+                }
+
+                // TODO: remove
+                // openChannel(20000);
             }
         });
-
-        // Send payment when fragment starts
-        sendPayment();
-
-        // TODO: remove
-        openChannel(20000);
 
         return root;
     }
