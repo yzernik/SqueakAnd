@@ -105,6 +105,20 @@ public class SendPaymentModel extends AndroidViewModel {
         return lndRepository.liveConnectedPeers();
     }
 
+    public LiveData<Boolean> liveIsOfferPeerConnected() {
+        return Transformations.switchMap(liveConnectedPeers(), connectedPeers -> {
+            return Transformations.map(liveOffer, offer -> {
+
+                Log.i(getClass().getName(), "Connected peers: " + connectedPeers);
+                for (String peer: connectedPeers) {
+                    Log.i(getClass().getName(), "Connected peer: " + peer);
+                }
+                Log.i(getClass().getName(), "offer.pubkey: " + offer.pubkey);
+
+                return connectedPeers.contains(offer.pubkey);
+            });
+        });
+    }
 
 
 }

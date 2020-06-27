@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,8 @@ public class SendPaymentFragment extends Fragment {
     private TextView txtSendPaymentResult;
     private TextView txtOfferPeerStatus;
     private TextView txtChannelToOfferNode;
+    private Button btnOpenChannel;
+    private Button btnPay;
 
     private SendPaymentModel sendPaymentModel;
 
@@ -47,11 +50,25 @@ public class SendPaymentFragment extends Fragment {
         txtSendPaymentResult = root.findViewById(R.id.send_payment_payment_result_text);
         txtOfferPeerStatus = root.findViewById(R.id.send_payment_offer_peer_status_text);
         txtChannelToOfferNode = root.findViewById(R.id.channel_to_offer_node_text);
+        btnOpenChannel = root.findViewById(R.id.send_payment_open_channel_button);
+        btnPay = root.findViewById(R.id.send_payment_pay_button);
+
+        btnPay.setVisibility(View.GONE);
 
         txtSendPaymentOffer.setText("Offer id: " + offerId);
 
         // TODO: remove this. Connect peer is used here because channels become inactive when peer is not connected.
         sendPaymentModel.connectPeer();
+
+        // Handle opening channel
+        btnOpenChannel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openChannel(20000);
+            }
+        });
+        btnOpenChannel.setVisibility(View.VISIBLE);
+
 
         sendPaymentModel.liveOfferChannel().observe(getViewLifecycleOwner(), new Observer<Rpc.Channel>() {
             @Override
@@ -70,15 +87,19 @@ public class SendPaymentFragment extends Fragment {
                     // TODO: check local balance against offer price
                     // if (channel.getLocalBalance() < offerAmount)
 
-                    sendPayment();
+                    btnPay.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            sendPayment();
+                        }
+                    });
+                    btnPay.setVisibility(View.VISIBLE);
                 }
-
-                // TODO: remove
-                // openChannel(20000);
             }
         });
 
-        sendPaymentModel.liveConnectedPeers().observe(getViewLifecycleOwner(), new Observer<Set<String>>() {
+        /*
+            sendPaymentModel.liveConnectedPeers().observe(getViewLifecycleOwner(), new Observer<Set<String>>() {
             @Override
             public void onChanged(@Nullable Set<String> connectedPeers) {
                 if (connectedPeers == null) {
@@ -90,6 +111,14 @@ public class SendPaymentFragment extends Fragment {
                 for (String peerPubkey: connectedPeers) {
                     Log.i(getTag(), "Got connected peer pubkey: " + peerPubkey);
                 }
+            }
+        });*/
+
+        sendPaymentModel.liveIsOfferPeerConnected().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isOfferPeerConnected) {
+                Log.i(getTag(), "Is offer peer connected: " + isOfferPeerConnected);
+                txtOfferPeerStatus.setText("Is offer peer connected: " + isOfferPeerConnected);
             }
         });
 

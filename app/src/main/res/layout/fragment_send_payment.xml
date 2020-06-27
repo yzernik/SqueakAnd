@@ -33,6 +33,19 @@
             android:layout_height="wrap_content"
             android:text="No channel to offer node" />
 
+        <Button
+            android:id="@+id/send_payment_open_channel_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open channel to offer node" />
+
+        <Button
+            android:id="@+id/send_payment_pay_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pay" />
+
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

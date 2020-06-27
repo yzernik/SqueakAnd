@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import java.util.List;
+
 import io.github.yzernik.squeakand.lnd.LndRepository;
 import lnrpc.Rpc;
 
@@ -18,8 +20,10 @@ public class ChannelsModel extends AndroidViewModel {
         this.lndRepository = LndRepository.getRepository(application);
     }
 
-    LiveData<Rpc.ListChannelsResponse> listChannels() {
-        return lndRepository.listChannels();
+    LiveData<List<Rpc.Channel>> listChannels() {
+        // return lndRepository.listChannels();
+
+        return lndRepository.getLiveChannels();
     }
 
     LiveData<Rpc.ClosedChannelUpdate> closeChannel(String channelPoint) {

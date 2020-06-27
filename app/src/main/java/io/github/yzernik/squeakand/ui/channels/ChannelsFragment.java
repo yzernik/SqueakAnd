@@ -36,19 +36,19 @@ public class ChannelsFragment extends Fragment implements ChannelListAdapter.Cli
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
-        channelsViewModel.listChannels().observe(getViewLifecycleOwner(), new Observer<Rpc.ListChannelsResponse>() {
+        channelsViewModel.listChannels().observe(getViewLifecycleOwner(), new Observer<List<Rpc.Channel>>() {
             @Override
-            public void onChanged(@Nullable final Rpc.ListChannelsResponse listChannelsResponse) {
-                if (listChannelsResponse == null) {
+            public void onChanged(@Nullable final List<Rpc.Channel> channels) {
+                if (channels == null) {
                     return;
                 }
 
-                for (Rpc.Channel channel: listChannelsResponse.getChannelsList()) {
+                for (Rpc.Channel channel: channels) {
                     Log.i(getTag(), "Got channel: " + channel);
                 }
 
                 // Update the cached copy of the profiles in the adapter.
-                List<Rpc.Channel> channels = listChannelsResponse.getChannelsList();
+                // List<Rpc.Channel> channels = listChannelsResponse.getChannelsList();
                 adapter.setProfiles(channels);
             }
         });
