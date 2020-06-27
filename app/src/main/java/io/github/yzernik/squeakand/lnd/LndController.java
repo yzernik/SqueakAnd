@@ -30,6 +30,7 @@ public class LndController {
     private static final long NEW_ADDRESS_TIMEOUT_S = 10;
     private static final long SEND_PAYMENT_TIMEOUT_S = 10;
     private static final long CONNECT_PEER_TIMEOUT_S = 10;
+    private static final long LIST_PEERS_TIMEOUT_S = 10;
     private static final long OPEN_CHANNEL_TIMEOUT_S = 10;
 
 
@@ -264,6 +265,21 @@ public class LndController {
     }
 
     /**
+     * List peers async.
+     */
+    public Future<Rpc.ListPeersResponse> listPeersAsync() {
+        return ListPeersTask.listPeers(lndClient);
+    }
+
+    /**
+     * List peers.
+     */
+    public Rpc.ListPeersResponse listPeers() throws InterruptedException, ExecutionException, TimeoutException {
+        Future<Rpc.ListPeersResponse> listPeersResultFuture = listPeersAsync();
+        return listPeersResultFuture.get(LIST_PEERS_TIMEOUT_S, TimeUnit.SECONDS);
+    }
+
+    /**
      * Open channel async.
      */
     public Future<Rpc.ChannelPoint> openChannelAsync(String pubkey, long amount) {
@@ -284,6 +300,13 @@ public class LndController {
      */
     public void subscribeChannelEvents(LndClient.SubscribeChannelEventsRecvStream recvStream) {
         lndClient.subscribeChannelEvents(recvStream);
+    }
+
+    /**
+     * Close channel.
+     */
+    public void closeChannel(Rpc.ChannelPoint channelPoint, LndClient.CloseChannelEventsRecvStream recvStream) {
+        lndClient.closeChannel(channelPoint, recvStream);
     }
 
 }
