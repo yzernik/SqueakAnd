@@ -501,4 +501,40 @@ public class LndClient {
         public void onUpdate(Rpc.ChannelEventUpdate update);
     }
 
+    public void closeChannel(Rpc.ChannelPoint channelPoint, CloseChannelEventsRecvStream callBack) {
+        Rpc.CloseChannelRequest request = Rpc.CloseChannelRequest.newBuilder()
+                .setChannelPoint(channelPoint)
+                .build();
+        Lndmobile.closeChannel(request.toByteArray(), new RecvStream() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from closeChannel RecvStream: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.ClosedChannelUpdate update = Rpc.ClosedChannelUpdate.getDefaultInstance();
+                    Log.i(getClass().getName(), "Got ClosedChannelUpdate update: " + update);
+                    callBack.onUpdate(update);
+                    return;
+                }
+
+                try {
+                    Rpc.ClosedChannelUpdate update = Rpc.ClosedChannelUpdate.parseFrom(bytes);
+                    Log.i(getClass().getName(), "Got ClosedChannelUpdate update: " + update);
+                    callBack.onUpdate(update);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface CloseChannelEventsRecvStream {
+        public void onError(Exception e);
+        public void onUpdate(Rpc.ClosedChannelUpdate update);
+    }
+
 }

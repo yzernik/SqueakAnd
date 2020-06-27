@@ -271,4 +271,38 @@ public class LndRepository {
         return liveChannelEvents;
     }
 
+    public LiveData<Rpc.ClosedChannelUpdate> closeChannel(String channelPointString) {
+        String[] parts = channelPointString.split(":");
+        String fundingTx = parts[0];
+        int outputIndex = Integer.parseInt(parts[1]);
+
+        Rpc.ChannelPoint channelPoint = Rpc.ChannelPoint.newBuilder()
+                .setFundingTxidStr(fundingTx)
+                .setOutputIndex(outputIndex)
+                .build();
+        return closeChannel(channelPoint);
+    }
+
+    public LiveData<Rpc.ClosedChannelUpdate> closeChannel(Rpc.ChannelPoint channelPoint) {
+        Log.i(getClass().getName(), "Getting closeChannel...");
+        MutableLiveData<Rpc.ClosedChannelUpdate> liveCloseChannel = new MutableLiveData<>();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                lndController.closeChannel(channelPoint, new LndClient.CloseChannelEventsRecvStream() {
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(getClass().getName(), "Failed to get close channel update: " + e);
+                    }
+
+                    @Override
+                    public void onUpdate(Rpc.ClosedChannelUpdate update) {
+                        liveCloseChannel.postValue(update);
+                    }
+                });
+            }
+        });
+        return liveCloseChannel;
+    }
+
 }

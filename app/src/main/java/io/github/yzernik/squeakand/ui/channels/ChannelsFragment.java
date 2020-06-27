@@ -60,4 +60,12 @@ public class ChannelsFragment extends Fragment implements ChannelListAdapter.Cli
         // TODO: go to view channel activity
     }
 
+    @Override
+    public void handleItemCloseClick(Rpc.Channel channel) {
+        // TODO: close the channel here
+        Log.i(getTag(), "Closing channel: " + channel);
+        String channelPointString = channel.getChannelPoint();
+        channelsViewModel.closeChannel(channelPointString);
+    }
+
 }

@@ -302,4 +302,11 @@ public class LndController {
         lndClient.subscribeChannelEvents(recvStream);
     }
 
+    /**
+     * Close channel.
+     */
+    public void closeChannel(Rpc.ChannelPoint channelPoint, LndClient.CloseChannelEventsRecvStream recvStream) {
+        lndClient.closeChannel(channelPoint, recvStream);
+    }
+
 }

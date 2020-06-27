@@ -41,6 +41,13 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
                     clickListener.handleItemClick(mChannels.get(getAdapterPosition()));
                 }
             });
+
+            btnChannelClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickListener.handleItemCloseClick(mChannels.get(getAdapterPosition()));
+                }
+            });
         }
     }
 
@@ -91,6 +98,7 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
 
     public interface ClickListener {
         void handleItemClick(Rpc.Channel channel);
+        void handleItemCloseClick(Rpc.Channel channel);
     }
 
 }

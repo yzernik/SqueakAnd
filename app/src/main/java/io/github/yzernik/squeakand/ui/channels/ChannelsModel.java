@@ -22,4 +22,8 @@ public class ChannelsModel extends AndroidViewModel {
         return lndRepository.listChannels();
     }
 
+    LiveData<Rpc.ClosedChannelUpdate> closeChannel(String channelPoint) {
+        return lndRepository.closeChannel(channelPoint);
+    }
+
 }
