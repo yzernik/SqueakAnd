@@ -27,7 +27,7 @@ public class LightningNodeChannelsFragment extends Fragment implements ChannelLi
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_channels, container, false);
+        View root = inflater.inflate(R.layout.fragment_lightning_node_channels, container, false);
 
         String pubkey = null;
         Bundle arguments = getArguments();
@@ -39,7 +39,7 @@ public class LightningNodeChannelsFragment extends Fragment implements ChannelLi
                 new LightningNodeChannelsModelFactory(getActivity().getApplication(), pubkey))
                 .get(LightningNodeChannelsModel.class);
 
-        final RecyclerView recyclerView = root.findViewById(R.id.channelsRecyclerView);
+        final RecyclerView recyclerView = root.findViewById(R.id.lightning_node_channels_recycler_view);
         final ChannelListAdapter adapter = new ChannelListAdapter(root.getContext(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));

@@ -73,7 +73,7 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
     public void onBindViewHolder(ChannelListAdapter.ChannelViewHolder holder, int position) {
         if (mChannels != null) {
             Rpc.Channel current = mChannels.get(position);
-            holder.txtChannelPubkey.setText(current.getRemotePubkey());
+            holder.txtChannelPubkey.setText("Pubkey: " + current.getRemotePubkey());
             holder.txtChannelIsActive.setText("Is Active: " + current.getActive());
             holder.txtChannelCapacity.setText("Capacity: " + current.getCapacity());
             holder.txtChannelLocalBalance.setText("Local balance: " + current.getLocalBalance());
