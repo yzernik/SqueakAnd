@@ -1,5 +1,6 @@
 package io.github.yzernik.squeakand.ui.offer;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -92,14 +94,7 @@ public class OfferFragment extends Fragment {
                 if (response == null) {
                     return;
                 }
-
-                // Finish the activity if payment succeeded
-                if (!response.getPaymentPreimage().isEmpty()) {
-                    getActivity().finish();
-                }
-
-                Log.i(getTag(), "Got payment response: " + response);
-                txtSendPaymentResult.setText("Payment response error: " + response.getPaymentError());
+                handlePaymentResult(response);
             }
         });
     }
@@ -111,6 +106,43 @@ public class OfferFragment extends Fragment {
                 .putExtra("pubkey", pubkey)
                 .putExtra("host", host)
         );
+    }
+
+    private void handlePaymentResult(Rpc.SendResponse response) {
+        if (!response.getPaymentPreimage().isEmpty()) {
+            handleSuccessfulPayment(response);
+        } else {
+            handleFailedPayment(response);
+        }
+    }
+
+    private void handleSuccessfulPayment(Rpc.SendResponse response) {
+        getActivity().finish();
+    }
+
+    private void handleFailedPayment(Rpc.SendResponse response) {
+        txtSendPaymentResult.setText("Payment response error: " + response.getPaymentError());
+        showFailedPaymentAlert(response.getPaymentError());
+    }
+
+
+    private void showFailedPaymentAlert(String error) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Payment failed");
+        String msg = "Failed with error: " + error;
+
+        if (error.equals("insufficient_balance")) {
+            msg += "\nHint: Try opening a new channel to increase your local balance.";
+        }
+
+        alertDialog.setMessage(msg);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
 }

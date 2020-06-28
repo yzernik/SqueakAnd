@@ -181,19 +181,14 @@ public class LndRepository {
         return liveNewAddressResponse;
     }
 
-    public LiveData<Rpc.SendResponse> sendPayment(String paymentRequest) {
+    public LiveData<LndResult<Rpc.SendResponse>> sendPayment(String paymentRequest) {
         Log.i(getClass().getName(), "Getting sendResponse...");
-        MutableLiveData<Rpc.SendResponse> liveSendResponse = new MutableLiveData<>();
+        MutableLiveData<LndResult<Rpc.SendResponse>> liveSendResponse = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Future<Rpc.SendResponse> responseFuture = lndController.sendPaymentAsync(paymentRequest);
-                    Rpc.SendResponse response = responseFuture.get();
-                    liveSendResponse.postValue(response);
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
+                LndResult<Rpc.SendResponse> result = lndController.sendPaymentWithResult(paymentRequest);
+                liveSendResponse.postValue(result);
             }
         });
         return liveSendResponse;
@@ -399,7 +394,7 @@ public class LndRepository {
                                 channels.put(newChannel.getChannelPoint(), newChannel);
                             } else if (update.getType().equals(Rpc.ChannelEventUpdate.UpdateType.INACTIVE_CHANNEL)) {
                                 // Replace the existing channel with a new one with active field set to false.
-                                Rpc.ChannelPoint channelPoint = update.getActiveChannel();
+                                Rpc.ChannelPoint channelPoint = update.getInactiveChannel();
                                 String channelPointString = ChannelPointUtil.stringFromChannelPoint(channelPoint);
                                 Log.i(getClass().getName(), "channelPointString: " + channelPointString);
                                 Log.i(getClass().getName(), "keys:");

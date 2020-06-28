@@ -249,6 +249,17 @@ public class LndController {
         return sendPaymentResultFuture.get(SEND_PAYMENT_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
+    public LndResult<Rpc.SendResponse> sendPaymentWithResult(String paymentRequest) {
+        try {
+            Rpc.SendResponse response = sendPayment(paymentRequest);
+            return LndResult.ofSuccess(response);
+        } catch (TimeoutException | InterruptedException e) {
+            return LndResult.ofFailure(e);
+        } catch (ExecutionException e) {
+            return LndResult.ofFailure(e.getCause());
+        }
+    }
+
     /**
      * Connect peer async.
      */
@@ -271,9 +282,8 @@ public class LndController {
      * @return
      */
     public LndResult<Rpc.ConnectPeerResponse> connectPeerWithResult(String pubkey, String host) {
-        Future<Rpc.ConnectPeerResponse> connectPeerResultFuture = connectPeerAsync(pubkey, host);
         try {
-            Rpc.ConnectPeerResponse response = connectPeerResultFuture.get(CONNECT_PEER_TIMEOUT_S, TimeUnit.SECONDS);
+            Rpc.ConnectPeerResponse response = connectPeer(pubkey, host);
             return LndResult.ofSuccess(response);
         } catch (TimeoutException | InterruptedException e) {
             return LndResult.ofFailure(e);
@@ -320,9 +330,8 @@ public class LndController {
      * @return
      */
     public LndResult<Rpc.ChannelPoint> openChannelWithResult(String pubkey, long amount) {
-        Future<Rpc.ChannelPoint> responseFuture = openChannelAsync(pubkey, amount);
         try {
-            Rpc.ChannelPoint response = responseFuture.get(OPEN_CHANNEL_TIMEOUT_S, TimeUnit.SECONDS);
+            Rpc.ChannelPoint response = openChannel(pubkey, amount);
             return LndResult.ofSuccess(response);
         } catch (TimeoutException | InterruptedException e) {
             return LndResult.ofFailure(e);
