@@ -26,6 +26,7 @@ public class LightningNodeConnectionFragment extends Fragment {
     private TextView mLightningNodePubkeyText;
     private TextView mLightningNodeConnectionStatusText;
     private Button mLightningNodeConnectButton;
+    private Button mLightningNodeOpenChannelButton;
 
     private LightningNodeConnectionModel lightningNodeChannelsModel;
 
@@ -44,6 +45,7 @@ public class LightningNodeConnectionFragment extends Fragment {
         mLightningNodePubkeyText = root.findViewById(R.id.lightning_node_pubkey);
         mLightningNodeConnectionStatusText = root.findViewById(R.id.lightning_node_connection_status_text);
         mLightningNodeConnectButton = root.findViewById(R.id.lightning_node_connect_peer_button);
+        mLightningNodeOpenChannelButton = root.findViewById(R.id.lightning_node_open_channel_button);
 
         lightningNodeChannelsModel = ViewModelProviders.of(this,
                 new LightningNodeConnectionModelFactory(getActivity().getApplication(), pubkey, host))
@@ -69,6 +71,16 @@ public class LightningNodeConnectionFragment extends Fragment {
             });
         }
 
+
+        // Only show open channel button if connected.
+        mLightningNodeOpenChannelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LiveData<LndResult<Rpc.ChannelPoint>> openChanelResult = lightningNodeChannelsModel.openChannel(20000);
+                handleOpenChannelResult(openChanelResult);
+            }
+        });
+
         return root;
     }
 
@@ -84,9 +96,34 @@ public class LightningNodeConnectionFragment extends Fragment {
         });
     }
 
+    private void handleOpenChannelResult(LiveData<LndResult<Rpc.ChannelPoint>> openChannelResult) {
+        openChannelResult.observe(getViewLifecycleOwner(), new Observer<LndResult<Rpc.ChannelPoint>>() {
+            @Override
+            public void onChanged(@Nullable final LndResult<Rpc.ChannelPoint> result) {
+                if (!result.isSuccess()) {
+                    Log.e(getTag(), "Open channel failed with error: " + result.getError());
+                    showFailedOpenChannelAlert(result.getError());
+                }
+            }
+        });
+    }
+
     private void showFailedConnectPeerAlert(Throwable e) {
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Connect peer failed");
+        alertDialog.setMessage("Failed with error: " + e);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void showFailedOpenChannelAlert(Throwable e) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Open channel failed");
         alertDialog.setMessage("Failed with error: " + e);
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 new DialogInterface.OnClickListener() {

@@ -264,14 +264,18 @@ public class LndController {
         return connectPeerResultFuture.get(CONNECT_PEER_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
+    /**
+     * Connect peer with result.
+     * @param pubkey
+     * @param host
+     * @return
+     */
     public LndResult<Rpc.ConnectPeerResponse> connectPeerWithResult(String pubkey, String host) {
         Future<Rpc.ConnectPeerResponse> connectPeerResultFuture = connectPeerAsync(pubkey, host);
         try {
             Rpc.ConnectPeerResponse response = connectPeerResultFuture.get(CONNECT_PEER_TIMEOUT_S, TimeUnit.SECONDS);
             return LndResult.ofSuccess(response);
-        } catch (TimeoutException e) {
-            return LndResult.ofFailure(e);
-        } catch (InterruptedException e) {
+        } catch (TimeoutException | InterruptedException e) {
             return LndResult.ofFailure(e);
         } catch (ExecutionException e) {
             return LndResult.ofFailure(e.getCause());
@@ -307,6 +311,24 @@ public class LndController {
         Log.i(getClass().getName(), "Openning channel with pubkey: " + pubkey + ", funding amount: " + amount);
         Future<Rpc.ChannelPoint> openChannelResultFuture = openChannelAsync(pubkey, amount);
         return openChannelResultFuture.get(OPEN_CHANNEL_TIMEOUT_S, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Open channel with result.
+     * @param pubkey
+     * @param amount
+     * @return
+     */
+    public LndResult<Rpc.ChannelPoint> openChannelWithResult(String pubkey, long amount) {
+        Future<Rpc.ChannelPoint> responseFuture = openChannelAsync(pubkey, amount);
+        try {
+            Rpc.ChannelPoint response = responseFuture.get(OPEN_CHANNEL_TIMEOUT_S, TimeUnit.SECONDS);
+            return LndResult.ofSuccess(response);
+        } catch (TimeoutException | InterruptedException e) {
+            return LndResult.ofFailure(e);
+        } catch (ExecutionException e) {
+            return LndResult.ofFailure(e.getCause());
+        }
     }
 
     /**

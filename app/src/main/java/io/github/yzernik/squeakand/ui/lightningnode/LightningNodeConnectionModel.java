@@ -50,4 +50,8 @@ public class LightningNodeConnectionModel extends AndroidViewModel {
         return lndRepository.connectPeer(pubkey, host);
     }
 
+    public LiveData<LndResult<Rpc.ChannelPoint>> openChannel(long amount) {
+        return lndRepository.openChannel(pubkey, amount);
+    }
+
 }
