@@ -8,27 +8,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import io.github.yzernik.squeakand.ui.sendpayment.SendPaymentFragment;
+import io.github.yzernik.squeakand.ui.lightningnode.LightningNodeFragment;
 
-public class SendPaymentActivity extends AppCompatActivity {
+public class LightningNodeActivity  extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_send_payment);
+        setContentView(R.layout.activity_lightning_node);
 
         // Get the transferred data from source activity.
-        int offerId = getIntent().getIntExtra("offer_id", -1);
-        Log.i(getCallingPackage(), "offerId in onCreate: " + offerId);
+        String pubkey = getIntent().getStringExtra("pubkey");
+        String host = getIntent().getStringExtra("host");
+        Log.i(getCallingPackage(), "pubkey in onCreate: " + pubkey);
+        Log.i(getCallingPackage(), "host in onCreate: " + host);
 
         Bundle bundle = new Bundle();
-        bundle.putInt("offer_id", offerId);
-        Fragment newFragment = new SendPaymentFragment();
+        bundle.putString("pubkey", pubkey);
+        bundle.putString("host", host);
+        Fragment newFragment = new LightningNodeFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         newFragment.setArguments(bundle);
-        transaction.replace(R.id.send_payment_fragment_frame, newFragment);
-        // transaction.addToBackStack(null);
-        // Commit the transaction
+        transaction.replace(R.id.lightning_node_fragment_frame, newFragment);
         transaction.commit();
     }
 

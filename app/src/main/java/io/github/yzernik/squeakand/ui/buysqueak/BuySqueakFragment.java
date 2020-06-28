@@ -23,10 +23,9 @@ import org.bitcoinj.core.Sha256Hash;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.yzernik.squeakand.BuySqueakActivity;
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.SendPaymentActivity;
+import io.github.yzernik.squeakand.OfferActivity;
 import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 
 public class BuySqueakFragment extends Fragment {
@@ -168,7 +167,7 @@ public class BuySqueakFragment extends Fragment {
     }
 
     private void startSendPaymentActivity(Offer offer) {
-        startActivity(new Intent(getActivity(), SendPaymentActivity.class).putExtra("offer_id", offer.getOfferId()));
+        startActivity(new Intent(getActivity(), OfferActivity.class).putExtra("offer_id", offer.getOfferId()));
     }
 
 

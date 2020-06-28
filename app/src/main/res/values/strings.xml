@@ -14,7 +14,8 @@
     <string name="activity_view_server">Squeak Server</string>
     <string name="activity_view_address">Squeak Address</string>
     <string name="activity_buy_squeak">Buy Squeak</string>
-    <string name="activity_send_payment">Send Payment</string>
+    <string name="activity_offer">Offer</string>
+    <string name="activity_lightning_node">Lightning Node</string>
     <string name="activity_electrum">Electrum Connection</string>
 
     <string name="preference_file_key">"io.github.yzernik.squeakand.PREFERENCE_FILE_KEY"</string>
