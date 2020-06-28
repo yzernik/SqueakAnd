@@ -4,25 +4,30 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import io.github.yzernik.squeakand.R;
 
 public class LightningNodeFragment extends Fragment {
+    LightningNodeFragmentsAdapter lightningNodeFragmentsAdapter;
+    ViewPager2 viewPager;
 
-    private TextView txtLightningNodePubkey;
-    private TextView txtLightningNodeHost;
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_lightning_node, container, false);
+    }
 
-    private LightningNodeModel lightningNodeModel;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_lightning_node, container, false);
-
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         String pubkey = null;
         String host = null;
         Bundle arguments = getArguments();
@@ -31,18 +36,25 @@ public class LightningNodeFragment extends Fragment {
             host = this.getArguments().getString("host");
         }
 
-        lightningNodeModel = ViewModelProviders.of(this,
-                new LightningNodeModelFactory(getActivity().getApplication(), pubkey, host))
-                .get(LightningNodeModel.class);
+        lightningNodeFragmentsAdapter = new LightningNodeFragmentsAdapter(this, pubkey, host);
+        viewPager = view.findViewById(R.id.lightning_node_pager);
+        viewPager.setAdapter(lightningNodeFragmentsAdapter);
 
-        txtLightningNodePubkey = root.findViewById(R.id.lightning_node_pubkey);
-        txtLightningNodeHost = root.findViewById(R.id.lightning_node_host);
-
-        txtLightningNodePubkey.setText(pubkey);
-        txtLightningNodeHost.setText(host);
-
-        return root;
+        TabLayout tabLayout = view.findViewById(R.id.lightning_node_tab_layout);
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> tab.setText(getTabName(position))
+        ).attach();
     }
 
-
+    private String getTabName(int position) {
+        switch(position) {
+            case 0:
+                return "Connection";
+            case 1:
+                return "Channels";
+            default:
+                return null;
+        }
+    }
 }
+

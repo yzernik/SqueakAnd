@@ -3,45 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.lightningnode.LightningNodeFragment">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/lightning_node_pubkey"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/lightning_node_host"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/lightning_node_peer_status_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No peer status information" />
-
-        <TextView
-            android:id="@+id/lightning_node_channel_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No channel to offer node" />
-
-        <Button
-            android:id="@+id/lightning_node_open_channel_button"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/lightning_node_tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Open channel to offer node" />
+            android:layout_height="wrap_content" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/lightning_node_pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
     </LinearLayout>
 

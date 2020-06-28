@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.channels;
+package io.github.yzernik.squeakand.ui.lightningnode;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,34 +21,35 @@ import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.ui.money.ChannelListAdapter;
 import lnrpc.Rpc;
 
-public class ChannelsFragment extends Fragment implements ChannelListAdapter.ClickListener {
+public class LightningNodeChannelsFragment extends Fragment implements ChannelListAdapter.ClickListener{
 
-    private ChannelsModel channelsViewModel;
+    private LightningNodeChannelsModel lightningNodeChannelsModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_channels, container, false);
+        View root = inflater.inflate(R.layout.fragment_lightning_node_channels, container, false);
 
-        channelsViewModel = new ViewModelProvider(this).get(ChannelsModel.class);
+        String pubkey = null;
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            pubkey = this.getArguments().getString("pubkey");
+        }
 
-        final RecyclerView recyclerView = root.findViewById(R.id.channelsRecyclerView);
+        lightningNodeChannelsModel = ViewModelProviders.of(this,
+                new LightningNodeChannelsModelFactory(getActivity().getApplication(), pubkey))
+                .get(LightningNodeChannelsModel.class);
+
+        final RecyclerView recyclerView = root.findViewById(R.id.lightning_node_channels_recycler_view);
         final ChannelListAdapter adapter = new ChannelListAdapter(root.getContext(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
-        channelsViewModel.listChannels().observe(getViewLifecycleOwner(), new Observer<List<Rpc.Channel>>() {
+        lightningNodeChannelsModel.listNodeChannels().observe(getViewLifecycleOwner(), new Observer<List<Rpc.Channel>>() {
             @Override
             public void onChanged(@Nullable final List<Rpc.Channel> channels) {
                 if (channels == null) {
                     return;
                 }
-
-                for (Rpc.Channel channel: channels) {
-                    Log.i(getTag(), "Got channel: " + channel);
-                }
-
-                // Update the cached copy of the profiles in the adapter.
-                // List<Rpc.Channel> channels = listChannelsResponse.getChannelsList();
                 adapter.setProfiles(channels);
             }
         });
@@ -58,8 +59,9 @@ public class ChannelsFragment extends Fragment implements ChannelListAdapter.Cli
 
     private void closeChannel(Rpc.Channel channel) {
         String channelPointString = channel.getChannelPoint();
-        LiveData<Rpc.ClosedChannelUpdate> closeChannelUpdates = channelsViewModel.closeChannel(channelPointString);
+        LiveData<Rpc.ClosedChannelUpdate> closeChannelUpdates = lightningNodeChannelsModel.closeChannel(channelPointString);
     }
+
 
     @Override
     public void handleItemClick(Rpc.Channel channel) {
@@ -71,5 +73,4 @@ public class ChannelsFragment extends Fragment implements ChannelListAdapter.Cli
         Log.i(getTag(), "Closing channel: " + channel);
         closeChannel(channel);
     }
-
 }
