@@ -377,11 +377,21 @@ public class LndRepository {
                             } else if (update.getType().equals(Rpc.ChannelEventUpdate.UpdateType.CLOSED_CHANNEL)) {
                                 // Remove the existing channel from the map
                                 Rpc.ChannelCloseSummary channelCloseSummary = update.getClosedChannel();
+                                Log.i(getClass().getName(), "channelPointString: " + channelCloseSummary.getChannelPoint());
+                                Log.i(getClass().getName(), "keys:");
+                                for (String key: channels.keySet()) {
+                                    Log.i(getClass().getName(), "Channel key : " + key);
+                                }
                                 channels.remove(channelCloseSummary.getChannelPoint());
                             } else if (update.getType().equals(Rpc.ChannelEventUpdate.UpdateType.ACTIVE_CHANNEL)) {
                                 // Replace the existing channel with a new one with active field set to true.
                                 Rpc.ChannelPoint channelPoint = update.getActiveChannel();
                                 String channelPointString = ChannelPointUtil.stringFromChannelPoint(channelPoint);
+                                Log.i(getClass().getName(), "channelPointString: " + channelPointString);
+                                Log.i(getClass().getName(), "keys:");
+                                for (String key: channels.keySet()) {
+                                    Log.i(getClass().getName(), "Channel key : " + key);
+                                }
                                 Rpc.Channel curChannel = channels.get(channelPointString);
                                 Rpc.Channel newChannel = curChannel.toBuilder()
                                         .setActive(true)
@@ -391,6 +401,11 @@ public class LndRepository {
                                 // Replace the existing channel with a new one with active field set to false.
                                 Rpc.ChannelPoint channelPoint = update.getActiveChannel();
                                 String channelPointString = ChannelPointUtil.stringFromChannelPoint(channelPoint);
+                                Log.i(getClass().getName(), "channelPointString: " + channelPointString);
+                                Log.i(getClass().getName(), "keys:");
+                                for (String key: channels.keySet()) {
+                                    Log.i(getClass().getName(), "Channel key : " + key);
+                                }
                                 Rpc.Channel curChannel = channels.get(channelPointString);
                                 Rpc.Channel newChannel = curChannel.toBuilder()
                                         .setActive(false)
