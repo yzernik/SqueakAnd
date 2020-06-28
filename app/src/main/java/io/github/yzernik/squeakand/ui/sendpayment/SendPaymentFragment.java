@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import java.util.List;
 import java.util.Set;
 
 import io.github.yzernik.squeakand.R;
@@ -70,21 +71,16 @@ public class SendPaymentFragment extends Fragment {
         btnOpenChannel.setVisibility(View.VISIBLE);
 
 
-        sendPaymentModel.liveOfferChannel().observe(getViewLifecycleOwner(), new Observer<Rpc.Channel>() {
+        sendPaymentModel.liveOfferChannel().observe(getViewLifecycleOwner(), new Observer<List<Rpc.Channel>>() {
             @Override
-            public void onChanged(@Nullable Rpc.Channel channel) {
-                if (channel == null) {
-                    return;
-                }
-
-                Log.i(getTag(), "Got channel to offer node: " + channel);
-                txtChannelToOfferNode.setText("Channelpoint" + channel.getChannelPoint() + ", localbalance: "  + channel.getLocalBalance());
-
-                Log.i(getTag(), "channel.getActive(): " + channel.getActive());
+            public void onChanged(@Nullable List<Rpc.Channel> channels) {
+                Log.i(getTag(), "Got channels to offer node: " + channels.size());
+                txtChannelToOfferNode.setText("Number of channels to offer node" + channels.size());
 
                 // Send payment when fragment starts
-                if (channel.getActive()) {
+                if (channels.size() > 0) {
                     // TODO: check local balance against offer price
+                    // Check if channels active
                     // if (channel.getLocalBalance() < offerAmount)
 
                     btnPay.setOnClickListener(new View.OnClickListener() {
