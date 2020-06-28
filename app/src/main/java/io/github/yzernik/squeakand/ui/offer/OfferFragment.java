@@ -71,6 +71,10 @@ public class OfferFragment extends Fragment {
         offerModel.getLiveOffer().observe(getViewLifecycleOwner(), new Observer<Offer>() {
             @Override
             public void onChanged(@Nullable Offer offer) {
+                if (offer == null) {
+                    return;
+                }
+
                 Log.i(getTag(), "Got offer: " + offer);
 
                 btnViewLightningNode.setOnClickListener(new View.OnClickListener() {

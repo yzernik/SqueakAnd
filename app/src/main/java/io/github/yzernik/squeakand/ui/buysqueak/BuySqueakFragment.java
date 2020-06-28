@@ -83,6 +83,7 @@ public class BuySqueakFragment extends Fragment {
             @Override
             public void onChanged(@Nullable Offer offer) {
                 if(offer == null) {
+                    btnPayBestOffer.setVisibility(View.GONE);
                     return;
                 }
 
@@ -94,26 +95,6 @@ public class BuySqueakFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         System.out.println("Buy button clicked");
-
-                        /*
-                        Context context = getContext();
-                        LndAsyncClient lndAsyncClient = buySqueakModel.getLndAsyncClient();
-                        lndAsyncClient.sendPayment(offer.paymentRequest, new LndAsyncClient.PaymentResponseHandler() {
-                            @Override
-                            public void onSuccess(Rpc.SendResponse response) {
-                                Log.i(getTag(), "Completed payment request with response: " + response);
-                                if (response.getPaymentError() != null) {
-                                    showFailedPaymentAlertDialog(context, response.getPaymentError());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Throwable e) {
-                                Log.e(getTag(), "Payment failed with failure: " + e);
-                                showFailedPaymentAlertDialog(context, e.getMessage());
-                            }
-                        });*/
-
 
                         // Start the send payment activity
                         startSendPaymentActivity(offer);
