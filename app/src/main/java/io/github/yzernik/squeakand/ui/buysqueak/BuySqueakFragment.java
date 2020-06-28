@@ -88,7 +88,7 @@ public class BuySqueakFragment extends Fragment {
                 }
 
                 Log.i(getTag(), "Got best offer: " + offer);
-                String buyBtnText = String.format(Locale.ENGLISH, "Pay %d satoshis to buy the squeak.", offer.amount);
+                String buyBtnText = String.format(Locale.ENGLISH, "Buy squeak for %d satoshis", offer.amount);
                 btnPayBestOffer.setText(buyBtnText);
                 btnPayBestOffer.setVisibility(View.VISIBLE);
                 btnPayBestOffer.setOnClickListener(new View.OnClickListener() {
