@@ -249,6 +249,17 @@ public class LndController {
         return sendPaymentResultFuture.get(SEND_PAYMENT_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
+    public LndResult<Rpc.SendResponse> sendPaymentWithResult(String paymentRequest) {
+        try {
+            Rpc.SendResponse response = sendPayment(paymentRequest);
+            return LndResult.ofSuccess(response);
+        } catch (TimeoutException | InterruptedException e) {
+            return LndResult.ofFailure(e);
+        } catch (ExecutionException e) {
+            return LndResult.ofFailure(e.getCause());
+        }
+    }
+
     /**
      * Connect peer async.
      */
@@ -262,6 +273,23 @@ public class LndController {
     public Rpc.ConnectPeerResponse connectPeer(String pubkey, String host) throws InterruptedException, ExecutionException, TimeoutException {
         Future<Rpc.ConnectPeerResponse> connectPeerResultFuture = connectPeerAsync(pubkey, host);
         return connectPeerResultFuture.get(CONNECT_PEER_TIMEOUT_S, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Connect peer with result.
+     * @param pubkey
+     * @param host
+     * @return
+     */
+    public LndResult<Rpc.ConnectPeerResponse> connectPeerWithResult(String pubkey, String host) {
+        try {
+            Rpc.ConnectPeerResponse response = connectPeer(pubkey, host);
+            return LndResult.ofSuccess(response);
+        } catch (TimeoutException | InterruptedException e) {
+            return LndResult.ofFailure(e);
+        } catch (ExecutionException e) {
+            return LndResult.ofFailure(e.getCause());
+        }
     }
 
     /**
@@ -293,6 +321,23 @@ public class LndController {
         Log.i(getClass().getName(), "Openning channel with pubkey: " + pubkey + ", funding amount: " + amount);
         Future<Rpc.ChannelPoint> openChannelResultFuture = openChannelAsync(pubkey, amount);
         return openChannelResultFuture.get(OPEN_CHANNEL_TIMEOUT_S, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Open channel with result.
+     * @param pubkey
+     * @param amount
+     * @return
+     */
+    public LndResult<Rpc.ChannelPoint> openChannelWithResult(String pubkey, long amount) {
+        try {
+            Rpc.ChannelPoint response = openChannel(pubkey, amount);
+            return LndResult.ofSuccess(response);
+        } catch (TimeoutException | InterruptedException e) {
+            return LndResult.ofFailure(e);
+        } catch (ExecutionException e) {
+            return LndResult.ofFailure(e.getCause());
+        }
     }
 
     /**

@@ -181,38 +181,28 @@ public class LndRepository {
         return liveNewAddressResponse;
     }
 
-    public LiveData<Rpc.SendResponse> sendPayment(String paymentRequest) {
+    public LiveData<LndResult<Rpc.SendResponse>> sendPayment(String paymentRequest) {
         Log.i(getClass().getName(), "Getting sendResponse...");
-        MutableLiveData<Rpc.SendResponse> liveSendResponse = new MutableLiveData<>();
+        MutableLiveData<LndResult<Rpc.SendResponse>> liveSendResponse = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Future<Rpc.SendResponse> responseFuture = lndController.sendPaymentAsync(paymentRequest);
-                    Rpc.SendResponse response = responseFuture.get();
-                    liveSendResponse.postValue(response);
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
+                LndResult<Rpc.SendResponse> result = lndController.sendPaymentWithResult(paymentRequest);
+                liveSendResponse.postValue(result);
             }
         });
         return liveSendResponse;
     }
 
 
-    public LiveData<Rpc.ConnectPeerResponse> connectPeer(String pubkey, String host) {
+    public LiveData<LndResult<Rpc.ConnectPeerResponse>> connectPeer(String pubkey, String host) {
         Log.i(getClass().getName(), "Getting connectPeer...");
-        MutableLiveData<Rpc.ConnectPeerResponse> liveConnectPeerResponse = new MutableLiveData<>();
+        MutableLiveData<LndResult<Rpc.ConnectPeerResponse>> liveConnectPeerResponse = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Future<Rpc.ConnectPeerResponse> responseFuture = lndController.connectPeerAsync(pubkey, host);
-                    Rpc.ConnectPeerResponse response = responseFuture.get();
-                    liveConnectPeerResponse.postValue(response);
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
+                LndResult<Rpc.ConnectPeerResponse> result = lndController.connectPeerWithResult(pubkey, host);
+                liveConnectPeerResponse.postValue(result);
             }
         });
         return liveConnectPeerResponse;
@@ -236,19 +226,14 @@ public class LndRepository {
         return liveListPeersResponse;
     }
 
-    public LiveData<Rpc.ChannelPoint> openChannel(String pubkey, long amount) {
+    public LiveData<LndResult<Rpc.ChannelPoint>> openChannel(String pubkey, long amount) {
         Log.i(getClass().getName(), "Getting openChannel...");
-        MutableLiveData<Rpc.ChannelPoint> liveOpenChannelResponse = new MutableLiveData<>();
+        MutableLiveData<LndResult<Rpc.ChannelPoint>> liveOpenChannelResponse = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Future<Rpc.ChannelPoint> responseFuture = lndController.openChannelAsync(pubkey, amount);
-                    Rpc.ChannelPoint response = responseFuture.get();
-                    liveOpenChannelResponse.postValue(response);
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
+                LndResult<Rpc.ChannelPoint> result = lndController.openChannelWithResult(pubkey, amount);
+                liveOpenChannelResponse.postValue(result);
             }
         });
         return liveOpenChannelResponse;
@@ -387,11 +372,21 @@ public class LndRepository {
                             } else if (update.getType().equals(Rpc.ChannelEventUpdate.UpdateType.CLOSED_CHANNEL)) {
                                 // Remove the existing channel from the map
                                 Rpc.ChannelCloseSummary channelCloseSummary = update.getClosedChannel();
+                                Log.i(getClass().getName(), "channelPointString: " + channelCloseSummary.getChannelPoint());
+                                Log.i(getClass().getName(), "keys:");
+                                for (String key: channels.keySet()) {
+                                    Log.i(getClass().getName(), "Channel key : " + key);
+                                }
                                 channels.remove(channelCloseSummary.getChannelPoint());
                             } else if (update.getType().equals(Rpc.ChannelEventUpdate.UpdateType.ACTIVE_CHANNEL)) {
                                 // Replace the existing channel with a new one with active field set to true.
                                 Rpc.ChannelPoint channelPoint = update.getActiveChannel();
                                 String channelPointString = ChannelPointUtil.stringFromChannelPoint(channelPoint);
+                                Log.i(getClass().getName(), "channelPointString: " + channelPointString);
+                                Log.i(getClass().getName(), "keys:");
+                                for (String key: channels.keySet()) {
+                                    Log.i(getClass().getName(), "Channel key : " + key);
+                                }
                                 Rpc.Channel curChannel = channels.get(channelPointString);
                                 Rpc.Channel newChannel = curChannel.toBuilder()
                                         .setActive(true)
@@ -399,8 +394,13 @@ public class LndRepository {
                                 channels.put(newChannel.getChannelPoint(), newChannel);
                             } else if (update.getType().equals(Rpc.ChannelEventUpdate.UpdateType.INACTIVE_CHANNEL)) {
                                 // Replace the existing channel with a new one with active field set to false.
-                                Rpc.ChannelPoint channelPoint = update.getActiveChannel();
+                                Rpc.ChannelPoint channelPoint = update.getInactiveChannel();
                                 String channelPointString = ChannelPointUtil.stringFromChannelPoint(channelPoint);
+                                Log.i(getClass().getName(), "channelPointString: " + channelPointString);
+                                Log.i(getClass().getName(), "keys:");
+                                for (String key: channels.keySet()) {
+                                    Log.i(getClass().getName(), "Channel key : " + key);
+                                }
                                 Rpc.Channel curChannel = channels.get(channelPointString);
                                 Rpc.Channel newChannel = curChannel.toBuilder()
                                         .setActive(false)
