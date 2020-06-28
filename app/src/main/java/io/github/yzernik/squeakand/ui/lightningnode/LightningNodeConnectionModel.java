@@ -10,6 +10,7 @@ import androidx.lifecycle.Transformations;
 
 import java.util.Set;
 
+import io.github.yzernik.squeakand.lnd.ConnectPeerResult;
 import io.github.yzernik.squeakand.lnd.LndRepository;
 
 public class LightningNodeConnectionModel extends AndroidViewModel {
@@ -26,6 +27,14 @@ public class LightningNodeConnectionModel extends AndroidViewModel {
         this.lndRepository = LndRepository.getRepository(application);
     }
 
+    public String getPubkey() {
+        return pubkey;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
     private LiveData<Set<String>> liveConnectedPeers() {
         return lndRepository.liveConnectedPeers();
     }
@@ -34,6 +43,10 @@ public class LightningNodeConnectionModel extends AndroidViewModel {
         return Transformations.map(liveConnectedPeers(), connectedPeers -> {
             return connectedPeers.contains(pubkey);
         });
+    }
+
+    public LiveData<ConnectPeerResult> connectToPeer() {
+        return lndRepository.connectPeer(pubkey, host);
     }
 
 }

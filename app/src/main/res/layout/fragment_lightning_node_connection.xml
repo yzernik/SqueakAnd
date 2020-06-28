@@ -31,6 +31,12 @@
             android:layout_height="wrap_content"
             android:text="No peer status information" />
 
+        <Button
+            android:id="@+id/lightning_node_connect_peer_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Connect to peer" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

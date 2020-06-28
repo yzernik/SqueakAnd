@@ -200,19 +200,14 @@ public class LndRepository {
     }
 
 
-    public LiveData<Rpc.ConnectPeerResponse> connectPeer(String pubkey, String host) {
+    public LiveData<ConnectPeerResult> connectPeer(String pubkey, String host) {
         Log.i(getClass().getName(), "Getting connectPeer...");
-        MutableLiveData<Rpc.ConnectPeerResponse> liveConnectPeerResponse = new MutableLiveData<>();
+        MutableLiveData<ConnectPeerResult> liveConnectPeerResponse = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Future<Rpc.ConnectPeerResponse> responseFuture = lndController.connectPeerAsync(pubkey, host);
-                    Rpc.ConnectPeerResponse response = responseFuture.get();
-                    liveConnectPeerResponse.postValue(response);
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
+                ConnectPeerResult result = lndController.connectPeerWithResult(pubkey, host);
+                liveConnectPeerResponse.postValue(result);
             }
         });
         return liveConnectPeerResponse;
