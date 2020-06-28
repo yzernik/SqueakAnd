@@ -62,12 +62,12 @@
             android:parentActivityName=".ViewSqueakActivity"
             android:label="@string/activity_buy_squeak" />
         <activity
-            android:name=".SendPaymentActivity"
+            android:name=".OfferActivity"
             android:parentActivityName=".BuySqueakActivity"
-            android:label="@string/activity_send_payment" />
+            android:label="@string/activity_offer" />
         <activity
             android:name=".LightningNodeActivity"
-            android:parentActivityName=".SendPaymentActivity"
+            android:parentActivityName=".OfferActivity"
             android:label="@string/activity_lightning_node" />
     </application>
 

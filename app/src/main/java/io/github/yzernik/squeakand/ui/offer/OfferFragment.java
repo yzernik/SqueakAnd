@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.sendpayment;
+package io.github.yzernik.squeakand.ui.offer;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +20,7 @@ import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.R;
 import lnrpc.Rpc;
 
-public class SendPaymentFragment extends Fragment {
+public class OfferFragment extends Fragment {
 
     private TextView txtSendPaymentOffer;
     private TextView txtSendPaymentResult;
@@ -28,11 +28,11 @@ public class SendPaymentFragment extends Fragment {
     private Button btnViewLightningNode;
 
 
-    private SendPaymentModel sendPaymentModel;
+    private OfferModel offerModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_send_payment, container, false);
+        View root = inflater.inflate(R.layout.fragment_offer, container, false);
 
         Integer offerId = null;
         Bundle arguments = getArguments();
@@ -42,14 +42,14 @@ public class SendPaymentFragment extends Fragment {
 
         Log.i(getTag(), "Starting sendpayment fragment with offerId: " + offerId);
 
-        sendPaymentModel = ViewModelProviders.of(this,
-                new SendPaymentModelFactory(getActivity().getApplication(), offerId))
-                .get(SendPaymentModel.class);
+        offerModel = ViewModelProviders.of(this,
+                new OfferModelFactory(getActivity().getApplication(), offerId))
+                .get(OfferModel.class);
 
-        txtSendPaymentOffer = root.findViewById(R.id.send_payment_offer);
-        txtSendPaymentResult = root.findViewById(R.id.send_payment_payment_result_text);
-        btnPay = root.findViewById(R.id.send_payment_pay_button);
-        btnViewLightningNode = root.findViewById(R.id.send_payment_view_lightning_node);
+        txtSendPaymentOffer = root.findViewById(R.id.offer_id_txt);
+        txtSendPaymentResult = root.findViewById(R.id.offer_payment_result_text);
+        btnPay = root.findViewById(R.id.offer_pay_button);
+        btnViewLightningNode = root.findViewById(R.id.offer_view_lightning_node);
 
 
         btnPay.setVisibility(View.GONE);
@@ -66,7 +66,7 @@ public class SendPaymentFragment extends Fragment {
         btnPay.setVisibility(View.VISIBLE);
 
 
-        sendPaymentModel.getLiveOffer().observe(getViewLifecycleOwner(), new Observer<Offer>() {
+        offerModel.getLiveOffer().observe(getViewLifecycleOwner(), new Observer<Offer>() {
             @Override
             public void onChanged(@Nullable Offer offer) {
                 Log.i(getTag(), "Got offer: " + offer);
@@ -86,7 +86,7 @@ public class SendPaymentFragment extends Fragment {
     }
 
     private void sendPayment() {
-        sendPaymentModel.sendPayment().observe(getViewLifecycleOwner(), new Observer<Rpc.SendResponse>() {
+        offerModel.sendPayment().observe(getViewLifecycleOwner(), new Observer<Rpc.SendResponse>() {
             @Override
             public void onChanged(@Nullable Rpc.SendResponse response) {
                 if (response == null) {

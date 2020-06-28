@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.sendpayment;
+package io.github.yzernik.squeakand.ui.offer;
 
 import android.app.Application;
 
@@ -10,7 +10,7 @@ import io.github.yzernik.squeakand.OfferRepository;
 import io.github.yzernik.squeakand.SqueakRepository;
 import lnrpc.Rpc;
 
-public class SendPaymentModel extends AndroidViewModel {
+public class OfferModel extends AndroidViewModel {
 
     private int offerId;
     private OfferRepository offerRepository;
@@ -18,7 +18,7 @@ public class SendPaymentModel extends AndroidViewModel {
 
     private LiveData<Offer> liveOffer;
 
-    public SendPaymentModel(Application application, int offerId) {
+    public OfferModel(Application application, int offerId) {
         super(application);
         this.offerId = offerId;
         this.offerRepository = OfferRepository.getRepository(application);

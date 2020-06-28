@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.sendpayment;
+package io.github.yzernik.squeakand.ui.offer;
 
 import android.app.Application;
 
@@ -7,14 +7,14 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 
-public class SendPaymentModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class OfferModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     @NonNull
     private final Application application;
 
     private final int offerID;
 
-    public SendPaymentModelFactory(@NonNull Application application, int offerID) {
+    public OfferModelFactory(@NonNull Application application, int offerID) {
         this.application = application;
         this.offerID = offerID;
     }
@@ -22,7 +22,7 @@ public class SendPaymentModelFactory extends ViewModelProvider.NewInstanceFactor
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new SendPaymentModel(application, offerID);
+        return (T) new OfferModel(application, offerID);
     }
 
 }

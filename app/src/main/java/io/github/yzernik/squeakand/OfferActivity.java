@@ -8,14 +8,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import io.github.yzernik.squeakand.ui.sendpayment.SendPaymentFragment;
+import io.github.yzernik.squeakand.ui.offer.OfferFragment;
 
-public class SendPaymentActivity extends AppCompatActivity {
+public class OfferActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_send_payment);
+        setContentView(R.layout.activity_offer);
 
         // Get the transferred data from source activity.
         int offerId = getIntent().getIntExtra("offer_id", -1);
@@ -23,10 +23,10 @@ public class SendPaymentActivity extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         bundle.putInt("offer_id", offerId);
-        Fragment newFragment = new SendPaymentFragment();
+        Fragment newFragment = new OfferFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         newFragment.setArguments(bundle);
-        transaction.replace(R.id.send_payment_fragment_frame, newFragment);
+        transaction.replace(R.id.offer_fragment_frame, newFragment);
         // transaction.addToBackStack(null);
         // Commit the transaction
         transaction.commit();
