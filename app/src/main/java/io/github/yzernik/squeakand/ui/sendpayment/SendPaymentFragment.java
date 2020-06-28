@@ -1,5 +1,6 @@
 package io.github.yzernik.squeakand.ui.sendpayment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +18,9 @@ import androidx.lifecycle.ViewModelProviders;
 import java.util.List;
 import java.util.Set;
 
+import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.SendPaymentActivity;
 import lnrpc.Rpc;
 
 public class SendPaymentFragment extends Fragment {
@@ -28,6 +31,8 @@ public class SendPaymentFragment extends Fragment {
     private TextView txtChannelToOfferNode;
     private Button btnOpenChannel;
     private Button btnPay;
+    private Button btnViewLightningNode;
+
 
     private SendPaymentModel sendPaymentModel;
 
@@ -53,6 +58,8 @@ public class SendPaymentFragment extends Fragment {
         txtChannelToOfferNode = root.findViewById(R.id.channel_to_offer_node_text);
         btnOpenChannel = root.findViewById(R.id.send_payment_open_channel_button);
         btnPay = root.findViewById(R.id.send_payment_pay_button);
+        btnViewLightningNode = root.findViewById(R.id.send_payment_view_lightning_node);
+
 
         btnPay.setVisibility(View.GONE);
 
@@ -69,6 +76,21 @@ public class SendPaymentFragment extends Fragment {
             }
         });
         btnOpenChannel.setVisibility(View.VISIBLE);
+
+        sendPaymentModel.getLiveOffer().observe(getViewLifecycleOwner(), new Observer<Offer>() {
+            @Override
+            public void onChanged(@Nullable Offer offer) {
+                Log.i(getTag(), "Got offer: " + offer);
+
+                btnViewLightningNode.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startViewLightningNodeActivity(offer.pubkey, offer.host);
+                    }
+                });
+
+            }
+        });
 
 
         sendPaymentModel.liveOfferChannel().observe(getViewLifecycleOwner(), new Observer<List<Rpc.Channel>>() {
@@ -151,6 +173,12 @@ public class SendPaymentFragment extends Fragment {
                 Log.i(getTag(), "Opened channel: " + channelPoint);
             }
         });
+    }
+
+    private void startViewLightningNodeActivity(String pubkey, String host) {
+        Log.i(getTag(), "Going to view lightning node activity...");
+
+        // startActivity(new Intent(getActivity(), SendPaymentActivity.class).putExtra("offer_id", offer.getOfferId()));
     }
 
 }

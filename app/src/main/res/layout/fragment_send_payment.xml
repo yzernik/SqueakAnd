@@ -46,6 +46,13 @@
             android:text="Pay" />
 
 
+        <Button
+            android:id="@+id/send_payment_view_lightning_node"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View lightning node"/>
+
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
