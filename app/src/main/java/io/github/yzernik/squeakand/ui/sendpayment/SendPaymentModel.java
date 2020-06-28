@@ -7,6 +7,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import io.github.yzernik.squeakand.Offer;
@@ -51,7 +53,8 @@ public class SendPaymentModel extends AndroidViewModel {
         return squeakRepository.openOfferChannel(offerId, amount);
     }
 
-    private LiveData<Rpc.Channel> liveInitialOfferChannel() {
+
+    /*    private LiveData<Rpc.Channel> liveInitialOfferChannel() {
         LiveData<Rpc.ListChannelsResponse> liveChannelsList = lndRepository.listChannels();
         return Transformations.switchMap(liveChannelsList, channelsList -> {
             return Transformations.map(liveOffer, offer -> {
@@ -66,45 +69,46 @@ public class SendPaymentModel extends AndroidViewModel {
                 return null;
             });
         });
-    }
+    }*/
 
-    private LiveData<Rpc.Channel> liveSubscribedOfferChannel () {
-        LiveData<Rpc.ChannelEventUpdate> liveChannelEventUpdate = lndRepository.subscribeChannelEvents();
-        return Transformations.switchMap(liveChannelEventUpdate, update -> {
+
+    public LiveData<List<Rpc.Channel>> liveOfferChannel () {
+        LiveData<List<Rpc.Channel>> liveChannels = lndRepository.getLiveChannels();
+        return Transformations.switchMap(liveChannels, channelsList -> {
             return Transformations.map(liveOffer, offer -> {
-                Rpc.Channel openChannel = update.getOpenChannel();
-                if (openChannel.getRemotePubkey().equals(offer.pubkey)) {
-                    Log.i(getClass().getName(), "Found opened channel for offer: " + openChannel);
-                    return openChannel;
+                List<Rpc.Channel> offerChannels = new ArrayList<>();
+                for (Rpc.Channel channel: channelsList) {
+                    Log.i(getClass().getName(), "channel.getRemotePubkey: " + channel.getRemotePubkey());
+                    Log.i(getClass().getName(), "offer.pubkey: " + offer.pubkey);
+                    if (channel.getRemotePubkey().equals(offer.pubkey)) {
+                        Log.i(getClass().getName(), "Found channel for offer: " + channel);
+                        //return channel;
+                        offerChannels.add(channel);
+                    }
                 }
-
-                return null;
+                return offerChannels;
             });
         });
-    }
-
-    // TODO: move this logic to repository, use pubkey as parameter.
-    public LiveData<Rpc.Channel> liveOfferChannel () {
-/*        return Transformations.switchMap(liveInitialOfferChannel(), initialOfferChannel -> {
-            return Transformations.map(liveSubscribedOfferChannel(), subscribedOfferChannel -> {
-
-                Log.i(getClass().getName(), "Inside transformation (initialOfferChannel): " + initialOfferChannel);
-                Log.i(getClass().getName(), "Inside transformation (subscribedOfferChannel): " + subscribedOfferChannel);
-
-                if (subscribedOfferChannel != null) {
-                    return subscribedOfferChannel;
-                }
-                return initialOfferChannel;
-            });
-        });*/
-
-        return liveInitialOfferChannel();
     }
 
     public LiveData<Set<String>> liveConnectedPeers() {
         return lndRepository.liveConnectedPeers();
     }
 
+    public LiveData<Boolean> liveIsOfferPeerConnected() {
+        return Transformations.switchMap(liveConnectedPeers(), connectedPeers -> {
+            return Transformations.map(liveOffer, offer -> {
+
+                Log.i(getClass().getName(), "Connected peers: " + connectedPeers);
+                for (String peer: connectedPeers) {
+                    Log.i(getClass().getName(), "Connected peer: " + peer);
+                }
+                Log.i(getClass().getName(), "offer.pubkey: " + offer.pubkey);
+
+                return connectedPeers.contains(offer.pubkey);
+            });
+        });
+    }
 
 
 }

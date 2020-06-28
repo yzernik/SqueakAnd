@@ -143,17 +143,6 @@ public class SqueakRepository {
             @Override
             public void run() {
                 Offer offer = mOfferDao.fetchOfferById(offerId);
-
-                // Connect to the offer node
-                squeaksController.connectPeerToOffer(offer);
-
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    return;
-                }
-
                 // Open the channel to the node
                 Rpc.ChannelPoint response = squeaksController.openChannelToOffer(offer, amount);
 
