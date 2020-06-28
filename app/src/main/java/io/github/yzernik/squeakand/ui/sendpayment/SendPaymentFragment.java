@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProviders;
 import java.util.List;
 import java.util.Set;
 
+import io.github.yzernik.squeakand.LightningNodeActivity;
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SendPaymentActivity;
@@ -178,7 +179,10 @@ public class SendPaymentFragment extends Fragment {
     private void startViewLightningNodeActivity(String pubkey, String host) {
         Log.i(getTag(), "Going to view lightning node activity...");
 
-        // startActivity(new Intent(getActivity(), SendPaymentActivity.class).putExtra("offer_id", offer.getOfferId()));
+        startActivity(new Intent(getActivity(), LightningNodeActivity.class)
+                .putExtra("pubkey", pubkey)
+                .putExtra("host", host)
+        );
     }
 
 }
