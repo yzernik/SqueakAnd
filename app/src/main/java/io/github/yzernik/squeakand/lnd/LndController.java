@@ -264,17 +264,17 @@ public class LndController {
         return connectPeerResultFuture.get(CONNECT_PEER_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
-    public ConnectPeerResult connectPeerWithResult(String pubkey, String host) {
+    public LndResult<Rpc.ConnectPeerResponse> connectPeerWithResult(String pubkey, String host) {
         Future<Rpc.ConnectPeerResponse> connectPeerResultFuture = connectPeerAsync(pubkey, host);
         try {
             Rpc.ConnectPeerResponse response = connectPeerResultFuture.get(CONNECT_PEER_TIMEOUT_S, TimeUnit.SECONDS);
-            return ConnectPeerResult.ofSuccess(response);
+            return LndResult.ofSuccess(response);
         } catch (TimeoutException e) {
-            return ConnectPeerResult.ofFailure(e);
+            return LndResult.ofFailure(e);
         } catch (InterruptedException e) {
-            return ConnectPeerResult.ofFailure(e);
+            return LndResult.ofFailure(e);
         } catch (ExecutionException e) {
-            return ConnectPeerResult.ofFailure(e.getCause());
+            return LndResult.ofFailure(e.getCause());
         }
     }
 

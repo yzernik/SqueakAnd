@@ -18,7 +18,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.lnd.ConnectPeerResult;
+import io.github.yzernik.squeakand.lnd.LndResult;
+import lnrpc.Rpc;
 
 public class LightningNodeConnectionFragment extends Fragment {
 
@@ -62,7 +63,7 @@ public class LightningNodeConnectionFragment extends Fragment {
             mLightningNodeConnectButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LiveData<ConnectPeerResult> connectResult = lightningNodeChannelsModel.connectToPeer();
+                    LiveData<LndResult<Rpc.ConnectPeerResponse>> connectResult = lightningNodeChannelsModel.connectToPeer();
                     handleConnectPeerResult(connectResult);
                 }
             });
@@ -71,10 +72,10 @@ public class LightningNodeConnectionFragment extends Fragment {
         return root;
     }
 
-    private void handleConnectPeerResult(LiveData<ConnectPeerResult> connectResult) {
-        connectResult.observe(getViewLifecycleOwner(), new Observer<ConnectPeerResult>() {
+    private void handleConnectPeerResult(LiveData<LndResult<Rpc.ConnectPeerResponse>> connectResult) {
+        connectResult.observe(getViewLifecycleOwner(), new Observer<LndResult<Rpc.ConnectPeerResponse>>() {
             @Override
-            public void onChanged(@Nullable final ConnectPeerResult result) {
+            public void onChanged(@Nullable final LndResult<Rpc.ConnectPeerResponse> result) {
                 if (!result.isSuccess()) {
                     Log.e(getTag(), "Connect peer failed with error: " + result.getError());
                     showFailedConnectPeerAlert(result.getError());

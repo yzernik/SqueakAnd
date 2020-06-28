@@ -10,8 +10,9 @@ import androidx.lifecycle.Transformations;
 
 import java.util.Set;
 
-import io.github.yzernik.squeakand.lnd.ConnectPeerResult;
 import io.github.yzernik.squeakand.lnd.LndRepository;
+import io.github.yzernik.squeakand.lnd.LndResult;
+import lnrpc.Rpc;
 
 public class LightningNodeConnectionModel extends AndroidViewModel {
 
@@ -45,7 +46,7 @@ public class LightningNodeConnectionModel extends AndroidViewModel {
         });
     }
 
-    public LiveData<ConnectPeerResult> connectToPeer() {
+    public LiveData<LndResult<Rpc.ConnectPeerResponse>> connectToPeer() {
         return lndRepository.connectPeer(pubkey, host);
     }
 
