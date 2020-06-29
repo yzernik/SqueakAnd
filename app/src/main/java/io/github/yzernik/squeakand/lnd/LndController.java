@@ -33,6 +33,7 @@ public class LndController {
     private static final long LIST_PEERS_TIMEOUT_S = 10;
     private static final long OPEN_CHANNEL_TIMEOUT_S = 10;
 
+    private static final int DEFAULT_TARGET_CONF = 1;
 
     private static final String LND_DIR_RELATIVE_PATH = "/.lnd";
 
@@ -311,7 +312,7 @@ public class LndController {
      * Open channel async.
      */
     public Future<Rpc.ChannelPoint> openChannelAsync(String pubkey, long amount) {
-        return OpenChannelTask.openChannel(pubkey, amount, lndClient);
+        return OpenChannelTask.openChannel(pubkey, amount, DEFAULT_TARGET_CONF, lndClient);
     }
 
     /**
