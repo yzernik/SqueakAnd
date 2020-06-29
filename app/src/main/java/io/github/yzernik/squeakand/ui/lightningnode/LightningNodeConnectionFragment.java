@@ -1,6 +1,7 @@
 package io.github.yzernik.squeakand.ui.lightningnode;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.MoneyActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.lnd.LndResult;
 import lnrpc.Rpc;
@@ -183,8 +185,7 @@ public class LightningNodeConnectionFragment extends Fragment {
 
     private void startWalletActivity() {
         Log.i(getTag(), "Starting money activity...");
-        // TODO: start wallet/money activity
-        // startActivity(new Intent(getActivity(), ViewMoneyActivity.class));
+        startActivity(new Intent(getActivity(), MoneyActivity.class));
     }
 
 }

@@ -59,7 +59,7 @@
                 android:id="@+id/lightning_node_balance_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No channels count information"
+                android:text="No wallet balance information"
                 android:layout_gravity="left|center_vertical" />
 
 

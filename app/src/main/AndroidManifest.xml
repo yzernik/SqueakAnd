@@ -69,6 +69,10 @@
             android:name=".LightningNodeActivity"
             android:parentActivityName=".OfferActivity"
             android:label="@string/activity_lightning_node" />
+        <activity
+            android:name=".MoneyActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/activity_money" />
     </application>
 
 </manifest>
