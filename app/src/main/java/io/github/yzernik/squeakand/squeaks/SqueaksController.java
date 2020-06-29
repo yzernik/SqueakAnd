@@ -237,7 +237,7 @@ public class SqueaksController {
 
     public Rpc.ConnectPeerResponse connectPeerToOffer(Offer offer) {
         try {
-            Rpc.ConnectPeerResponse connectPeerResponse = lndController.connectPeer(offer.pubkey, offer.host);
+            Rpc.ConnectPeerResponse connectPeerResponse = lndController.connectPeer(offer.getPubkey(), offer.getLightningHost());
             Log.e(getClass().getName(), "connectPeerResponse: " + connectPeerResponse);
             return connectPeerResponse;
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -249,7 +249,7 @@ public class SqueaksController {
 
     public Rpc.ChannelPoint openChannelToOffer(Offer offer, long amount) {
         try {
-            Rpc.ChannelPoint openChannelResponse = lndController.openChannel(offer.pubkey, amount);
+            Rpc.ChannelPoint openChannelResponse = lndController.openChannel(offer.getPubkey(), amount);
             Log.e(getClass().getName(), "openChannelResponse: " + openChannelResponse);
             return openChannelResponse;
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -262,7 +262,7 @@ public class SqueaksController {
         try {
             Rpc.ListChannelsResponse listChannelsResponse = lndController.listChannels();
             for (Rpc.Channel channel: listChannelsResponse.getChannelsList()) {
-                if (channel.getRemotePubkey().equals(offer.pubkey)) {
+                if (channel.getRemotePubkey().equals(offer.getPubkey())) {
                     return channel;
                 }
             }

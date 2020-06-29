@@ -99,7 +99,7 @@ public class OfferFragment extends Fragment {
                 btnViewLightningNode.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startViewLightningNodeActivity(offer.pubkey, offer.host);
+                        startViewLightningNodeActivity(offer.getPubkey(), offer.getLightningHost());
                     }
                 });
 

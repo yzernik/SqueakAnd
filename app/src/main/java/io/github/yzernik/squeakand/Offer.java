@@ -132,7 +132,17 @@ public class Offer {
 
     @Ignore
     public String getLightningAddress() {
-        return String.format("%s@%s", pubkey, host);
+        return String.format("%s@%s", pubkey, getLightningHost());
+    }
+
+    @Ignore
+    public String getLightningHost() {
+        return String.format("%s:%d", host, port);
+    }
+
+    @Ignore
+    public String getPubkey() {
+        return pubkey;
     }
 
     @Ignore
