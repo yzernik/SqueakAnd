@@ -25,18 +25,15 @@ public class PeerDownloader {
     private static final int CONNECT_TIMEOUT_MS = 10000; // 10 seconds
     private static final int MAX_SERVERS = 100;
 
-    // private MutableLiveData<List<ElectrumServerAddress>> liveServers;
-    private ElectrumDownloaderController electrumDownloaderController;
     private LiveElectrumPeersMap serversMap;
     private BlockingQueue<ElectrumServerAddress> peerCandidates = new LinkedBlockingQueue();
 
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    public PeerDownloader(ElectrumDownloaderController electrumDownloaderController) {
+    public PeerDownloader(LiveElectrumPeersMap serversMap) {
         // this.liveServers = liveServers;
-        this.electrumDownloaderController = electrumDownloaderController;
-        this.serversMap = electrumDownloaderController.getPeersMap();
+        this.serversMap = serversMap;
         this.executorService =  Executors.newFixedThreadPool(10);
     }
 

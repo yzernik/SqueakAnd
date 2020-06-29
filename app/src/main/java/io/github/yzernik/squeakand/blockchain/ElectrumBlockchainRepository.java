@@ -4,9 +4,9 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import org.bitcoinj.core.Block;
-import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -17,6 +17,9 @@ import io.github.yzernik.squeakand.preferences.Preferences;
 public class ElectrumBlockchainRepository {
 
     private static volatile ElectrumBlockchainRepository INSTANCE;
+
+    private MutableLiveData<List<ElectrumServerAddress>> liveServers;
+    private LiveElectrumPeersMap peersMap;
 
     // For handling download
     private BlockDownloader blockDownloader;
@@ -36,10 +39,13 @@ public class ElectrumBlockchainRepository {
 
     private ElectrumBlockchainRepository(Application application) {
         // Singleton constructor, only called by static method.
+        this.liveServers = new MutableLiveData<>();
+        this.peersMap = new LiveElectrumPeersMap(liveServers);
+
         downloaderConnection = new ElectrumDownloaderController();
         blockDownloader = new BlockDownloader(downloaderConnection);
         preferences = new Preferences(application);
-        peerDownloader = new PeerDownloader(downloaderConnection);
+        peerDownloader = new PeerDownloader(peersMap);
         blockGetter = new BlockGetter(downloaderConnection);
         serverUpdateLiveData = new ServerUpdateLiveData();
         serverUpdateLiveData.reportController(downloaderConnection);
@@ -89,7 +95,7 @@ public class ElectrumBlockchainRepository {
     }
 
     public LiveData<List<ElectrumServerAddress>> getElectrumServers() {
-        return downloaderConnection.getLiveServers();
+        return liveServers;
     }
 
 }
