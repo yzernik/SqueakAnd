@@ -1,41 +1,20 @@
 package io.github.yzernik.squeakand;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
-import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
-import io.github.yzernik.squeakand.lnd.LndRepository;
-import io.github.yzernik.squeakand.squeaks.SqueakBlockVerifier;
-import io.github.yzernik.squeakand.squeaks.SqueaksController;
-import io.github.yzernik.squeaklib.core.Squeak;
-import lnrpc.Rpc;
 
 public class SqueakRepository {
 
     private static volatile SqueakRepository INSTANCE;
 
     private SqueakDao mSqueakDao;
-    private OfferDao mOfferDao;
     private LiveData<List<SqueakEntry>> mAllSqueaks;
     private LiveData<List<SqueakEntryWithProfile>> mAllSqueaksWithProfile;
-    private ElectrumBlockchainRepository electrumBlockchainRepository;
-    private LndRepository lndRepository;
-    private SqueaksController squeaksController;
-    private SqueakBlockVerifier blockVerifier;
-    private ExecutorService executorService;
-
 
     // Note that in order to unit test the TodoRepository, you have to remove the Application
     // dependency. This adds complexity and much more code, and this sample is not about testing.
@@ -44,14 +23,8 @@ public class SqueakRepository {
     private SqueakRepository(Application application) {
         SqueakRoomDatabase db = SqueakRoomDatabase.getDatabase(application);
         mSqueakDao = db.squeakDao();
-        mOfferDao = db.offerDao();
         mAllSqueaks = mSqueakDao.getSqueaks();
         mAllSqueaksWithProfile = mSqueakDao.getTimelineSqueaksWithProfile();
-        electrumBlockchainRepository = ElectrumBlockchainRepository.getRepository(application);
-        lndRepository = LndRepository.getRepository(application);
-        squeaksController = new SqueaksController(mSqueakDao, mOfferDao, electrumBlockchainRepository, lndRepository.getLndController());
-        blockVerifier = new SqueakBlockVerifier(squeaksController);
-        this.executorService = Executors.newCachedThreadPool();
     }
 
     public static SqueakRepository getRepository(Application application) {
@@ -63,13 +36,6 @@ public class SqueakRepository {
             }
         }
         return INSTANCE;
-    }
-
-    public void initialize() {
-        Log.i(getClass().getName(), "Initializing squeaks repository...");
-
-        // Start the block verifier
-        blockVerifier.verifySqueakBlocks();
     }
 
     // Room executes all queries on a separate thread.
@@ -92,16 +58,17 @@ public class SqueakRepository {
         return mSqueakDao.fetchLiveSqueaksByAddress(address);
     }
 
+    public LiveData<List<SqueakEntryWithProfile>> getThreadAncestorSqueaks(Sha256Hash hash) {
+        return mSqueakDao.fetchLiveSqueakReplyAncestorsByHash(hash);
+    }
+
+    /*
     public void insert(Squeak squeak) {
         squeaksController.save(squeak);
     }
 
     public void insertWithBlock(Squeak squeak, Block block) {
         squeaksController.saveWithBlock(squeak, block);
-    }
-
-    public LiveData<List<SqueakEntryWithProfile>> getThreadAncestorSqueaks(Sha256Hash hash) {
-        return mSqueakDao.fetchLiveSqueakReplyAncestorsByHash(hash);
     }
 
     public SqueaksController getController() {
@@ -150,22 +117,7 @@ public class SqueakRepository {
             }
         });
         return liveOpenChannelResponse;
-    }
-
-
-    /*
-    public LiveData<Rpc.Channel> getOfferChannel(int offerId) {
-        Log.i(getClass().getName(), "Getting offer channel...");
-        MutableLiveData<Rpc.Channel> liveChannelResponse = new MutableLiveData<>();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                Offer offer = mOfferDao.fetchOfferById(offerId);
-                Rpc.Channel channel = squeaksController.getChannelToOffer(offer);
-                liveChannelResponse.postValue(channel);
-            }
-        });
-        return liveChannelResponse;
     }*/
+
 
 }
