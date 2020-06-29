@@ -10,6 +10,7 @@ public class DownloaderConnected implements ElectrumDownloaderStatus {
     private BlockInfo blockInfo;
 
     public DownloaderConnected(ElectrumServerAddress serverAddress, BlockInfo blockInfo) {
+        this.serverAddress = serverAddress;
         this.blockInfo = blockInfo;
     }
 
