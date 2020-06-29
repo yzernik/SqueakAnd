@@ -1,15 +1,11 @@
 package io.github.yzernik.squeakand.ui.buysqueak;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,22 +13,21 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
-import java.util.Locale;
 
 import io.github.yzernik.squeakand.Offer;
-import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.OfferActivity;
+import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 
-public class BuySqueakFragment extends Fragment {
+public class BuySqueakFragment extends Fragment implements OfferListAdapter.ClickListener {
 
-    private TextView txtSqueakHash;
     private TextView txtOfferCount;
-    private Button btnPayBestOffer;
 
     private BuySqueakModel buySqueakModel;
 
@@ -51,12 +46,12 @@ public class BuySqueakFragment extends Fragment {
                 new BuySqueakModelFactory(getActivity().getApplication(), squeakHash))
                 .get(BuySqueakModel.class);
 
-        txtSqueakHash = root.findViewById(R.id.buy_squeak_hash);
         txtOfferCount = root.findViewById(R.id.buy_squeak_offers_count_text);
-        btnPayBestOffer = root.findViewById(R.id.buy_squeak_buy_button);
-        btnPayBestOffer.setVisibility(View.GONE);
 
-        txtSqueakHash.setText(squeakHash.toString());
+        final RecyclerView recyclerView = root.findViewById(R.id.buy_squeak_offers_recycler_view);
+        final OfferListAdapter adapter = new OfferListAdapter(root.getContext(), this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
         buySqueakModel.getOffers().observe(getViewLifecycleOwner(), new Observer<List<Offer>>() {
             @Override
@@ -67,39 +62,19 @@ public class BuySqueakFragment extends Fragment {
 
                 Log.i(getTag(), "Got offers: " + offers);
 
-                // Finish the activity if any offer is already completed.
+                // Set the offers list adapter.
+                adapter.setOffers(offers);
+
+                // TODO: remove this after implementing the ActivityResultLauncher
+                /*                // Finish the activity if any offer is already completed.
                 for (Offer offer: offers) {
                     Log.i(getTag(), "Checking offer for valid preimage: " + offer);
                     if (offer.getHasValidPreimage()) {
                         getActivity().finish();
                     }
-                }
+                }*/
 
                 txtOfferCount.setText("Number of offers: " + offers.size());
-            }
-        });
-
-        buySqueakModel.getBestOffer().observe(getViewLifecycleOwner(), new Observer<Offer>() {
-            @Override
-            public void onChanged(@Nullable Offer offer) {
-                if(offer == null) {
-                    btnPayBestOffer.setVisibility(View.GONE);
-                    return;
-                }
-
-                Log.i(getTag(), "Got best offer: " + offer);
-                String buyBtnText = String.format(Locale.ENGLISH, "Buy squeak for %d satoshis", offer.amount);
-                btnPayBestOffer.setText(buyBtnText);
-                btnPayBestOffer.setVisibility(View.VISIBLE);
-                btnPayBestOffer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        System.out.println("Buy button clicked");
-
-                        // Start the send payment activity
-                        startSendPaymentActivity(offer);
-                    }
-                });
             }
         });
 
@@ -127,29 +102,16 @@ public class BuySqueakFragment extends Fragment {
                 Log.d("DEBUG", "Get offers error: " + e.toString());
             }
         });
-
     }
 
-    private void showFailedPaymentAlertDialog(Context context, String failureMessage) {
-        Log.i(getTag(), "Showing showFailedPaymentAlertDialog");
-        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setTitle("Payment failure");
-        String msg = String.format(failureMessage);
-        alertDialog.setMessage(msg);
-
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Ok",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        alertDialog.show();
-    }
-
-    private void startSendPaymentActivity(Offer offer) {
+    private void startOfferActivity(Offer offer) {
         startActivity(new Intent(getActivity(), OfferActivity.class).putExtra("offer_id", offer.getOfferId()));
     }
 
 
+    @Override
+    public void handleItemClick(Offer offer) {
+        // TODO: go to offer activity, and wait for result.
+        startOfferActivity(offer);
+    }
 }
