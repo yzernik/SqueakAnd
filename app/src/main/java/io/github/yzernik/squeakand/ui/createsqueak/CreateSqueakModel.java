@@ -21,6 +21,7 @@ import io.github.yzernik.squeakand.SqueakServerRepository;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.ServerUpdate;
+import io.github.yzernik.squeakand.blockchain.status.ElectrumDownloaderStatus;
 import io.github.yzernik.squeakand.preferences.Preferences;
 import io.github.yzernik.squeaklib.core.Squeak;
 
@@ -87,11 +88,11 @@ public class CreateSqueakModel extends AndroidViewModel {
 
     LiveData<BlockInfo> getLatestBlock() {
         return Transformations.map(getServerUpdate(), serverUpdate -> {
-            return serverUpdate.getBlockInfo();
+            return serverUpdate.getLatestBlockInfo();
         });
     }
 
-    LiveData<ServerUpdate> getServerUpdate() {
+    LiveData<ElectrumDownloaderStatus> getServerUpdate() {
         return blockchainRepository.getServerUpdate();
     }
 

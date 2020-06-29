@@ -36,6 +36,7 @@ import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.ServerUpdate;
+import io.github.yzernik.squeakand.blockchain.status.ElectrumDownloaderStatus;
 import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
 import io.github.yzernik.squeaklib.core.Squeak;
 
@@ -110,13 +111,13 @@ public class CreateSqueakFragment extends Fragment {
             }
         });
 
-        createSqueakModel.getServerUpdate().observe(getViewLifecycleOwner(), new Observer<ServerUpdate>() {
+        createSqueakModel.getServerUpdate().observe(getViewLifecycleOwner(), new Observer<ElectrumDownloaderStatus>() {
             @Override
-            public void onChanged(@Nullable final ServerUpdate serverUpdate) {
-                ServerUpdate.ConnectionStatus connectionStatus = serverUpdate.getConnectionStatus();
+            public void onChanged(@Nullable final ElectrumDownloaderStatus downloaderStatus) {
+                ServerUpdate.ConnectionStatus connectionStatus = downloaderStatus.getConnectionStatus();
                 switch (connectionStatus) {
                     case CONNECTED:
-                        mLatestBlockHeightButton.setText(serverUpdate.getElectrumServerAddress().toString());
+                        mLatestBlockHeightButton.setText(downloaderStatus.getServerAddress().toString());
                         break;
                     default:
                         mLatestBlockHeightButton.setText("Disconnected");
@@ -125,7 +126,7 @@ public class CreateSqueakFragment extends Fragment {
                 mLatestBlockHeightButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showElectrumAlertDialog(serverUpdate);
+                        showElectrumAlertDialog(downloaderStatus);
                     }
                 });
             }
@@ -227,17 +228,17 @@ public class CreateSqueakFragment extends Fragment {
 
     /**
      * Show the alert dialog for the electrum connection.
-     * @param serverUpdate
+     * @param downloaderStatus
      */
-    private void showElectrumAlertDialog(ServerUpdate serverUpdate) {
+    private void showElectrumAlertDialog(ElectrumDownloaderStatus downloaderStatus) {
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Electrum connection");
 
-        switch (serverUpdate.getConnectionStatus()) {
+        switch (downloaderStatus.getConnectionStatus()) {
             case CONNECTED:
-                String serverString = serverUpdate.getElectrumServerAddress().toString();
-                BlockInfo blockInfo = serverUpdate.getBlockInfo();
+                String serverString = downloaderStatus.getServerAddress().toString();
+                BlockInfo blockInfo = downloaderStatus.getLatestBlockInfo();
                 builder.setMessage("Connected to: " + serverString + " with block height: " + blockInfo.getHeight());
                 break;
             default:

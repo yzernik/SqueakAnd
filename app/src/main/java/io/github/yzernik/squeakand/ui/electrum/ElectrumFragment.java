@@ -25,6 +25,7 @@ import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.ElectrumServerAddress;
 import io.github.yzernik.squeakand.blockchain.ServerUpdate;
+import io.github.yzernik.squeakand.blockchain.status.ElectrumDownloaderStatus;
 
 public class ElectrumFragment extends Fragment {
 
@@ -77,23 +78,23 @@ public class ElectrumFragment extends Fragment {
             }
         });*/
 
-        electrumModel.getServerUpdate().observe(getViewLifecycleOwner(), new Observer<ServerUpdate>() {
+        electrumModel.liveDownloaderStatus().observe(getViewLifecycleOwner(), new Observer<ElectrumDownloaderStatus>() {
             @Override
-            public void onChanged(@Nullable final ServerUpdate serverUpdate) {
+            public void onChanged(@Nullable final ElectrumDownloaderStatus downloaderStatus) {
                 // Update edit text fields with current connection status.
-                ServerUpdate.ConnectionStatus connectionStatus = serverUpdate.getConnectionStatus();
+                ServerUpdate.ConnectionStatus connectionStatus = downloaderStatus.getConnectionStatus();
                 Log.i(getTag(),"Observed new electrum server connection status: " + connectionStatus);
                 String connectionStatusString = connectionStatus.toString();
                 mElectrumConnectionStatus.setText(connectionStatusString);
 
                 // Update the latest block height display
-                BlockInfo blockInfo = serverUpdate.getBlockInfo();
+                BlockInfo blockInfo = downloaderStatus.getLatestBlockInfo();
                 if (blockInfo != null) {
                     mShowLatestBlockHeight.setText(Integer.toString(blockInfo.getHeight()));
                 }
 
                 // Update text field with current address.
-                ElectrumServerAddress electrumServerAddress = serverUpdate.getElectrumServerAddress();
+                ElectrumServerAddress electrumServerAddress = downloaderStatus.getServerAddress();
                 if (electrumServerAddress != null) {
                     mShowServerHost.setText(electrumServerAddress.getHost());
                     mShowServerPort.setText(Integer.toString(electrumServerAddress.getPort()));

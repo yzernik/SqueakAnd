@@ -10,6 +10,7 @@ import java.util.List;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.blockchain.ElectrumServerAddress;
 import io.github.yzernik.squeakand.blockchain.ServerUpdate;
+import io.github.yzernik.squeakand.blockchain.status.ElectrumDownloaderStatus;
 
 public class ElectrumModel extends AndroidViewModel {
 
@@ -43,7 +44,7 @@ public class ElectrumModel extends AndroidViewModel {
         return blockchainRepository.getElectrumServers();
     }
 
-    public LiveData<ServerUpdate> getServerUpdate() {
+    public LiveData<ElectrumDownloaderStatus> liveDownloaderStatus() {
         return blockchainRepository.getServerUpdate();
     }
 
