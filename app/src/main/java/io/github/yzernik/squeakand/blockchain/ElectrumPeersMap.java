@@ -11,7 +11,8 @@ public class ElectrumPeersMap extends ConcurrentHashMap<ElectrumServerAddress, L
 
     private PeersChangedHandler peersChangedHandler;
 
-    public ElectrumPeersMap() {
+    public ElectrumPeersMap(PeersChangedHandler peersChangedHandler) {
+        this.peersChangedHandler = peersChangedHandler;
         handlePeersChanged();
     }
 
@@ -41,16 +42,9 @@ public class ElectrumPeersMap extends ConcurrentHashMap<ElectrumServerAddress, L
     }
 
     public void handlePeersChanged() {
-        if (peersChangedHandler != null) {
-            ArrayList<ElectrumServerAddress> keyList = new ArrayList<ElectrumServerAddress>(this.keySet());
-            peersChangedHandler.handleChange(keyList);
-        }
+        ArrayList<ElectrumServerAddress> keyList = new ArrayList<ElectrumServerAddress>(this.keySet());
+        peersChangedHandler.handleChange(keyList);
     }
-
-    public void setPeersChangedHandler(PeersChangedHandler peersChangedHandler) {
-        this.peersChangedHandler = peersChangedHandler;
-    }
-
 
     public interface PeersChangedHandler {
         void handleChange(List<ElectrumServerAddress> peers);

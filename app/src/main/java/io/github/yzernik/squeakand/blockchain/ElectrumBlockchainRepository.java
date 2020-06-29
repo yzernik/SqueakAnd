@@ -38,17 +38,20 @@ public class ElectrumBlockchainRepository {
 
     private ElectrumBlockchainRepository(Application application) {
         // Singleton constructor, only called by static method.
-        this.peersMap = new ElectrumPeersMap();
 
-        downloaderConnection = new ElectrumDownloaderController();
+        // Create the live data reporters.
+        peersMapLiveData = new PeersMapLiveData();
+        serverUpdateLiveData = new ServerUpdateLiveData();
+
+        // Create the controllers.
+        peersMap = new ElectrumPeersMap(peersMapLiveData);
+        downloaderConnection = new ElectrumDownloaderController(serverUpdateLiveData);
+
+        // Run the tasks.
         blockDownloader = new BlockDownloader(downloaderConnection);
         preferences = new Preferences(application);
         peerDownloader = new PeerDownloader(peersMap);
         blockGetter = new BlockGetter(downloaderConnection);
-        serverUpdateLiveData = new ServerUpdateLiveData();
-        peersMapLiveData = new PeersMapLiveData();
-        serverUpdateLiveData.reportController(downloaderConnection);
-        peersMapLiveData.reportPeersMap(peersMap);
     }
 
     public static ElectrumBlockchainRepository getRepository(Application application) {

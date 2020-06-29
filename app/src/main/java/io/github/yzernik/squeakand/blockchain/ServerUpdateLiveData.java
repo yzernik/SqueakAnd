@@ -3,7 +3,7 @@ package io.github.yzernik.squeakand.blockchain;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public class ServerUpdateLiveData {
+public class ServerUpdateLiveData implements ElectrumDownloaderController.ServerUpdateHandler {
 
     private MutableLiveData<ServerUpdate> liveServerUpdate;
 
@@ -11,18 +11,13 @@ public class ServerUpdateLiveData {
         this.liveServerUpdate = new MutableLiveData<>();
     }
 
-    /**
-     * Report every new ServerUpdate to the mutable livedata.
-     * @param electrumDownloaderController
-     */
-    public void reportController(ElectrumDownloaderController electrumDownloaderController) {
-        electrumDownloaderController.setServerUpdateHandler(serverUpdate -> {
-            liveServerUpdate.postValue(serverUpdate);
-        });
-    }
-
     public LiveData<ServerUpdate> getLiveServerUpdate() {
         return liveServerUpdate;
+    }
+
+    @Override
+    public void handleUpdate(ServerUpdate serverUpdate) {
+        liveServerUpdate.postValue(serverUpdate);
     }
 
 }
