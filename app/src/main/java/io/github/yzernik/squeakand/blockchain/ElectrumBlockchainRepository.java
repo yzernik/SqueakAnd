@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import org.bitcoinj.core.Block;
-import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -17,6 +16,8 @@ import io.github.yzernik.squeakand.preferences.Preferences;
 public class ElectrumBlockchainRepository {
 
     private static volatile ElectrumBlockchainRepository INSTANCE;
+
+    private ElectrumPeersMap peersMap;
 
     // For handling download
     private BlockDownloader blockDownloader;
@@ -31,13 +32,23 @@ public class ElectrumBlockchainRepository {
     // Controller
     ElectrumDownloaderController downloaderConnection;
 
+    // For getting livedata
+    private ServerUpdateLiveData serverUpdateLiveData;
+    private PeersMapLiveData peersMapLiveData;
+
     private ElectrumBlockchainRepository(Application application) {
         // Singleton constructor, only called by static method.
+        this.peersMap = new ElectrumPeersMap();
+
         downloaderConnection = new ElectrumDownloaderController();
         blockDownloader = new BlockDownloader(downloaderConnection);
         preferences = new Preferences(application);
-        peerDownloader = new PeerDownloader(downloaderConnection);
+        peerDownloader = new PeerDownloader(peersMap);
         blockGetter = new BlockGetter(downloaderConnection);
+        serverUpdateLiveData = new ServerUpdateLiveData();
+        peersMapLiveData = new PeersMapLiveData();
+        serverUpdateLiveData.reportController(downloaderConnection);
+        peersMapLiveData.reportPeersMap(peersMap);
     }
 
     public static ElectrumBlockchainRepository getRepository(Application application) {
@@ -80,11 +91,11 @@ public class ElectrumBlockchainRepository {
     }
 
     public LiveData<ServerUpdate> getServerUpdate() {
-        return downloaderConnection.getLiveServerUpdate();
+        return serverUpdateLiveData.getLiveServerUpdate();
     }
 
     public LiveData<List<ElectrumServerAddress>> getElectrumServers() {
-        return downloaderConnection.getLiveServers();
+        return peersMapLiveData.getLiveServers();
     }
 
 }

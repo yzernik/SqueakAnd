@@ -1,28 +1,19 @@
 package io.github.yzernik.squeakand.blockchain;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
-import java.util.List;
-
 /**
  * For controlling which electrum server to download from, and to
  * maintain the list of available electrum servers in the network.
  */
 public class ElectrumDownloaderController {
 
-    private MutableLiveData<List<ElectrumServerAddress>> liveServers;
-    private MutableLiveData<ServerUpdate> liveServerUpdate;
-
     private ElectrumServerAddress currentDownloadServer;
-    private LiveElectrumPeersMap peersMap;
-
+    private ServerUpdateHandler serverUpdateHandler;
+    private ServerUpdate latestUpdate;
 
     public ElectrumDownloaderController() {
-        this.liveServerUpdate = new MutableLiveData<>();
-        this.liveServers = new MutableLiveData<>();
-        this.peersMap = new LiveElectrumPeersMap(liveServers);
+        this.serverUpdateHandler = null;
 
+        this.latestUpdate = null;
         this.currentDownloadServer = null;
         setStatusDisconnected();
     }
@@ -33,10 +24,7 @@ public class ElectrumDownloaderController {
                 currentDownloadServer,
                 blockInfo
         );
-        liveServerUpdate.postValue(serverUpdate);
-
-        // Add the connected address to the peers map
-        peersMap.putNewPeer(currentDownloadServer);
+        setServerUpdate(serverUpdate);
     }
 
     void setStatusDisconnected() {
@@ -45,7 +33,7 @@ public class ElectrumDownloaderController {
                 currentDownloadServer,
                 null
         );
-        liveServerUpdate.postValue(serverUpdate);
+        setServerUpdate(serverUpdate);
     }
 
     void setStatusConnecting() {
@@ -54,27 +42,38 @@ public class ElectrumDownloaderController {
                 currentDownloadServer,
                 null
         );
-        liveServerUpdate.postValue(serverUpdate);
-    }
-
-    public MutableLiveData<ServerUpdate> getLiveServerUpdate() {
-        return liveServerUpdate;
-    }
-
-    public LiveElectrumPeersMap getPeersMap() {
-        return peersMap;
-    }
-
-    public LiveData<List<ElectrumServerAddress>> getLiveServers() {
-        return liveServers;
+        setServerUpdate(serverUpdate);
     }
 
     public synchronized void setCurrentDownloadServer(ElectrumServerAddress serverAddress) {
         currentDownloadServer = serverAddress;
     }
 
+    public synchronized void setServerUpdate(ServerUpdate serverUpdate) {
+        this.latestUpdate = serverUpdate;
+        handleUpdate(serverUpdate);
+    }
+
     public ElectrumServerAddress getCurrentDownloadServer() {
         return currentDownloadServer;
+    }
+
+    public ServerUpdate getCurrentStatusUpdate() {
+        return latestUpdate;
+    }
+
+    private void handleUpdate(ServerUpdate serverUpdate) {
+        if (serverUpdateHandler != null) {
+            serverUpdateHandler.handleUpdate(serverUpdate);
+        }
+    }
+
+    public void setServerUpdateHandler(ServerUpdateHandler serverUpdateHandler) {
+        this.serverUpdateHandler = serverUpdateHandler;
+    }
+
+    public interface ServerUpdateHandler {
+        void handleUpdate(ServerUpdate serverUpdate);
     }
 
 }
