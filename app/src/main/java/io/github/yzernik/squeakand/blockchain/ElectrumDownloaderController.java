@@ -10,8 +10,8 @@ public class ElectrumDownloaderController {
     private ServerUpdateHandler serverUpdateHandler;
     private ServerUpdate latestUpdate;
 
-    public ElectrumDownloaderController() {
-        this.serverUpdateHandler = null;
+    public ElectrumDownloaderController(ServerUpdateHandler serverUpdateHandler) {
+        this.serverUpdateHandler = serverUpdateHandler;
 
         this.latestUpdate = null;
         this.currentDownloadServer = null;
@@ -66,10 +66,6 @@ public class ElectrumDownloaderController {
         if (serverUpdateHandler != null) {
             serverUpdateHandler.handleUpdate(serverUpdate);
         }
-    }
-
-    public void setServerUpdateHandler(ServerUpdateHandler serverUpdateHandler) {
-        this.serverUpdateHandler = serverUpdateHandler;
     }
 
     public interface ServerUpdateHandler {

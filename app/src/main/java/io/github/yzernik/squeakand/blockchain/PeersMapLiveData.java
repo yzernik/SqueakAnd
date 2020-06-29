@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
-public class PeersMapLiveData {
+public class PeersMapLiveData implements ElectrumPeersMap.PeersChangedHandler {
 
     private MutableLiveData<List<ElectrumServerAddress>> liveServers;
 
@@ -13,19 +13,13 @@ public class PeersMapLiveData {
         this.liveServers = new MutableLiveData<>();
     }
 
-    /**
-     * Report every new list of peers to the mutable livedata.
-     * @param peersMap
-     */
-    public void reportPeersMap(ElectrumPeersMap peersMap) {
-        peersMap.setPeersChangedHandler(peers -> {
-            liveServers.postValue(peers);
-        });
-    }
-
     public LiveData<List<ElectrumServerAddress>> getLiveServers() {
         return liveServers;
     }
 
+    @Override
+    public void handleChange(List<ElectrumServerAddress> peers) {
+        liveServers.postValue(peers);
+    }
 
 }
