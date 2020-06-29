@@ -21,29 +21,48 @@
         <TextView
             android:id="@+id/offer_squeak_hash_text"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent" />
+            android:layout_width="match_parent"
+            android:text="Squeak:"/>
+
+        <Button
+            android:id="@+id/offer_view_squeak_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/offer_server_address_text"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent" />
+            android:layout_width="match_parent"
+            android:text="Squeak server"/>
+
+        <Button
+            android:id="@+id/offer_view_server_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/offer_lightning_address_text"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent" />
+            android:layout_width="match_parent"
+            android:text="Lightning node"/>
+
+        <Button
+            android:id="@+id/offer_view_lightning_node_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/offer_pay_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Pay" />
 
-        <Button
+
+        <!--        <Button
             android:id="@+id/offer_view_lightning_node"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View lightning node"/>
+            android:text="View lightning node"/>-->
 
 
     </LinearLayout>
