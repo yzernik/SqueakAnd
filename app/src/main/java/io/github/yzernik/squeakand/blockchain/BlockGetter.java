@@ -16,11 +16,11 @@ import io.github.yzernik.electrumclient.GetHeaderResponse;
 
 public class BlockGetter {
 
-    private final ElectrumDownloaderController downloaderController;
+    private final ElectrumConnection downloaderController;
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    BlockGetter(ElectrumDownloaderController downloaderController) {
+    BlockGetter(ElectrumConnection downloaderController) {
         this.downloaderController = downloaderController;
         this.executorService = Executors.newCachedThreadPool();
     }

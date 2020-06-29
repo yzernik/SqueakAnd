@@ -10,6 +10,7 @@ import org.bitcoinj.core.Block;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import io.github.yzernik.squeakand.blockchain.status.ElectrumDownloaderStatus;
 import io.github.yzernik.squeakand.preferences.Preferences;
 
 
@@ -30,7 +31,7 @@ public class ElectrumBlockchainRepository {
     private BlockGetter blockGetter;
 
     // Controller
-    ElectrumDownloaderController downloaderConnection;
+    ElectrumConnection electrumConnection;
 
     // For getting livedata
     private ServerUpdateLiveData serverUpdateLiveData;
@@ -45,13 +46,13 @@ public class ElectrumBlockchainRepository {
 
         // Create the controllers.
         peersMap = new ElectrumPeersMap(peersMapLiveData);
-        downloaderConnection = new ElectrumDownloaderController(serverUpdateLiveData);
+        electrumConnection = new ElectrumConnection(serverUpdateLiveData);
 
         // Run the tasks.
-        blockDownloader = new BlockDownloader(downloaderConnection);
+        blockDownloader = new BlockDownloader(electrumConnection);
         preferences = new Preferences(application);
         peerDownloader = new PeerDownloader(peersMap);
-        blockGetter = new BlockGetter(downloaderConnection);
+        blockGetter = new BlockGetter(electrumConnection);
     }
 
     public static ElectrumBlockchainRepository getRepository(Application application) {
@@ -82,7 +83,7 @@ public class ElectrumBlockchainRepository {
         // Set up electrum client with server config, and load livedata.
         Log.i(getClass().getName(), "Setting electrum server: " + serverAddress);
         // TODO: update the server address in the controller.
-        downloaderConnection.setCurrentDownloadServer(serverAddress);
+        electrumConnection.setCurrentDownloadServer(serverAddress);
         blockDownloader.reset();
 
         // Save the server address in sharedpreferences
@@ -93,7 +94,7 @@ public class ElectrumBlockchainRepository {
         return blockGetter.getBlockHeader(blockHeight);
     }
 
-    public LiveData<ServerUpdate> getServerUpdate() {
+    public LiveData<ElectrumDownloaderStatus> getServerUpdate() {
         return serverUpdateLiveData.getLiveServerUpdate();
     }
 

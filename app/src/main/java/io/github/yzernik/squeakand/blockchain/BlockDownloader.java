@@ -14,11 +14,11 @@ import io.github.yzernik.electrumclient.SubscribeHeadersResponse;
 
 public class BlockDownloader {
 
-    private final ElectrumDownloaderController downloaderController;
+    private final ElectrumConnection downloaderController;
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    BlockDownloader(ElectrumDownloaderController downloaderController) {
+    BlockDownloader(ElectrumConnection downloaderController) {
         this.downloaderController = downloaderController;
         this.executorService = Executors.newCachedThreadPool();
     }
