@@ -59,7 +59,7 @@ public class OfferListAdapter extends RecyclerView.Adapter<OfferListAdapter.Offe
     public void onBindViewHolder(OfferListAdapter.OfferViewHolder holder, int position) {
         if (mOffers != null) {
             Offer current = mOffers.get(position);
-            holder.txtOfferPrice.setText("Price: " + current.getAmount());
+            holder.txtOfferPrice.setText("Price: " + current.getAmount() + " satoshis");
             holder.txtOfferSqueakHash.setText("Squeak hash: " + current.getSqueakHash());
             holder.txtOfferServerAddress.setText("Server host: " + "TODO");
         }

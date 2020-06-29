@@ -1,5 +1,6 @@
 package io.github.yzernik.squeakand.ui.buysqueak;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,9 +28,25 @@ import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 
 public class BuySqueakFragment extends Fragment implements OfferListAdapter.ClickListener {
 
+    int LAUNCH_OFFER_ACTIVITY = 1;
+
     private TextView txtOfferCount;
 
     private BuySqueakModel buySqueakModel;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Handle result from offer activity.
+        if (requestCode == LAUNCH_OFFER_ACTIVITY) {
+            if(resultCode == Activity.RESULT_OK){
+                // Finish the current activity because offer was successfully purchased.
+                Log.i(getTag(), "Finishing buy activity because offer purchased.");
+                getActivity().finish();
+            }
+        }
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -105,7 +122,8 @@ public class BuySqueakFragment extends Fragment implements OfferListAdapter.Clic
     }
 
     private void startOfferActivity(Offer offer) {
-        startActivity(new Intent(getActivity(), OfferActivity.class).putExtra("offer_id", offer.getOfferId()));
+        Intent i = new Intent(getActivity(), OfferActivity.class).putExtra("offer_id", offer.getOfferId());
+        startActivityForResult(i, LAUNCH_OFFER_ACTIVITY);
     }
 
 

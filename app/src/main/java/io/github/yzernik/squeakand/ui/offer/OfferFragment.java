@@ -1,5 +1,6 @@
 package io.github.yzernik.squeakand.ui.offer;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -121,6 +122,8 @@ public class OfferFragment extends Fragment {
     }
 
     private void handleSuccessfulPayment(Rpc.SendResponse response) {
+        Intent returnIntent = new Intent();
+        getActivity().setResult(Activity.RESULT_OK,returnIntent);
         getActivity().finish();
     }
 
