@@ -20,6 +20,7 @@ import io.github.yzernik.squeakand.SqueakRoomDatabase;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.crypto.CryptoUtil;
 import io.github.yzernik.squeakand.lnd.LndController;
+import io.github.yzernik.squeakand.server.SqueakServerAddress;
 import io.github.yzernik.squeaklib.core.Squeak;
 import io.github.yzernik.squeaklib.core.VerificationException;
 import lnrpc.Rpc;
@@ -184,8 +185,8 @@ public class SqueaksController {
         offerDao.insert(offer);
     }
 
-    public Offer getOfferForSqueakAndServer(Sha256Hash squeakHash, int serverId) {
-        return offerDao.fetchOfferBySqueakHashAndServerId(squeakHash, serverId);
+    public Offer getOfferForSqueakAndServer(Sha256Hash squeakHash, SqueakServerAddress squeakServerAddress) {
+        return offerDao.fetchOfferBySqueakHashAndServerAddress(squeakHash, squeakServerAddress);
     }
 
     public void deleteOffer(Offer offer) {

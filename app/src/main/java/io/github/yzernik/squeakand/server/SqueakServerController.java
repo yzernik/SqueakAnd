@@ -45,7 +45,7 @@ public class SqueakServerController {
 
     public Offer getOffer(Sha256Hash hash) {
         // Check if there is already an offer in the local database
-        Offer localOffer = squeaksController.getOfferForSqueakAndServer(hash, server.getId());
+        Offer localOffer = squeaksController.getOfferForSqueakAndServer(hash, server.getAddress());
         if (localOffer != null) {
             Log.i(getClass().getName(), "Got offer: " + localOffer + " from local database.");
             // TODO: If the offer is expired, delete it.
@@ -58,7 +58,7 @@ public class SqueakServerController {
 
         // Download the buy offer to the server.
         Offer offer = client.buySqueak(hash);
-        offer.setSqueakServerId(server.getId());
+        offer.setSqueakServerAddress(server.getAddress());
         Log.i(getClass().getName(), "Got offer: " + offer + " from server: " + server.serverAddress);
         squeaksController.saveOffer(offer);
         return offer;

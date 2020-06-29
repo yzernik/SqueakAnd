@@ -133,7 +133,7 @@ public class SqueakServerClient {
                 pubkey,
                 host,
                 port,
-                -1
+                null
         );
     }
 
