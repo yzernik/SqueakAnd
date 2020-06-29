@@ -107,7 +107,6 @@ public class SqueakNetworkController {
 
     private List<String> getUploadAddresses() {
         List<SqueakProfile> signingProfiles = squeakProfileDao.getProfilesToUpload();
-        Log.i(getClass().getName(), "Got number of profiles to upload: " + signingProfiles.size());
         return signingProfiles.stream()
                 .map(profile -> profile.getAddress())
                 .collect(Collectors.toList());
@@ -115,7 +114,6 @@ public class SqueakNetworkController {
 
     private List<String> getDownloadAddresses() {
         List<SqueakProfile> signingProfiles = squeakProfileDao.getProfilesToDownload();
-        Log.i(getClass().getName(), "Got number of profiles to download: " + signingProfiles.size());
         return signingProfiles.stream()
                 .map(profile -> profile.getAddress())
                 .collect(Collectors.toList());
@@ -123,17 +121,14 @@ public class SqueakNetworkController {
 
     private void trySync() {
         List<SqueakServer> servers = getServers();
-
-        Log.i(getClass().getName(), "Doing another round of syncing with servers: " + servers);
-        Log.i(getClass().getName(), "Doing another round of syncing with number of servers: " + servers.size());
         for (SqueakServer server: servers) {
+            Log.i(getClass().getName(), "Syncing with server: " + server.serverAddress);
             try {
                 trySyncServer(server);
             } catch (io.grpc.StatusRuntimeException e) {
                 Log.e(getClass().getName(),"Failed to sync with server " + server + " with error: " + e);
             }
         }
-        Log.i(getClass().getName(), "Finished round of syncing.");
     }
 
     private void trySyncServer(SqueakServer server) {
@@ -155,18 +150,14 @@ public class SqueakNetworkController {
         int numDownloaded = 0;
         Sha256Hash currentReplyTo = squeakHash;
         while (numDownloaded < numAncestors) {
-            Log.i(getClass().getName(), "Fetching ancestor squeak hash: " + currentReplyTo);
             Squeak replyTo = fetch(currentReplyTo);
             if (replyTo == null) {
                 // Finish because fetch squeak failed
                 return;
             }
 
-            Log.i(getClass().getName(), "Got ancestor squeak with hash: " + replyTo.getHash());
             currentReplyTo = replyTo.getHashReplySqk();
             numDownloaded++;
-            Log.i(getClass().getName(), "Number of ancestors fetched: " + numDownloaded);
-            Log.i(getClass().getName(), "New currentReplyTo: " + currentReplyTo);
 
             // TODO: use the isReply method of squeak when it is available.
             if(currentReplyTo.equals(Sha256Hash.ZERO_HASH)) {

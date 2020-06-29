@@ -29,8 +29,6 @@ public class SqueakServerAddress {
     }
 
     public static SqueakServerAddress fromString(String s) {
-        Log.i(SqueakServerAddress.class.getName(), "Getting address from string: " + s);
-
         String[] pieces = s.split(":");
         if (pieces.length != 2) {
             throw new IllegalArgumentException();

@@ -65,13 +65,8 @@ public class SqueakServerController {
     }
 
     public void uploadSync(List<String> uploadAddresses, int minBlock, int maxBlock) {
-        Log.i(getClass().getName(), "Calling uploadSync...");
-
         Set<Sha256Hash> remoteHashes = getRemoteHashes(uploadAddresses, minBlock, maxBlock);
-        Log.i(getClass().getName(), "Upload server number of hashes: " + remoteHashes.size());
-
         Set<Sha256Hash> localHashes = getLocalHashes(uploadAddresses, minBlock, maxBlock, true);
-        Log.i(getClass().getName(), "Upload local number of hashes: " + localHashes.size());
 
         // For every local hash not in server hashes, upload.
         localHashes.removeAll(remoteHashes);
@@ -83,13 +78,8 @@ public class SqueakServerController {
     }
 
     public void downloadSync(List<String> downloadAddresses, int minBlock, int maxBlock) {
-        Log.i(getClass().getName(), "Calling downloadSync...");
-
         Set<Sha256Hash> remoteHashes = getRemoteHashes(downloadAddresses, minBlock, maxBlock);
-        Log.i(getClass().getName(), "Download server number of hashes: " + remoteHashes.size());
-
         Set<Sha256Hash> localHashes = getLocalHashes(downloadAddresses, minBlock, maxBlock);
-        Log.i(getClass().getName(), "Download local number of hashes: " + localHashes.size());
 
         // For every server hash not in remote hashes, download.
         remoteHashes.removeAll(localHashes);
