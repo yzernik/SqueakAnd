@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="6dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/offerCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/offer_item_view_price_text"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/offer_item_view_squeak_hash_text"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent" />
+
+                <TextView
+                    android:id="@+id/offer_item_view_server_address_text"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

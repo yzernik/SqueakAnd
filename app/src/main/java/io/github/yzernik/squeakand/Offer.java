@@ -121,6 +121,16 @@ public class Offer {
     }
 
     @Ignore
+    public long getAmount() {
+        return amount;
+    }
+
+    @Ignore
+    public Sha256Hash getSqueakHash() {
+        return squeakHash;
+    }
+
+    @Ignore
     public void setPreimage(byte[] preimage) {
         if (!Sha256Hash.of(preimage).equals(preimageHash)) {
             throw new IllegalArgumentException("Invalid preimage");
