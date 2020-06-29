@@ -4,7 +4,6 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import org.bitcoinj.core.Block;
 
@@ -18,8 +17,7 @@ public class ElectrumBlockchainRepository {
 
     private static volatile ElectrumBlockchainRepository INSTANCE;
 
-    private MutableLiveData<List<ElectrumServerAddress>> liveServers;
-    private LiveElectrumPeersMap peersMap;
+    private ElectrumPeersMap peersMap;
 
     // For handling download
     private BlockDownloader blockDownloader;
@@ -34,13 +32,13 @@ public class ElectrumBlockchainRepository {
     // Controller
     ElectrumDownloaderController downloaderConnection;
 
-    // For getting livedata from blockdownloader
+    // For getting livedata
     private ServerUpdateLiveData serverUpdateLiveData;
+    private PeersMapLiveData peersMapLiveData;
 
     private ElectrumBlockchainRepository(Application application) {
         // Singleton constructor, only called by static method.
-        this.liveServers = new MutableLiveData<>();
-        this.peersMap = new LiveElectrumPeersMap(liveServers);
+        this.peersMap = new ElectrumPeersMap();
 
         downloaderConnection = new ElectrumDownloaderController();
         blockDownloader = new BlockDownloader(downloaderConnection);
@@ -48,7 +46,9 @@ public class ElectrumBlockchainRepository {
         peerDownloader = new PeerDownloader(peersMap);
         blockGetter = new BlockGetter(downloaderConnection);
         serverUpdateLiveData = new ServerUpdateLiveData();
+        peersMapLiveData = new PeersMapLiveData();
         serverUpdateLiveData.reportController(downloaderConnection);
+        peersMapLiveData.reportPeersMap(peersMap);
     }
 
     public static ElectrumBlockchainRepository getRepository(Application application) {
@@ -95,7 +95,7 @@ public class ElectrumBlockchainRepository {
     }
 
     public LiveData<List<ElectrumServerAddress>> getElectrumServers() {
-        return liveServers;
+        return peersMapLiveData.getLiveServers();
     }
 
 }
