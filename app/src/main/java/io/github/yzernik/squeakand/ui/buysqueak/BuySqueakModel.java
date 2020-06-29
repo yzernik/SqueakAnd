@@ -47,26 +47,8 @@ public class BuySqueakModel extends AndroidViewModel {
         return mAllOffers;
     }
 
-    public LiveData<Offer> getBestOffer() {
-        return Transformations.map(mAllOffers, offers -> {
-            Offer bestOffer = null;
-            for (Offer offer: offers) {
-                if (bestOffer == null) {
-                    bestOffer = offer;
-                } else if (offer.amount < bestOffer.amount){
-                    bestOffer = offer;
-                }
-            }
-            return bestOffer;
-        });
-    }
-
     public SqueakNetworkAsyncClient getAsyncClient() {
         return squeakServerRepository.getSqueakServerAsyncClient();
-    }
-
-    public LndAsyncClient getLndAsyncClient() {
-        return lndRepository.getLndAsyncClient();
     }
 
 }
