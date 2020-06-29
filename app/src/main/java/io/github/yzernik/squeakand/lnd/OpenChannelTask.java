@@ -6,10 +6,10 @@ import java.util.concurrent.Future;
 import lnrpc.Rpc;
 
 public class OpenChannelTask {
-    public static Future<Rpc.ChannelPoint> openChannel(String pubkey, long amount, LndClient lndClient) {
+    public static Future<Rpc.ChannelPoint> openChannel(String pubkey, long amount, int targetConf, LndClient lndClient) {
         CompletableFuture<Rpc.ChannelPoint> completableFuture = new CompletableFuture<>();
 
-        lndClient.openChannel(pubkey, amount, new LndClient.OpenChannelCallBack() {
+        lndClient.openChannel(pubkey, amount, targetConf, new LndClient.OpenChannelCallBack() {
             @Override
             public void onError(Exception e) {
                 completableFuture.completeExceptionally(e);

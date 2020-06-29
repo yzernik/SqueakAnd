@@ -415,10 +415,11 @@ public class LndClient {
         public void onResponse(Rpc.ListPeersResponse response);
     }
 
-    public void openChannel(String pubkey, long amount, OpenChannelCallBack callBack) {
+    public void openChannel(String pubkey, long amount, int targetConf, OpenChannelCallBack callBack) {
         Rpc.OpenChannelRequest request = Rpc.OpenChannelRequest.newBuilder()
                 .setNodePubkeyString(pubkey)
                 .setLocalFundingAmount(amount)
+                .setTargetConf(targetConf)
                 .build();
         Lndmobile.openChannelSync(request.toByteArray(), new Callback() {
             @Override
