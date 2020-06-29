@@ -15,6 +15,8 @@
             android:id="@+id/lightning_node_pubkey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textIsSelectable="true"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,23 +27,74 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/lightning_node_connection_status_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No peer status information" />
-
-        <Button
-            android:id="@+id/lightning_node_connect_peer_button"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Connect to peer" />
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
 
-        <Button
-            android:id="@+id/lightning_node_open_channel_button"
+            <TextView
+                android:id="@+id/lightning_node_connection_status_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No peer status information"
+                android:layout_gravity="left|center_vertical" />
+
+            <Button
+                android:id="@+id/lightning_node_connect_peer_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connect to peer"
+                android:layout_gravity="right|center_vertical" />
+
+        </FrameLayout>
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Open channel" />
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:id="@+id/lightning_node_balance_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No channels count information"
+                android:layout_gravity="left|center_vertical" />
+
+
+            <Button
+                android:id="@+id/lightning_node_view_wallet_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View wallet"
+                android:layout_gravity="right|center_vertical"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:id="@+id/lightning_node_channels_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No channels count information"
+                android:layout_gravity="left|center_vertical" />
+
+
+            <Button
+                android:id="@+id/lightning_node_open_channel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Open channel"
+                android:layout_gravity="right|center_vertical"/>
+
+        </FrameLayout>
+
 
     </LinearLayout>
 

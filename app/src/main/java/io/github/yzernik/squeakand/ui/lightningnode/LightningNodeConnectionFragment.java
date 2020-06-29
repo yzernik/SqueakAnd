@@ -17,6 +17,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import java.util.List;
+
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.lnd.LndResult;
 import lnrpc.Rpc;
@@ -26,7 +28,10 @@ public class LightningNodeConnectionFragment extends Fragment {
     private TextView mLightningNodePubkeyText;
     private TextView mLightningNodeConnectionStatusText;
     private Button mLightningNodeConnectButton;
+    private TextView mLightningNodeChannelsText;
     private Button mLightningNodeOpenChannelButton;
+    private TextView mLightningBalanceText;
+    private Button mLightningNodeViewWalletButton;
 
     private LightningNodeConnectionModel lightningNodeChannelsModel;
 
@@ -45,7 +50,15 @@ public class LightningNodeConnectionFragment extends Fragment {
         mLightningNodePubkeyText = root.findViewById(R.id.lightning_node_pubkey);
         mLightningNodeConnectionStatusText = root.findViewById(R.id.lightning_node_connection_status_text);
         mLightningNodeConnectButton = root.findViewById(R.id.lightning_node_connect_peer_button);
+        mLightningNodeChannelsText = root.findViewById(R.id.lightning_node_channels_text);
         mLightningNodeOpenChannelButton = root.findViewById(R.id.lightning_node_open_channel_button);
+        mLightningBalanceText = root.findViewById(R.id.lightning_node_balance_text);
+        mLightningNodeViewWalletButton = root.findViewById(R.id.lightning_node_view_wallet_button);
+
+        // Start with buttons hidden.
+        mLightningNodeConnectButton.setVisibility(View.GONE);
+        mLightningNodeOpenChannelButton.setVisibility(View.GONE);
+        mLightningNodeViewWalletButton.setVisibility(View.GONE);
 
         lightningNodeChannelsModel = ViewModelProviders.of(this,
                 new LightningNodeConnectionModelFactory(getActivity().getApplication(), pubkey, host))
@@ -56,28 +69,62 @@ public class LightningNodeConnectionFragment extends Fragment {
         lightningNodeChannelsModel.liveIsPeerConnected().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable final Boolean isPeerConnected) {
+                Log.i(getTag(), "Is peer connected: " + isPeerConnected);
                 mLightningNodeConnectionStatusText.setText("Is peer connected: " + isPeerConnected);
+
+                // Handle the connect peer button.
+                if (lightningNodeChannelsModel.getHost() != null) {
+                    mLightningNodeConnectButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            LiveData<LndResult<Rpc.ConnectPeerResponse>> connectResult = lightningNodeChannelsModel.connectToPeer();
+                            handleConnectPeerResult(connectResult);
+                        }
+                    });
+                }
+
+                // Don't show the connect button if already connected
+                if (isPeerConnected) {
+                    mLightningNodeConnectButton.setVisibility(View.GONE);
+                } else {
+                    mLightningNodeConnectButton.setVisibility(View.VISIBLE);
+                }
             }
         });
 
-        // Only show connect button if the host variable is set.
-        if (lightningNodeChannelsModel.getHost() != null) {
-            mLightningNodeConnectButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LiveData<LndResult<Rpc.ConnectPeerResponse>> connectResult = lightningNodeChannelsModel.connectToPeer();
-                    handleConnectPeerResult(connectResult);
-                }
-            });
-        }
 
-
-        // Only show open channel button if connected.
-        mLightningNodeOpenChannelButton.setOnClickListener(new View.OnClickListener() {
+        lightningNodeChannelsModel.listNodeChannels().observe(getViewLifecycleOwner(), new Observer<List<Rpc.Channel>>() {
             @Override
-            public void onClick(View v) {
-                LiveData<LndResult<Rpc.ChannelPoint>> openChanelResult = lightningNodeChannelsModel.openChannel(20000);
-                handleOpenChannelResult(openChanelResult);
+            public void onChanged(@Nullable final List<Rpc.Channel> channels) {
+                int numChannels = channels.size();
+                mLightningNodeChannelsText.setText("Number of channels to node:" + numChannels);
+
+                // Only show open channel button if connected.
+                mLightningNodeOpenChannelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LiveData<LndResult<Rpc.ChannelPoint>> openChanelResult = lightningNodeChannelsModel.openChannel(20000);
+                        handleOpenChannelResult(openChanelResult);
+                    }
+                });
+                mLightningNodeOpenChannelButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        lightningNodeChannelsModel.liveConfirmedBalance().observe(getViewLifecycleOwner(), new Observer<Long>() {
+            @Override
+            public void onChanged(@Nullable final Long confirmedBalance) {
+                mLightningBalanceText.setText("Confirmed wallet balance:" + confirmedBalance);
+
+                // Set up the go to wallet button
+                mLightningNodeViewWalletButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startWalletActivity();
+                    }
+                });
+                mLightningNodeViewWalletButton.setVisibility(View.VISIBLE);
             }
         });
 
@@ -132,6 +179,12 @@ public class LightningNodeConnectionFragment extends Fragment {
                     }
                 });
         alertDialog.show();
+    }
+
+    private void startWalletActivity() {
+        Log.i(getTag(), "Starting money activity...");
+        // TODO: start wallet/money activity
+        // startActivity(new Intent(getActivity(), ViewMoneyActivity.class));
     }
 
 }
