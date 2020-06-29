@@ -131,6 +131,11 @@ public class Offer {
     }
 
     @Ignore
+    public String getLightningAddress() {
+        return String.format("%s@%s", pubkey, host);
+    }
+
+    @Ignore
     public void setPreimage(byte[] preimage) {
         if (!Sha256Hash.of(preimage).equals(preimageHash)) {
             throw new IllegalArgumentException("Invalid preimage");

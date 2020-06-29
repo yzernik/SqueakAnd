@@ -25,8 +25,10 @@ import lnrpc.Rpc;
 
 public class OfferFragment extends Fragment {
 
-    private TextView txtSendPaymentOffer;
-    private TextView txtSendPaymentResult;
+    private TextView txtOfferPrice;
+    private TextView txtOfferSqueakHash;
+    private TextView txtOfferServerAddress;
+    private TextView txtOfferLightningAddress;
     private Button btnPay;
     private Button btnViewLightningNode;
 
@@ -43,31 +45,21 @@ public class OfferFragment extends Fragment {
             offerId = this.getArguments().getInt("offer_id");
         }
 
-        Log.i(getTag(), "Starting sendpayment fragment with offerId: " + offerId);
+        Log.i(getTag(), "Starting offer fragment with offerId: " + offerId);
 
         offerModel = ViewModelProviders.of(this,
                 new OfferModelFactory(getActivity().getApplication(), offerId))
                 .get(OfferModel.class);
 
-        txtSendPaymentOffer = root.findViewById(R.id.offer_id_txt);
-        txtSendPaymentResult = root.findViewById(R.id.offer_payment_result_text);
+        txtOfferPrice = root.findViewById(R.id.offer_price_text);
+        txtOfferSqueakHash = root.findViewById(R.id.offer_squeak_hash_text);
+        txtOfferServerAddress = root.findViewById(R.id.offer_server_address_text);
+        txtOfferLightningAddress = root.findViewById(R.id.offer_lightning_address_text);
         btnPay = root.findViewById(R.id.offer_pay_button);
         btnViewLightningNode = root.findViewById(R.id.offer_view_lightning_node);
 
-
         btnPay.setVisibility(View.GONE);
-
-        txtSendPaymentOffer.setText("Offer id: " + offerId);
-
-        // Set up pay button
-        btnPay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendPayment();
-            }
-        });
-        btnPay.setVisibility(View.VISIBLE);
-
+        btnViewLightningNode.setVisibility(View.GONE);
 
         offerModel.getLiveOffer().observe(getViewLifecycleOwner(), new Observer<Offer>() {
             @Override
@@ -77,13 +69,29 @@ public class OfferFragment extends Fragment {
                 }
 
                 Log.i(getTag(), "Got offer: " + offer);
+                txtOfferPrice.setText("Price: " + offer.getAmount() + " satoshis");
+                txtOfferSqueakHash.setText("Squeak hash: " + offer.getSqueakHash());
+                txtOfferServerAddress.setText("Server: " + offer.squeakServerId);
+                txtOfferLightningAddress.setText("Lightning address: " + offer.getLightningAddress());
 
+                // Set up view lightning node button
                 btnViewLightningNode.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         startViewLightningNodeActivity(offer.pubkey, offer.host);
                     }
                 });
+                btnViewLightningNode.setVisibility(View.VISIBLE);
+
+
+                // Set up pay button
+                btnPay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sendPayment();
+                    }
+                });
+                btnPay.setVisibility(View.VISIBLE);
 
             }
         });
@@ -128,8 +136,8 @@ public class OfferFragment extends Fragment {
     }
 
     private void handleFailedPayment(Rpc.SendResponse response) {
-        txtSendPaymentResult.setText("Payment response error: " + response.getPaymentError());
-        showFailedPaymentAlert(response.getPaymentError());
+        String error = response.getPaymentError();
+        showFailedPaymentAlert(error);
     }
 
 
