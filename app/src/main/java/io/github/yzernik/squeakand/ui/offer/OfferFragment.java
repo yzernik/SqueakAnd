@@ -20,7 +20,9 @@ import androidx.lifecycle.ViewModelProviders;
 
 import io.github.yzernik.squeakand.LightningNodeActivity;
 import io.github.yzernik.squeakand.Offer;
+import io.github.yzernik.squeakand.OfferWithSqueakServer;
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.SqueakServer;
 import lnrpc.Rpc;
 
 public class OfferFragment extends Fragment {
@@ -61,17 +63,20 @@ public class OfferFragment extends Fragment {
         btnPay.setVisibility(View.GONE);
         btnViewLightningNode.setVisibility(View.GONE);
 
-        offerModel.getLiveOffer().observe(getViewLifecycleOwner(), new Observer<Offer>() {
+        offerModel.getLiveOffer().observe(getViewLifecycleOwner(), new Observer<OfferWithSqueakServer>() {
             @Override
-            public void onChanged(@Nullable Offer offer) {
-                if (offer == null) {
+            public void onChanged(@Nullable OfferWithSqueakServer offerWithSqueakServer) {
+                if (offerWithSqueakServer == null) {
                     return;
                 }
+
+                Offer offer = offerWithSqueakServer.offer;
+                SqueakServer squeakServer = offerWithSqueakServer.squeakServer;
 
                 Log.i(getTag(), "Got offer: " + offer);
                 txtOfferPrice.setText("Price: " + offer.getAmount() + " satoshis");
                 txtOfferSqueakHash.setText("Squeak hash: " + offer.getSqueakHash());
-                txtOfferServerAddress.setText("Server: " + offer.squeakServerId);
+                txtOfferServerAddress.setText("Server: " + squeakServer.serverAddress);
                 txtOfferLightningAddress.setText("Lightning address: " + offer.getLightningAddress());
 
                 // Set up view lightning node button
