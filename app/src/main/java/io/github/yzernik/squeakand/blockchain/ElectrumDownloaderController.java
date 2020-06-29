@@ -12,17 +12,21 @@ import java.util.List;
 public class ElectrumDownloaderController {
 
     private MutableLiveData<List<ElectrumServerAddress>> liveServers;
-    private MutableLiveData<ServerUpdate> liveServerUpdate;
 
     private ElectrumServerAddress currentDownloadServer;
     private LiveElectrumPeersMap peersMap;
 
+    private ServerUpdateHandler serverUpdateHandler;
+
+    private ServerUpdate latestUpdate;
 
     public ElectrumDownloaderController() {
-        this.liveServerUpdate = new MutableLiveData<>();
         this.liveServers = new MutableLiveData<>();
         this.peersMap = new LiveElectrumPeersMap(liveServers);
 
+        this.serverUpdateHandler = null;
+
+        this.latestUpdate = null;
         this.currentDownloadServer = null;
         setStatusDisconnected();
     }
@@ -33,7 +37,7 @@ public class ElectrumDownloaderController {
                 currentDownloadServer,
                 blockInfo
         );
-        liveServerUpdate.postValue(serverUpdate);
+        setServerUpdate(serverUpdate);
 
         // Add the connected address to the peers map
         peersMap.putNewPeer(currentDownloadServer);
@@ -45,7 +49,7 @@ public class ElectrumDownloaderController {
                 currentDownloadServer,
                 null
         );
-        liveServerUpdate.postValue(serverUpdate);
+        setServerUpdate(serverUpdate);
     }
 
     void setStatusConnecting() {
@@ -54,11 +58,7 @@ public class ElectrumDownloaderController {
                 currentDownloadServer,
                 null
         );
-        liveServerUpdate.postValue(serverUpdate);
-    }
-
-    public MutableLiveData<ServerUpdate> getLiveServerUpdate() {
-        return liveServerUpdate;
+        setServerUpdate(serverUpdate);
     }
 
     public LiveElectrumPeersMap getPeersMap() {
@@ -73,8 +73,31 @@ public class ElectrumDownloaderController {
         currentDownloadServer = serverAddress;
     }
 
+    public synchronized void setServerUpdate(ServerUpdate serverUpdate) {
+        this.latestUpdate = serverUpdate;
+        handleUpdate(serverUpdate);
+    }
+
     public ElectrumServerAddress getCurrentDownloadServer() {
         return currentDownloadServer;
+    }
+
+    public ServerUpdate getCurrentStatusUpdate() {
+        return latestUpdate;
+    }
+
+    private void handleUpdate(ServerUpdate serverUpdate) {
+        if (serverUpdateHandler != null) {
+            serverUpdateHandler.handleUpdate(serverUpdate);
+        }
+    }
+
+    public void setServerUpdateHandler(ServerUpdateHandler serverUpdateHandler) {
+        this.serverUpdateHandler = serverUpdateHandler;
+    }
+
+    public interface ServerUpdateHandler {
+        void handleUpdate(ServerUpdate serverUpdate);
     }
 
 }

@@ -31,6 +31,9 @@ public class ElectrumBlockchainRepository {
     // Controller
     ElectrumDownloaderController downloaderConnection;
 
+    // For getting livedata from blockdownloader
+    private ServerUpdateLiveData serverUpdateLiveData;
+
     private ElectrumBlockchainRepository(Application application) {
         // Singleton constructor, only called by static method.
         downloaderConnection = new ElectrumDownloaderController();
@@ -38,6 +41,8 @@ public class ElectrumBlockchainRepository {
         preferences = new Preferences(application);
         peerDownloader = new PeerDownloader(downloaderConnection);
         blockGetter = new BlockGetter(downloaderConnection);
+        serverUpdateLiveData = new ServerUpdateLiveData();
+        serverUpdateLiveData.reportController(downloaderConnection);
     }
 
     public static ElectrumBlockchainRepository getRepository(Application application) {
@@ -80,7 +85,7 @@ public class ElectrumBlockchainRepository {
     }
 
     public LiveData<ServerUpdate> getServerUpdate() {
-        return downloaderConnection.getLiveServerUpdate();
+        return serverUpdateLiveData.getLiveServerUpdate();
     }
 
     public LiveData<List<ElectrumServerAddress>> getElectrumServers() {
