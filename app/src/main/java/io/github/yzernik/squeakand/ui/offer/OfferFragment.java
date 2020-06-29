@@ -18,11 +18,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import org.bitcoinj.core.Sha256Hash;
+
 import io.github.yzernik.squeakand.LightningNodeActivity;
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.OfferWithSqueakServer;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakServer;
+import io.github.yzernik.squeakand.ViewServerActivity;
+import io.github.yzernik.squeakand.ViewSqueakActivity;
 import lnrpc.Rpc;
 
 public class OfferFragment extends Fragment {
@@ -57,10 +61,7 @@ public class OfferFragment extends Fragment {
         btnViewServer = root.findViewById(R.id.offer_view_server_button);
         btnViewLightningNode = root.findViewById(R.id.offer_view_lightning_node_button);
         btnPay = root.findViewById(R.id.offer_pay_button);
-        // btnViewLightningNode = root.findViewById(R.id.offer_view_lightning_node);
 
-        btnPay.setVisibility(View.GONE);
-        btnViewLightningNode.setVisibility(View.GONE);
 
         offerModel.getLiveOffer().observe(getViewLifecycleOwner(), new Observer<OfferWithSqueakServer>() {
             @Override
@@ -78,6 +79,22 @@ public class OfferFragment extends Fragment {
                 btnViewServer.setText(squeakServer.serverAddress.toString());
                 btnViewLightningNode.setText(offer.getLightningAddress());
 
+                // Set up view squeak button
+                btnViewSqueak.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startViewSqueakActivity(offer.squeakHash);
+                    }
+                });
+
+                // Set up view squeak server button
+                btnViewServer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startViewSqueakServerActivity(squeakServer.server_id);
+                    }
+                });
+
                 // Set up view lightning node button
                 btnViewLightningNode.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -85,8 +102,6 @@ public class OfferFragment extends Fragment {
                         startViewLightningNodeActivity(offer.pubkey, offer.host);
                     }
                 });
-                btnViewLightningNode.setVisibility(View.VISIBLE);
-
 
                 // Set up pay button
                 btnPay.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +110,6 @@ public class OfferFragment extends Fragment {
                         sendPayment();
                     }
                 });
-                btnPay.setVisibility(View.VISIBLE);
 
             }
         });
@@ -117,11 +131,21 @@ public class OfferFragment extends Fragment {
     }
 
     private void startViewLightningNodeActivity(String pubkey, String host) {
-        Log.i(getTag(), "Going to view lightning node activity...");
-
         startActivity(new Intent(getActivity(), LightningNodeActivity.class)
                 .putExtra("pubkey", pubkey)
                 .putExtra("host", host)
+        );
+    }
+
+    private void startViewSqueakActivity(Sha256Hash squeakHash) {
+        startActivity(new Intent(getActivity(), ViewSqueakActivity.class)
+                .putExtra("squeak_hash", squeakHash.toString())
+        );
+    }
+
+    private void startViewSqueakServerActivity(int serverId) {
+        startActivity(new Intent(getActivity(), ViewServerActivity.class)
+                .putExtra("server_id", serverId)
         );
     }
 
