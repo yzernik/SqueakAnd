@@ -2,10 +2,6 @@ package io.github.yzernik.squeakand.blockchain;
 
 import android.util.Log;
 
-import org.bitcoinj.core.BitcoinSerializer;
-import org.bitcoinj.core.Block;
-import org.bitcoinj.core.NetworkParameters;
-
 import java.net.InetSocketAddress;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -15,8 +11,6 @@ import java.util.concurrent.Future;
 
 import io.github.yzernik.electrumclient.ElectrumClient;
 import io.github.yzernik.electrumclient.SubscribeHeadersResponse;
-
-import static org.bitcoinj.core.Utils.HEX;
 
 public class BlockDownloader {
 
@@ -63,7 +57,7 @@ public class BlockDownloader {
             Log.i(getClass().getName(), "Calling call.");
             while (true) {
                 try {
-                    tryLoadLiveDataWithRetries();
+                    tryLoadBlockSubscriptionWithRetries();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     Log.e(getClass().getName(), "CANCELLED - Command because of interrupt. error: " + e);
@@ -72,12 +66,12 @@ public class BlockDownloader {
             }
         }
 
-        private void tryLoadLiveDataWithRetries() throws InterruptedException {
+        private void tryLoadBlockSubscriptionWithRetries() throws InterruptedException {
             InetSocketAddress address = new InetSocketAddress(serverAddress.getHost(), serverAddress.getPort());
             ElectrumClient electrumClient = new ElectrumClient(address, executorService);
             while (retryCounter < MAX_RETRIES) {
                 try {
-                    tryLoadLiveData(electrumClient);
+                    tryLoadBlockSubscription(electrumClient);
                 } catch (ExecutionException  e) {
                     retryCounter++;
                     Log.e(getClass().getName(), "FAILED - Command failed on retry " + retryCounter + " of " + MAX_RETRIES + " error: " + e);
@@ -88,7 +82,7 @@ public class BlockDownloader {
             resetRetryCounter();
         }
 
-        private void tryLoadLiveData(ElectrumClient electrumClient) throws ExecutionException, InterruptedException {
+        private void tryLoadBlockSubscription(ElectrumClient electrumClient) throws ExecutionException, InterruptedException {
             downloaderController.setStatusConnecting();
             Future<SubscribeHeadersResponse> responseFuture = electrumClient.subscribeHeaders(header -> {
                 Log.i(getClass().getName(), "Downloaded header: " + header);
