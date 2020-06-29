@@ -9,11 +9,10 @@ import androidx.room.TypeConverters;
 
 import org.bitcoinj.core.Sha256Hash;
 
-import io.github.yzernik.squeakand.networkparameters.NetworkParameters;
-import io.github.yzernik.squeaklib.core.Signing;
+import io.github.yzernik.squeakand.server.SqueakServerAddress;
 
 @Entity(tableName = SqueakRoomDatabase.TABLE_NAME_OFFER,
-        indices = {@Index(value = {"squeakHash", "squeakServerId"}, unique = true)})
+        indices = {@Index(value = {"squeakHash", "squeakServerAddress"}, unique = true)})
 @TypeConverters({Converters.class})
 public class Offer {
 
@@ -30,7 +29,7 @@ public class Offer {
             String pubkey,
             String host,
             int port,
-            int squeakServerId,
+            SqueakServerAddress squeakServerAddress,
             byte[] preimage) {
         this.squeakHash = squeakHash;
         this.nonce = nonce;
@@ -40,7 +39,7 @@ public class Offer {
         this.pubkey = pubkey;
         this.host = host;
         this.port = port;
-        this.squeakServerId = squeakServerId;
+        this.squeakServerAddress = squeakServerAddress;
         this.preimage = preimage;
     }
 
@@ -54,13 +53,13 @@ public class Offer {
             String pubkey,
             String host,
             int port,
-            int squeakServerId) {
-        this(squeakHash, nonce, preimageHash, amount, paymentRequest, pubkey, host, port, squeakServerId, null);
+            SqueakServerAddress squeakServerAddress) {
+        this(squeakHash, nonce, preimageHash, amount, paymentRequest, pubkey, host, port, squeakServerAddress, null);
     }
 
     @Ignore
-    public void setSqueakServerId(int squeakServerId) {
-        this.squeakServerId = squeakServerId;
+    public void setSqueakServerAddress(SqueakServerAddress squeakServerAddress) {
+        this.squeakServerAddress = squeakServerAddress;
     }
 
     @PrimaryKey(autoGenerate = true)
@@ -91,7 +90,7 @@ public class Offer {
     public int port;
 
     @NonNull
-    public int squeakServerId;
+    public SqueakServerAddress squeakServerAddress;
 
     @NonNull
     public boolean hasValidPreimage;
@@ -109,7 +108,7 @@ public class Offer {
                 + "pubkey: " + pubkey + ", "
                 + "host: " + host + ", "
                 + "port: " + port + ", "
-                + "squeakServerId: " + squeakServerId + ", "
+                + "squeakServerAddress: " + squeakServerAddress + ", "
                 + "hasValidPreimage: " + hasValidPreimage + ", "
                 + "preimage: " + preimage
                 + ")";

@@ -13,6 +13,8 @@ import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.server.SqueakServerAddress;
+
 @Dao
 @TypeConverters({Converters.class})
 public interface OfferDao {
@@ -23,13 +25,13 @@ public interface OfferDao {
     @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_OFFER  + " WHERE squeakHash = :squeakHash" + " ORDER BY offerId ASC")
     LiveData<List<Offer>> fetchOffersBySqueakHash(Sha256Hash squeakHash);
 
-    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_OFFER  + " WHERE squeakHash = :squeakHash AND squeakServerId = :serverId" + " ORDER BY offerId ASC")
-    Offer fetchOfferBySqueakHashAndServerId(Sha256Hash squeakHash, int serverId);
+    @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_OFFER  + " WHERE squeakHash = :squeakHash AND squeakServerAddress = :serverAddress" + " ORDER BY offerId ASC")
+    Offer fetchOfferBySqueakHashAndServerAddress(Sha256Hash squeakHash, SqueakServerAddress serverAddress);
 
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_OFFER + " WHERE offerId = :offerId")
     LiveData<Offer> fetchLiveOfferById(int offerId);
 
-    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_OFFER + " JOIN " + SqueakRoomDatabase.TABLE_NAME_SERVER + " ON offer.squeakServerId=server.server_id" + " WHERE offerId = :offerId")
+    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_OFFER + " JOIN " + SqueakRoomDatabase.TABLE_NAME_SERVER + " ON offer.squeakServerAddress=server.serverAddress" + " WHERE offerId = :offerId")
     LiveData<OfferWithSqueakServer> fetchLiveOfferWithSqueakServerById(int offerId);
 
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_OFFER + " WHERE offerId = :offerId")
