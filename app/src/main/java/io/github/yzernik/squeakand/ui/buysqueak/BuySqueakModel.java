@@ -4,7 +4,6 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
 
 import org.bitcoinj.core.Sha256Hash;
 
@@ -12,12 +11,9 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.OfferRepository;
-import io.github.yzernik.squeakand.SqueakProfile;
-import io.github.yzernik.squeakand.SqueakServerRepository;
-import io.github.yzernik.squeakand.lnd.LndAsyncClient;
+import io.github.yzernik.squeakand.SqueakControllerRepository;
 import io.github.yzernik.squeakand.lnd.LndRepository;
 import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
-import lnrpc.Rpc;
 
 
 public class BuySqueakModel extends AndroidViewModel {
@@ -26,7 +22,7 @@ public class BuySqueakModel extends AndroidViewModel {
     private LiveData<List<Offer>> mAllOffers;
 
     private OfferRepository offerRepository;
-    private SqueakServerRepository squeakServerRepository;
+    private SqueakControllerRepository squeakControllerRepository;
     private LndRepository lndRepository;
 
 
@@ -34,8 +30,7 @@ public class BuySqueakModel extends AndroidViewModel {
         super(application);
         this.squeakHash = squeakHash;
         this.offerRepository = OfferRepository.getRepository(application);
-        squeakServerRepository = SqueakServerRepository.getRepository(application);
-        this.lndRepository = LndRepository.getRepository(application);
+        squeakControllerRepository = SqueakControllerRepository.getRepository(application);
         this.mAllOffers = offerRepository.getOffersForSqueak(squeakHash);
     }
 
@@ -48,7 +43,7 @@ public class BuySqueakModel extends AndroidViewModel {
     }
 
     public SqueakNetworkAsyncClient getAsyncClient() {
-        return squeakServerRepository.getSqueakServerAsyncClient();
+        return squeakControllerRepository.getSqueakServerAsyncClient();
     }
 
 }

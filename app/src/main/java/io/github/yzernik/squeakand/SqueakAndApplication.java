@@ -43,14 +43,9 @@ public class SqueakAndApplication extends Application {
         Log.i(getClass().getName(), "Calling electrumBlockchainRepository.initialize...");
         electrumBlockchainRepository.initialize();
 
-        // Initialize the squeakserver repository
-        SqueakServerRepository squeakServerRepository = SqueakServerRepository.getRepository(this);
-        Log.i(getClass().getName(), "Calling squeakServerRepository.initialize...");
-        squeakServerRepository.initialize();
-
-        // Initialize the squeaks repository
-        SqueakRepository squeakRepository = SqueakRepository.getRepository(this);
-        squeakRepository.initialize();
+        // Initialize the squeakcontroller repository
+        SqueakControllerRepository squeakControllerRepository = SqueakControllerRepository.getRepository(this);
+        squeakControllerRepository.initialize();
 
         // Initialize the lnd node
         LndRepository lndRepository = LndRepository.getRepository(this);

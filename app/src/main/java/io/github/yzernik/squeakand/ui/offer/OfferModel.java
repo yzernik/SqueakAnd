@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.OfferRepository;
 import io.github.yzernik.squeakand.OfferWithSqueakServer;
+import io.github.yzernik.squeakand.SqueakControllerRepository;
 import io.github.yzernik.squeakand.SqueakRepository;
 import lnrpc.Rpc;
 
@@ -15,7 +16,7 @@ public class OfferModel extends AndroidViewModel {
 
     private int offerId;
     private OfferRepository offerRepository;
-    private SqueakRepository squeakRepository;
+    private SqueakControllerRepository squeakControllerRepository;
 
     private LiveData<OfferWithSqueakServer> liveOffer;
 
@@ -23,7 +24,7 @@ public class OfferModel extends AndroidViewModel {
         super(application);
         this.offerId = offerId;
         this.offerRepository = OfferRepository.getRepository(application);
-        this.squeakRepository = SqueakRepository.getRepository(application);
+        this.squeakControllerRepository = SqueakControllerRepository.getRepository(application);
 
         this.liveOffer = offerRepository.getOfferWithSqueakServer(offerId);
     }
@@ -33,7 +34,7 @@ public class OfferModel extends AndroidViewModel {
     }
 
     public LiveData<Rpc.SendResponse> sendPayment() {
-        return squeakRepository.buyOffer(offerId);
+        return squeakControllerRepository.buyOffer(offerId);
     }
 
 }

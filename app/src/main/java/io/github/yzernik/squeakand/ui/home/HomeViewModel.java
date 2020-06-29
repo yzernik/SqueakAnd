@@ -7,23 +7,23 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.SqueakControllerRepository;
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakRepository;
-import io.github.yzernik.squeakand.SqueakServerRepository;
 import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 
 public class HomeViewModel extends AndroidViewModel {
 
     private SqueakRepository mSqueakRepository;
-    private SqueakServerRepository squeakServerRepository;
+    private SqueakControllerRepository squeakControllerRepository;
     private LiveData<List<SqueakEntry>> mAllSqueaks;
     private LiveData<List<SqueakEntryWithProfile>> mAllSqueaksWithProfile;
 
     public HomeViewModel(Application application) {
         super(application);
         mSqueakRepository = SqueakRepository.getRepository(application);
-        squeakServerRepository = SqueakServerRepository.getRepository(application);
+        squeakControllerRepository = SqueakControllerRepository.getRepository(application);
         mAllSqueaks = mSqueakRepository.getAllSqueaks();
         mAllSqueaksWithProfile = mSqueakRepository.getAllSqueaksWithProfile();
     }
@@ -37,6 +37,6 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
     public SqueakNetworkAsyncClient getSqueakServerAsyncClient() {
-        return squeakServerRepository.getSqueakServerAsyncClient();
+        return squeakControllerRepository.getSqueakServerAsyncClient();
     }
 }

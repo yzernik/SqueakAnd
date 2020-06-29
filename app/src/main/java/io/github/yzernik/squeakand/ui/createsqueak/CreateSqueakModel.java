@@ -12,15 +12,13 @@ import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
 
-import io.github.yzernik.squeakand.SqueakEntry;
+import io.github.yzernik.squeakand.SqueakControllerRepository;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileRepository;
 import io.github.yzernik.squeakand.SqueakRepository;
-import io.github.yzernik.squeakand.SqueakServerRepository;
 import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
-import io.github.yzernik.squeakand.blockchain.ServerUpdate;
 import io.github.yzernik.squeakand.blockchain.status.ElectrumDownloaderStatus;
 import io.github.yzernik.squeakand.preferences.Preferences;
 import io.github.yzernik.squeaklib.core.Squeak;
@@ -29,8 +27,8 @@ public class CreateSqueakModel extends AndroidViewModel {
 
     private SqueakProfileRepository mProfileRepository;
     private SqueakRepository mSqueakRepository;
+    private SqueakControllerRepository mSqueakControllerRepository;
     private ElectrumBlockchainRepository blockchainRepository;
-    private SqueakServerRepository squeakServerRepository;
     private LiveData<List<SqueakProfile>> mAllSqueakSigningProfiles;
     private MutableLiveData<Integer> mSelectedSqueakProfileId;
     public Sha256Hash replyToHash;
@@ -40,8 +38,8 @@ public class CreateSqueakModel extends AndroidViewModel {
         super(application);
         mProfileRepository = new SqueakProfileRepository(application);
         mSqueakRepository = SqueakRepository.getRepository(application);
+        mSqueakControllerRepository = SqueakControllerRepository.getRepository(application);
         blockchainRepository = ElectrumBlockchainRepository.getRepository(application);
-        squeakServerRepository = SqueakServerRepository.getRepository(application);
         mAllSqueakSigningProfiles = mProfileRepository.getAllSqueakSigningProfiles();
         mSelectedSqueakProfileId = new MutableLiveData<>();
         this.replyToHash = (replyToHash == null) ? Sha256Hash.ZERO_HASH : replyToHash;
@@ -105,11 +103,11 @@ public class CreateSqueakModel extends AndroidViewModel {
     }
 
     void insertSqueak(Squeak squeak, Block block) {
-        mSqueakRepository.insertWithBlock(squeak, block);
+        mSqueakControllerRepository.insertWithBlock(squeak, block);
     }
 
     void uploadSqueak(Squeak squeak) {
-        squeakServerRepository.publishSqueak(squeak);
+        mSqueakControllerRepository.publishSqueak(squeak);
     }
 
     LiveData<SqueakEntryWithProfile> getReplyToSqueak() {
