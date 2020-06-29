@@ -25,6 +25,8 @@ import io.github.yzernik.squeaklib.core.Squeak;
 import io.github.yzernik.squeaklib.core.VerificationException;
 import lnrpc.Rpc;
 
+import static org.bitcoinj.core.Utils.HEX;
+
 public class SqueaksController {
 
     private static final long GET_BLOCK_HEADER_TIMEOUT_S = 10;
@@ -114,9 +116,6 @@ public class SqueaksController {
             return;
         }
 
-        // TODO: Remove this after testing
-        squeak.clearDataKey();
-
         // Insert the squeak in the database.
         SqueakEntry squeakEntry = new SqueakEntry(squeak);
         SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
@@ -174,10 +173,10 @@ public class SqueaksController {
      * @throws VerificationException
      */
     private void validateSqueak(Squeak squeak) throws VerificationException {
-        if(squeak.getDataKey() == null) {
-            squeak.verify(true);
-        } else {
+        if(squeak.hasDataKey()) {
             squeak.verify(false);
+        } else {
+            squeak.verify(true);
         }
     }
 

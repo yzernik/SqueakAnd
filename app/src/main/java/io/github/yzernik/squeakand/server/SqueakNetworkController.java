@@ -127,6 +127,8 @@ public class SqueakNetworkController {
                 trySyncServer(server);
             } catch (io.grpc.StatusRuntimeException e) {
                 Log.e(getClass().getName(),"Failed to sync with server " + server + " with error: " + e);
+            } catch (Exception e){
+                Log.e(getClass().getName(),"Failed to sync with server " + server + " with error: " + e);
             }
         }
     }
