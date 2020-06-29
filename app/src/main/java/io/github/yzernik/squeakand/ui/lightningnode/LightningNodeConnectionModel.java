@@ -8,7 +8,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.github.yzernik.squeakand.lnd.LndRepository;
 import io.github.yzernik.squeakand.lnd.LndResult;
@@ -52,6 +54,25 @@ public class LightningNodeConnectionModel extends AndroidViewModel {
 
     public LiveData<LndResult<Rpc.ChannelPoint>> openChannel(long amount) {
         return lndRepository.openChannel(pubkey, amount);
+    }
+
+    private LiveData<List<Rpc.Channel>> listChannels() {
+        return lndRepository.getLiveChannels();
+    }
+
+    public LiveData<List<Rpc.Channel>> listNodeChannels() {
+        return Transformations.map(listChannels(), channels -> {
+            return channels.stream()
+                    .filter(channel -> channel.getRemotePubkey().equals(pubkey))
+                    .collect(Collectors.toList());
+        });
+    }
+
+    public LiveData<Long> liveConfirmedBalance() {
+        LiveData<Rpc.WalletBalanceResponse> liveWalletBalance = lndRepository.walletBalance();
+        return Transformations.map(liveWalletBalance, walletBalance -> {
+            return walletBalance.getConfirmedBalance();
+        });
     }
 
 }
