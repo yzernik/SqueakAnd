@@ -29,6 +29,9 @@ public interface OfferDao {
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_OFFER + " WHERE offerId = :offerId")
     LiveData<Offer> fetchLiveOfferById(int offerId);
 
+    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_OFFER + " JOIN " + SqueakRoomDatabase.TABLE_NAME_SERVER + " ON offer.squeakServerId=server.server_id" + " WHERE offerId = :offerId")
+    LiveData<OfferWithSqueakServer> fetchLiveOfferWithSqueakServerById(int offerId);
+
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_OFFER + " WHERE offerId = :offerId")
     Offer fetchOfferById(int offerId);
 

@@ -44,4 +44,8 @@ public class OfferRepository {
         return mOfferDao.fetchLiveOfferById(offerId);
     }
 
+    public LiveData<OfferWithSqueakServer> getOfferWithSqueakServer(int offerId) {
+        return mOfferDao.fetchLiveOfferWithSqueakServerById(offerId);
+    }
+
 }
