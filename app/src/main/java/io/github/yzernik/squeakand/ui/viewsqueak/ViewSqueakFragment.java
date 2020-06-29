@@ -160,14 +160,6 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
         todoViewModel.getThreadAncestorSqueaks().observe(getViewLifecycleOwner(), new Observer<List<SqueakEntryWithProfile>>() {
             @Override
             public void onChanged(@Nullable List<SqueakEntryWithProfile> threadAncestorSqueaks) {
-                // TODO: Handle thread ancestor squeaks.
-                Log.i(getTag(), "Got result from thread ancestor query: " + threadAncestorSqueaks);
-                Log.i(getTag(), "Got result from thread ancestor query (size): " + threadAncestorSqueaks.size());
-                for (SqueakEntryWithProfile squeakEntryWithProfile: threadAncestorSqueaks) {
-                    Log.i(getTag(), "Ancestor squeak: " + squeakEntryWithProfile.squeakEntry.getSqueak());
-                    Log.i(getTag(), "Ancestor squeak text: " + squeakEntryWithProfile.squeakEntry.decryptedContentStr);
-                }
-
                 // Set the swipe down action
                 SqueakEntryWithProfile firstAncestor = threadAncestorSqueaks.get(threadAncestorSqueaks.size() - 1);
                 Sha256Hash firstAncestorHash = firstAncestor.squeakEntry.hash;
@@ -209,14 +201,11 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
     }
 
     public void fetchThreadAsync(Sha256Hash squeakHash) {
-        Log.i(getTag(), "Calling fetchThreadAsync...");
-
         SqueakNetworkAsyncClient asyncClient = todoViewModel.getAsyncClient();
         asyncClient.fetchThreadAncestors(squeakHash, new SqueakNetworkAsyncClient.SqueakServerResponseHandler() {
             @Override
             public void onSuccess() {
                 // Now we call setRefreshing(false) to signal refresh has finished
-                Log.i(getTag(), "Finished fetching ancestors with success.");
                 swipeContainer.setRefreshing(false);
             }
 
