@@ -120,10 +120,16 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
                 }
 
                 // Go to the view address activity on author address click.
-                squeakAddressBox.setOnClickListener(new View.OnClickListener() {
+                txtSqueakAddress.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(getActivity(), ViewAddressActivity.class).putExtra("squeak_address", squeakEntryWithProfile.squeakEntry.authorAddress));
+                        startAddressActivity(squeakEntryWithProfile.squeakEntry.authorAddress);
+                    }
+                });
+                txtSqueakAuthor.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startAddressActivity(squeakEntryWithProfile.squeakEntry.authorAddress);
                     }
                 });
 
@@ -197,6 +203,10 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
 
     @Override
     public void handleItemAddressClick(String address) {
+        startAddressActivity(address);
+    }
+
+    private void startAddressActivity(String address) {
         startActivity(new Intent(getActivity(), ViewAddressActivity.class).putExtra("squeak_address", address));
     }
 

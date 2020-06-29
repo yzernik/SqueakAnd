@@ -40,7 +40,6 @@ abstract public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListA
             squeakCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i(getClass().getName(), "Handling click on squeak.");
                     clickListener.handleItemClick(mSqueaks.get(getAdapterPosition()).squeakEntry.hash);
                 }
             });
@@ -48,7 +47,6 @@ abstract public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListA
             txtSqueakAddress.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i(getClass().getName(), "Handling click on squeak address.");
                     clickListener.handleItemAddressClick(mSqueaks.get(getAdapterPosition()).squeakEntry.authorAddress);
                 }
             });
