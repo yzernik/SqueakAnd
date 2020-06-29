@@ -83,7 +83,6 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 try {
                     Rpc.StopResponse resp = Rpc.StopResponse.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got stopDaemon response: " + resp);
                     callBack.onResponse(resp);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -140,7 +139,6 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 try {
                     Walletunlocker.GenSeedResponse resp = Walletunlocker.GenSeedResponse.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got genseed response: " + resp);
                     callBack.onResponse(resp);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -194,7 +192,6 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 try {
                     Rpc.GetInfoResponse resp = Rpc.GetInfoResponse.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got getInfo response: " + resp);
                     callBack.onResponse(resp);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -221,14 +218,12 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
                     Rpc.WalletBalanceResponse resp = Rpc.WalletBalanceResponse.getDefaultInstance();
-                    Log.i(getClass().getName(), "Got walletBalance response: " + resp);
                     callBack.onResponse(resp);
                     return;
                 }
 
                 try {
                     Rpc.WalletBalanceResponse resp = Rpc.WalletBalanceResponse.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got walletBalance response: " + resp);
                     callBack.onResponse(resp);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -260,14 +255,12 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
                     Rpc.ListChannelsResponse resp = Rpc.ListChannelsResponse.getDefaultInstance();
-                    Log.i(getClass().getName(), "Got listChannels response: " + resp);
                     callBack.onResponse(resp);
                     return;
                 }
 
                 try {
                     Rpc.ListChannelsResponse resp = Rpc.ListChannelsResponse.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got listChannels response: " + resp);
                     callBack.onResponse(resp);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -297,14 +290,12 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
                     Rpc.NewAddressResponse resp = Rpc.NewAddressResponse.getDefaultInstance();
-                    Log.i(getClass().getName(), "Got walletBalance response: " + resp);
                     callBack.onResponse(resp);
                     return;
                 }
 
                 try {
                     Rpc.NewAddressResponse resp = Rpc.NewAddressResponse.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got newAddress response: " + resp);
                     callBack.onResponse(resp);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -333,14 +324,12 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
                     Rpc.SendResponse resp = Rpc.SendResponse.getDefaultInstance();
-                    Log.i(getClass().getName(), "Got SendResponse response: " + resp);
                     callBack.onResponse(resp);
                     return;
                 }
 
                 try {
                     Rpc.SendResponse resp = Rpc.SendResponse.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got sendPayment response: " + resp);
                     callBack.onResponse(resp);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -373,14 +362,12 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
                     Rpc.ConnectPeerResponse resp = Rpc.ConnectPeerResponse.getDefaultInstance();
-                    Log.i(getClass().getName(), "Got ConnectPeerResponse response: " + resp);
                     callBack.onResponse(resp);
                     return;
                 }
 
                 try {
                     Rpc.ConnectPeerResponse resp = Rpc.ConnectPeerResponse.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got ConnectPeerResponse response: " + resp);
                     callBack.onResponse(resp);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -409,14 +396,12 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
                     Rpc.ListPeersResponse resp = Rpc.ListPeersResponse.getDefaultInstance();
-                    Log.i(getClass().getName(), "Got listPeers response: " + resp);
                     callBack.onResponse(resp);
                     return;
                 }
 
                 try {
                     Rpc.ListPeersResponse resp = Rpc.ListPeersResponse.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got listPeers response: " + resp);
                     callBack.onResponse(resp);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -446,14 +431,12 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
                     Rpc.ChannelPoint resp = Rpc.ChannelPoint.getDefaultInstance();
-                    Log.i(getClass().getName(), "Got ChannelPoint response: " + resp);
                     callBack.onResponse(resp);
                     return;
                 }
 
                 try {
                     Rpc.ChannelPoint resp = Rpc.ChannelPoint.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got ChannelPoint response: " + resp);
                     callBack.onResponse(resp);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -480,14 +463,12 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
                     Rpc.ChannelEventUpdate update = Rpc.ChannelEventUpdate.getDefaultInstance();
-                    Log.i(getClass().getName(), "Got ChannelEventUpdate update: " + update);
                     callBack.onUpdate(update);
                     return;
                 }
 
                 try {
                     Rpc.ChannelEventUpdate update = Rpc.ChannelEventUpdate.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got ChannelPoint update: " + update);
                     callBack.onUpdate(update);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -517,14 +498,12 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
                     Rpc.ClosedChannelUpdate update = Rpc.ClosedChannelUpdate.getDefaultInstance();
-                    Log.i(getClass().getName(), "Got ClosedChannelUpdate update: " + update);
                     callBack.onUpdate(update);
                     return;
                 }
 
                 try {
                     Rpc.ClosedChannelUpdate update = Rpc.ClosedChannelUpdate.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got ClosedChannelUpdate update: " + update);
                     callBack.onUpdate(update);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -552,14 +531,12 @@ public class LndClient {
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
                     Rpc.PeerEvent update = Rpc.PeerEvent.getDefaultInstance();
-                    Log.i(getClass().getName(), "Got PeerEvent update: " + update);
                     callBack.onUpdate(update);
                     return;
                 }
 
                 try {
                     Rpc.PeerEvent update = Rpc.PeerEvent.parseFrom(bytes);
-                    Log.i(getClass().getName(), "Got PeerEvent update: " + update);
                     callBack.onUpdate(update);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
