@@ -145,6 +145,11 @@ public class Offer {
     }
 
     @Ignore
+    public SqueakServerAddress getSqueakServerAddress() {
+        return squeakServerAddress;
+    }
+
+    @Ignore
     public void setPreimage(byte[] preimage) {
         if (!Sha256Hash.of(preimage).equals(preimageHash)) {
             throw new IllegalArgumentException("Invalid preimage");
