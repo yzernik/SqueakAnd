@@ -43,12 +43,7 @@ public class ChannelsFragment extends Fragment implements ChannelListAdapter.Cli
                     return;
                 }
 
-                for (Rpc.Channel channel: channels) {
-                    Log.i(getTag(), "Got channel: " + channel);
-                }
-
-                // Update the cached copy of the profiles in the adapter.
-                // List<Rpc.Channel> channels = listChannelsResponse.getChannelsList();
+                // Update the cached copy of the channels in the adapter.
                 adapter.setProfiles(channels);
             }
         });
