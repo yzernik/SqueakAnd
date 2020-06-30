@@ -58,7 +58,6 @@ public class SqueakServerClient {
                 .stream()
                 .map(hashStr -> Sha256Hash.wrap(hashStr.toByteArray()))
                 .collect(Collectors.toList());
-
         return hashes;
     }
 
@@ -79,7 +78,7 @@ public class SqueakServerClient {
         return squeakSerializer.makeSqueak(squeakBytes);
     }
 
-    public Sha256Hash postSqueak(Squeak squeak) {
+    public void postSqueak(Squeak squeak) {
         logger.info("*** PostSqueak: squeak: " + squeak);
 
         ByteString squeakHashBytes = ByteString.copyFrom(squeak.getHash().getBytes());
@@ -97,9 +96,7 @@ public class SqueakServerClient {
         PostSqueakReply reply = blockingStub
                 .withDeadlineAfter(POST_REQUEST_TIMEOUT_S, TimeUnit.SECONDS)
                 .postSqueak(request);
-
-        ByteString hashReplyBytes = reply.getHash();
-        return Sha256Hash.wrap(hashReplyBytes.toByteArray());
+        return;
     }
 
     public Offer buySqueak(Sha256Hash hash) {
