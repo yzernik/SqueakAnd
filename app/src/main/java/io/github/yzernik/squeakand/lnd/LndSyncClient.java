@@ -27,8 +27,8 @@ public class LndSyncClient {
     private static final long NEW_ADDRESS_TIMEOUT_S = 10;
     private static final long SEND_PAYMENT_TIMEOUT_S = 10;
     private static final long CONNECT_PEER_TIMEOUT_S = 10;
-    private static final long LIST_PEERS_TIMEOUT_S = 10;
-    private static final long OPEN_CHANNEL_TIMEOUT_S = 10;
+    private static final long LIST_PEERS_TIMEOUT_S = 30;
+    private static final long OPEN_CHANNEL_TIMEOUT_S = 30;
 
     private static final int DEFAULT_TARGET_CONF = 1;
 
