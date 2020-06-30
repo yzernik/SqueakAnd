@@ -1,6 +1,7 @@
 package io.github.yzernik.squeakand.ui.transactions;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,13 @@ public class TransactionListAdapter extends RecyclerView.Adapter<TransactionList
             holder.txtTransactionAmount.setText(current.getAmount() + " satoshis");
             holder.txtTransactionTime.setText(dateString);
             holder.txtTransactionNumConfirmations.setText(current.getNumConfirmations() + " confirmations");
+
+            // Set the background color
+            if (current.getAmount() > 0) {
+                holder.cardView.setBackgroundColor(Color.parseColor("#cbffdd"));
+            } else {
+                holder.cardView.setBackgroundColor(Color.parseColor("#f3d0d3"));
+            }
         }
     }
 
