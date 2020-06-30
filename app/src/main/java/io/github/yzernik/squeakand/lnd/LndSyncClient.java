@@ -78,57 +78,6 @@ public class LndSyncClient {
         return stopResultFuture.get(STOP_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
-    /*
-    public void genSeed() {
-        lndClient.genSeed(new LndClient.GenSeedCallBack() {
-            @Override
-            public void onError(Exception e) {
-                Log.e(getClass().getName(), "Error calling genSeed: " + e);
-            }
-
-            @Override
-            public void onResponse(Walletunlocker.GenSeedResponse response) {
-                List<String> seedWordsList = response.getCipherSeedMnemonicList();
-                String[] seedWords = new String[seedWordsList.size()];
-                seedWordsList.toArray(seedWords);
-                preferences.saveWalletSeed(seedWords);
-            }
-        });
-    }*/
-
-    /**
-     * Initialize the wallet using a new generated seed.
-     */
-    public void initWallet() {
-        lndClient.genSeed(new LndClient.GenSeedCallBack() {
-            @Override
-            public void onError(Exception e) {
-                Log.e(getClass().getName(), "Error calling genSeed: " + e);
-            }
-
-            @Override
-            public void onResponse(Walletunlocker.GenSeedResponse response) {
-                List<String> seedWordsList = response.getCipherSeedMnemonicList();
-                String[] seedWords = new String[seedWordsList.size()];
-                seedWordsList.toArray(seedWords);
-                preferences.saveWalletSeed(seedWords);
-
-                Log.i(getClass().getName(), "Initializing wallet with new seed: " + seedWordsList);
-                lndClient.initWallet(password, seedWordsList, new LndClient.InitWalletCallBack() {
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e(getClass().getName(), "Error calling initWallet: " + e);
-                    }
-
-                    @Override
-                    public void onResponse(Walletunlocker.InitWalletResponse response) {
-                        Log.i(getClass().getName(), "Got initWallet response.");
-                    }
-                });
-            }
-        });
-    }
-
     public Walletunlocker.UnlockWalletResponse unlockWallet() throws InterruptedException, ExecutionException, TimeoutException {
         Future<Walletunlocker.UnlockWalletResponse> unlockResultFuture = UnlockWalletTask.unlockWallet(lndClient, password);
         return unlockResultFuture.get(UNLOCK_TIMEOUT_S, TimeUnit.SECONDS);
@@ -141,13 +90,6 @@ public class LndSyncClient {
         String[] seedWords = new String[seedWordsList.size()];
         seedWordsList.toArray(seedWords);
         return seedWords;
-
-        // TODO: Only save the seed words after completing initWallet.
-
-        /*        List<String> seedWordsList = response.getCipherSeedMnemonicList();
-        String[] seedWords = new String[seedWordsList.size()];
-        seedWordsList.toArray(seedWords);
-        preferences.saveWalletSeed(seedWords);*/
     }
 
     public Walletunlocker.InitWalletResponse initWallet(String[] seedWords) throws InterruptedException, ExecutionException, TimeoutException {
