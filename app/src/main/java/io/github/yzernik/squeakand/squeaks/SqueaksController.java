@@ -157,8 +157,8 @@ public class SqueaksController {
         offerDao.update(offer);
     }
 
-    public List<SqueakEntry> fetchSqueaksByAddress(String address) {
-        return mSqueakDao.fetchSqueaksByAddress(address);
+    public List<SqueakEntry> fetchSqueaksByAddress(String address, int minBlock, int maxBlock) {
+        return mSqueakDao.fetchSqueaksByAddress(address, minBlock, maxBlock);
     }
 
     public SqueakEntryWithProfile fetchSqueakWithProfileByHash(Sha256Hash squeakHash) {

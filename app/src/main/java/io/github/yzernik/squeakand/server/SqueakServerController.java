@@ -99,7 +99,7 @@ public class SqueakServerController {
         Set<Sha256Hash> localHashes = new HashSet<>();
         for (String address: uploadAddresses) {
             // TODO: include block range in DAO method.
-            List<SqueakEntry> squeakEntries = squeaksController.fetchSqueaksByAddress(address);
+            List<SqueakEntry> squeakEntries = squeaksController.fetchSqueaksByAddress(address, minBlock, maxBlock);
             for (SqueakEntry squeakEntry: squeakEntries) {
                 if (!onlyUnlocked || squeakEntry.hasDataKey()) {
                     localHashes.add(squeakEntry.hash);
