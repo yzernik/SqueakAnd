@@ -29,12 +29,14 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.DataResult;
+import io.github.yzernik.squeakand.ElectrumActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
 import io.github.yzernik.squeakand.TimelineSqueakListAdapter;
 import io.github.yzernik.squeakand.ViewAddressActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
+import io.github.yzernik.squeakand.blockchain.BlockInfo;
 import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 
 
@@ -188,16 +190,27 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
     }
 
     private void showSwipeRefreshFailedAlert(Throwable e) {
-        Log.i(getTag(), "Should be showing alert dialog here....");
-        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-        alertDialog.setTitle("Sync with squeak servers failed");
-        alertDialog.setMessage("Reason: " + e.getMessage());
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Sync with squeak servers failed");
+        builder.setMessage("Reason: " + e.getMessage());
+        // Add the manage electrum button
+        builder.setNeutralButton("Manage electrum connection", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Toast.makeText(getContext(), "neutralize", Toast.LENGTH_SHORT).show();
+                System.out.println("Manage electrum button clicked");
+                startManageElectrum();
+            }
+        });
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
+
+    public void startManageElectrum() {
+        Intent intent = new Intent(getActivity(), ElectrumActivity.class);
+        startActivity(intent);
+    }
+
+
 }
