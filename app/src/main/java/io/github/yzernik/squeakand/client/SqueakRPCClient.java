@@ -49,11 +49,11 @@ public class SqueakRPCClient {
         }
     }
 
-    public Sha256Hash postSqueak(Squeak squeak) {
+    public void postSqueak(Squeak squeak) {
         ManagedChannel channel = getChannel();
         try {
             SqueakServerClient client = new SqueakServerClient(channel);
-            return client.postSqueak(squeak);
+            client.postSqueak(squeak);
         } finally {
             channel.shutdown();
         }
