@@ -131,7 +131,7 @@ public class LndSyncClient {
 
     public Walletunlocker.UnlockWalletResponse unlockWallet() throws InterruptedException, ExecutionException, TimeoutException {
         Future<Walletunlocker.UnlockWalletResponse> unlockResultFuture = UnlockWalletTask.unlockWallet(lndClient, password);
-        return unlockResultFuture.get(WALLET_BALANCE_TIMEOUT_S, TimeUnit.SECONDS);
+        return unlockResultFuture.get(UNLOCK_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
     public String[] genSeed() throws InterruptedException, ExecutionException, TimeoutException {
@@ -202,7 +202,7 @@ public class LndSyncClient {
      */
     public Rpc.WalletBalanceResponse walletBalance() throws InterruptedException, ExecutionException, TimeoutException {
         Future<Rpc.WalletBalanceResponse> walletBalanceResultFuture = walletBalanceAsync();
-        return walletBalanceResultFuture.get(GET_INFO_TIMEOUT_S, TimeUnit.SECONDS);
+        return walletBalanceResultFuture.get(WALLET_BALANCE_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
     /**
