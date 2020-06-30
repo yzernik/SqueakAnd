@@ -79,6 +79,23 @@ public class LndLiveDataClient {
         return liveDataResult;
     }
 
+    public LiveData<DataResult<Rpc.TransactionDetails>> getTransactions(int startHeight, int endHeight) {
+        MutableLiveData<DataResult<Rpc.TransactionDetails>> liveDataResult = new MutableLiveData<>();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Rpc.TransactionDetails response = lndSyncClient.getTransactions(startHeight, endHeight);
+                    liveDataResult.postValue(DataResult.ofSuccess(response));
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                    liveDataResult.postValue(DataResult.ofFailure(e));
+                }
+            }
+        });
+        return liveDataResult;
+    }
+
     public LiveData<DataResult<Rpc.NewAddressResponse>> newAddress() {
         MutableLiveData<DataResult<Rpc.NewAddressResponse>> liveDataResult = new MutableLiveData<>();
         executorService.execute(new Runnable() {

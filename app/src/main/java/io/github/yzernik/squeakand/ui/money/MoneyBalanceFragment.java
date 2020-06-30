@@ -3,6 +3,7 @@ package io.github.yzernik.squeakand.ui.money;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,6 +93,20 @@ public class MoneyBalanceFragment extends Fragment {
                 mUnconfirmedBalance.setText(Long.toString(walletBalanceResponse.getUnconfirmedBalance()));
                 mConfirmedBalance.setText(Long.toString(walletBalanceResponse.getConfirmedBalance()));
                 mTotalBalance.setText(Long.toString(walletBalanceResponse.getTotalBalance()));
+            }
+        });
+
+        moneyViewModel.getTransactions().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.TransactionDetails>>() {
+            @Override
+            public void onChanged(DataResult<Rpc.TransactionDetails> responseResult) {
+                if (responseResult.isFailure()) {
+                    return;
+                }
+                Rpc.TransactionDetails response = responseResult.getResponse();
+                Log.i(getTag(), "Got number of transactions: " + response.getTransactionsCount());
+                for (Rpc.Transaction transaction: response.getTransactionsList()) {
+                    Log.i(getTag(), "Transaction: " + transaction);
+                }
             }
         });
 

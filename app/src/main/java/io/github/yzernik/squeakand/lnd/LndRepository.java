@@ -68,6 +68,10 @@ public class LndRepository {
         return lndLiveDataClient.listChannels();
     }
 
+    public LiveData<DataResult<Rpc.TransactionDetails>> getTransactions(int startHeight, int endHeight) {
+        return lndLiveDataClient.getTransactions(startHeight, endHeight);
+    }
+
     public LiveData<DataResult<Rpc.NewAddressResponse>> newAddress() {
         return lndLiveDataClient.newAddress();
     }

@@ -264,6 +264,41 @@ public class LndClient {
         public void onResponse(Rpc.ListChannelsResponse response);
     }
 
+    public void getTransactions(int startHeight, int endHeight, GetTransactionsCallBack callBack) {
+        Rpc.GetTransactionsRequest request = Rpc.GetTransactionsRequest.newBuilder()
+                .setStartHeight(startHeight)
+                .setEndHeight(endHeight)
+                .build();
+        Lndmobile.getTransactions(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from getTransactions callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.TransactionDetails resp = Rpc.TransactionDetails.getDefaultInstance();
+                    callBack.onResponse(resp);
+                    return;
+                }
+
+                try {
+                    Rpc.TransactionDetails resp = Rpc.TransactionDetails.parseFrom(bytes);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface GetTransactionsCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.TransactionDetails response);
+    }
+
     public void newAddress(NewAddressCallBack callBack) {
         Rpc.AddressType addressType = Rpc.AddressType.WITNESS_PUBKEY_HASH;
         Rpc.NewAddressRequest request = Rpc.NewAddressRequest.newBuilder()
