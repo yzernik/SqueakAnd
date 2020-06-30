@@ -6,8 +6,6 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import lndmobile.Callback;
 import lndmobile.Lndmobile;
@@ -16,14 +14,6 @@ import lnrpc.Rpc;
 import lnrpc.Walletunlocker;
 
 public class LndClient {
-
-    private static final String DEFAULT_NETWORK = "testnet";
-
-    private final ExecutorService executorService;
-
-    public LndClient() {
-        this.executorService = Executors.newCachedThreadPool();
-    }
 
     public void start(String lndDirPath, String network, StartCallBack callBack) {
         String startString = String.format(
