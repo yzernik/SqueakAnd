@@ -73,8 +73,10 @@ public class TransactionListAdapter extends RecyclerView.Adapter<TransactionList
             // Set the background color
             if (current.getAmount() > 0) {
                 holder.cardView.setBackgroundColor(Color.parseColor("#cbffdd"));
-            } else {
+            } else if (current.getAmount() < 0) {
                 holder.cardView.setBackgroundColor(Color.parseColor("#f3d0d3"));
+            } else {
+                holder.cardView.setBackgroundColor(Color.parseColor("white"));
             }
         }
     }
