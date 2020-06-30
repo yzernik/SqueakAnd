@@ -1,5 +1,6 @@
 package io.github.yzernik.squeakand.ui.home;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,6 +28,7 @@ import org.bitcoinj.core.Sha256Hash;
 import java.util.List;
 
 import io.github.yzernik.squeakand.CreateSqueakActivity;
+import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
@@ -133,9 +136,24 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
         // Send the network request to fetch the updated data
         // `client` here is an instance of Android Async HTTP
         // getHomeTimeline is an example endpoint.
-        Log.i(getTag(), "Calling fetchTimelineAsync...");
+        Log.i(getTag(), "Calling syncTimeline...");
 
 
+        homeViewModel.syncTimeline().observe(getViewLifecycleOwner(), new Observer<DataResult<Integer>>() {
+            @Override
+            public void onChanged(@Nullable final DataResult<Integer> syncTimelineResult) {
+                swipeContainer.setRefreshing(false);
+
+                if (syncTimelineResult.isFailure()) {
+                    showSwipeRefreshFailedAlert(syncTimelineResult.getError());
+                } else {
+                    // TODO: show a snackbar with the number of squeaks downloaded/uploaded.
+                }
+
+            }
+        });
+
+        /*
         SqueakNetworkAsyncClient asyncClient = homeViewModel.getSqueakServerAsyncClient();
         asyncClient.syncTimeline(new SqueakNetworkAsyncClient.SqueakServerResponseHandler() {
             @Override
@@ -146,9 +164,11 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
 
             @Override
             public void onFailure(Throwable e) {
+                swipeContainer.setRefreshing(false);
                 Log.d("DEBUG", "Fetch timeline error: " + e.toString());
+                showSwipeRefreshFailedAlert(e);
             }
-        });
+        });*/
 
         /*
         client.getHomeTimeline(new JsonHttpResponseHandler() {
@@ -165,5 +185,19 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
                 Log.d("DEBUG", "Fetch timeline error: " + e.toString());
             }
         });*/
+    }
+
+    private void showSwipeRefreshFailedAlert(Throwable e) {
+        Log.i(getTag(), "Should be showing alert dialog here....");
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Sync with squeak servers failed");
+        alertDialog.setMessage("Reason: " + e.getMessage());
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 }

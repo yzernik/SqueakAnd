@@ -1,6 +1,5 @@
 package io.github.yzernik.squeakand.lnd;
 
-import android.app.Application;
 import android.util.Log;
 
 import java.util.Arrays;
@@ -10,7 +9,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import io.github.yzernik.squeakand.preferences.Preferences;
+import io.github.yzernik.squeakand.DataResult;
 import lnrpc.Rpc;
 import lnrpc.Walletunlocker;
 
@@ -149,14 +148,14 @@ public class LndSyncClient {
         return sendPaymentResultFuture.get(SEND_PAYMENT_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
-    public LndResult<Rpc.SendResponse> sendPaymentWithResult(String paymentRequest) {
+    public DataResult<Rpc.SendResponse> sendPaymentWithResult(String paymentRequest) {
         try {
             Rpc.SendResponse response = sendPayment(paymentRequest);
-            return LndResult.ofSuccess(response);
+            return DataResult.ofSuccess(response);
         } catch (TimeoutException | InterruptedException e) {
-            return LndResult.ofFailure(e);
+            return DataResult.ofFailure(e);
         } catch (ExecutionException e) {
-            return LndResult.ofFailure(e.getCause());
+            return DataResult.ofFailure(e.getCause());
         }
     }
 
@@ -181,14 +180,14 @@ public class LndSyncClient {
      * @param host
      * @return
      */
-    public LndResult<Rpc.ConnectPeerResponse> connectPeerWithResult(String pubkey, String host) {
+    public DataResult<Rpc.ConnectPeerResponse> connectPeerWithResult(String pubkey, String host) {
         try {
             Rpc.ConnectPeerResponse response = connectPeer(pubkey, host);
-            return LndResult.ofSuccess(response);
+            return DataResult.ofSuccess(response);
         } catch (TimeoutException | InterruptedException e) {
-            return LndResult.ofFailure(e);
+            return DataResult.ofFailure(e);
         } catch (ExecutionException e) {
-            return LndResult.ofFailure(e.getCause());
+            return DataResult.ofFailure(e.getCause());
         }
     }
 
@@ -229,14 +228,14 @@ public class LndSyncClient {
      * @param amount
      * @return
      */
-    public LndResult<Rpc.ChannelPoint> openChannelWithResult(String pubkey, long amount) {
+    public DataResult<Rpc.ChannelPoint> openChannelWithResult(String pubkey, long amount) {
         try {
             Rpc.ChannelPoint response = openChannel(pubkey, amount);
-            return LndResult.ofSuccess(response);
+            return DataResult.ofSuccess(response);
         } catch (TimeoutException | InterruptedException e) {
-            return LndResult.ofFailure(e);
+            return DataResult.ofFailure(e);
         } catch (ExecutionException e) {
-            return LndResult.ofFailure(e.getCause());
+            return DataResult.ofFailure(e.getCause());
         }
     }
 

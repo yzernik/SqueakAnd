@@ -4,20 +4,23 @@ import android.util.Log;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import io.github.yzernik.squeakand.blockchain.ElectrumConnection;
 
 public class ServerSyncer {
 
     private static final int DEFAULT_SYNC_SLEEP_INTERVAL_MS = 60000;
 
     private final SqueakNetworkController squeakNetworkController;
+    private ElectrumConnection electrumConnection;
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    public ServerSyncer(SqueakNetworkController squeakNetworkController) {
+    public ServerSyncer(SqueakNetworkController squeakNetworkController, ElectrumConnection electrumConnection, ExecutorService executorService) {
         this.squeakNetworkController = squeakNetworkController;
-        this.executorService =  Executors.newFixedThreadPool(10);
+        this.electrumConnection = electrumConnection;
+        this.executorService =  executorService;
     }
 
     public synchronized void startSyncTask() {
@@ -41,7 +44,7 @@ public class ServerSyncer {
             Log.i(getClass().getName(), "Calling call.");
             while (true) {
                 try {
-                    squeakNetworkController.sync();
+                    squeakNetworkController.sync(electrumConnection);
                 } catch (Exception e) {
                     Log.e(getClass().getName(),"Failed to sync with servers with error: " + e);
                 }

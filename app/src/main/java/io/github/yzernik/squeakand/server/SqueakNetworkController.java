@@ -12,6 +12,9 @@ import io.github.yzernik.squeakand.SqueakProfile;
 import io.github.yzernik.squeakand.SqueakProfileDao;
 import io.github.yzernik.squeakand.SqueakServer;
 import io.github.yzernik.squeakand.SqueakServerDao;
+import io.github.yzernik.squeakand.blockchain.ElectrumConnection;
+import io.github.yzernik.squeakand.blockchain.ServerUpdate;
+import io.github.yzernik.squeakand.blockchain.status.ElectrumDownloaderStatus;
 import io.github.yzernik.squeakand.squeaks.SqueaksController;
 import io.github.yzernik.squeaklib.core.Squeak;
 
@@ -94,8 +97,17 @@ public class SqueakNetworkController {
         }
     }
 
-    public void sync() {
-        trySync();
+    public int sync(ElectrumConnection electrumConnection) throws Exception {
+        ElectrumDownloaderStatus electrumDownloaderStatus = electrumConnection.getCurrentStatusUpdate();
+        if (!electrumDownloaderStatus.getConnectionStatus().equals(ServerUpdate.ConnectionStatus.CONNECTED)) {
+            Log.i(getClass().getName(), "Unable to sync because electrum is not connected.");
+            throw new Exception("Unable to sync because electrum is not connected.");
+        }
+
+        int currentBlockHeight = electrumDownloaderStatus.getLatestBlockInfo().getHeight();
+        trySync(currentBlockHeight);
+        // TODO: return the number of squeaks downloaded/uploaded.
+        return 0;
     }
 
     private List<SqueakServer> getServers() {
@@ -119,7 +131,7 @@ public class SqueakNetworkController {
                 .collect(Collectors.toList());
     }
 
-    private void trySync() {
+    private void trySync(int currentBlockHeight) {
         List<SqueakServer> servers = getServers();
         for (SqueakServer server: servers) {
             Log.i(getClass().getName(), "Syncing with server: " + server.serverAddress);

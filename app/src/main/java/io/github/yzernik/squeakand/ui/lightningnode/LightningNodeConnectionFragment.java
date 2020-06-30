@@ -22,7 +22,7 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.MoneyActivity;
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.lnd.LndResult;
+import io.github.yzernik.squeakand.DataResult;
 import lnrpc.Rpc;
 
 public class LightningNodeConnectionFragment extends Fragment {
@@ -79,7 +79,7 @@ public class LightningNodeConnectionFragment extends Fragment {
                     mLightningNodeConnectButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            LiveData<LndResult<Rpc.ConnectPeerResponse>> connectResult = lightningNodeChannelsModel.connectToPeer();
+                            LiveData<DataResult<Rpc.ConnectPeerResponse>> connectResult = lightningNodeChannelsModel.connectToPeer();
                             handleConnectPeerResult(connectResult);
                         }
                     });
@@ -105,7 +105,7 @@ public class LightningNodeConnectionFragment extends Fragment {
                 mLightningNodeOpenChannelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        LiveData<LndResult<Rpc.ChannelPoint>> openChanelResult = lightningNodeChannelsModel.openChannel(20000);
+                        LiveData<DataResult<Rpc.ChannelPoint>> openChanelResult = lightningNodeChannelsModel.openChannel(20000);
                         handleOpenChannelResult(openChanelResult);
                     }
                 });
@@ -133,10 +133,10 @@ public class LightningNodeConnectionFragment extends Fragment {
         return root;
     }
 
-    private void handleConnectPeerResult(LiveData<LndResult<Rpc.ConnectPeerResponse>> connectResult) {
-        connectResult.observe(getViewLifecycleOwner(), new Observer<LndResult<Rpc.ConnectPeerResponse>>() {
+    private void handleConnectPeerResult(LiveData<DataResult<Rpc.ConnectPeerResponse>> connectResult) {
+        connectResult.observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.ConnectPeerResponse>>() {
             @Override
-            public void onChanged(@Nullable final LndResult<Rpc.ConnectPeerResponse> result) {
+            public void onChanged(@Nullable final DataResult<Rpc.ConnectPeerResponse> result) {
                 if (!result.isSuccess()) {
                     Log.e(getTag(), "Connect peer failed with error: " + result.getError());
                     showFailedConnectPeerAlert(result.getError());
@@ -145,10 +145,10 @@ public class LightningNodeConnectionFragment extends Fragment {
         });
     }
 
-    private void handleOpenChannelResult(LiveData<LndResult<Rpc.ChannelPoint>> openChannelResult) {
-        openChannelResult.observe(getViewLifecycleOwner(), new Observer<LndResult<Rpc.ChannelPoint>>() {
+    private void handleOpenChannelResult(LiveData<DataResult<Rpc.ChannelPoint>> openChannelResult) {
+        openChannelResult.observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.ChannelPoint>>() {
             @Override
-            public void onChanged(@Nullable final LndResult<Rpc.ChannelPoint> result) {
+            public void onChanged(@Nullable final DataResult<Rpc.ChannelPoint> result) {
                 if (!result.isSuccess()) {
                     Log.e(getTag(), "Open channel failed with error: " + result.getError());
                     showFailedOpenChannelAlert(result.getError());

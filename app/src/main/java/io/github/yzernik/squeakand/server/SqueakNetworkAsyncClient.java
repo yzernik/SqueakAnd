@@ -6,7 +6,8 @@ import org.bitcoinj.core.Sha256Hash;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
+import io.github.yzernik.squeakand.blockchain.ElectrumConnection;
 
 public class SqueakNetworkAsyncClient {
 
@@ -14,18 +15,21 @@ public class SqueakNetworkAsyncClient {
     private static final int DEFAULT_NUM_THREAD_ANCESTORS = 10;
 
     private SqueakNetworkController squeakNetworkController;
+    private ElectrumConnection electrumConnection;
     private final ExecutorService executorService;
 
-    public SqueakNetworkAsyncClient(SqueakNetworkController squeakNetworkController) {
+    public SqueakNetworkAsyncClient(SqueakNetworkController squeakNetworkController, ElectrumConnection electrumConnection, ExecutorService executorService) {
         this.squeakNetworkController = squeakNetworkController;
-        this.executorService =  Executors.newCachedThreadPool();
+        this.electrumConnection = electrumConnection;
+        this.executorService =  executorService;
     }
 
-    public void syncTimeline(SqueakServerResponseHandler responseHandler) {
+
+    /*    public void syncTimeline(SqueakServerResponseHandler responseHandler) {
         SyncTimelineTask syncTimelineTask = new SyncTimelineTask(responseHandler);
         Log.i(getClass().getName(), "Submitting new sync timeline task.");
         executorService.submit(syncTimelineTask);
-    }
+    }*/
 
     public void fetchThreadAncestors(Sha256Hash squeakHash, SqueakServerResponseHandler responseHandler) {
         FetchThreadAncestorsTask fetchThreadAncestorsTask = new FetchThreadAncestorsTask(squeakHash, responseHandler);
@@ -55,10 +59,10 @@ public class SqueakNetworkAsyncClient {
         }
 
         @Override
-        public Integer call() {
+        public Integer call() throws Exception {
             Log.i(getClass().getName(), "Calling call.");
             try {
-                squeakNetworkController.sync();
+                squeakNetworkController.sync(electrumConnection);
                 responseHandler.onSuccess();
             } catch (Exception e) {
                 Log.e(getClass().getName(),"Failed to sync with servers with error: " + e);

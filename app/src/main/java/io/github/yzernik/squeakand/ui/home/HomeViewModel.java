@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.SqueakControllerRepository;
 import io.github.yzernik.squeakand.SqueakEntry;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
@@ -39,4 +40,9 @@ public class HomeViewModel extends AndroidViewModel {
     public SqueakNetworkAsyncClient getSqueakServerAsyncClient() {
         return squeakControllerRepository.getSqueakServerAsyncClient();
     }
+
+    public LiveData<DataResult<Integer>> syncTimeline() {
+        return squeakControllerRepository.syncTimeline();
+    }
+
 }
