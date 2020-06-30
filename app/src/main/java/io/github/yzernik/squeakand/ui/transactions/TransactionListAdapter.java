@@ -62,7 +62,8 @@ public class TransactionListAdapter extends RecyclerView.Adapter<TransactionList
         if (mTransactions != null) {
             Rpc.Transaction current = mTransactions.get(position);
             long amount = current.getAmount();
-            Date date = new Date(current.getTimeStamp());
+            long timestampSeconds = current.getTimeStamp();
+            Date date = new Date(timestampSeconds * 1000);
             String dateString = date.toString();
             holder.txtTransactionAmount.setText(current.getAmount() + " satoshis");
             holder.txtTransactionTime.setText(dateString);

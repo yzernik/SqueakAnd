@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.github.yzernik.squeakand.R;
@@ -36,8 +38,17 @@ public class TransactionsFragment extends Fragment implements TransactionListAda
         transactionsModel.listTransactions().observe(getViewLifecycleOwner(), new Observer<List<Rpc.Transaction>>() {
             @Override
             public void onChanged(@Nullable final List<Rpc.Transaction> transactions) {
+                if (transactions == null) {
+                    return;
+                }
+                // Sort the list by block height
+                List<Rpc.Transaction> modifiableTransactions = new ArrayList<>(transactions);
+                Collections.sort(modifiableTransactions, (tx1, tx2) -> {
+                    long diff = tx2.getTimeStamp() - tx1.getTimeStamp();
+                    return (int) (diff / 1000);
+                });
                 // Update the cached copy of the transactions in the adapter.
-                adapter.setProfiles(transactions);
+                adapter.setProfiles(modifiableTransactions);
             }
         });
 
