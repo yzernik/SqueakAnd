@@ -52,6 +52,9 @@ public class Preferences {
 
     public String[] getWalletSeed() {
         String seedString = sharedPreferences.getString(LND_WALLET_SEED_KEY, "");
+        if (seedString.isEmpty()) {
+            return null;
+        }
         return seedString.split(",");
     }
 

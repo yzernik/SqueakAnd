@@ -6,11 +6,7 @@ import android.util.Log;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import io.github.yzernik.squeakand.preferences.Preferences;
@@ -81,6 +77,36 @@ public class LndController {
         // Save the seed words immediately after the init wallet response.
         preferences.saveWalletSeed(seedWords);
         return response;
+    }
+
+    public boolean hasSavedSeedWords() {
+        return preferences.getWalletSeed() != null;
+    }
+
+    /**
+     * Unlock the existing wallet if there is one already,
+     * or create a new wallet, depending on if there are saved
+     * seed words.
+     *
+     */
+    public void initialize() {
+        try {
+            String startResult = start();
+            Log.i(getClass().getName(), "Started node with result: " + startResult);
+
+            if (hasSavedSeedWords()) {
+                Walletunlocker.UnlockWalletResponse unlockResult = unlockWallet();
+                Log.i(getClass().getName(), "Unlocked wallet with result: " + unlockResult);
+            } else {
+                String[] seedWords = genSeed();
+                Walletunlocker.InitWalletResponse initWalletResult = initWallet(seedWords);
+                Log.i(getClass().getName(), "Initialized wallet with result: " + initWalletResult);
+            }
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
     }
 
     /**

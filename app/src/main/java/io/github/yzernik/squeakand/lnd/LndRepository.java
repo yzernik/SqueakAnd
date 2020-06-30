@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
 import lnrpc.Rpc;
-import lnrpc.Walletunlocker;
 
 public class LndRepository {
 
@@ -58,50 +57,7 @@ public class LndRepository {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-
-                // Start the lnd node
-                try {
-                    String startResult = lndController.start();
-                    Log.i(getClass().getName(), "Started node with result: " + startResult);
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
-                    Log.i(getClass().getName(), "Failed to start lnd node.");
-                    System.exit(1);
-                }
-
-                // Unlock the wallet
-                boolean walletUnlocked = false;
-
-                // Unlock the existing wallet
-                try {
-                    Walletunlocker.UnlockWalletResponse unlockResult = lndController.unlockWallet();
-                    Log.i(getClass().getName(), "Unlocked wallet with result: " + unlockResult);
-                    walletUnlocked = true;
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
-                    Log.i(getClass().getName(), "Failed to unlock wallet.");
-                    // System.exit(1);
-                }
-
-                if (walletUnlocked) {
-                    return;
-                }
-
-                // Create a new wallet
-                try {
-                    String[] seedWords = lndController.genSeed();
-                    Walletunlocker.InitWalletResponse initWalletResult = lndController.initWallet(seedWords);
-                    Log.i(getClass().getName(), "Initialized wallet with result: " + initWalletResult);
-                    walletUnlocked = true;
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
-                    Log.i(getClass().getName(), "Failed to initialize wallet.");
-                }
-
-                if (!walletUnlocked) {
-                    System.exit(1);
-                }
-
+                lndController.initialize();
             }
         });
     }
