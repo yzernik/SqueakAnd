@@ -17,8 +17,6 @@ import java.util.List;
 @TypeConverters({Converters.class})
 public interface SqueakDao {
 
-    String fetchSqueaksByAddressQuery = "SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE authorAddress = :address";
-
     String fetchSqueakWithProfileByHashQuery = "SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " LEFT JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" + " WHERE hash = :squeakHash";
 
     // LiveData is a data holder class that can be observed within a given lifecycle.
@@ -59,8 +57,8 @@ public interface SqueakDao {
     @Query("SELECT * from " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " LEFT JOIN " + SqueakRoomDatabase.TABLE_NAME_PROFILE + " ON squeak.authorAddress=profile.address" + " WHERE squeak.authorAddress = :address AND squeak.block IS NOT NULL" + " ORDER BY blockHeight DESC, time DESC, decryptedContentStr DESC")
     LiveData<List<SqueakEntryWithProfile>> fetchLiveSqueaksByAddress(String address);
 
-    @Query(fetchSqueaksByAddressQuery)
-    List<SqueakEntry> fetchSqueaksByAddress(String address);
+    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE authorAddress = :address AND blockHeight >= :minBlock AND blockHeight < :maxBlock")
+    List<SqueakEntry> fetchSqueaksByAddress(String address, int minBlock, int maxBlock);
 
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE block IS NULL")
     List<SqueakEntry> fetchUnverifiedSqueaks();
