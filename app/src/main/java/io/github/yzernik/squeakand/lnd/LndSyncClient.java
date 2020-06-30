@@ -3,9 +3,6 @@ package io.github.yzernik.squeakand.lnd;
 import android.app.Application;
 import android.util.Log;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -35,27 +32,12 @@ public class LndSyncClient {
 
     private static final int DEFAULT_TARGET_CONF = 1;
 
-    private static final String LND_DIR_RELATIVE_PATH = "/.lnd";
-
-    // TODO: Use a real password.
-    private static final String DEFAULT_PASSWORD = "somesuperstrongpw";
-
-    private final String lndDir;
-    private final String network;
-    private final String password;
     private final LndClient lndClient;
     private final Preferences preferences;
 
-    public LndSyncClient(Application application, String network, String password) {
-        this.lndDir = Paths.get(application.getFilesDir().toString(), LND_DIR_RELATIVE_PATH).toString();
-        this.network = network;
-        this.password = password;
+    public LndSyncClient(Application application) {
         this.lndClient = new LndClient();
         this.preferences = new Preferences(application);
-    }
-
-    public LndSyncClient(Application application, String network) {
-        this(application, network, DEFAULT_PASSWORD);
     }
 
     public LndClient getLndClient() {
@@ -65,7 +47,7 @@ public class LndSyncClient {
     /**
      * Start the lnd node.
      */
-    public String start() throws InterruptedException, ExecutionException, TimeoutException {
+    public String start(String lndDir, String network) throws InterruptedException, ExecutionException, TimeoutException {
         Future<String> startResultFuture = StartWalletTask.startWallet(lndClient, lndDir, network);
         return startResultFuture.get(START_TIMEOUT_S, TimeUnit.SECONDS);
     }
@@ -78,7 +60,7 @@ public class LndSyncClient {
         return stopResultFuture.get(STOP_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
-    public Walletunlocker.UnlockWalletResponse unlockWallet() throws InterruptedException, ExecutionException, TimeoutException {
+    public Walletunlocker.UnlockWalletResponse unlockWallet(String password) throws InterruptedException, ExecutionException, TimeoutException {
         Future<Walletunlocker.UnlockWalletResponse> unlockResultFuture = UnlockWalletTask.unlockWallet(lndClient, password);
         return unlockResultFuture.get(UNLOCK_TIMEOUT_S, TimeUnit.SECONDS);
     }
@@ -92,7 +74,7 @@ public class LndSyncClient {
         return seedWords;
     }
 
-    public Walletunlocker.InitWalletResponse initWallet(String[] seedWords) throws InterruptedException, ExecutionException, TimeoutException {
+    public Walletunlocker.InitWalletResponse initWallet(String[] seedWords, String password) throws InterruptedException, ExecutionException, TimeoutException {
         List<String> seedWordsList = Arrays.asList(seedWords);
         Future<Walletunlocker.InitWalletResponse> initWalletResultFuture = InitWalletTask.initWallet(lndClient, password, seedWordsList);
         Walletunlocker.InitWalletResponse response = initWalletResultFuture.get(INIT_WALLET_TIMEOUT_S, TimeUnit.SECONDS);

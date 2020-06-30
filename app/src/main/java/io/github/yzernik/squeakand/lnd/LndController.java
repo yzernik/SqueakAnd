@@ -37,7 +37,7 @@ public class LndController {
         this.password = password;
         this.lndClient = new LndClient();
         this.preferences = new Preferences(application);
-        this.lndSyncClient = new LndSyncClient(application, network, password);
+        this.lndSyncClient = new LndSyncClient(application);
     }
 
     public LndController(Application application, String network) {
@@ -48,7 +48,7 @@ public class LndController {
      * Start the lnd node.
      */
     public String start() throws InterruptedException, ExecutionException, TimeoutException {
-        return lndSyncClient.start();
+        return lndSyncClient.start(lndDir, network);
     }
 
     /**
@@ -62,7 +62,7 @@ public class LndController {
      * Unlock the wallet.
      */
     public Walletunlocker.UnlockWalletResponse unlockWallet() throws InterruptedException, ExecutionException, TimeoutException {
-        return lndSyncClient.unlockWallet();
+        return lndSyncClient.unlockWallet(password);
     }
 
     /**
@@ -77,7 +77,7 @@ public class LndController {
      * @param seedWords
      */
     public Walletunlocker.InitWalletResponse initWallet(String[] seedWords) throws InterruptedException, ExecutionException, TimeoutException {
-        return lndSyncClient.initWallet(seedWords);
+        return lndSyncClient.initWallet(seedWords, password);
     }
 
     /**
