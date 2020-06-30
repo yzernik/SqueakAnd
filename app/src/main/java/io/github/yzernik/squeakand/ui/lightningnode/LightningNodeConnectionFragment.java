@@ -79,8 +79,7 @@ public class LightningNodeConnectionFragment extends Fragment {
                     mLightningNodeConnectButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            LiveData<DataResult<Rpc.ConnectPeerResponse>> connectResult = lightningNodeChannelsModel.connectToPeer();
-                            handleConnectPeerResult(connectResult);
+                            connectPeer();
                         }
                     });
                 }
@@ -224,8 +223,20 @@ public class LightningNodeConnectionFragment extends Fragment {
     }
 
     private void openChannel() {
+        Log.i(getTag(), String.format(
+                "Trying to connect to open channel to pubkey: %s",
+                lightningNodeChannelsModel.getPubkey()));
         LiveData<DataResult<Rpc.ChannelPoint>> openChanelResult = lightningNodeChannelsModel.openChannel(20000);
         handleOpenChannelResult(openChanelResult);
+    }
+
+    private void connectPeer() {
+        Log.i(getTag(), String.format(
+                "Trying to connect to peer host: %s, pubkey: %s",
+                lightningNodeChannelsModel.getHost(),
+                lightningNodeChannelsModel.getPubkey()));
+        LiveData<DataResult<Rpc.ConnectPeerResponse>> connectResult = lightningNodeChannelsModel.connectToPeer();
+        handleConnectPeerResult(connectResult);
     }
 
     private void startWalletActivity() {
