@@ -17,7 +17,7 @@ public class LndSyncClient {
 
     private static final long START_TIMEOUT_S = 30;
     private static final long STOP_TIMEOUT_S = 10;
-    private static final long UNLOCK_TIMEOUT_S = 10;
+    private static final long UNLOCK_TIMEOUT_S = 30;
     private static final long GEN_SEED_TIMEOUT_S = 10;
     private static final long INIT_WALLET_TIMEOUT_S = 10;
     private static final long GET_INFO_TIMEOUT_S = 10;

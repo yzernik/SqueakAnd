@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import io.github.yzernik.squeakand.ui.channels.ChannelsFragment;
+import io.github.yzernik.squeakand.ui.transactions.TransactionsFragment;
 
 public class MoneyFragmentsAdapter extends FragmentStateAdapter {
 
@@ -22,6 +23,8 @@ public class MoneyFragmentsAdapter extends FragmentStateAdapter {
                 return getBalanceFragment();
             case 1:
                 return getChannelsFragment();
+            case 2:
+                return getTransactionsFragment();
             default:
                 return null;
         }
@@ -41,9 +44,16 @@ public class MoneyFragmentsAdapter extends FragmentStateAdapter {
         return fragment;
     }
 
+    private Fragment getTransactionsFragment() {
+        Fragment fragment = new TransactionsFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 3;
     }
 }

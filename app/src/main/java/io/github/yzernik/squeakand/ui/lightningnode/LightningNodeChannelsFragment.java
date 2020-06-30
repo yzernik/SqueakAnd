@@ -21,7 +21,7 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.ui.money.ChannelListAdapter;
+import io.github.yzernik.squeakand.ui.channels.ChannelListAdapter;
 import lnrpc.Rpc;
 
 public class LightningNodeChannelsFragment extends Fragment implements ChannelListAdapter.ClickListener{
