@@ -21,7 +21,8 @@ import io.github.yzernik.squeaklib.core.Squeak;
 public class SqueakNetworkController {
 
     private static final int DEFAULT_MIN_BLOCK = 0;
-    private static final int DEFAULT_MAX_BLOCK = 1000000000;
+    private static final int DEFAULT_MAX_BLOCK = Integer.MAX_VALUE;
+    private static final int DEFAULT_BLOCK_RANGE = 1008; // 1 week in blocks.
 
     // private final SqueakDao squeakDao;
     private final SqueaksController squeaksController;
@@ -136,7 +137,7 @@ public class SqueakNetworkController {
         for (SqueakServer server: servers) {
             Log.i(getClass().getName(), "Syncing with server: " + server.serverAddress);
             try {
-                trySyncServer(server);
+                trySyncServer(server, currentBlockHeight);
             } catch (io.grpc.StatusRuntimeException e) {
                 Log.e(getClass().getName(),"Failed to sync with server " + server + " with error: " + e);
             } catch (Exception e){
@@ -145,14 +146,18 @@ public class SqueakNetworkController {
         }
     }
 
-    private void trySyncServer(SqueakServer server) {
+    private void trySyncServer(SqueakServer server, int currentBlockHeight) {
         SqueakServerController squeakServerController = new SqueakServerController(server, squeaksController);
 
+        // Get the block range to sync with the server.
+        int minBlock = currentBlockHeight - DEFAULT_BLOCK_RANGE;
+        int maxBlock = DEFAULT_MAX_BLOCK;
+
         // Sync downloads
-        squeakServerController.downloadSync(getDownloadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
+        squeakServerController.downloadSync(getDownloadAddresses(), minBlock, maxBlock);
 
         // Sync uploads
-        squeakServerController.uploadSync(getUploadAddresses(), DEFAULT_MIN_BLOCK, DEFAULT_MAX_BLOCK);
+        squeakServerController.uploadSync(getUploadAddresses(), minBlock, maxBlock);
     }
 
     /**
