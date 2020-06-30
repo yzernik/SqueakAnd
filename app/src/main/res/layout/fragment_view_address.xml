@@ -27,7 +27,8 @@
                     android:id="@+id/address_string_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:textIsSelectable="true" />
 
                 <FrameLayout
                     android:id="@+id/address_profile_missing_layout"

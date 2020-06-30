@@ -105,8 +105,7 @@ public class LightningNodeConnectionFragment extends Fragment {
                 mLightningNodeOpenChannelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        LiveData<DataResult<Rpc.ChannelPoint>> openChanelResult = lightningNodeChannelsModel.openChannel(20000);
-                        handleOpenChannelResult(openChanelResult);
+                        showConfirmOpenChannelAlert();
                     }
                 });
                 mLightningNodeOpenChannelButton.setVisibility(View.VISIBLE);
@@ -200,6 +199,33 @@ public class LightningNodeConnectionFragment extends Fragment {
                     }
                 });
         alertDialog.show();
+    }
+
+    private void showConfirmOpenChannelAlert() {
+        android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Open channel");
+        alertDialog.setMessage("Opening a channel will result in a bitcoin transaction fee." +
+                " Are you sure you want to open a channel?");
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Confirm",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i(getTag(), "Opening channel...");
+                        openChannel();
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void openChannel() {
+        LiveData<DataResult<Rpc.ChannelPoint>> openChanelResult = lightningNodeChannelsModel.openChannel(20000);
+        handleOpenChannelResult(openChanelResult);
     }
 
     private void startWalletActivity() {
