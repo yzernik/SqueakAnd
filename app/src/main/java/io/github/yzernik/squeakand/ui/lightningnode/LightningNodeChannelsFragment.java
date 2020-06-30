@@ -60,6 +60,7 @@ public class LightningNodeChannelsFragment extends Fragment implements ChannelLi
         return root;
     }
 
+    // TODO: remove duplication of these methods with ChannelsFragment.
     private void closeChannel(Rpc.Channel channel) {
         String channelPointString = channel.getChannelPoint();
         LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannelUpdates = lightningNodeChannelsModel.closeChannel(channelPointString);
@@ -107,6 +108,28 @@ public class LightningNodeChannelsFragment extends Fragment implements ChannelLi
         alertDialog.show();
     }
 
+    private void showConfirmCloseChannelAlert(Rpc.Channel channel) {
+        android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Close channel");
+        alertDialog.setMessage("Closing the channel will result in a bitcoin transaction fee." +
+                " Are you sure you want to close the channel?");
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Confirm",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i(getTag(), "Closing channel...");
+                        closeChannel(channel);
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
 
     @Override
     public void handleItemClick(Rpc.Channel channel) {
@@ -116,6 +139,6 @@ public class LightningNodeChannelsFragment extends Fragment implements ChannelLi
     @Override
     public void handleItemCloseClick(Rpc.Channel channel) {
         Log.i(getTag(), "Closing channel: " + channel);
-        closeChannel(channel);
+        showConfirmCloseChannelAlert(channel);
     }
 }
