@@ -36,8 +36,6 @@ import io.github.yzernik.squeakand.SqueakListAdapter;
 import io.github.yzernik.squeakand.TimelineSqueakListAdapter;
 import io.github.yzernik.squeakand.ViewAddressActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
-import io.github.yzernik.squeakand.blockchain.BlockInfo;
-import io.github.yzernik.squeakand.server.SqueakNetworkAsyncClient;
 
 
 public class HomeFragment extends Fragment implements SqueakListAdapter.ClickListener {
@@ -155,38 +153,6 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
             }
         });
 
-        /*
-        SqueakNetworkAsyncClient asyncClient = homeViewModel.getSqueakServerAsyncClient();
-        asyncClient.syncTimeline(new SqueakNetworkAsyncClient.SqueakServerResponseHandler() {
-            @Override
-            public void onSuccess() {
-                // Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
-            }
-
-            @Override
-            public void onFailure(Throwable e) {
-                swipeContainer.setRefreshing(false);
-                Log.d("DEBUG", "Fetch timeline error: " + e.toString());
-                showSwipeRefreshFailedAlert(e);
-            }
-        });*/
-
-        /*
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
-            public void onSuccess(JSONArray json) {
-                // Remember to CLEAR OUT old items before appending in the new ones
-                adapter.clear();
-                // ...the data has come back, add new items to your adapter...
-                adapter.addAll(...);
-                // Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
-            }
-
-            public void onFailure(Throwable e) {
-                Log.d("DEBUG", "Fetch timeline error: " + e.toString());
-            }
-        });*/
     }
 
     private void showSwipeRefreshFailedAlert(Throwable e) {
