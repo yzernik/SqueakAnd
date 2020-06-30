@@ -8,6 +8,4 @@ public class LndLiveDataClient {
         this.lndClient = lndClient;
     }
 
-
-
 }

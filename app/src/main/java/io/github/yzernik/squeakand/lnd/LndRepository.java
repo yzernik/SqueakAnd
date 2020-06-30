@@ -26,12 +26,12 @@ public class LndRepository {
     private static volatile LndRepository INSTANCE;
 
     // private LndClient lndClient;
-    private LndController lndController;
+    private LndSyncClient lndSyncClient;
     private ExecutorService executorService;
 
     private LndRepository(Application application) {
         // Singleton constructor, only called by static method.
-        this.lndController = new LndController(application, "testnet");
+        this.lndSyncClient = new LndSyncClient(application, "testnet");
         this.executorService = Executors.newCachedThreadPool();
     }
 
@@ -46,8 +46,8 @@ public class LndRepository {
         return INSTANCE;
     }
 
-    public LndController getLndController() {
-        return lndController;
+    public LndSyncClient getLndSyncClient() {
+        return lndSyncClient;
     }
 
     public void initialize() {
@@ -58,7 +58,7 @@ public class LndRepository {
 
                 // Start the lnd node
                 try {
-                    String startResult = lndController.start();
+                    String startResult = lndSyncClient.start();
                     Log.i(getClass().getName(), "Started node with result: " + startResult);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
@@ -71,7 +71,7 @@ public class LndRepository {
 
                 // Unlock the existing wallet
                 try {
-                    Walletunlocker.UnlockWalletResponse unlockResult = lndController.unlockWallet();
+                    Walletunlocker.UnlockWalletResponse unlockResult = lndSyncClient.unlockWallet();
                     Log.i(getClass().getName(), "Unlocked wallet with result: " + unlockResult);
                     walletUnlocked = true;
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -86,8 +86,8 @@ public class LndRepository {
 
                 // Create a new wallet
                 try {
-                    String[] seedWords = lndController.genSeed();
-                    Walletunlocker.InitWalletResponse initWalletResult = lndController.initWallet(seedWords);
+                    String[] seedWords = lndSyncClient.genSeed();
+                    Walletunlocker.InitWalletResponse initWalletResult = lndSyncClient.initWallet(seedWords);
                     Log.i(getClass().getName(), "Initialized wallet with result: " + initWalletResult);
                     walletUnlocked = true;
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -110,7 +110,7 @@ public class LndRepository {
             @Override
             public void run() {
                 try {
-                    Future<Rpc.GetInfoResponse> responseFuture = lndController.getInfoAsync();
+                    Future<Rpc.GetInfoResponse> responseFuture = lndSyncClient.getInfoAsync();
                     Rpc.GetInfoResponse response = responseFuture.get();
                     liveGetInfoResponse.postValue(response);
                 } catch (InterruptedException | ExecutionException e) {
@@ -128,7 +128,7 @@ public class LndRepository {
             @Override
             public void run() {
                 try {
-                    Future<Rpc.WalletBalanceResponse> responseFuture = lndController.walletBalanceAsync();
+                    Future<Rpc.WalletBalanceResponse> responseFuture = lndSyncClient.walletBalanceAsync();
                     Rpc.WalletBalanceResponse response = responseFuture.get();
                     liveWalletBalanceResponse.postValue(response);
                 } catch (InterruptedException | ExecutionException e) {
@@ -146,7 +146,7 @@ public class LndRepository {
             @Override
             public void run() {
                 try {
-                    Future<Rpc.ListChannelsResponse> responseFuture = lndController.listChannelsAsync();
+                    Future<Rpc.ListChannelsResponse> responseFuture = lndSyncClient.listChannelsAsync();
                     Rpc.ListChannelsResponse response = responseFuture.get();
                     liveListChannelsResponse.postValue(response);
                 } catch (InterruptedException | ExecutionException e) {
@@ -164,7 +164,7 @@ public class LndRepository {
             @Override
             public void run() {
                 try {
-                    Future<Rpc.NewAddressResponse> responseFuture = lndController.newAddressAsync();
+                    Future<Rpc.NewAddressResponse> responseFuture = lndSyncClient.newAddressAsync();
                     Rpc.NewAddressResponse response = responseFuture.get();
                     liveNewAddressResponse.postValue(response);
                 } catch (InterruptedException | ExecutionException e) {
@@ -181,7 +181,7 @@ public class LndRepository {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                LndResult<Rpc.SendResponse> result = lndController.sendPaymentWithResult(paymentRequest);
+                LndResult<Rpc.SendResponse> result = lndSyncClient.sendPaymentWithResult(paymentRequest);
                 liveSendResponse.postValue(result);
             }
         });
@@ -195,7 +195,7 @@ public class LndRepository {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                LndResult<Rpc.ConnectPeerResponse> result = lndController.connectPeerWithResult(pubkey, host);
+                LndResult<Rpc.ConnectPeerResponse> result = lndSyncClient.connectPeerWithResult(pubkey, host);
                 liveConnectPeerResponse.postValue(result);
             }
         });
@@ -209,7 +209,7 @@ public class LndRepository {
             @Override
             public void run() {
                 try {
-                    Future<Rpc.ListPeersResponse> responseFuture = lndController.listPeersAsync();
+                    Future<Rpc.ListPeersResponse> responseFuture = lndSyncClient.listPeersAsync();
                     Rpc.ListPeersResponse response = responseFuture.get();
                     liveListPeersResponse.postValue(response);
                 } catch (InterruptedException | ExecutionException e) {
@@ -226,7 +226,7 @@ public class LndRepository {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                LndResult<Rpc.ChannelPoint> result = lndController.openChannelWithResult(pubkey, amount);
+                LndResult<Rpc.ChannelPoint> result = lndSyncClient.openChannelWithResult(pubkey, amount);
                 liveOpenChannelResponse.postValue(result);
             }
         });
@@ -239,7 +239,7 @@ public class LndRepository {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                lndController.subscribeChannelEvents(new LndClient.SubscribeChannelEventsRecvStream() {
+                lndSyncClient.subscribeChannelEvents(new LndClient.SubscribeChannelEventsRecvStream() {
                     @Override
                     public void onError(Exception e) {
                         Log.e(getClass().getName(), "Failed to get channel event: " + e);
@@ -273,7 +273,7 @@ public class LndRepository {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                lndController.closeChannel(channelPoint, force, new LndClient.CloseChannelEventsRecvStream() {
+                lndSyncClient.closeChannel(channelPoint, force, new LndClient.CloseChannelEventsRecvStream() {
                     @Override
                     public void onError(Exception e) {
                         Log.e(getClass().getName(), "Failed to get close channel update: " + e);
@@ -297,7 +297,7 @@ public class LndRepository {
             public void run() {
 
                 try {
-                    Rpc.ListPeersResponse listPeersResponse = lndController.listPeers();
+                    Rpc.ListPeersResponse listPeersResponse = lndSyncClient.listPeers();
                     Set<String> connectedPeers = new HashSet<>();
 
                     // Add the initial peers to the set.
@@ -307,7 +307,7 @@ public class LndRepository {
                     livePeers.postValue(connectedPeers);
 
                     // Keep the set updated with the results from the updates.
-                    lndController.subscribePeerEvents(new LndClient.SubscribePeerEventsRecvStream() {
+                    lndSyncClient.subscribePeerEvents(new LndClient.SubscribePeerEventsRecvStream() {
                         @Override
                         public void onError(Exception e) {
                             Log.e(getClass().getName(), "Failed to get peer event update: " + e);
@@ -340,7 +340,7 @@ public class LndRepository {
             public void run() {
 
                 try {
-                    Rpc.ListChannelsResponse listChannelsResponse = lndController.listChannels();
+                    Rpc.ListChannelsResponse listChannelsResponse = lndSyncClient.listChannels();
                     Log.i(getClass().getName(), "Got listChannelsResponse with size: " + listChannelsResponse.getChannelsList().size());
                     Map<String, Rpc.Channel> channels = new HashMap<>();
 
@@ -351,7 +351,7 @@ public class LndRepository {
                     liveChannels.postValue(new ArrayList<>(channels.values()));
 
                     // Keep the set updated with the results from the updates.
-                    lndController.subscribeChannelEvents(new LndClient.SubscribeChannelEventsRecvStream() {
+                    lndSyncClient.subscribeChannelEvents(new LndClient.SubscribeChannelEventsRecvStream() {
                         @Override
                         public void onError(Exception e) {
                             Log.e(getClass().getName(), "Failed to get peer event update: " + e);

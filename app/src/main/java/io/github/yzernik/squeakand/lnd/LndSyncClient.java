@@ -17,7 +17,7 @@ import io.github.yzernik.squeakand.preferences.Preferences;
 import lnrpc.Rpc;
 import lnrpc.Walletunlocker;
 
-public class LndController {
+public class LndSyncClient {
 
     private static final long START_TIMEOUT_S = 30;
     private static final long STOP_TIMEOUT_S = 10;
@@ -46,7 +46,7 @@ public class LndController {
     private final LndClient lndClient;
     private final Preferences preferences;
 
-    public LndController(Application application, String network, String password) {
+    public LndSyncClient(Application application, String network, String password) {
         this.lndDir = Paths.get(application.getFilesDir().toString(), LND_DIR_RELATIVE_PATH).toString();
         this.network = network;
         this.password = password;
@@ -54,7 +54,7 @@ public class LndController {
         this.preferences = new Preferences(application);
     }
 
-    public LndController(Application application, String network) {
+    public LndSyncClient(Application application, String network) {
         this(application, network, DEFAULT_PASSWORD);
     }
 

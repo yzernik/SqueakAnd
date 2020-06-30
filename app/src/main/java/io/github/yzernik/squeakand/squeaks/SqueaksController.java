@@ -19,7 +19,7 @@ import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakRoomDatabase;
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.crypto.CryptoUtil;
-import io.github.yzernik.squeakand.lnd.LndController;
+import io.github.yzernik.squeakand.lnd.LndSyncClient;
 import io.github.yzernik.squeakand.server.SqueakServerAddress;
 import io.github.yzernik.squeaklib.core.Squeak;
 import io.github.yzernik.squeaklib.core.VerificationException;
@@ -33,15 +33,15 @@ public class SqueaksController {
     private OfferDao offerDao;
     private SqueakBlockVerificationQueue verificationQueue;
     private ElectrumBlockchainRepository electrumBlockchainRepository;
-    private LndController lndController;
+    private LndSyncClient lndSyncClient;
 
 
-    public SqueaksController(SqueakDao mSqueakDao, OfferDao offerDao, ElectrumBlockchainRepository electrumBlockchainRepository, LndController lndController) {
+    public SqueaksController(SqueakDao mSqueakDao, OfferDao offerDao, ElectrumBlockchainRepository electrumBlockchainRepository, LndSyncClient lndSyncClient) {
         this.mSqueakDao = mSqueakDao;
         this.offerDao = offerDao;
         this.verificationQueue = new SqueakBlockVerificationQueue();
         this.electrumBlockchainRepository = electrumBlockchainRepository;
-        this.lndController = lndController;
+        this.lndSyncClient = lndSyncClient;
     }
 
     /**
@@ -192,7 +192,7 @@ public class SqueaksController {
 
     public Rpc.SendResponse payOffer(Offer offer) {
         try {
-            Rpc.SendResponse sendResponse = lndController.sendPayment(offer.paymentRequest);
+            Rpc.SendResponse sendResponse = lndSyncClient.sendPayment(offer.paymentRequest);
             Log.e(getClass().getName(), "sendResponse.getPaymentPreimage: " + sendResponse.getPaymentPreimage());
             if (sendResponse.getPaymentPreimage().isEmpty()) {
                 // Handle failed payment
