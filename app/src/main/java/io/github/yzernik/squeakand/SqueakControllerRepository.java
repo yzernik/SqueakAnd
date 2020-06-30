@@ -55,11 +55,12 @@ public class SqueakControllerRepository {
         electrumBlockchainRepository = ElectrumBlockchainRepository.getRepository(application);
         lndRepository = LndRepository.getRepository(application);
         squeaksController = new SqueaksController(mSqueakDao, mOfferDao, electrumBlockchainRepository, lndRepository.getLndSyncClient());
-        blockVerifier = new SqueakBlockVerifier(squeaksController);
         squeakNetworkController = new SqueakNetworkController(squeaksController, mSqueakProfileDao, mSqueakServerDao);
         electrumConnection = electrumBlockchainRepository.getElectrumConnection();
         executorService = Executors.newCachedThreadPool();
         asyncClient = new SqueakNetworkAsyncClient(squeakNetworkController, electrumConnection, executorService);
+
+        blockVerifier = new SqueakBlockVerifier(squeaksController, executorService);
     }
 
     public static SqueakControllerRepository getRepository(Application application) {
