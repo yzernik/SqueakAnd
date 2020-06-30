@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 public class SqueakBlockVerifier {
@@ -15,9 +14,9 @@ public class SqueakBlockVerifier {
 
     private SqueaksController squeaksController;
 
-    public SqueakBlockVerifier(SqueaksController squeaksController) {
+    public SqueakBlockVerifier(SqueaksController squeaksController, ExecutorService executorService) {
         this.squeaksController = squeaksController;
-        this.executorService = Executors.newFixedThreadPool(2);
+        this.executorService = executorService;
     }
 
     public synchronized void verifySqueakBlocks() {
