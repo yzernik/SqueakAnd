@@ -178,7 +178,7 @@ public class LndSyncClient {
     /**
      * Get info async.
      */
-    public Future<Rpc.GetInfoResponse> getInfoAsync() {
+    private Future<Rpc.GetInfoResponse> getInfoAsync() {
         return GetInfoTask.getInfo(lndClient);
     }
 
@@ -193,7 +193,7 @@ public class LndSyncClient {
     /**
      * Wallet balance async.
      */
-    public Future<Rpc.WalletBalanceResponse> walletBalanceAsync() {
+    private Future<Rpc.WalletBalanceResponse> walletBalanceAsync() {
         return WalletBalanceTask.walletBalance(lndClient);
     }
 
@@ -208,7 +208,7 @@ public class LndSyncClient {
     /**
      * List channels async.
      */
-    public Future<Rpc.ListChannelsResponse> listChannelsAsync() {
+    private Future<Rpc.ListChannelsResponse> listChannelsAsync() {
         return ListChannelsTask.listChannels(lndClient);
     }
 
@@ -223,7 +223,7 @@ public class LndSyncClient {
     /**
      * New address async.
      */
-    public Future<Rpc.NewAddressResponse> newAddressAsync() {
+    private Future<Rpc.NewAddressResponse> newAddressAsync() {
         return NewAddressTask.newAddress(lndClient);
     }
 
@@ -238,7 +238,7 @@ public class LndSyncClient {
     /**
      * Send payment async.
      */
-    public Future<Rpc.SendResponse> sendPaymentAsync(String paymentRequest) {
+    private Future<Rpc.SendResponse> sendPaymentAsync(String paymentRequest) {
         return SendPaymentTask.sendPayment(paymentRequest, lndClient);
     }
 
@@ -264,7 +264,7 @@ public class LndSyncClient {
     /**
      * Connect peer async.
      */
-    public Future<Rpc.ConnectPeerResponse> connectPeerAsync(String pubkey, String host) {
+    private Future<Rpc.ConnectPeerResponse> connectPeerAsync(String pubkey, String host) {
         return ConnectPeerTask.connectPeer(pubkey, host, lndClient);
     }
 
@@ -296,7 +296,7 @@ public class LndSyncClient {
     /**
      * List peers async.
      */
-    public Future<Rpc.ListPeersResponse> listPeersAsync() {
+    private Future<Rpc.ListPeersResponse> listPeersAsync() {
         return ListPeersTask.listPeers(lndClient);
     }
 
@@ -311,7 +311,7 @@ public class LndSyncClient {
     /**
      * Open channel async.
      */
-    public Future<Rpc.ChannelPoint> openChannelAsync(String pubkey, long amount) {
+    private Future<Rpc.ChannelPoint> openChannelAsync(String pubkey, long amount) {
         return OpenChannelTask.openChannel(pubkey, amount, DEFAULT_TARGET_CONF, lndClient);
     }
 

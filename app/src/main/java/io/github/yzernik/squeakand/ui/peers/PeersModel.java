@@ -9,12 +9,13 @@ import androidx.lifecycle.Transformations;
 import java.util.List;
 
 import io.github.yzernik.squeakand.lnd.LndRepository;
+import io.github.yzernik.squeakand.lnd.LndResult;
 import lnrpc.Rpc;
 
 public class PeersModel extends AndroidViewModel {
 
     private LndRepository lndRepository;
-    private LiveData<Rpc.ListPeersResponse> liveListPeersResponse;
+    private LiveData<LndResult<Rpc.ListPeersResponse>> liveListPeersResponse;
 
     public PeersModel(Application application) {
         super(application);
@@ -22,13 +23,16 @@ public class PeersModel extends AndroidViewModel {
         liveListPeersResponse = lndRepository.listPeers();
     }
 
-    public LiveData<Rpc.ListPeersResponse> getLiveListPeersResponse() {
+    public LiveData<LndResult<Rpc.ListPeersResponse>> getLiveListPeersResponse() {
         return liveListPeersResponse;
     }
 
     public LiveData<List<Rpc.Peer>> getLivePeers() {
         return Transformations.map(liveListPeersResponse, liveListPeersResponse -> {
-            return liveListPeersResponse.getPeersList();
+            if (!liveListPeersResponse.isSuccess()) {
+                return null;
+            }
+            return liveListPeersResponse.getResponse().getPeersList();
         });
     }
 
