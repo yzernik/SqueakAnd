@@ -1,7 +1,5 @@
 package io.github.yzernik.squeakand.lnd;
 
-import android.app.Application;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -16,7 +14,6 @@ public class LndLiveDataClient {
     private LndSyncClient lndSyncClient;
     private ExecutorService executorService;
 
-    // TODO: remove extra parameters beyond executorService.
     public LndLiveDataClient(LndSyncClient lndSyncClient, ExecutorService executorService) {
         this.executorService = executorService;
         this.lndSyncClient = lndSyncClient;
