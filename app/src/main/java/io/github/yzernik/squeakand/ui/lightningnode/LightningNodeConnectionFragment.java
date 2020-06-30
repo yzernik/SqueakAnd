@@ -149,10 +149,13 @@ public class LightningNodeConnectionFragment extends Fragment {
         openChannelResult.observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.ChannelPoint>>() {
             @Override
             public void onChanged(@Nullable final DataResult<Rpc.ChannelPoint> result) {
-                if (!result.isSuccess()) {
+                if (result.isFailure()) {
                     Log.e(getTag(), "Open channel failed with error: " + result.getError());
                     showFailedOpenChannelAlert(result.getError());
+                    return;
                 }
+                Rpc.ChannelPoint channelPoint = result.getResponse();
+                showSuccessOpenChannelAlert(channelPoint);
             }
         });
     }
@@ -174,6 +177,22 @@ public class LightningNodeConnectionFragment extends Fragment {
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Open channel failed");
         alertDialog.setMessage("Failed with error: " + e);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void showSuccessOpenChannelAlert(Rpc.ChannelPoint channelPoint) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Opened channel");
+        String pubkey = lightningNodeChannelsModel.getPubkey();
+        alertDialog.setMessage(
+                "New channel opened to peer: " + pubkey + "." +
+                "\nChannel is now pending and will be available when the transaction is confirmed.");
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
