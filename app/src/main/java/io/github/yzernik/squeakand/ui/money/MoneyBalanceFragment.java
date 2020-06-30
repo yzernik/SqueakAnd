@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.lnd.LndResult;
 import lnrpc.Rpc;
 
 public class MoneyBalanceFragment extends Fragment {
@@ -49,13 +50,13 @@ public class MoneyBalanceFragment extends Fragment {
             public void onClick(View v) {
 
                 // New address
-                moneyViewModel.newAddress().observe(getViewLifecycleOwner(), new Observer<Rpc.NewAddressResponse>() {
+                moneyViewModel.newAddress().observe(getViewLifecycleOwner(), new Observer<LndResult<Rpc.NewAddressResponse>>() {
                     @Override
-                    public void onChanged(Rpc.NewAddressResponse response) {
-                        if (response == null) {
+                    public void onChanged(LndResult<Rpc.NewAddressResponse> response) {
+                        if (!response.isSuccess()) {
                             return;
                         }
-                        String address = response.getAddress();
+                        String address = response.getResponse().getAddress();
                         showReceiveAddressAlertDialog(inflater, address);
                     }
                 });
@@ -69,27 +70,28 @@ public class MoneyBalanceFragment extends Fragment {
     private void updateGetInfo () {
 
         // Get info
-        moneyViewModel.getInfo().observe(getViewLifecycleOwner(), new Observer<Rpc.GetInfoResponse>() {
+        moneyViewModel.getInfo().observe(getViewLifecycleOwner(), new Observer<LndResult<Rpc.GetInfoResponse>>() {
             @Override
-            public void onChanged(Rpc.GetInfoResponse response) {
-                if (response == null) {
+            public void onChanged(LndResult<Rpc.GetInfoResponse> response) {
+                if (!response.isSuccess()) {
                     return;
                 }
-                mSyncedToChainText.setText(Boolean.toString(response.getSyncedToChain()));
-                mSyncedToGraphText.setText(Boolean.toString(response.getSyncedToGraph()));
+                mSyncedToChainText.setText(Boolean.toString(response.getResponse().getSyncedToChain()));
+                mSyncedToGraphText.setText(Boolean.toString(response.getResponse().getSyncedToGraph()));
             }
         });
 
         // Get wallet balance
-        moneyViewModel.walletBalance().observe(getViewLifecycleOwner(), new Observer<Rpc.WalletBalanceResponse>() {
+        moneyViewModel.walletBalance().observe(getViewLifecycleOwner(), new Observer<LndResult<Rpc.WalletBalanceResponse>>() {
             @Override
-            public void onChanged(Rpc.WalletBalanceResponse response) {
-                if (response == null) {
+            public void onChanged(LndResult<Rpc.WalletBalanceResponse> response) {
+                if (!response.isSuccess()) {
                     return;
                 }
-                mUnconfirmedBalance.setText(Long.toString(response.getUnconfirmedBalance()));
-                mConfirmedBalance.setText(Long.toString(response.getConfirmedBalance()));
-                mTotalBalance.setText(Long.toString(response.getTotalBalance()));
+                Rpc.WalletBalanceResponse walletBalanceResponse = response.getResponse();
+                mUnconfirmedBalance.setText(Long.toString(walletBalanceResponse.getUnconfirmedBalance()));
+                mConfirmedBalance.setText(Long.toString(walletBalanceResponse.getConfirmedBalance()));
+                mTotalBalance.setText(Long.toString(walletBalanceResponse.getTotalBalance()));
             }
         });
 
