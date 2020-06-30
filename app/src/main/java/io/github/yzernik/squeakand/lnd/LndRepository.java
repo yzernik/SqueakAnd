@@ -32,7 +32,7 @@ public class LndRepository {
 
     private LndRepository(Application application) {
         // Singleton constructor, only called by static method.
-        this.lndSyncClient = new LndSyncClient(application);
+        this.lndSyncClient = new LndSyncClient();
         this.executorService = Executors.newCachedThreadPool();
         this.lndLiveDataClient = new LndLiveDataClient(lndSyncClient, executorService);
         this.lndController = new LndController(application, "testnet");

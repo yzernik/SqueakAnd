@@ -37,7 +37,7 @@ public class LndController {
         this.password = password;
         this.lndClient = new LndClient();
         this.preferences = new Preferences(application);
-        this.lndSyncClient = new LndSyncClient(application);
+        this.lndSyncClient = new LndSyncClient();
     }
 
     public LndController(Application application, String network) {
@@ -77,7 +77,10 @@ public class LndController {
      * @param seedWords
      */
     public Walletunlocker.InitWalletResponse initWallet(String[] seedWords) throws InterruptedException, ExecutionException, TimeoutException {
-        return lndSyncClient.initWallet(seedWords, password);
+        Walletunlocker.InitWalletResponse response = lndSyncClient.initWallet(seedWords, password);
+        // Save the seed words immediately after the init wallet response.
+        preferences.saveWalletSeed(seedWords);
+        return response;
     }
 
     /**

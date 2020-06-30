@@ -33,15 +33,9 @@ public class LndSyncClient {
     private static final int DEFAULT_TARGET_CONF = 1;
 
     private final LndClient lndClient;
-    private final Preferences preferences;
 
-    public LndSyncClient(Application application) {
+    public LndSyncClient() {
         this.lndClient = new LndClient();
-        this.preferences = new Preferences(application);
-    }
-
-    public LndClient getLndClient() {
-        return lndClient;
     }
 
     /**
@@ -77,10 +71,7 @@ public class LndSyncClient {
     public Walletunlocker.InitWalletResponse initWallet(String[] seedWords, String password) throws InterruptedException, ExecutionException, TimeoutException {
         List<String> seedWordsList = Arrays.asList(seedWords);
         Future<Walletunlocker.InitWalletResponse> initWalletResultFuture = InitWalletTask.initWallet(lndClient, password, seedWordsList);
-        Walletunlocker.InitWalletResponse response = initWalletResultFuture.get(INIT_WALLET_TIMEOUT_S, TimeUnit.SECONDS);
-        // Save the seed words after completing initWallet.
-        preferences.saveWalletSeed(seedWords);
-        return response;
+        return initWalletResultFuture.get(INIT_WALLET_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
     /**
