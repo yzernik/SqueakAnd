@@ -92,7 +92,7 @@ public class LndRepository {
         return lndLiveDataClient.openChannel(pubkey, amount);
     }
 
-    public LiveData<Rpc.ClosedChannelUpdate> closeChannel(String channelPointString, boolean force) {
+    public LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannel(String channelPointString, boolean force) {
         String[] parts = channelPointString.split(":");
         String fundingTx = parts[0];
         int outputIndex = Integer.parseInt(parts[1]);
@@ -103,7 +103,7 @@ public class LndRepository {
         return closeChannel(channelPoint, force);
     }
 
-    public LiveData<Rpc.ClosedChannelUpdate> closeChannel(Rpc.ChannelPoint channelPoint, boolean force) {
+    public LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannel(Rpc.ChannelPoint channelPoint, boolean force) {
         return lndLiveDataClient.closeChannel(channelPoint, force);
     }
 

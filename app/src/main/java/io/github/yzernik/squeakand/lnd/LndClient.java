@@ -523,13 +523,13 @@ public class LndClient {
             @Override
             public void onResponse(byte[] bytes) {
                 if (bytes == null) {
-                    Rpc.ClosedChannelUpdate update = Rpc.ClosedChannelUpdate.getDefaultInstance();
+                    Rpc.CloseStatusUpdate update = Rpc.CloseStatusUpdate.getDefaultInstance();
                     callBack.onUpdate(update);
                     return;
                 }
 
                 try {
-                    Rpc.ClosedChannelUpdate update = Rpc.ClosedChannelUpdate.parseFrom(bytes);
+                    Rpc.CloseStatusUpdate update = Rpc.CloseStatusUpdate.parseFrom(bytes);
                     callBack.onUpdate(update);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -540,7 +540,7 @@ public class LndClient {
 
     public interface CloseChannelEventsRecvStream {
         public void onError(Exception e);
-        public void onUpdate(Rpc.ClosedChannelUpdate update);
+        public void onUpdate(Rpc.CloseStatusUpdate update);
     }
 
 
