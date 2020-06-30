@@ -28,12 +28,14 @@ public class LndRepository {
     private LndSyncClient lndSyncClient;
     private ExecutorService executorService;
     private LndLiveDataClient lndLiveDataClient;
+    private LndController lndController;
 
     private LndRepository(Application application) {
         // Singleton constructor, only called by static method.
         this.lndSyncClient = new LndSyncClient(application, "testnet");
         this.executorService = Executors.newCachedThreadPool();
         this.lndLiveDataClient = new LndLiveDataClient(lndSyncClient, executorService);
+        this.lndController = new LndController(application, "testnet");
     }
 
     public static LndRepository getRepository(Application application) {
@@ -59,7 +61,7 @@ public class LndRepository {
 
                 // Start the lnd node
                 try {
-                    String startResult = lndSyncClient.start();
+                    String startResult = lndController.start();
                     Log.i(getClass().getName(), "Started node with result: " + startResult);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
@@ -72,7 +74,7 @@ public class LndRepository {
 
                 // Unlock the existing wallet
                 try {
-                    Walletunlocker.UnlockWalletResponse unlockResult = lndSyncClient.unlockWallet();
+                    Walletunlocker.UnlockWalletResponse unlockResult = lndController.unlockWallet();
                     Log.i(getClass().getName(), "Unlocked wallet with result: " + unlockResult);
                     walletUnlocked = true;
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -87,8 +89,8 @@ public class LndRepository {
 
                 // Create a new wallet
                 try {
-                    String[] seedWords = lndSyncClient.genSeed();
-                    Walletunlocker.InitWalletResponse initWalletResult = lndSyncClient.initWallet(seedWords);
+                    String[] seedWords = lndController.genSeed();
+                    Walletunlocker.InitWalletResponse initWalletResult = lndController.initWallet(seedWords);
                     Log.i(getClass().getName(), "Initialized wallet with result: " + initWalletResult);
                     walletUnlocked = true;
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {

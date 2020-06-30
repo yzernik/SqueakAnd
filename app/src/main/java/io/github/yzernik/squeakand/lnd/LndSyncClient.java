@@ -101,22 +101,6 @@ public class LndSyncClient {
         return response;
     }
 
-    public void rmLndDir() {
-        Path lndDirPath = Paths.get(lndDir);
-        Log.i(getClass().getName(), "Deleting lnd dir: " + lndDirPath);
-        deleteDirectory(lndDirPath.toFile());
-    }
-
-    private boolean deleteDirectory(File directoryToBeDeleted) {
-        File[] allContents = directoryToBeDeleted.listFiles();
-        if (allContents != null) {
-            for (File file : allContents) {
-                deleteDirectory(file);
-            }
-        }
-        return directoryToBeDeleted.delete();
-    }
-
     /**
      * Get info async.
      */
