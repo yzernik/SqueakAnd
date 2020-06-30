@@ -19,7 +19,6 @@ import java.util.List;
 
 import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.ui.money.ChannelListAdapter;
 import lnrpc.Rpc;
 
 public class ChannelsFragment extends Fragment implements ChannelListAdapter.ClickListener {

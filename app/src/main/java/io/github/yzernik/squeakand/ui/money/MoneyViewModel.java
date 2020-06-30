@@ -31,10 +31,6 @@ public class MoneyViewModel  extends AndroidViewModel {
         return lndRepository.listChannels();
     }
 
-    LiveData<DataResult<Rpc.TransactionDetails>> getTransactions() {
-        return lndRepository.getTransactions(0, -1);
-    }
-
     LiveData<DataResult<Rpc.ListPeersResponse>> listPeers() {
         return lndRepository.listPeers();
     }

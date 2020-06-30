@@ -96,19 +96,6 @@ public class MoneyBalanceFragment extends Fragment {
             }
         });
 
-        moneyViewModel.getTransactions().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.TransactionDetails>>() {
-            @Override
-            public void onChanged(DataResult<Rpc.TransactionDetails> responseResult) {
-                if (responseResult.isFailure()) {
-                    return;
-                }
-                Rpc.TransactionDetails response = responseResult.getResponse();
-                Log.i(getTag(), "Got number of transactions: " + response.getTransactionsCount());
-                for (Rpc.Transaction transaction: response.getTransactionsList()) {
-                    Log.i(getTag(), "Transaction: " + transaction);
-                }
-            }
-        });
 
 
         /*

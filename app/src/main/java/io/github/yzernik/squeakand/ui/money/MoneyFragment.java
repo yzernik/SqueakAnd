@@ -44,6 +44,8 @@ public class MoneyFragment extends Fragment {
                 return "Balance";
             case 1:
                 return "Channels";
+            case 2:
+                return "Transactions";
             default:
                 return null;
         }

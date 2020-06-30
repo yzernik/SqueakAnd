@@ -1,4 +1,4 @@
-package io.github.yzernik.squeakand.ui.money;
+package io.github.yzernik.squeakand.ui.channels;
 
 import android.content.Context;
 import android.view.LayoutInflater;
