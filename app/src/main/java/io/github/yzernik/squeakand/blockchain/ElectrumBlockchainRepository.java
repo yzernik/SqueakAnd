@@ -31,7 +31,7 @@ public class ElectrumBlockchainRepository {
     private BlockGetter blockGetter;
 
     // Controller
-    ElectrumConnection electrumConnection;
+    private ElectrumConnection electrumConnection;
 
     // For getting livedata
     private ServerUpdateLiveData serverUpdateLiveData;
@@ -77,6 +77,10 @@ public class ElectrumBlockchainRepository {
 
         // Start the peer discovery
         peerDownloader.keepPeersUpdated();
+    }
+
+    public ElectrumConnection getElectrumConnection() {
+        return electrumConnection;
     }
 
     public void setServer(ElectrumServerAddress serverAddress) {

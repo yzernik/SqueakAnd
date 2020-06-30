@@ -13,9 +13,9 @@ public class ServerUploader {
     private final ExecutorService executorService;
     private Future<String> future = null;
 
-    public ServerUploader(SqueakNetworkController squeakNetworkController) {
+    public ServerUploader(SqueakNetworkController squeakNetworkController, ExecutorService executorService) {
         this.squeakNetworkController = squeakNetworkController;
-        this.executorService =  Executors.newFixedThreadPool(10);
+        this.executorService =  executorService;
     }
 
     public synchronized void startUploadTask() {

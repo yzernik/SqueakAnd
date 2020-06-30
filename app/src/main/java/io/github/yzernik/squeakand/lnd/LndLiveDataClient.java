@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
 
+import io.github.yzernik.squeakand.DataResult;
 import lnrpc.Rpc;
 
 public class LndLiveDataClient {
@@ -27,85 +28,85 @@ public class LndLiveDataClient {
         this.lndSyncClient = lndSyncClient;
     }
 
-    public LiveData<LndResult<Rpc.GetInfoResponse>> getInfo() {
-        MutableLiveData<LndResult<Rpc.GetInfoResponse>> liveDataResult = new MutableLiveData<>();
+    public LiveData<DataResult<Rpc.GetInfoResponse>> getInfo() {
+        MutableLiveData<DataResult<Rpc.GetInfoResponse>> liveDataResult = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     Rpc.GetInfoResponse response = lndSyncClient.getInfo();
-                    liveDataResult.postValue(LndResult.ofSuccess(response));
+                    liveDataResult.postValue(DataResult.ofSuccess(response));
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
-                    liveDataResult.postValue(LndResult.ofFailure(e));
+                    liveDataResult.postValue(DataResult.ofFailure(e));
                 }
             }
         });
         return liveDataResult;
     }
 
-    public LiveData<LndResult<Rpc.WalletBalanceResponse>> walletBalance() {
-        MutableLiveData<LndResult<Rpc.WalletBalanceResponse>> liveDataResult = new MutableLiveData<>();
+    public LiveData<DataResult<Rpc.WalletBalanceResponse>> walletBalance() {
+        MutableLiveData<DataResult<Rpc.WalletBalanceResponse>> liveDataResult = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     Rpc.WalletBalanceResponse response = lndSyncClient.walletBalance();
-                    liveDataResult.postValue(LndResult.ofSuccess(response));
+                    liveDataResult.postValue(DataResult.ofSuccess(response));
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
-                    liveDataResult.postValue(LndResult.ofFailure(e));
+                    liveDataResult.postValue(DataResult.ofFailure(e));
                 }
             }
         });
         return liveDataResult;
     }
 
-    public LiveData<LndResult<Rpc.ListChannelsResponse>> listChannels() {
-        MutableLiveData<LndResult<Rpc.ListChannelsResponse>> liveDataResult = new MutableLiveData<>();
+    public LiveData<DataResult<Rpc.ListChannelsResponse>> listChannels() {
+        MutableLiveData<DataResult<Rpc.ListChannelsResponse>> liveDataResult = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     Rpc.ListChannelsResponse response = lndSyncClient.listChannels();
-                    liveDataResult.postValue(LndResult.ofSuccess(response));
+                    liveDataResult.postValue(DataResult.ofSuccess(response));
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
-                    liveDataResult.postValue(LndResult.ofFailure(e));
+                    liveDataResult.postValue(DataResult.ofFailure(e));
                 }
             }
         });
         return liveDataResult;
     }
 
-    public LiveData<LndResult<Rpc.NewAddressResponse>> newAddress() {
-        MutableLiveData<LndResult<Rpc.NewAddressResponse>> liveDataResult = new MutableLiveData<>();
+    public LiveData<DataResult<Rpc.NewAddressResponse>> newAddress() {
+        MutableLiveData<DataResult<Rpc.NewAddressResponse>> liveDataResult = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     Rpc.NewAddressResponse response = lndSyncClient.newAddress();
-                    liveDataResult.postValue(LndResult.ofSuccess(response));
+                    liveDataResult.postValue(DataResult.ofSuccess(response));
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
-                    liveDataResult.postValue(LndResult.ofFailure(e));
+                    liveDataResult.postValue(DataResult.ofFailure(e));
                 }
             }
         });
         return liveDataResult;
     }
 
-    public LiveData<LndResult<Rpc.SendResponse>> sendPayment(String paymentRequest) {
-        MutableLiveData<LndResult<Rpc.SendResponse>> liveDataResult = new MutableLiveData<>();
+    public LiveData<DataResult<Rpc.SendResponse>> sendPayment(String paymentRequest) {
+        MutableLiveData<DataResult<Rpc.SendResponse>> liveDataResult = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     Rpc.SendResponse response = lndSyncClient.sendPayment(paymentRequest);
-                    liveDataResult.postValue(LndResult.ofSuccess(response));
+                    liveDataResult.postValue(DataResult.ofSuccess(response));
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
-                    liveDataResult.postValue(LndResult.ofFailure(e));
+                    liveDataResult.postValue(DataResult.ofFailure(e));
                 }
             }
         });
@@ -113,51 +114,51 @@ public class LndLiveDataClient {
     }
 
 
-    public LiveData<LndResult<Rpc.ConnectPeerResponse>> connectPeer(String pubkey, String host) {
-        MutableLiveData<LndResult<Rpc.ConnectPeerResponse>> liveDataResult = new MutableLiveData<>();
+    public LiveData<DataResult<Rpc.ConnectPeerResponse>> connectPeer(String pubkey, String host) {
+        MutableLiveData<DataResult<Rpc.ConnectPeerResponse>> liveDataResult = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     Rpc.ConnectPeerResponse response = lndSyncClient.connectPeer(pubkey, host);
-                    liveDataResult.postValue(LndResult.ofSuccess(response));
+                    liveDataResult.postValue(DataResult.ofSuccess(response));
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
-                    liveDataResult.postValue(LndResult.ofFailure(e));
+                    liveDataResult.postValue(DataResult.ofFailure(e));
                 }
             }
         });
         return liveDataResult;
     }
 
-    public LiveData<LndResult<Rpc.ListPeersResponse>> listPeers() {
-        MutableLiveData<LndResult<Rpc.ListPeersResponse>> liveDataResult = new MutableLiveData<>();
+    public LiveData<DataResult<Rpc.ListPeersResponse>> listPeers() {
+        MutableLiveData<DataResult<Rpc.ListPeersResponse>> liveDataResult = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     Rpc.ListPeersResponse response = lndSyncClient.listPeers();
-                    liveDataResult.postValue(LndResult.ofSuccess(response));
+                    liveDataResult.postValue(DataResult.ofSuccess(response));
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
-                    liveDataResult.postValue(LndResult.ofFailure(e));
+                    liveDataResult.postValue(DataResult.ofFailure(e));
                 }
             }
         });
         return liveDataResult;
     }
 
-    public LiveData<LndResult<Rpc.ChannelPoint>> openChannel(String pubkey, long amount) {
-        MutableLiveData<LndResult<Rpc.ChannelPoint>> liveDataResult = new MutableLiveData<>();
+    public LiveData<DataResult<Rpc.ChannelPoint>> openChannel(String pubkey, long amount) {
+        MutableLiveData<DataResult<Rpc.ChannelPoint>> liveDataResult = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     Rpc.ChannelPoint response = lndSyncClient.openChannel(pubkey, amount);
-                    liveDataResult.postValue(LndResult.ofSuccess(response));
+                    liveDataResult.postValue(DataResult.ofSuccess(response));
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
-                    liveDataResult.postValue(LndResult.ofFailure(e));
+                    liveDataResult.postValue(DataResult.ofFailure(e));
                 }
             }
         });

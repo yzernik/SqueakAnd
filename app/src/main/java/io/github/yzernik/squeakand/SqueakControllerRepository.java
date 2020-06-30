@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
+import io.github.yzernik.squeakand.blockchain.ElectrumConnection;
 import io.github.yzernik.squeakand.lnd.LndRepository;
 import io.github.yzernik.squeakand.server.ServerSyncer;
 import io.github.yzernik.squeakand.server.ServerUploader;
@@ -40,6 +41,7 @@ public class SqueakControllerRepository {
     private SqueakBlockVerifier blockVerifier;
     private SqueakNetworkController squeakNetworkController;
     private SqueakNetworkAsyncClient asyncClient;
+    private ElectrumConnection electrumConnection;
     private ExecutorService executorService;
 
     private SqueakControllerRepository(Application application) {
@@ -55,8 +57,9 @@ public class SqueakControllerRepository {
         squeaksController = new SqueaksController(mSqueakDao, mOfferDao, electrumBlockchainRepository, lndRepository.getLndSyncClient());
         blockVerifier = new SqueakBlockVerifier(squeaksController);
         squeakNetworkController = new SqueakNetworkController(squeaksController, mSqueakProfileDao, mSqueakServerDao);
-        asyncClient = new SqueakNetworkAsyncClient(squeakNetworkController);
+        electrumConnection = electrumBlockchainRepository.getElectrumConnection();
         executorService = Executors.newCachedThreadPool();
+        asyncClient = new SqueakNetworkAsyncClient(squeakNetworkController, electrumConnection, executorService);
     }
 
     public static SqueakControllerRepository getRepository(Application application) {
@@ -77,11 +80,12 @@ public class SqueakControllerRepository {
         blockVerifier.verifySqueakBlocks();
 
         // Start the sync thread
-        ServerSyncer syncer = new ServerSyncer(squeakNetworkController);
+        ElectrumConnection electrumConnection = electrumBlockchainRepository.getElectrumConnection();
+        ServerSyncer syncer = new ServerSyncer(squeakNetworkController, electrumConnection, executorService);
         syncer.startSyncTask();
 
         // Start the upload thread
-        ServerUploader uploader = new ServerUploader(squeakNetworkController);
+        ServerUploader uploader = new ServerUploader(squeakNetworkController, executorService);
         uploader.startUploadTask();
     }
 
@@ -97,6 +101,15 @@ public class SqueakControllerRepository {
         return mSqueakDao.fetchLiveSqueakReplyAncestorsByHash(hash);
     }
 
+    /**
+     * Send a payment for the given offer id, and if the payment is
+     * successful, update the offer record and squeak record in the
+     * database.
+     *
+     * Return the SendResponse from the payment.
+     * @param offerId Id of the offer to buy.
+     * @return SendResponse
+     */
     public LiveData<Rpc.SendResponse> buyOffer(int offerId) {
         Log.i(getClass().getName(), "Buying offer...");
         MutableLiveData<Rpc.SendResponse> liveSendResponse = new MutableLiveData<>();
@@ -117,6 +130,24 @@ public class SqueakControllerRepository {
 
     public SqueakNetworkAsyncClient getSqueakServerAsyncClient() {
         return asyncClient;
+    }
+
+    public LiveData<DataResult<Integer>> syncTimeline() {
+        Log.i(getClass().getName(), "Syncing timeline...");
+        MutableLiveData<DataResult<Integer>> liveSendResponse = new MutableLiveData<>();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int count = squeakNetworkController.sync(electrumConnection);
+                    liveSendResponse.postValue(DataResult.ofSuccess(count));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    liveSendResponse.postValue(DataResult.ofFailure(e));
+                }
+            }
+        });
+        return liveSendResponse;
     }
 
 }

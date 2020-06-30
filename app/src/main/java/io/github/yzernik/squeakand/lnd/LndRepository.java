@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.github.yzernik.squeakand.DataResult;
 import lnrpc.Rpc;
 
 public class LndRepository {
@@ -55,35 +56,35 @@ public class LndRepository {
         });
     }
 
-    public LiveData<LndResult<Rpc.GetInfoResponse>> getInfo() {
+    public LiveData<DataResult<Rpc.GetInfoResponse>> getInfo() {
         return lndLiveDataClient.getInfo();
     }
 
-    public LiveData<LndResult<Rpc.WalletBalanceResponse>> walletBalance() {
+    public LiveData<DataResult<Rpc.WalletBalanceResponse>> walletBalance() {
         return lndLiveDataClient.walletBalance();
     }
 
-    public LiveData<LndResult<Rpc.ListChannelsResponse>> listChannels() {
+    public LiveData<DataResult<Rpc.ListChannelsResponse>> listChannels() {
         return lndLiveDataClient.listChannels();
     }
 
-    public LiveData<LndResult<Rpc.NewAddressResponse>> newAddress() {
+    public LiveData<DataResult<Rpc.NewAddressResponse>> newAddress() {
         return lndLiveDataClient.newAddress();
     }
 
-    public LiveData<LndResult<Rpc.SendResponse>> sendPayment(String paymentRequest) {
+    public LiveData<DataResult<Rpc.SendResponse>> sendPayment(String paymentRequest) {
         return lndLiveDataClient.sendPayment(paymentRequest);
     }
 
-    public LiveData<LndResult<Rpc.ConnectPeerResponse>> connectPeer(String pubkey, String host) {
+    public LiveData<DataResult<Rpc.ConnectPeerResponse>> connectPeer(String pubkey, String host) {
         return lndLiveDataClient.connectPeer(pubkey, host);
     }
 
-    public LiveData<LndResult<Rpc.ListPeersResponse>> listPeers() {
+    public LiveData<DataResult<Rpc.ListPeersResponse>> listPeers() {
         return lndLiveDataClient.listPeers();
     }
 
-    public LiveData<LndResult<Rpc.ChannelPoint>> openChannel(String pubkey, long amount) {
+    public LiveData<DataResult<Rpc.ChannelPoint>> openChannel(String pubkey, long amount) {
         return lndLiveDataClient.openChannel(pubkey, amount);
     }
 

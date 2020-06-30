@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.github.yzernik.squeakand.lnd.LndRepository;
-import io.github.yzernik.squeakand.lnd.LndResult;
+import io.github.yzernik.squeakand.DataResult;
 import lnrpc.Rpc;
 
 public class LightningNodeConnectionModel extends AndroidViewModel {
@@ -48,11 +48,11 @@ public class LightningNodeConnectionModel extends AndroidViewModel {
         });
     }
 
-    public LiveData<LndResult<Rpc.ConnectPeerResponse>> connectToPeer() {
+    public LiveData<DataResult<Rpc.ConnectPeerResponse>> connectToPeer() {
         return lndRepository.connectPeer(pubkey, host);
     }
 
-    public LiveData<LndResult<Rpc.ChannelPoint>> openChannel(long amount) {
+    public LiveData<DataResult<Rpc.ChannelPoint>> openChannel(long amount) {
         return lndRepository.openChannel(pubkey, amount);
     }
 
@@ -69,7 +69,7 @@ public class LightningNodeConnectionModel extends AndroidViewModel {
     }
 
     public LiveData<Long> liveConfirmedBalance() {
-        LiveData<LndResult<Rpc.WalletBalanceResponse>> liveWalletBalance = lndRepository.walletBalance();
+        LiveData<DataResult<Rpc.WalletBalanceResponse>> liveWalletBalance = lndRepository.walletBalance();
         return Transformations.map(liveWalletBalance, walletBalance -> {
             if (!walletBalance.isSuccess()) {
                 return null;

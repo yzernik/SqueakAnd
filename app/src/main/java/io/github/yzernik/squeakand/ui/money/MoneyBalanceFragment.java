@@ -15,7 +15,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.lnd.LndResult;
+import io.github.yzernik.squeakand.DataResult;
 import lnrpc.Rpc;
 
 public class MoneyBalanceFragment extends Fragment {
@@ -50,9 +50,9 @@ public class MoneyBalanceFragment extends Fragment {
             public void onClick(View v) {
 
                 // New address
-                moneyViewModel.newAddress().observe(getViewLifecycleOwner(), new Observer<LndResult<Rpc.NewAddressResponse>>() {
+                moneyViewModel.newAddress().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.NewAddressResponse>>() {
                     @Override
-                    public void onChanged(LndResult<Rpc.NewAddressResponse> response) {
+                    public void onChanged(DataResult<Rpc.NewAddressResponse> response) {
                         if (!response.isSuccess()) {
                             return;
                         }
@@ -70,9 +70,9 @@ public class MoneyBalanceFragment extends Fragment {
     private void updateGetInfo () {
 
         // Get info
-        moneyViewModel.getInfo().observe(getViewLifecycleOwner(), new Observer<LndResult<Rpc.GetInfoResponse>>() {
+        moneyViewModel.getInfo().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.GetInfoResponse>>() {
             @Override
-            public void onChanged(LndResult<Rpc.GetInfoResponse> response) {
+            public void onChanged(DataResult<Rpc.GetInfoResponse> response) {
                 if (!response.isSuccess()) {
                     return;
                 }
@@ -82,9 +82,9 @@ public class MoneyBalanceFragment extends Fragment {
         });
 
         // Get wallet balance
-        moneyViewModel.walletBalance().observe(getViewLifecycleOwner(), new Observer<LndResult<Rpc.WalletBalanceResponse>>() {
+        moneyViewModel.walletBalance().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.WalletBalanceResponse>>() {
             @Override
-            public void onChanged(LndResult<Rpc.WalletBalanceResponse> response) {
+            public void onChanged(DataResult<Rpc.WalletBalanceResponse> response) {
                 if (!response.isSuccess()) {
                     return;
                 }
