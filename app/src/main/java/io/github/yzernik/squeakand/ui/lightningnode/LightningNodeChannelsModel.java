@@ -10,6 +10,7 @@ import androidx.lifecycle.Transformations;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.lnd.LndRepository;
 import lnrpc.Rpc;
 
@@ -36,8 +37,8 @@ public class LightningNodeChannelsModel extends AndroidViewModel {
         });
     }
 
-    LiveData<Rpc.ClosedChannelUpdate> closeChannel(String channelPoint) {
-        return lndRepository.closeChannel(channelPoint, true);
+    LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannel(String channelPoint) {
+        return lndRepository.closeChannel(channelPoint, false);
     }
 
 }

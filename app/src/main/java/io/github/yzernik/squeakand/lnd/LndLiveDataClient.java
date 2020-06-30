@@ -79,6 +79,23 @@ public class LndLiveDataClient {
         return liveDataResult;
     }
 
+    public LiveData<DataResult<Rpc.TransactionDetails>> getTransactions(int startHeight, int endHeight) {
+        MutableLiveData<DataResult<Rpc.TransactionDetails>> liveDataResult = new MutableLiveData<>();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Rpc.TransactionDetails response = lndSyncClient.getTransactions(startHeight, endHeight);
+                    liveDataResult.postValue(DataResult.ofSuccess(response));
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                    liveDataResult.postValue(DataResult.ofFailure(e));
+                }
+            }
+        });
+        return liveDataResult;
+    }
+
     public LiveData<DataResult<Rpc.NewAddressResponse>> newAddress() {
         MutableLiveData<DataResult<Rpc.NewAddressResponse>> liveDataResult = new MutableLiveData<>();
         executorService.execute(new Runnable() {
@@ -274,9 +291,9 @@ public class LndLiveDataClient {
         return liveChannels;
     }
 
-    public LiveData<Rpc.ClosedChannelUpdate> closeChannel(Rpc.ChannelPoint channelPoint, boolean force) {
+    public LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannel(Rpc.ChannelPoint channelPoint, boolean force) {
         Log.i(getClass().getName(), "Getting closeChannel...");
-        MutableLiveData<Rpc.ClosedChannelUpdate> liveCloseChannel = new MutableLiveData<>();
+        MutableLiveData<DataResult<Rpc.CloseStatusUpdate>> liveCloseChannel = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
@@ -284,11 +301,12 @@ public class LndLiveDataClient {
                     @Override
                     public void onError(Exception e) {
                         Log.e(getClass().getName(), "Failed to get close channel update: " + e);
+                        liveCloseChannel.postValue(DataResult.ofFailure(e));
                     }
 
                     @Override
-                    public void onUpdate(Rpc.ClosedChannelUpdate update) {
-                        liveCloseChannel.postValue(update);
+                    public void onUpdate(Rpc.CloseStatusUpdate update) {
+                        liveCloseChannel.postValue(DataResult.ofSuccess(update));
                     }
                 });
             }

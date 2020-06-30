@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.lnd.LndRepository;
 import lnrpc.Rpc;
 
@@ -26,8 +27,8 @@ public class ChannelsModel extends AndroidViewModel {
         return lndRepository.getLiveChannels();
     }
 
-    LiveData<Rpc.ClosedChannelUpdate> closeChannel(String channelPoint) {
-        return lndRepository.closeChannel(channelPoint, true);
+    LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannel(String channelPoint) {
+        return lndRepository.closeChannel(channelPoint, false);
     }
 
 }

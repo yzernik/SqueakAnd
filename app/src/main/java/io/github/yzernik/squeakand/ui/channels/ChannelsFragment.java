@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.ui.money.ChannelListAdapter;
 import lnrpc.Rpc;
@@ -53,7 +54,7 @@ public class ChannelsFragment extends Fragment implements ChannelListAdapter.Cli
 
     private void closeChannel(Rpc.Channel channel) {
         String channelPointString = channel.getChannelPoint();
-        LiveData<Rpc.ClosedChannelUpdate> closeChannelUpdates = channelsViewModel.closeChannel(channelPointString);
+        LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannelUpdates = channelsViewModel.closeChannel(channelPointString);
     }
 
     @Override
