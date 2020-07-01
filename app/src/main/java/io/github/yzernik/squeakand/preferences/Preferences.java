@@ -65,4 +65,10 @@ public class Preferences {
         editor.commit();
     }
 
+    public void clearWalletSeed() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(LND_WALLET_SEED_KEY);
+        editor.commit();
+    }
+
 }
