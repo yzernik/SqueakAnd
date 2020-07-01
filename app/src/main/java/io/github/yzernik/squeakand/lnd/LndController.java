@@ -57,8 +57,6 @@ public class LndController {
      * Start the lnd node.
      */
     public void start() {
-        this.serverStartedLatch = new CountDownLatch(1);
-        this.walletUnlockedLatch = new CountDownLatch(1);
         lndClient.start(lndDir, network, new LndClient.StartCallBack() {
             @Override
             public void onError1(Exception e) {
@@ -69,7 +67,7 @@ public class LndController {
             @Override
             public void onResponse1() {
                 serverStartedLatch.countDown();
-                setDaemonStarted(true);
+                setDaemonRunning(true);
             }
 
             @Override
@@ -92,6 +90,8 @@ public class LndController {
     public void stop() {
         try {
             lndSyncClient.stop();
+            setDaemonRunning(false);
+            setRpcReady(false);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
@@ -141,7 +141,8 @@ public class LndController {
         stop();
         rmLndDir();
         clearSeedWords();
-        start();
+        // TODO: fix this so that calling start on lnd doesn't crash when restarting.
+        // initialize();
     }
 
     /**
@@ -193,6 +194,10 @@ public class LndController {
      *
      */
     public void initialize() {
+        // Set up the lnd contoller state.
+        this.serverStartedLatch = new CountDownLatch(1);
+        this.walletUnlockedLatch = new CountDownLatch(1);
+
         start();
         try {
             waitForServerStarted();
@@ -225,7 +230,7 @@ public class LndController {
         return directoryToBeDeleted.delete();
     }
 
-    private void setDaemonStarted(boolean isDaemonRuning) {
+    private void setDaemonRunning(boolean isDaemonRuning) {
         lndWalletStatus.setDaemonRunning(isDaemonRuning);
         lndControllerUpdateHandler.setWalletStatus(lndWalletStatus);
     }

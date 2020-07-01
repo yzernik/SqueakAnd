@@ -36,19 +36,18 @@ public class WaitingForWalletFragment extends Fragment {
 
         waitingForWalletModel = new ViewModelProvider(this).get(WaitingForWalletModel.class);
 
-        waitingForWalletModel.getLiveIsWalletUnlocked().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        waitingForWalletModel.getLiveIsRpcReady().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
-            public void onChanged(Boolean isWalletUnlocked) {
+            public void onChanged(Boolean isRpcReady) {
                 // Show the hidden fragment when wallet is unlocked.
-                Log.i(getTag(),"Got new value of isWalletUnlocked: " + isWalletUnlocked);
-                if (isWalletUnlocked) {
+                Log.i(getTag(),"Got new value of isRpcReady: " + isRpcReady);
+                if (isRpcReady) {
                     showWalletUnlocked();
+                } else {
+                    hideWalletUnlocked();
                 }
             }
         });
-
-        // Wait for wallet to be unlocked on fragment start.
-        waitingForWalletModel.waitForWalletUnlocked();
 
         return root;
     }
@@ -63,6 +62,14 @@ public class WaitingForWalletFragment extends Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(mUnlockedWalletView.getId(), newFragment);
         transaction.commit();
+    }
+
+    private void hideWalletUnlocked() {
+        // Hide the locked wallet view.
+        mLockedWalletView.setVisibility(View.VISIBLE);
+
+        // Show the unlocked wallet view.
+        mUnlockedWalletView.setVisibility(View.GONE);
     }
 
 

@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.lnd.LndWalletStatus;
 
 public class NoWalletInitializedFragment extends Fragment {
 
@@ -40,15 +39,15 @@ public class NoWalletInitializedFragment extends Fragment {
 
         noWalletInitializedModel = new ViewModelProvider(this).get(NoWalletInitializedModel.class);
 
-        noWalletInitializedModel.getLiveLndWalletStatus().observe(getViewLifecycleOwner(), new Observer<LndWalletStatus>() {
+        noWalletInitializedModel.getLiveHasWallet().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
-            public void onChanged(LndWalletStatus lndWalletStatus) {
-                boolean hasWallet = lndWalletStatus.isWalletExists();
-
+            public void onChanged(Boolean hasWallet) {
                 // Show the waiting fragment when wallet exists.
                 Log.i(getTag(),"Got new value of hasWallet: " + hasWallet);
                 if (hasWallet) {
                     showWaitingForWalletUnlocked();
+                } else {
+                    hideWaitingForWalletUnlocked();
                 }
             }
         });
@@ -79,5 +78,11 @@ public class NoWalletInitializedFragment extends Fragment {
         transaction.commit();
     }
 
+    private void hideWaitingForWalletUnlocked() {
+        // Show the locked wallet view.
+        mLockedWalletView.setVisibility(View.VISIBLE);
 
+        // Hide the unlocked wallet view.
+        mUnlockedWalletView.setVisibility(View.GONE);
+    }
 }

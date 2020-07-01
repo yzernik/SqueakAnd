@@ -1,12 +1,10 @@
 package io.github.yzernik.squeakand.ui.money;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import io.github.yzernik.squeakand.lnd.LndRepository;
@@ -25,6 +23,12 @@ public class NoWalletInitializedModel extends AndroidViewModel {
 
     LiveData<LndWalletStatus> getLiveLndWalletStatus() {
         return liveLndWalletStatus;
+    }
+
+    LiveData<Boolean> getLiveHasWallet() {
+        return Transformations.map(liveLndWalletStatus, lndWalletStatus -> {
+            return lndWalletStatus.isWalletExists();
+        });
     }
 
     public void createWallet() {
