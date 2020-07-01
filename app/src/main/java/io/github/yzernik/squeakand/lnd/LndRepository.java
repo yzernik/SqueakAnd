@@ -73,6 +73,10 @@ public class LndRepository {
         lndController.unlockWallet();
     }
 
+    public void initWallet() throws InterruptedException {
+        lndController.initWallet();
+    }
+
     public boolean hasWallet() {
         return lndController.hasWallet();
     }

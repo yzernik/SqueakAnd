@@ -90,6 +90,15 @@ public class LndController {
         setWalletUnlocked();
     }
 
+    public void initWallet() throws InterruptedException {
+        try {
+            String[] seedWords = genSeed();
+            initWallet(seedWords);
+        } catch (ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Return true is the wallet is unlocked.
      * @return boolean

@@ -6,39 +6,36 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/waiting_for_wallet_locked_view"
+        android:id="@+id/no_wallet_initialized_locked_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/waiting_for_wallet_text"
+            android:id="@+id/no_wallet_initialized_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Waiting for wallet to unlock..."
+            android:text="No wallet initialized"
             android:textSize="24sp"
             android:layout_marginTop="40dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ProgressBar
-            android:id="@+id/waiting_for_wallet_progress_spinner"
+        <Button
+            android:id="@+id/no_wallet_initialized_create_wallet_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:minWidth="50dp"
-            android:minHeight="50dp"
+            android:text="Create new wallet"
+            android:layout_marginTop="120dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
-        android:id="@+id/waiting_for_wallet_unlocked_fragment_frame"
+        android:id="@+id/no_wallet_fragment_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
