@@ -55,4 +55,8 @@ public class MoneyViewModel  extends AndroidViewModel {
         return lndRepository.getWalletSeedWords();
     }
 
+    public void deleteWallet() {
+        lndRepository.deleteWallet();
+    }
+
 }

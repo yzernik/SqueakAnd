@@ -95,7 +95,12 @@ public class LndController {
         lndSyncClient.initWallet(seedWords, password);
         // Save the seed words immediately after the init wallet response.
         saveSeedWords(seedWords);
+        Thread.sleep(5000);
+        // unlockWallet();
+        Thread.sleep(5000);
         setWalletUnlocked();
+        Log.i(getClass().getName(),"InitWallet and saved seed words.");
+        assert getSeedWords().length == 24;
     }
 
     public void initWallet() throws InterruptedException {
@@ -110,6 +115,7 @@ public class LndController {
     public void deleteWallet() {
         stop();
         rmLndDir();
+        clearSeedWords();
         start();
     }
 
@@ -135,7 +141,7 @@ public class LndController {
 
     private boolean hasSavedSeedWords() {
         String[] seedWords = getSeedWords();
-        return seedWords != null || seedWords.length == 0;
+        return seedWords != null && seedWords.length == 0;
     }
 
     private void saveSeedWords(String[] seedWords) {

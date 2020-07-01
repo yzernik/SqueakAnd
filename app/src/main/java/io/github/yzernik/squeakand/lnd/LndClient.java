@@ -71,6 +71,12 @@ public class LndClient {
 
             @Override
             public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.StopResponse resp = Rpc.StopResponse.getDefaultInstance();
+                    callBack.onResponse(resp);
+                    return;
+                }
+
                 try {
                     Rpc.StopResponse resp = Rpc.StopResponse.parseFrom(bytes);
                     callBack.onResponse(resp);

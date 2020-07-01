@@ -3,6 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:id="@+id/wallet_menu_backup"
-        android:title="Backup"
+        android:title="Backup wallet"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/wallet_menu_delete"
+        android:title="Delete wallet"
         app:showAsAction="never" />
 </menu>
