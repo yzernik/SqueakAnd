@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/navigation_money"
-        android:name="io.github.yzernik.squeakand.ui.money.WaitingForWalletMoneyFragment"
+        android:name="io.github.yzernik.squeakand.ui.money.NoWalletInitializedMoneyFragment"
         android:label="Money"
         tools:layout="@layout/fragment_money" />
 

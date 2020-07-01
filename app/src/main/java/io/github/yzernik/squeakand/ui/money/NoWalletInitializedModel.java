@@ -1,6 +1,7 @@
 package io.github.yzernik.squeakand.ui.money;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -27,6 +28,7 @@ public class NoWalletInitializedModel extends AndroidViewModel {
 
     void refreshHasWallet() {
         boolean hasWallet = lndRepository.hasWallet();
+        Log.i(getClass().getName(), "Refreshing liveHasWallet with value: " + hasWallet);
         liveHasWallet.postValue(hasWallet);
     }
 

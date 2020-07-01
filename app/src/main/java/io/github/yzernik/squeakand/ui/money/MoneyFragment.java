@@ -81,6 +81,9 @@ public class MoneyFragment extends Fragment {
             case R.id.wallet_menu_backup:
                 showWalletBackupAlert();
                 return true;
+            case R.id.wallet_menu_delete:
+                deleteWallet();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -100,6 +103,10 @@ public class MoneyFragment extends Fragment {
                     }
                 });
         alertDialog.show();
+    }
+
+    private void deleteWallet() {
+        moneyViewModel.deleteWallet();
     }
 
 
