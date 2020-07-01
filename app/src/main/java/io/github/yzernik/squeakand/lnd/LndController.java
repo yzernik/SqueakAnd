@@ -124,7 +124,7 @@ public class LndController {
             start();
             Log.i(getClass().getName(), "Started node with result.");
 
-            if (hasSavedSeedWords()) {
+            if (hasWallet()) {
                 unlockWallet();
                 Log.i(getClass().getName(), "Unlocked wallet.");
             } else {
