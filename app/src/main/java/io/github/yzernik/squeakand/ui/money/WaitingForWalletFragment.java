@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import io.github.yzernik.squeakand.R;
 
-public class NoWalletFragment extends Fragment {
+public class WaitingForWalletFragment extends Fragment {
 
     private Fragment targetFragment;
 
@@ -31,19 +29,19 @@ public class NoWalletFragment extends Fragment {
     private View mLockedWalletView;
     private View mUnlockedWalletView;
 
-    public NoWalletFragment(Fragment targetFragment) {
+    public WaitingForWalletFragment(Fragment targetFragment) {
         this.targetFragment = targetFragment;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_no_wallet, container, false);
+        View root = inflater.inflate(R.layout.fragment_waiting_for_wallet, container, false);
 
 /*        mHasWalletText = root.findViewById(R.id.create_wallet_has_wallet_text);
         mIsWalletUnlockedText = root.findViewById(R.id.create_wallet_is_wallet_unlocked_text);
         mIsButtonClickedText = root.findViewById(R.id.create_wallet_is_button_clicked_text);
         mCreateWalletButton = root.findViewById(R.id.create_wallet_button);*/
-        mLockedWalletView = root.findViewById(R.id.create_wallet_locked_view);
+        mLockedWalletView = root.findViewById(R.id.waiting_for_wallet_locked_view);
         mUnlockedWalletView = root.findViewById(R.id.no_wallet_unlocked_fragment_frame);
 
         noWalletModel = new ViewModelProvider(this).get(NoWalletModel.class);
