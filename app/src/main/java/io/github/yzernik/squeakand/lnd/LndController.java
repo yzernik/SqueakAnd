@@ -27,6 +27,7 @@ public class LndController {
     private final Preferences preferences;
     private final LndSyncClient lndSyncClient;
 
+    private CountDownLatch serverStartedLatch;
     private CountDownLatch walletUnlockedLatch;
 
     public LndController(Application application, String network, String password) {
@@ -37,6 +38,7 @@ public class LndController {
         this.preferences = new Preferences(application);
         this.lndSyncClient = new LndSyncClient();
 
+        this.serverStartedLatch = new CountDownLatch(1);
         this.walletUnlockedLatch = new CountDownLatch(1);
     }
 
@@ -48,11 +50,35 @@ public class LndController {
      * Start the lnd node.
      */
     public void start() {
-        try {
+        this.serverStartedLatch = new CountDownLatch(1);
+        this.walletUnlockedLatch = new CountDownLatch(1);
+        lndClient.start(lndDir, network, new LndClient.StartCallBack() {
+            @Override
+            public void onError1(Exception e) {
+                Log.e(getClass().getName(), "onError1: " + e);
+            }
+
+            @Override
+            public void onResponse1() {
+                serverStartedLatch.countDown();
+            }
+
+            @Override
+            public void onError2(Exception e) {
+                Log.e(getClass().getName(), "onError2: " + e);
+            }
+
+            @Override
+            public void onResponse2() {
+                walletUnlockedLatch.countDown();
+            }
+        });
+
+        /*        try {
             lndSyncClient.start(lndDir, network);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     /**
@@ -72,9 +98,6 @@ public class LndController {
     public void unlockWallet() {
         try {
             lndSyncClient.unlockWallet(password);
-            // Pause for one second.
-            Thread.sleep(5000);
-            setWalletUnlocked();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
@@ -95,10 +118,6 @@ public class LndController {
         lndSyncClient.initWallet(seedWords, password);
         // Save the seed words immediately after the init wallet response.
         saveSeedWords(seedWords);
-        Thread.sleep(5000);
-        // unlockWallet();
-        Thread.sleep(5000);
-        setWalletUnlocked();
         Log.i(getClass().getName(),"InitWallet and saved seed words.");
         assert getSeedWords().length == 24;
     }
@@ -125,6 +144,10 @@ public class LndController {
      */
     public boolean isWalletUnlocked() {
         return walletUnlockedLatch.getCount() == 0;
+    }
+
+    public void waitForServerStarted() throws InterruptedException {
+        serverStartedLatch.await();
     }
 
     public void waitForWalletUnlocked() throws InterruptedException {
@@ -164,6 +187,11 @@ public class LndController {
      */
     public void initialize() {
         start();
+        try {
+            waitForServerStarted();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Log.i(getClass().getName(), "Started node with result.");
         if (hasWallet()) {
             unlockWallet();
@@ -190,9 +218,9 @@ public class LndController {
         return directoryToBeDeleted.delete();
     }
 
-    private void setWalletUnlocked() {
+/*    private void setWalletUnlocked() {
         walletUnlockedLatch.countDown();
-    }
+    }*/
 
     /*    private void setWalletUnlocked(boolean walletUnlocked) {
         this.walletUnlocked.set(walletUnlocked);
