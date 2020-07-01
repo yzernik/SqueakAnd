@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import io.github.yzernik.squeakand.ui.lightningnode.LightningNodeFragment;
+import io.github.yzernik.squeakand.ui.money.NoWalletInitializedFragment;
 
 public class LightningNodeActivity  extends AppCompatActivity {
 
@@ -26,9 +27,10 @@ public class LightningNodeActivity  extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("pubkey", pubkey);
         bundle.putString("host", host);
-        Fragment newFragment = new LightningNodeFragment();
+        Fragment lightningNodeFragment = new LightningNodeFragment();
+        lightningNodeFragment.setArguments(bundle);
+        Fragment newFragment = new NoWalletInitializedFragment(lightningNodeFragment);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        newFragment.setArguments(bundle);
         transaction.replace(R.id.lightning_node_fragment_frame, newFragment);
         transaction.commit();
     }
