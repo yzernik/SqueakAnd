@@ -57,9 +57,15 @@ public class LndController {
     /**
      * Unlock the wallet.
      */
-    public synchronized void unlockWallet() throws InterruptedException, ExecutionException, TimeoutException {
-        lndSyncClient.unlockWallet(password);
-        setWalletUnlocked();
+    public synchronized void unlockWallet() {
+        try {
+            lndSyncClient.unlockWallet(password);
+            // Pause for one second.
+            Thread.sleep(5000);
+            setWalletUnlocked();
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -124,14 +130,14 @@ public class LndController {
             start();
             Log.i(getClass().getName(), "Started node with result.");
 
-            if (hasWallet()) {
+            /*            if (hasWallet()) {
                 unlockWallet();
                 Log.i(getClass().getName(), "Unlocked wallet.");
             } else {
                 String[] seedWords = genSeed();
                 initWallet(seedWords);
                 Log.i(getClass().getName(), "Initialized wallet.");
-            }
+            }*/
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
             System.exit(1);

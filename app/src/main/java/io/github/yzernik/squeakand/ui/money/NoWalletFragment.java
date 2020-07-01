@@ -57,6 +57,12 @@ public class NoWalletFragment extends Fragment {
             @Override
             public void onChanged(Boolean isWalletUnlocked) {
                 mIsWalletUnlockedText.setText(isWalletUnlocked.toString());
+
+                // Show the hidden fragment when wallet is unlocked.
+                Log.i(getTag(),"Got new value of isWalletUnlocked: " + isWalletUnlocked);
+                if (isWalletUnlocked) {
+                    showWalletUnlocked();
+                }
             }
         });
 
@@ -79,6 +85,9 @@ public class NoWalletFragment extends Fragment {
                 noWalletModel.buttonClicked();
             }
         });
+
+        // Unlock the wallet on fragment start.
+        noWalletModel.unlockWallet();
 
         return root;
     }

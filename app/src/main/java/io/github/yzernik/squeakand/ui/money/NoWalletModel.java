@@ -39,12 +39,22 @@ public class NoWalletModel extends AndroidViewModel {
     private void refreshWalletInfo() {
         boolean hasWallet = lndRepository.hasWallet();
         boolean isWalletUnlocked = lndRepository.isWalletUnlocked();
-        liveHasWallet.setValue(hasWallet);
-        liveIsWalletUnlocked.setValue(isWalletUnlocked);
+        liveHasWallet.postValue(hasWallet);
+        liveIsWalletUnlocked.postValue(isWalletUnlocked);
     }
 
     public void buttonClicked() {
         liveIsButtonClicked.setValue(true);
+    }
+
+    public void unlockWallet() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                lndRepository.unlockWallet();
+                refreshWalletInfo();
+            }
+        }).start();
     }
 
 }
