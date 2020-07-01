@@ -81,6 +81,10 @@ public class LndRepository {
         return lndController.hasWallet();
     }
 
+    public void deleteWallet() {
+        lndController.deleteWallet();
+    }
+
     public LiveData<DataResult<Rpc.GetInfoResponse>> getInfo() {
         return lndLiveDataClient.getInfo();
     }

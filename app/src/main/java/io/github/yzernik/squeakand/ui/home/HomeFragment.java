@@ -115,6 +115,7 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // menu.clear();
         inflater.inflate(R.menu.home_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }

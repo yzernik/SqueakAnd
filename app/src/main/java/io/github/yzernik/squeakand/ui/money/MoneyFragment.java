@@ -2,6 +2,9 @@ package io.github.yzernik.squeakand.ui.money;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,7 +26,12 @@ public class MoneyFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_money, container, false);
+        View root = inflater.inflate(R.layout.fragment_money, container, false);
+
+        // Enable the options menu
+        setHasOptionsMenu(true);
+
+        return root;
     }
 
     @Override
@@ -50,4 +58,25 @@ public class MoneyFragment extends Fragment {
                 return null;
         }
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.wallet_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    // Set the refresh button action
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.wallet_menu_backup:
+                // TODO: backup seed words
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
 }
