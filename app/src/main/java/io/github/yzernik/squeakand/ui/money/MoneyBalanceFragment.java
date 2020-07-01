@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.List;
+
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.DataResult;
 import lnrpc.Rpc;
@@ -28,6 +30,10 @@ public class MoneyBalanceFragment extends Fragment {
     private TextView mConfirmedBalance;
     private TextView mUnconfirmedBalance;
     private TextView mTotalBalance;
+    private TextView mOpenChannelsCountText;
+    private TextView mPendingOpenChannelsCountText;
+    private TextView mPendingCloseChannelsCountText;
+    private TextView mPendingForceCloseChannelsCountText;
     private Button mReceiveBitcoinsButton;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -39,6 +45,10 @@ public class MoneyBalanceFragment extends Fragment {
         mConfirmedBalance = root.findViewById(R.id.confirmed_balance_text);
         mUnconfirmedBalance = root.findViewById(R.id.unconfirmed_balance_text);
         mTotalBalance = root.findViewById(R.id.total_balance_text);
+        mOpenChannelsCountText = root.findViewById(R.id.money_open_channels_count_text);
+        mPendingOpenChannelsCountText = root.findViewById(R.id.money_pending_open_channels_count_text);
+        mPendingCloseChannelsCountText = root.findViewById(R.id.money_pending_close_channels_count_text);
+        mPendingForceCloseChannelsCountText = root.findViewById(R.id.money_pending_force_close_channels_count_text);
         mReceiveBitcoinsButton = root.findViewById(R.id.receive_bitcoins_button);
 
         // Get a new or existing ViewModel from the ViewModelProvider.
@@ -93,6 +103,37 @@ public class MoneyBalanceFragment extends Fragment {
                 mUnconfirmedBalance.setText(Long.toString(walletBalanceResponse.getUnconfirmedBalance()));
                 mConfirmedBalance.setText(Long.toString(walletBalanceResponse.getConfirmedBalance()));
                 mTotalBalance.setText(Long.toString(walletBalanceResponse.getTotalBalance()));
+            }
+        });
+
+        // Get open channels
+        moneyViewModel.listChannels().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.ListChannelsResponse>>() {
+            @Override
+            public void onChanged(DataResult<Rpc.ListChannelsResponse> responseResult) {
+                if (!responseResult.isSuccess()) {
+                    return;
+                }
+                Rpc.ListChannelsResponse response = responseResult.getResponse();
+                String openChannelsCountString = Integer.toString(response.getChannelsCount());
+                mOpenChannelsCountText.setText(openChannelsCountString);
+            }
+        });
+
+        // Get pending channels
+        moneyViewModel.pendingChannels().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.PendingChannelsResponse>>() {
+            @Override
+            public void onChanged(DataResult<Rpc.PendingChannelsResponse> responseResult) {
+                if (!responseResult.isSuccess()) {
+                    return;
+                }
+                Rpc.PendingChannelsResponse response = responseResult.getResponse();
+                Log.i(getTag(), "Got PendingChannelsResponse:" + response);
+                String pendingOpenChannelsCountString = Integer.toString(response.getPendingOpenChannelsCount());
+                String pendingCloseChannelsCountString = Integer.toString(response.getWaitingCloseChannelsCount());
+                String pendingForceCloseChannelsCountString = Integer.toString(response.getPendingForceClosingChannelsCount());
+                mPendingOpenChannelsCountText.setText(pendingOpenChannelsCountString);
+                mPendingCloseChannelsCountText.setText(pendingCloseChannelsCountString);
+                mPendingForceCloseChannelsCountText.setText(pendingForceCloseChannelsCountString);
             }
         });
 
