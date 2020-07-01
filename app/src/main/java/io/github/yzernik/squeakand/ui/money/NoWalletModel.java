@@ -15,11 +15,13 @@ public class NoWalletModel extends AndroidViewModel {
 
     private MutableLiveData<Boolean> liveIsWalletUnlocked = new MutableLiveData<>();
     private MutableLiveData<Boolean> liveHasWallet = new MutableLiveData<>();
+    private MutableLiveData<Boolean> liveIsButtonClicked = new MutableLiveData<>();
 
     public NoWalletModel(@NonNull Application application) {
         super(application);
         this.lndRepository = LndRepository.getRepository(application);
         refreshWalletInfo();
+        liveIsButtonClicked.setValue(false);
     }
 
     LiveData<Boolean> getLiveIsWalletUnlocked() {
@@ -30,6 +32,10 @@ public class NoWalletModel extends AndroidViewModel {
         return liveHasWallet;
     }
 
+    LiveData<Boolean> getLiveIsButtonClicked() {
+        return liveIsButtonClicked;
+    }
+
     private void refreshWalletInfo() {
         boolean hasWallet = lndRepository.hasWallet();
         boolean isWalletUnlocked = lndRepository.isWalletUnlocked();
@@ -37,6 +43,8 @@ public class NoWalletModel extends AndroidViewModel {
         liveIsWalletUnlocked.setValue(isWalletUnlocked);
     }
 
-
+    public void buttonClicked() {
+        liveIsButtonClicked.setValue(true);
+    }
 
 }

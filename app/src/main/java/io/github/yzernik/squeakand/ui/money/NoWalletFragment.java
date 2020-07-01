@@ -22,6 +22,7 @@ public class NoWalletFragment extends Fragment {
 
     private TextView mHasWalletText;
     private TextView mIsWalletUnlockedText;
+    private TextView mIsButtonClickedText;
     private Button mCreateWalletButton;
 
     public NoWalletFragment(Fragment targetFragment) {
@@ -34,6 +35,7 @@ public class NoWalletFragment extends Fragment {
 
         mHasWalletText = root.findViewById(R.id.create_wallet_has_wallet_text);
         mIsWalletUnlockedText = root.findViewById(R.id.create_wallet_is_wallet_unlocked_text);
+        mIsButtonClickedText = root.findViewById(R.id.create_wallet_is_button_clicked_text);
         mCreateWalletButton = root.findViewById(R.id.create_wallet_button);
 
         noWalletModel = new ViewModelProvider(this).get(NoWalletModel.class);
@@ -49,6 +51,20 @@ public class NoWalletFragment extends Fragment {
             @Override
             public void onChanged(Boolean isWalletUnlocked) {
                 mIsWalletUnlockedText.setText(isWalletUnlocked.toString());
+            }
+        });
+
+        noWalletModel.getLiveIsButtonClicked().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isButtonClicked) {
+                mIsButtonClickedText.setText(isButtonClicked.toString());
+            }
+        });
+
+        mCreateWalletButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                noWalletModel.buttonClicked();
             }
         });
 
