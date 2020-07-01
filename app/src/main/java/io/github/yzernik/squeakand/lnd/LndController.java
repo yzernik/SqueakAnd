@@ -142,7 +142,7 @@ public class LndController {
         preferences.saveWalletSeed(seedWords);
     }
 
-    private String[] getSeedWords() {
+    public String[] getSeedWords() {
         return preferences.getWalletSeed();
     }
 
