@@ -7,8 +7,10 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 
 import io.github.yzernik.squeakand.DataResult;
 import lnrpc.Rpc;
@@ -58,6 +60,25 @@ public class LndRepository {
 
     public boolean isWalletUnlocked() {
         return lndController.isWalletUnlocked();
+    }
+
+    public void waitForWalletUnlocked() throws InterruptedException {
+        lndController.waitForWalletUnlocked();
+    }
+
+    public void unlockWallet() {
+        if (isWalletUnlocked()) {
+            return;
+        }
+        lndController.unlockWallet();
+    }
+
+    public void initWallet() throws InterruptedException {
+        lndController.initWallet();
+    }
+
+    public boolean hasWallet() {
+        return lndController.hasWallet();
     }
 
     public LiveData<DataResult<Rpc.GetInfoResponse>> getInfo() {
