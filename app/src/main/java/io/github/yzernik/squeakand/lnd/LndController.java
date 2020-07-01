@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import io.github.yzernik.squeakand.preferences.Preferences;
 import lnrpc.Rpc;
@@ -26,6 +27,8 @@ public class LndController {
     private final Preferences preferences;
     private final LndSyncClient lndSyncClient;
 
+    private boolean walletUnlocked = false;
+    private ReentrantReadWriteLock walletUnlockedLock = new ReentrantReadWriteLock();
 
     public LndController(Application application, String network, String password) {
         this.lndDir = Paths.get(application.getFilesDir().toString(), LND_DIR_RELATIVE_PATH).toString();
@@ -43,8 +46,8 @@ public class LndController {
     /**
      * Start the lnd node.
      */
-    public String start() throws InterruptedException, ExecutionException, TimeoutException {
-        return lndSyncClient.start(lndDir, network);
+    public void start() throws InterruptedException, ExecutionException, TimeoutException {
+        lndSyncClient.start(lndDir, network);
     }
 
     /**
@@ -57,8 +60,9 @@ public class LndController {
     /**
      * Unlock the wallet.
      */
-    public Walletunlocker.UnlockWalletResponse unlockWallet() throws InterruptedException, ExecutionException, TimeoutException {
-        return lndSyncClient.unlockWallet(password);
+    public void unlockWallet() throws InterruptedException, ExecutionException, TimeoutException {
+        lndSyncClient.unlockWallet(password);
+        setWalletUnlocked();
     }
 
     /**
@@ -72,11 +76,11 @@ public class LndController {
      * Initialize new wallet with given seed words
      * @param seedWords
      */
-    public Walletunlocker.InitWalletResponse initWallet(String[] seedWords) throws InterruptedException, ExecutionException, TimeoutException {
-        Walletunlocker.InitWalletResponse response = lndSyncClient.initWallet(seedWords, password);
+    public void initWallet(String[] seedWords) throws InterruptedException, ExecutionException, TimeoutException {
+        lndSyncClient.initWallet(seedWords, password);
         // Save the seed words immediately after the init wallet response.
         preferences.saveWalletSeed(seedWords);
-        return response;
+        setWalletUnlocked();
     }
 
     public boolean hasSavedSeedWords() {
@@ -91,16 +95,16 @@ public class LndController {
      */
     public void initialize() {
         try {
-            String startResult = start();
-            Log.i(getClass().getName(), "Started node with result: " + startResult);
+            start();
+            Log.i(getClass().getName(), "Started node with result.");
 
             if (hasSavedSeedWords()) {
-                Walletunlocker.UnlockWalletResponse unlockResult = unlockWallet();
-                Log.i(getClass().getName(), "Unlocked wallet with result: " + unlockResult);
+                unlockWallet();
+                Log.i(getClass().getName(), "Unlocked wallet.");
             } else {
                 String[] seedWords = genSeed();
-                Walletunlocker.InitWalletResponse initWalletResult = initWallet(seedWords);
-                Log.i(getClass().getName(), "Initialized wallet with result: " + initWalletResult);
+                initWallet(seedWords);
+                Log.i(getClass().getName(), "Initialized wallet.");
             }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
@@ -127,4 +131,31 @@ public class LndController {
         }
         return directoryToBeDeleted.delete();
     }
+
+    public boolean isWalletUnlocked() {
+        walletUnlockedLock.readLock().lock();
+        try {
+            return walletUnlocked;
+        } finally {
+            walletUnlockedLock.readLock().unlock();
+        }
+    }
+
+    private void setWalletUnlocked(boolean walletUnlocked) {
+        walletUnlockedLock.writeLock().lock();
+        try {
+            this.walletUnlocked = walletUnlocked;
+        } finally {
+            walletUnlockedLock.writeLock().unlock();
+        }
+    }
+
+    public void setWalletUnlocked() {
+        setWalletUnlocked(true);
+    }
+
+    public void setWalletLocked() {
+        setWalletUnlocked(false);
+    }
+
 }

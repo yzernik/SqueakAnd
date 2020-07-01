@@ -56,6 +56,9 @@ public class MoneyBalanceFragment extends Fragment {
 
         updateGetInfo();
 
+        // Say if the wallet is unlocked.
+        Log.i(getTag(), "Is wallet unlocked: " + moneyViewModel.isWalletUnlocked());
+
         mReceiveBitcoinsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

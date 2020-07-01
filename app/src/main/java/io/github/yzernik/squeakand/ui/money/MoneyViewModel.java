@@ -43,4 +43,8 @@ public class MoneyViewModel  extends AndroidViewModel {
         return lndRepository.newAddress();
     }
 
+    public boolean isWalletUnlocked() {
+        return lndRepository.isWalletUnlocked();
+    }
+
 }

@@ -56,6 +56,10 @@ public class LndRepository {
         });
     }
 
+    public boolean isWalletUnlocked() {
+        return lndController.isWalletUnlocked();
+    }
+
     public LiveData<DataResult<Rpc.GetInfoResponse>> getInfo() {
         return lndLiveDataClient.getInfo();
     }
