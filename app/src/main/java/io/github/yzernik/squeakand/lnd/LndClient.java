@@ -264,6 +264,38 @@ public class LndClient {
         public void onResponse(Rpc.ListChannelsResponse response);
     }
 
+    public void pendingChannels(PendingChannelsCallBack callBack) {
+        Rpc.PendingChannelsRequest request = Rpc.PendingChannelsRequest.newBuilder().build();
+        Lndmobile.pendingChannels(request.toByteArray(), new Callback() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from pendingChannels callback: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.PendingChannelsResponse resp = Rpc.PendingChannelsResponse.getDefaultInstance();
+                    callBack.onResponse(resp);
+                    return;
+                }
+
+                try {
+                    Rpc.PendingChannelsResponse resp = Rpc.PendingChannelsResponse.parseFrom(bytes);
+                    callBack.onResponse(resp);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface PendingChannelsCallBack {
+        public void onError(Exception e);
+        public void onResponse(Rpc.PendingChannelsResponse response);
+    }
+
     public void getTransactions(int startHeight, int endHeight, GetTransactionsCallBack callBack) {
         Rpc.GetTransactionsRequest request = Rpc.GetTransactionsRequest.newBuilder()
                 .setStartHeight(startHeight)

@@ -115,6 +115,94 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Open channels:"
+                android:layout_gravity="left|center_vertical"/>
+
+            <TextView
+                android:id="@+id/money_open_channels_count_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textIsSelectable="true"
+                android:layout_gravity="right|center_vertical"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending open channels:"
+                android:layout_gravity="left|center_vertical"/>
+
+            <TextView
+                android:id="@+id/money_pending_open_channels_count_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textIsSelectable="true"
+                android:layout_gravity="right|center_vertical"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending close channels:"
+                android:layout_gravity="left|center_vertical"/>
+
+            <TextView
+                android:id="@+id/money_pending_close_channels_count_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textIsSelectable="true"
+                android:layout_gravity="right|center_vertical"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending force close channels:"
+                android:layout_gravity="left|center_vertical"/>
+
+            <TextView
+                android:id="@+id/money_pending_force_close_channels_count_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textIsSelectable="true"
+                android:layout_gravity="right|center_vertical"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Total balance (satoshis):"
                 android:layout_gravity="left|center_vertical"/>
 

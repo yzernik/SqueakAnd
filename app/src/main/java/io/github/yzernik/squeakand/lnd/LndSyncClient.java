@@ -23,6 +23,7 @@ public class LndSyncClient {
     private static final long GET_INFO_TIMEOUT_S = 10;
     private static final long WALLET_BALANCE_TIMEOUT_S = 10;
     private static final long LIST_CHANNELS_TIMEOUT_S = 10;
+    private static final long PENDING_CHANNELS_TIMEOUT_S = 10;
     private static final long GET_TRANSACTIONS_TIMEOUT_S = 10;
     private static final long NEW_ADDRESS_TIMEOUT_S = 10;
     private static final long SEND_PAYMENT_TIMEOUT_S = 10;
@@ -117,6 +118,21 @@ public class LndSyncClient {
     public Rpc.ListChannelsResponse listChannels() throws InterruptedException, ExecutionException, TimeoutException {
         Future<Rpc.ListChannelsResponse> listChannelsResultFuture = listChannelsAsync();
         return listChannelsResultFuture.get(LIST_CHANNELS_TIMEOUT_S, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Pending channels async.
+     */
+    private Future<Rpc.PendingChannelsResponse> pendingChannelsAsync() {
+        return PendingChannelsTask.pendingChannels(lndClient);
+    }
+
+    /**
+     * Pending channels.
+     */
+    public Rpc.PendingChannelsResponse pendingChannels() throws InterruptedException, ExecutionException, TimeoutException {
+        Future<Rpc.PendingChannelsResponse> resultFuture = pendingChannelsAsync();
+        return resultFuture.get(PENDING_CHANNELS_TIMEOUT_S, TimeUnit.SECONDS);
     }
 
     /**
