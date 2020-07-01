@@ -51,4 +51,8 @@ public class MoneyViewModel  extends AndroidViewModel {
         return lndRepository.hasWallet();
     }
 
+    public String[] getWalletSeed() {
+        return lndRepository.getWalletSeedWords();
+    }
+
 }

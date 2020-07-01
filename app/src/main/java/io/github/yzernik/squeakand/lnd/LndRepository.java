@@ -81,6 +81,10 @@ public class LndRepository {
         return lndController.hasWallet();
     }
 
+    public String[] getWalletSeedWords() {
+        return lndController.getSeedWords();
+    }
+
     public void deleteWallet() {
         lndController.deleteWallet();
     }

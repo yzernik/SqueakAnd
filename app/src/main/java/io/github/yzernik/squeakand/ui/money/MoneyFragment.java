@@ -1,5 +1,6 @@
 package io.github.yzernik.squeakand.ui.money;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,17 +11,22 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import io.github.yzernik.squeakand.R;
+import lnrpc.Rpc;
 
 public class MoneyFragment extends Fragment {
     MoneyFragmentsAdapter moneyFragmentsAdapter;
     ViewPager2 viewPager;
+
+    private MoneyViewModel moneyViewModel;
 
     @Nullable
     @Override
@@ -30,6 +36,8 @@ public class MoneyFragment extends Fragment {
 
         // Enable the options menu
         setHasOptionsMenu(true);
+
+        moneyViewModel = new ViewModelProvider(this).get(MoneyViewModel.class);
 
         return root;
     }
@@ -71,11 +79,27 @@ public class MoneyFragment extends Fragment {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.wallet_menu_backup:
-                // TODO: backup seed words
+                showWalletBackupAlert();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showWalletBackupAlert() {
+        String[] seedWords = moneyViewModel.getWalletSeed();
+        String seedWordsString = String.join(", ", seedWords);
+
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Wallet backup seed");
+        alertDialog.setMessage("Seed words: " + seedWordsString + ".");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
 
