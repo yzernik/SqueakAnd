@@ -47,15 +47,23 @@ public class LndController {
     /**
      * Start the lnd node.
      */
-    public void start() throws InterruptedException, ExecutionException, TimeoutException {
-        lndSyncClient.start(lndDir, network);
+    public void start() {
+        try {
+            lndSyncClient.start(lndDir, network);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Stop the lnd node.
      */
-    public Rpc.StopResponse stop() throws InterruptedException, ExecutionException, TimeoutException {
-        return lndSyncClient.stop();
+    public void stop() {
+        try {
+            lndSyncClient.stop();
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -97,6 +105,12 @@ public class LndController {
         } catch (ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
+    }
+
+    public void deleteWallet() {
+        stop();
+        rmLndDir();
+        start();
     }
 
     /**
@@ -143,24 +157,12 @@ public class LndController {
      *
      */
     public void initialize() {
-        try {
-            start();
-            Log.i(getClass().getName(), "Started node with result.");
-
-            if (hasWallet()) {
-                unlockWallet();
-                Log.i(getClass().getName(), "Unlocked wallet.");
-            } else {
-                // Do nothing.
-                /*                String[] seedWords = genSeed();
-                initWallet(seedWords);
-                Log.i(getClass().getName(), "Initialized wallet.");*/
-            }
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-            System.exit(1);
+        start();
+        Log.i(getClass().getName(), "Started node with result.");
+        if (hasWallet()) {
+            unlockWallet();
+            Log.i(getClass().getName(), "Unlocked wallet.");
         }
-
     }
 
     /**

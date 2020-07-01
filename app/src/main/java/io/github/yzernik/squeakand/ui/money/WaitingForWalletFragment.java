@@ -60,8 +60,8 @@ public class WaitingForWalletFragment extends Fragment {
         // Show the unlocked wallet view and start the target fragment.
         mUnlockedWalletView.setVisibility(View.VISIBLE);
         Fragment newFragment = targetFragment;
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.waiting_for_wallet_unlocked_fragment_frame, newFragment);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(mUnlockedWalletView.getId(), newFragment);
         transaction.commit();
     }
 
