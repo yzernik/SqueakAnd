@@ -106,7 +106,12 @@ public class MoneyFragment extends Fragment {
     }
 
     private void deleteWallet() {
-        moneyViewModel.deleteWallet();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                moneyViewModel.deleteWallet();
+            }
+        }).start();
     }
 
 
