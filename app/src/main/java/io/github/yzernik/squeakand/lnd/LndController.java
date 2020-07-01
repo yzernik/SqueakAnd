@@ -84,7 +84,7 @@ public class LndController {
      * Return true is the wallet is unlocked.
      * @return boolean
      */
-    public synchronized boolean isWalletUnlocked() {
+    public boolean isWalletUnlocked() {
         return walletUnlocked;
     }
 
@@ -92,7 +92,7 @@ public class LndController {
      * Return true if the wallet exists.
      * @return
      */
-    public synchronized boolean hasWallet() {
+    public boolean hasWallet() {
         return hasSavedSeedWords();
     }
 
