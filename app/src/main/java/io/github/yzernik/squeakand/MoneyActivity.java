@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import io.github.yzernik.squeakand.ui.money.MoneyFragment;
+import io.github.yzernik.squeakand.ui.money.NoWalletFragment;
+import io.github.yzernik.squeakand.ui.money.WalletLockedFragment;
 
 public class MoneyActivity extends AppCompatActivity {
 
@@ -17,7 +19,9 @@ public class MoneyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_money);
 
         // Create new fragment and transaction
-        Fragment newFragment = new MoneyFragment();
+        //Fragment moneyFragment = new MoneyFragment();
+        //Fragment noWalletFragment = new NoWalletFragment(moneyFragment);
+        Fragment newFragment = new WalletLockedFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.money_fragment_frame, newFragment);
         transaction.commit();
