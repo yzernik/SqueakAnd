@@ -60,6 +60,10 @@ public class LndRepository {
         return lndController.isWalletUnlocked();
     }
 
+    public boolean hasWallet() {
+        return lndController.hasWallet();
+    }
+
     public LiveData<DataResult<Rpc.GetInfoResponse>> getInfo() {
         return lndLiveDataClient.getInfo();
     }

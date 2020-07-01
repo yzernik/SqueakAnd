@@ -84,8 +84,8 @@ public class LndController {
     }
 
     private boolean hasSavedSeedWords() {
-        String[] seed = preferences.getWalletSeed();
-        return seed != null || seed.length == 0;
+        String[] seedWords = getSeedWords();
+        return seedWords != null || seedWords.length == 0;
     }
 
     private void saveSeedWords(String[] seedWords) {
