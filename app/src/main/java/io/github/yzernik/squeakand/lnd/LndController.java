@@ -9,10 +9,8 @@ import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.github.yzernik.squeakand.preferences.Preferences;
-import lnrpc.Rpc;
 
 public class LndController {
 
@@ -30,7 +28,10 @@ public class LndController {
     private CountDownLatch serverStartedLatch;
     private CountDownLatch walletUnlockedLatch;
 
-    public LndController(Application application, String network, String password) {
+    private LndControllerUpdateHandler lndControllerUpdateHandler;
+    private LndWalletStatus lndWalletStatus;
+
+    public LndController(Application application, String network, LndControllerUpdateHandler lndControllerUpdateHandler, String password) {
         this.lndDir = Paths.get(application.getFilesDir().toString(), LND_DIR_RELATIVE_PATH).toString();
         this.network = network;
         this.password = password;
@@ -38,12 +39,18 @@ public class LndController {
         this.preferences = new Preferences(application);
         this.lndSyncClient = new LndSyncClient();
 
+        this.lndControllerUpdateHandler = lndControllerUpdateHandler;
+        this.lndWalletStatus = new LndWalletStatus();
+
         this.serverStartedLatch = new CountDownLatch(1);
         this.walletUnlockedLatch = new CountDownLatch(1);
+
+        // Update the lndWalletStatus to know if there is an existing wallet.
+        updateWalletExists();
     }
 
-    public LndController(Application application, String network) {
-        this(application, network, DEFAULT_PASSWORD);
+    public LndController(Application application, String network, LndControllerUpdateHandler lndControllerUpdateHandler) {
+        this(application, network, lndControllerUpdateHandler, DEFAULT_PASSWORD);
     }
 
     /**
@@ -55,30 +62,28 @@ public class LndController {
         lndClient.start(lndDir, network, new LndClient.StartCallBack() {
             @Override
             public void onError1(Exception e) {
-                Log.e(getClass().getName(), "onError1: " + e);
+                Log.e(getClass().getName(), "Failed to start lnd daemon: " + e);
+                System.exit(1);
             }
 
             @Override
             public void onResponse1() {
                 serverStartedLatch.countDown();
+                setDaemonStarted(true);
             }
 
             @Override
             public void onError2(Exception e) {
-                Log.e(getClass().getName(), "onError2: " + e);
+                Log.e(getClass().getName(), "Failed to be ready for RPC in lnd daemon: " + e);
+                System.exit(1);
             }
 
             @Override
             public void onResponse2() {
                 walletUnlockedLatch.countDown();
+                setRpcReady(true);
             }
         });
-
-        /*        try {
-            lndSyncClient.start(lndDir, network);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }*/
     }
 
     /**
@@ -120,6 +125,7 @@ public class LndController {
         saveSeedWords(seedWords);
         Log.i(getClass().getName(),"InitWallet and saved seed words.");
         assert getSeedWords().length == 24;
+        updateWalletExists();
     }
 
     public void initWallet() throws InterruptedException {
@@ -177,6 +183,7 @@ public class LndController {
 
     private void clearSeedWords() {
         preferences.clearWalletSeed();
+        updateWalletExists();
     }
 
     /**
@@ -218,20 +225,29 @@ public class LndController {
         return directoryToBeDeleted.delete();
     }
 
-/*    private void setWalletUnlocked() {
-        walletUnlockedLatch.countDown();
-    }*/
-
-    /*    private void setWalletUnlocked(boolean walletUnlocked) {
-        this.walletUnlocked.set(walletUnlocked);
+    private void setDaemonStarted(boolean isDaemonRuning) {
+        lndWalletStatus.setDaemonRunning(isDaemonRuning);
+        lndControllerUpdateHandler.setWalletStatus(lndWalletStatus);
     }
 
-    private void setWalletUnlocked() {
-        setWalletUnlocked(true);
+    private void setWalletExists(boolean hasWallet) {
+        lndWalletStatus.setWalletExists(hasWallet);
+        lndControllerUpdateHandler.setWalletStatus(lndWalletStatus);
     }
 
-    private void setWalletLocked() {
-        setWalletUnlocked(false);
-    }*/
+    private void setRpcReady(boolean isRpcReady) {
+        lndWalletStatus.setRpcReady(isRpcReady);
+        lndControllerUpdateHandler.setWalletStatus(lndWalletStatus);
+    }
+
+    private void updateWalletExists() {
+        setWalletExists(hasWallet());
+    }
+
+
+    public interface LndControllerUpdateHandler {
+        void setWalletStatus(LndWalletStatus status);
+        void onRpcReady();
+    }
 
 }

@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.lnd.LndWalletStatus;
 
 public class NoWalletInitializedFragment extends Fragment {
 
@@ -39,9 +40,11 @@ public class NoWalletInitializedFragment extends Fragment {
 
         noWalletInitializedModel = new ViewModelProvider(this).get(NoWalletInitializedModel.class);
 
-        noWalletInitializedModel.getLiveHasWallet().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        noWalletInitializedModel.getLiveLndWalletStatus().observe(getViewLifecycleOwner(), new Observer<LndWalletStatus>() {
             @Override
-            public void onChanged(Boolean hasWallet) {
+            public void onChanged(LndWalletStatus lndWalletStatus) {
+                boolean hasWallet = lndWalletStatus.isWalletExists();
+
                 // Show the waiting fragment when wallet exists.
                 Log.i(getTag(),"Got new value of hasWallet: " + hasWallet);
                 if (hasWallet) {
