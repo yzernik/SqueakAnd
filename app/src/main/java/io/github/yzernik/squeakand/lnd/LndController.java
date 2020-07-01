@@ -6,8 +6,10 @@ import android.util.Log;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.github.yzernik.squeakand.preferences.Preferences;
 import lnrpc.Rpc;
@@ -25,7 +27,7 @@ public class LndController {
     private final Preferences preferences;
     private final LndSyncClient lndSyncClient;
 
-    private boolean walletUnlocked = false;
+    private CountDownLatch walletUnlockedLatch;
 
     public LndController(Application application, String network, String password) {
         this.lndDir = Paths.get(application.getFilesDir().toString(), LND_DIR_RELATIVE_PATH).toString();
@@ -34,6 +36,8 @@ public class LndController {
         this.lndClient = new LndClient();
         this.preferences = new Preferences(application);
         this.lndSyncClient = new LndSyncClient();
+
+        this.walletUnlockedLatch = new CountDownLatch(1);
     }
 
     public LndController(Application application, String network) {
@@ -43,21 +47,21 @@ public class LndController {
     /**
      * Start the lnd node.
      */
-    public synchronized void start() throws InterruptedException, ExecutionException, TimeoutException {
+    public void start() throws InterruptedException, ExecutionException, TimeoutException {
         lndSyncClient.start(lndDir, network);
     }
 
     /**
      * Stop the lnd node.
      */
-    public synchronized Rpc.StopResponse stop() throws InterruptedException, ExecutionException, TimeoutException {
+    public Rpc.StopResponse stop() throws InterruptedException, ExecutionException, TimeoutException {
         return lndSyncClient.stop();
     }
 
     /**
      * Unlock the wallet.
      */
-    public synchronized void unlockWallet() {
+    public void unlockWallet() {
         try {
             lndSyncClient.unlockWallet(password);
             // Pause for one second.
@@ -71,7 +75,7 @@ public class LndController {
     /**
      * Generate new seed words.
      */
-    public synchronized String[] genSeed() throws InterruptedException, ExecutionException, TimeoutException {
+    public String[] genSeed() throws InterruptedException, ExecutionException, TimeoutException {
         return lndSyncClient.genSeed();
     }
 
@@ -79,7 +83,7 @@ public class LndController {
      * Initialize new wallet with given seed words
      * @param seedWords
      */
-    public synchronized void initWallet(String[] seedWords) throws InterruptedException, ExecutionException, TimeoutException {
+    public void initWallet(String[] seedWords) throws InterruptedException, ExecutionException, TimeoutException {
         lndSyncClient.initWallet(seedWords, password);
         // Save the seed words immediately after the init wallet response.
         saveSeedWords(seedWords);
@@ -91,7 +95,11 @@ public class LndController {
      * @return boolean
      */
     public boolean isWalletUnlocked() {
-        return walletUnlocked;
+        return walletUnlockedLatch.getCount() == 0;
+    }
+
+    public void waitForWalletUnlocked() throws InterruptedException {
+        walletUnlockedLatch.await();
     }
 
     /**
@@ -130,14 +138,15 @@ public class LndController {
             start();
             Log.i(getClass().getName(), "Started node with result.");
 
-            /*            if (hasWallet()) {
+            if (hasWallet()) {
                 unlockWallet();
                 Log.i(getClass().getName(), "Unlocked wallet.");
             } else {
-                String[] seedWords = genSeed();
+                // Do nothing.
+                /*                String[] seedWords = genSeed();
                 initWallet(seedWords);
-                Log.i(getClass().getName(), "Initialized wallet.");
-            }*/
+                Log.i(getClass().getName(), "Initialized wallet.");*/
+            }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
             System.exit(1);
@@ -164,8 +173,12 @@ public class LndController {
         return directoryToBeDeleted.delete();
     }
 
-    private void setWalletUnlocked(boolean walletUnlocked) {
-        this.walletUnlocked = walletUnlocked;
+    private void setWalletUnlocked() {
+        walletUnlockedLatch.countDown();
+    }
+
+    /*    private void setWalletUnlocked(boolean walletUnlocked) {
+        this.walletUnlocked.set(walletUnlocked);
     }
 
     private void setWalletUnlocked() {
@@ -174,6 +187,6 @@ public class LndController {
 
     private void setWalletLocked() {
         setWalletUnlocked(false);
-    }
+    }*/
 
 }

@@ -20,7 +20,6 @@ public class NoWalletModel extends AndroidViewModel {
     public NoWalletModel(@NonNull Application application) {
         super(application);
         this.lndRepository = LndRepository.getRepository(application);
-        refreshWalletInfo();
         liveIsButtonClicked.setValue(false);
     }
 
@@ -36,23 +35,20 @@ public class NoWalletModel extends AndroidViewModel {
         return liveIsButtonClicked;
     }
 
-    private void refreshWalletInfo() {
-        boolean hasWallet = lndRepository.hasWallet();
-        boolean isWalletUnlocked = lndRepository.isWalletUnlocked();
-        liveHasWallet.postValue(hasWallet);
-        liveIsWalletUnlocked.postValue(isWalletUnlocked);
-    }
-
     public void buttonClicked() {
         liveIsButtonClicked.setValue(true);
     }
 
-    public void unlockWallet() {
+    public void waitForWalletUnlocked() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                lndRepository.unlockWallet();
-                refreshWalletInfo();
+                try {
+                    lndRepository.waitForWalletUnlocked();
+                    liveIsWalletUnlocked.postValue(true);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }

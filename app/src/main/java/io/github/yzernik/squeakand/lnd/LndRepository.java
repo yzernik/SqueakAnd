@@ -62,6 +62,10 @@ public class LndRepository {
         return lndController.isWalletUnlocked();
     }
 
+    public void waitForWalletUnlocked() throws InterruptedException {
+        lndController.waitForWalletUnlocked();
+    }
+
     public void unlockWallet() {
         if (isWalletUnlocked()) {
             return;

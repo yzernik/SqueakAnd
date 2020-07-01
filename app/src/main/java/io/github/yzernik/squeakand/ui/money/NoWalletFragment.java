@@ -22,10 +22,12 @@ public class NoWalletFragment extends Fragment {
 
     private NoWalletModel noWalletModel;
 
+/*
     private TextView mHasWalletText;
     private TextView mIsWalletUnlockedText;
     private TextView mIsButtonClickedText;
     private Button mCreateWalletButton;
+*/
     private View mLockedWalletView;
     private View mUnlockedWalletView;
 
@@ -37,10 +39,10 @@ public class NoWalletFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_no_wallet, container, false);
 
-        mHasWalletText = root.findViewById(R.id.create_wallet_has_wallet_text);
+/*        mHasWalletText = root.findViewById(R.id.create_wallet_has_wallet_text);
         mIsWalletUnlockedText = root.findViewById(R.id.create_wallet_is_wallet_unlocked_text);
         mIsButtonClickedText = root.findViewById(R.id.create_wallet_is_button_clicked_text);
-        mCreateWalletButton = root.findViewById(R.id.create_wallet_button);
+        mCreateWalletButton = root.findViewById(R.id.create_wallet_button);*/
         mLockedWalletView = root.findViewById(R.id.create_wallet_locked_view);
         mUnlockedWalletView = root.findViewById(R.id.no_wallet_unlocked_fragment_frame);
 
@@ -49,14 +51,14 @@ public class NoWalletFragment extends Fragment {
         noWalletModel.getLiveHasWallet().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean hasWallet) {
-                mHasWalletText.setText(hasWallet.toString());
+                // mHasWalletText.setText(hasWallet.toString());
             }
         });
 
         noWalletModel.getLiveIsWalletUnlocked().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isWalletUnlocked) {
-                mIsWalletUnlockedText.setText(isWalletUnlocked.toString());
+                // mIsWalletUnlockedText.setText(isWalletUnlocked.toString());
 
                 // Show the hidden fragment when wallet is unlocked.
                 Log.i(getTag(),"Got new value of isWalletUnlocked: " + isWalletUnlocked);
@@ -69,7 +71,7 @@ public class NoWalletFragment extends Fragment {
         noWalletModel.getLiveIsButtonClicked().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isButtonClicked) {
-                mIsButtonClickedText.setText(isButtonClicked.toString());
+                // mIsButtonClickedText.setText(isButtonClicked.toString());
                 // Hide the linearlayout, and only show the hidden fragment.
 
                 Log.i(getTag(),"Got new value of isButtonClicked: " + isButtonClicked);
@@ -79,15 +81,15 @@ public class NoWalletFragment extends Fragment {
             }
         });
 
-        mCreateWalletButton.setOnClickListener(new View.OnClickListener() {
+/*        mCreateWalletButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 noWalletModel.buttonClicked();
             }
-        });
+        });*/
 
-        // Unlock the wallet on fragment start.
-        noWalletModel.unlockWallet();
+        // Wait for wallet to be unlocked on fragment start.
+        noWalletModel.waitForWalletUnlocked();
 
         return root;
     }
