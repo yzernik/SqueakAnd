@@ -6,36 +6,28 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import io.github.yzernik.squeakand.lnd.LndRepository;
+import io.github.yzernik.squeakand.lnd.LndWalletStatus;
 
 public class WaitingForWalletModel extends AndroidViewModel {
 
     private LndRepository lndRepository;
+    private LiveData<LndWalletStatus> liveLndWalletStatus;
 
     private MutableLiveData<Boolean> liveIsWalletUnlocked = new MutableLiveData<>();
 
     public WaitingForWalletModel(@NonNull Application application) {
         super(application);
         this.lndRepository = LndRepository.getRepository(application);
+        this.liveLndWalletStatus = lndRepository.getLndWalletStatus();
     }
 
-    LiveData<Boolean> getLiveIsWalletUnlocked() {
-        return liveIsWalletUnlocked;
-    }
-
-    public void waitForWalletUnlocked() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    lndRepository.waitForWalletUnlocked();
-                    liveIsWalletUnlocked.postValue(true);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+    LiveData<Boolean> getLiveIsRpcReady() {
+        return Transformations.map(liveLndWalletStatus, lndWalletStatus -> {
+            return lndWalletStatus.isRpcReady();
+        });
     }
 
 }

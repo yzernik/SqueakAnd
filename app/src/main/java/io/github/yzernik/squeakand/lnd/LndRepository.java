@@ -7,10 +7,8 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeoutException;
 
 import io.github.yzernik.squeakand.DataResult;
 import lnrpc.Rpc;
@@ -30,7 +28,7 @@ public class LndRepository {
         this.lndSyncClient = new LndSyncClient();
         this.executorService = Executors.newCachedThreadPool();
         this.lndLiveDataClient = new LndLiveDataClient(lndSyncClient, executorService);
-        this.lndController = new LndController(application, "testnet");
+        this.lndController = new LndController(application, "testnet", lndLiveDataClient);
     }
 
     public static LndRepository getRepository(Application application) {
@@ -58,18 +56,21 @@ public class LndRepository {
         });
     }
 
+    public LiveData<LndWalletStatus> getLndWalletStatus() {
+        return lndLiveDataClient.getLndWalletStatus();
+    }
+
+/*
     public boolean isWalletUnlocked() {
         return lndController.isWalletUnlocked();
     }
+*/
 
     public void waitForWalletUnlocked() throws InterruptedException {
         lndController.waitForWalletUnlocked();
     }
 
     public void unlockWallet() {
-        if (isWalletUnlocked()) {
-            return;
-        }
         lndController.unlockWallet();
     }
 
@@ -77,9 +78,11 @@ public class LndRepository {
         lndController.initWallet();
     }
 
+/*
     public boolean hasWallet() {
         return lndController.hasWallet();
     }
+*/
 
     public String[] getWalletSeedWords() {
         return lndController.getSeedWords();

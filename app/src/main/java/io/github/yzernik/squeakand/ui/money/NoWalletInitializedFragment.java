@@ -46,6 +46,8 @@ public class NoWalletInitializedFragment extends Fragment {
                 Log.i(getTag(),"Got new value of hasWallet: " + hasWallet);
                 if (hasWallet) {
                     showWaitingForWalletUnlocked();
+                } else {
+                    hideWaitingForWalletUnlocked();
                 }
             }
         });
@@ -76,5 +78,11 @@ public class NoWalletInitializedFragment extends Fragment {
         transaction.commit();
     }
 
+    private void hideWaitingForWalletUnlocked() {
+        // Show the locked wallet view.
+        mLockedWalletView.setVisibility(View.VISIBLE);
 
+        // Hide the unlocked wallet view.
+        mUnlockedWalletView.setVisibility(View.GONE);
+    }
 }

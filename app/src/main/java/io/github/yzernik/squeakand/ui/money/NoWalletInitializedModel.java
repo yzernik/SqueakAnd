@@ -1,35 +1,34 @@
 package io.github.yzernik.squeakand.ui.money;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import io.github.yzernik.squeakand.lnd.LndRepository;
+import io.github.yzernik.squeakand.lnd.LndWalletStatus;
 
 public class NoWalletInitializedModel extends AndroidViewModel {
 
     private LndRepository lndRepository;
-
-    private MutableLiveData<Boolean> liveHasWallet = new MutableLiveData<>();
+    private LiveData<LndWalletStatus> liveLndWalletStatus;
 
     public NoWalletInitializedModel(@NonNull Application application) {
         super(application);
         this.lndRepository = LndRepository.getRepository(application);
-        refreshHasWallet();
+        this.liveLndWalletStatus = lndRepository.getLndWalletStatus();
+    }
+
+    LiveData<LndWalletStatus> getLiveLndWalletStatus() {
+        return liveLndWalletStatus;
     }
 
     LiveData<Boolean> getLiveHasWallet() {
-        return liveHasWallet;
-    }
-
-    void refreshHasWallet() {
-        boolean hasWallet = lndRepository.hasWallet();
-        Log.i(getClass().getName(), "Refreshing liveHasWallet with value: " + hasWallet);
-        liveHasWallet.postValue(hasWallet);
+        return Transformations.map(liveLndWalletStatus, lndWalletStatus -> {
+            return lndWalletStatus.isWalletExists();
+        });
     }
 
     public void createWallet() {

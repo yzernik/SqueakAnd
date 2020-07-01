@@ -18,14 +18,20 @@ import java.util.concurrent.TimeoutException;
 import io.github.yzernik.squeakand.DataResult;
 import lnrpc.Rpc;
 
-public class LndLiveDataClient {
+public class LndLiveDataClient implements LndController.LndControllerUpdateHandler {
 
     private LndSyncClient lndSyncClient;
     private ExecutorService executorService;
+    private MutableLiveData<LndWalletStatus> liveLndWalletStatus;
 
     public LndLiveDataClient(LndSyncClient lndSyncClient, ExecutorService executorService) {
         this.executorService = executorService;
         this.lndSyncClient = lndSyncClient;
+        this.liveLndWalletStatus = new MutableLiveData<>();
+    }
+
+    public LiveData<LndWalletStatus> getLndWalletStatus() {
+        return liveLndWalletStatus;
     }
 
     public LiveData<DataResult<Rpc.GetInfoResponse>> getInfo() {
@@ -331,4 +337,13 @@ public class LndLiveDataClient {
         return liveCloseChannel;
     }
 
+    @Override
+    public void setWalletStatus(LndWalletStatus status) {
+        liveLndWalletStatus.postValue(status);
+    }
+
+    @Override
+    public void onRpcReady() {
+        // TODO
+    }
 }

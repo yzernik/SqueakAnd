@@ -8,15 +8,19 @@ import androidx.lifecycle.LiveData;
 
 import io.github.yzernik.squeakand.lnd.LndRepository;
 import io.github.yzernik.squeakand.DataResult;
+import io.github.yzernik.squeakand.lnd.LndWalletStatus;
 import lnrpc.Rpc;
 
 public class MoneyViewModel  extends AndroidViewModel {
 
     private LndRepository lndRepository;
+    private LiveData<LndWalletStatus> liveLndWalletStatus;
+
 
     public MoneyViewModel(@NonNull Application application) {
         super(application);
         this.lndRepository = LndRepository.getRepository(application);
+        this.liveLndWalletStatus = lndRepository.getLndWalletStatus();
     }
 
     LiveData<DataResult<Rpc.GetInfoResponse>> getInfo() {
@@ -43,12 +47,8 @@ public class MoneyViewModel  extends AndroidViewModel {
         return lndRepository.newAddress();
     }
 
-    public boolean isWalletUnlocked() {
-        return lndRepository.isWalletUnlocked();
-    }
-
-    public boolean hasWallet() {
-        return lndRepository.hasWallet();
+    LiveData<LndWalletStatus> getLiveLndWalletStatus() {
+        return liveLndWalletStatus;
     }
 
     public String[] getWalletSeed() {
