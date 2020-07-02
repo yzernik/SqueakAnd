@@ -2,6 +2,7 @@ package io.github.yzernik.squeakand.ui.money;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +21,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.SqueakProfile;
 import lnrpc.Rpc;
 
 public class MoneyFragment extends Fragment {
@@ -82,7 +84,7 @@ public class MoneyFragment extends Fragment {
                 showWalletBackupAlert();
                 return true;
             case R.id.wallet_menu_delete:
-                deleteWallet();
+                showDeleteWalletAlertDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -112,6 +114,31 @@ public class MoneyFragment extends Fragment {
                 moneyViewModel.deleteWallet();
             }
         }).start();
+    }
+
+    private void showDeleteWalletAlertDialog() {
+        android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Delete wallet?");
+        alertDialog.setMessage("Are you sure you want to delete this wallet? Make sure to backup the seed words first.");
+
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Delete",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i(getTag(), "Deleting wallet.");
+                        deleteWallet();
+                        dialog.dismiss();
+                    }
+                });
+
+
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        alertDialog.show();
     }
 
 
