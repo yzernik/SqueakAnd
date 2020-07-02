@@ -38,13 +38,17 @@ public class LightningNodeConnectionModel extends AndroidViewModel {
         return host;
     }
 
-    private LiveData<Set<String>> liveConnectedPeers() {
-        return lndRepository.liveConnectedPeers();
+    private LiveData<Rpc.ListPeersResponse> livePeers() {
+        return lndRepository.listPeers();
     }
 
     public LiveData<Boolean> liveIsPeerConnected() {
-        return Transformations.map(liveConnectedPeers(), connectedPeers -> {
-            return connectedPeers.contains(pubkey);
+        return Transformations.map(livePeers(), response -> {
+            List<Rpc.Peer> peers = response.getPeersList();
+            List<String> pubkeys = peers.stream()
+                    .map(peer -> peer.getPubKey())
+                    .collect(Collectors.toList());
+            return pubkeys.contains(pubkey);
         });
     }
 

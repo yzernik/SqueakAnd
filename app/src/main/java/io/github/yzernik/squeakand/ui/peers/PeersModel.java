@@ -15,7 +15,7 @@ import lnrpc.Rpc;
 public class PeersModel extends AndroidViewModel {
 
     private LndRepository lndRepository;
-    private LiveData<DataResult<Rpc.ListPeersResponse>> liveListPeersResponse;
+    private LiveData<Rpc.ListPeersResponse> liveListPeersResponse;
 
     public PeersModel(Application application) {
         super(application);
@@ -23,16 +23,13 @@ public class PeersModel extends AndroidViewModel {
         liveListPeersResponse = lndRepository.listPeers();
     }
 
-    public LiveData<DataResult<Rpc.ListPeersResponse>> getLiveListPeersResponse() {
+    public LiveData<Rpc.ListPeersResponse> getLiveListPeersResponse() {
         return liveListPeersResponse;
     }
 
     public LiveData<List<Rpc.Peer>> getLivePeers() {
-        return Transformations.map(liveListPeersResponse, liveListPeersResponse -> {
-            if (!liveListPeersResponse.isSuccess()) {
-                return null;
-            }
-            return liveListPeersResponse.getResponse().getPeersList();
+        return Transformations.map(liveListPeersResponse, response -> {
+            return response.getPeersList();
         });
     }
 

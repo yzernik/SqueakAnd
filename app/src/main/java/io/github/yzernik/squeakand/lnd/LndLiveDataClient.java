@@ -5,8 +5,6 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
@@ -24,6 +22,8 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
     private MutableLiveData<Rpc.ListChannelsResponse> liveListChannelsResponse;
     private MutableLiveData<Rpc.PendingChannelsResponse> livePendingChannelsResponse;
     private MutableLiveData<Rpc.TransactionDetails> liveTransactionDetails;
+    private MutableLiveData<Rpc.ListPeersResponse> liveListPeersResponse;
+
 
     public LndLiveDataClient(LndSyncClient lndSyncClient, ExecutorService executorService) {
         this.executorService = executorService;
@@ -34,6 +34,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         this.liveListChannelsResponse = new MutableLiveData<>();
         this.livePendingChannelsResponse = new MutableLiveData<>();
         this.liveTransactionDetails = new MutableLiveData<>();
+        this.liveListPeersResponse = new MutableLiveData<>();
     }
 
     public LiveData<LndWalletStatus> getLndWalletStatus() {
@@ -58,6 +59,10 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
 
     public LiveData<Rpc.TransactionDetails> getLiveTransactions() {
         return liveTransactionDetails;
+    }
+
+    public LiveData<Rpc.ListPeersResponse> getLivePeers() {
+        return liveListPeersResponse;
     }
 
     public LiveData<DataResult<Rpc.NewAddressResponse>> newAddress() {
@@ -94,7 +99,6 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         return liveDataResult;
     }
 
-
     public LiveData<DataResult<Rpc.ConnectPeerResponse>> connectPeer(String pubkey, String host) {
         MutableLiveData<DataResult<Rpc.ConnectPeerResponse>> liveDataResult = new MutableLiveData<>();
         executorService.execute(new Runnable() {
@@ -102,23 +106,6 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
             public void run() {
                 try {
                     Rpc.ConnectPeerResponse response = lndSyncClient.connectPeer(pubkey, host);
-                    liveDataResult.postValue(DataResult.ofSuccess(response));
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
-                    liveDataResult.postValue(DataResult.ofFailure(e));
-                }
-            }
-        });
-        return liveDataResult;
-    }
-
-    public LiveData<DataResult<Rpc.ListPeersResponse>> listPeers() {
-        MutableLiveData<DataResult<Rpc.ListPeersResponse>> liveDataResult = new MutableLiveData<>();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Rpc.ListPeersResponse response = lndSyncClient.listPeers();
                     liveDataResult.postValue(DataResult.ofSuccess(response));
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
@@ -146,47 +133,27 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         return liveDataResult;
     }
 
-
-    public LiveData<Set<String>> liveConnectedPeers() {
-        Log.i(getClass().getName(), "Getting connected peers...");
-        MutableLiveData<Set<String>> livePeers = new MutableLiveData<>();
+    public LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannel(Rpc.ChannelPoint channelPoint, boolean force) {
+        Log.i(getClass().getName(), "Getting closeChannel...");
+        MutableLiveData<DataResult<Rpc.CloseStatusUpdate>> liveCloseChannel = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Rpc.ListPeersResponse listPeersResponse = lndSyncClient.listPeers();
-                    Set<String> connectedPeers = new HashSet<>();
-
-                    // Add the initial peers to the set.
-                    for (Rpc.Peer peer: listPeersResponse.getPeersList()) {
-                        connectedPeers.add(peer.getPubKey());
+                lndSyncClient.closeChannel(channelPoint, force, new LndClient.CloseChannelEventsRecvStream() {
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(getClass().getName(), "Failed to get close channel update: " + e);
+                        liveCloseChannel.postValue(DataResult.ofFailure(e));
                     }
-                    livePeers.postValue(connectedPeers);
 
-                    // Keep the set updated with the results from the updates.
-                    lndSyncClient.subscribePeerEvents(new LndClient.SubscribePeerEventsRecvStream() {
-                        @Override
-                        public void onError(Exception e) {
-                            Log.e(getClass().getName(), "Failed to get peer event update: " + e);
-                        }
-
-                        @Override
-                        public void onUpdate(Rpc.PeerEvent update) {
-                            if (update.getType().equals(Rpc.PeerEvent.EventType.PEER_ONLINE)) {
-                                connectedPeers.add(update.getPubKey());
-                            } else {
-                                connectedPeers.remove(update.getPubKey());
-                            }
-                            livePeers.postValue(connectedPeers);
-                        }
-                    });
-
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
-                }
+                    @Override
+                    public void onUpdate(Rpc.CloseStatusUpdate update) {
+                        liveCloseChannel.postValue(DataResult.ofSuccess(update));
+                    }
+                });
             }
         });
-        return livePeers;
+        return liveCloseChannel;
     }
 
     private void setLiveGetInfo() {
@@ -269,27 +236,20 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         });
     }
 
-    public LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannel(Rpc.ChannelPoint channelPoint, boolean force) {
-        Log.i(getClass().getName(), "Getting closeChannel...");
-        MutableLiveData<DataResult<Rpc.CloseStatusUpdate>> liveCloseChannel = new MutableLiveData<>();
+    private void setLiveListPeersResponse() {
+        Log.i(getClass().getName(), "Getting peers...");
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                lndSyncClient.closeChannel(channelPoint, force, new LndClient.CloseChannelEventsRecvStream() {
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e(getClass().getName(), "Failed to get close channel update: " + e);
-                        liveCloseChannel.postValue(DataResult.ofFailure(e));
-                    }
-
-                    @Override
-                    public void onUpdate(Rpc.CloseStatusUpdate update) {
-                        liveCloseChannel.postValue(DataResult.ofSuccess(update));
-                    }
-                });
+                try {
+                    Rpc.ListPeersResponse response = lndSyncClient.listPeers();
+                    Log.i(getClass().getName(), "Got ListPeersResponse: " + response);
+                    liveListPeersResponse.postValue(response);
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                }
             }
         });
-        return liveCloseChannel;
     }
 
     @Override
@@ -308,6 +268,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
     @Override
     public void handlePeerEvent(Rpc.PeerEvent peerEvent) {
         setLiveGetInfo();
+        setLiveListPeersResponse();
     }
 
     @Override
@@ -340,5 +301,6 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         setLiveChannels();
         setLivePendingChannels();
         setLiveTransactionDetails();
+        setLiveListPeersResponse();
     }
 }

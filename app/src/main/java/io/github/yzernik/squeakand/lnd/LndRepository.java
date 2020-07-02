@@ -110,8 +110,8 @@ public class LndRepository {
         return lndLiveDataClient.connectPeer(pubkey, host);
     }
 
-    public LiveData<DataResult<Rpc.ListPeersResponse>> listPeers() {
-        return lndLiveDataClient.listPeers();
+    public LiveData<Rpc.ListPeersResponse> listPeers() {
+        return lndLiveDataClient.getLivePeers();
     }
 
     public LiveData<DataResult<Rpc.ChannelPoint>> openChannel(String pubkey, long amount) {
@@ -131,10 +131,6 @@ public class LndRepository {
 
     public LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannel(Rpc.ChannelPoint channelPoint, boolean force) {
         return lndLiveDataClient.closeChannel(channelPoint, force);
-    }
-
-    public LiveData<Set<String>> liveConnectedPeers() {
-        return lndLiveDataClient.liveConnectedPeers();
     }
 
     public LiveData<Rpc.ListChannelsResponse> getLiveChannels() {
