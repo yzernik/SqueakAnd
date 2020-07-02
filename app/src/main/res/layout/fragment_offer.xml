@@ -55,6 +55,7 @@
             android:id="@+id/offer_pay_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="32sp"
             android:text="Pay" />
 
 
