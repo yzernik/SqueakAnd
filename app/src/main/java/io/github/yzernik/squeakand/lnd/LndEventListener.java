@@ -33,7 +33,7 @@ public class LndEventListener {
      * @param peerEvent
      */
     protected void handlePeerEvent(Rpc.PeerEvent peerEvent) {
-        Log.i(getClass().getName(), "New peer event");
+        Log.i(getClass().getName(), "New PeerEvent");
         lndSubscriptionEventHandler.handlePeerEvent(peerEvent);
     }
 
@@ -42,7 +42,7 @@ public class LndEventListener {
      * @param channelEventUpdate
      */
     protected void handleChannelEvent(Rpc.ChannelEventUpdate channelEventUpdate) {
-        Log.i(getClass().getName(), "New peer event");
+        Log.i(getClass().getName(), "New ChannelEventUpdate");
         lndSubscriptionEventHandler.handleChannelEventUpdate(channelEventUpdate);
     }
 
