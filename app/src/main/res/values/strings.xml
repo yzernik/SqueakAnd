@@ -11,6 +11,7 @@
     <string name="activity_create_profile">Create Profile</string>
     <string name="activity_add_contact">Add contact</string>
     <string name="activity_view_profile">Profile</string>
+    <string name="activity_view_server_address">Server Address</string>
     <string name="activity_view_server">Squeak Server</string>
     <string name="activity_view_address">Squeak Address</string>
     <string name="activity_buy_squeak">Buy Squeak</string>

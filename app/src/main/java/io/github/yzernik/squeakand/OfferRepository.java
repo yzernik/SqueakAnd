@@ -8,6 +8,8 @@ import org.bitcoinj.core.Sha256Hash;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.server.SqueakServerAddress;
+
 public class OfferRepository {
 
     private static volatile OfferRepository INSTANCE;
@@ -38,6 +40,10 @@ public class OfferRepository {
 
     public LiveData<List<Offer>> getOffersForSqueak(Sha256Hash squeakHash) {
         return mOfferDao.fetchOffersBySqueakHash(squeakHash);
+    }
+
+    public LiveData<List<Offer>> getOffersForServer(SqueakServerAddress serverAddress) {
+        return mOfferDao.fetchOffersByServerAddress(serverAddress);
     }
 
     public LiveData<Offer> getOffer(int offerId) {

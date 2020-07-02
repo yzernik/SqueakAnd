@@ -29,7 +29,7 @@ public class ServerListAdapter extends RecyclerView.Adapter<ServerListAdapter.Se
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clickListener.handleItemClick(mServers.get(getAdapterPosition()).getId());
+                    clickListener.handleItemClick(mServers.get(getAdapterPosition()));
                 }
             });
 
@@ -81,7 +81,7 @@ public class ServerListAdapter extends RecyclerView.Adapter<ServerListAdapter.Se
 
 
     public interface ClickListener {
-        void handleItemClick(int id);
+        void handleItemClick(SqueakServer squeakServer);
     }
 
 }

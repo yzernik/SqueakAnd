@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.server.SqueakServerAddress;
+
 /**
  * Maintains the connections to the squeak servers, and keeps synced with them.
  */
@@ -40,6 +42,10 @@ public class SqueakServerRepository {
 
     public LiveData<SqueakServer> getSqueakServer(int id) {
         return mSqueakServerDao.fetchServerById(id);
+    }
+
+    public LiveData<SqueakServer> getSqueakServerByAddress(SqueakServerAddress serverAddress) {
+        return mSqueakServerDao.fetchServerByAddress(serverAddress);
     }
 
     public void update(SqueakServer server) {
