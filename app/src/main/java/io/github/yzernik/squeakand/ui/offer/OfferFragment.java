@@ -20,7 +20,10 @@ import androidx.lifecycle.ViewModelProviders;
 
 import org.bitcoinj.core.Sha256Hash;
 
+import io.github.yzernik.squeakand.DataResult;
+import io.github.yzernik.squeakand.ElectrumActivity;
 import io.github.yzernik.squeakand.LightningNodeActivity;
+import io.github.yzernik.squeakand.MoneyActivity;
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.OfferWithSqueakServer;
 import io.github.yzernik.squeakand.R;
@@ -28,6 +31,8 @@ import io.github.yzernik.squeakand.SqueakServer;
 import io.github.yzernik.squeakand.ViewServerActivity;
 import io.github.yzernik.squeakand.ViewServerAddressActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
+import io.github.yzernik.squeakand.blockchain.BlockInfo;
+import io.github.yzernik.squeakand.lnd.LndWalletStatus;
 import io.github.yzernik.squeakand.server.SqueakServerAddress;
 import lnrpc.Rpc;
 
@@ -106,13 +111,26 @@ public class OfferFragment extends Fragment {
                 });
 
                 // Set up pay button
-                btnPay.setOnClickListener(new View.OnClickListener() {
+                offerModel.getWalletStatus().observe(getViewLifecycleOwner(), new Observer<LndWalletStatus>() {
                     @Override
-                    public void onClick(View v) {
-                        sendPayment();
+                    public void onChanged(@Nullable LndWalletStatus walletStatus) {
+                        if (walletStatus.isRpcReady()) {
+                            btnPay.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    sendPayment();
+                                }
+                            });
+                        } else {
+                            btnPay.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    showWalletNotReadyAlert();
+                                }
+                            });
+                        }
                     }
                 });
-
             }
         });
 
@@ -120,14 +138,16 @@ public class OfferFragment extends Fragment {
         return root;
     }
 
+
     private void sendPayment() {
-        offerModel.sendPayment().observe(getViewLifecycleOwner(), new Observer<Rpc.SendResponse>() {
+        offerModel.sendPayment().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.SendResponse>>() {
             @Override
-            public void onChanged(@Nullable Rpc.SendResponse response) {
-                if (response == null) {
+            public void onChanged(@Nullable DataResult<Rpc.SendResponse> result) {
+                if (result.isFailure()) {
+                    handleFailedPayment(result.getError().toString());
                     return;
                 }
-                handlePaymentResult(response);
+                handlePaymentResult(result.getResponse());
             }
         });
     }
@@ -155,7 +175,7 @@ public class OfferFragment extends Fragment {
         if (!response.getPaymentPreimage().isEmpty()) {
             handleSuccessfulPayment(response);
         } else {
-            handleFailedPayment(response);
+            handleFailedPayment(response.getPaymentError());
         }
     }
 
@@ -165,8 +185,7 @@ public class OfferFragment extends Fragment {
         getActivity().finish();
     }
 
-    private void handleFailedPayment(Rpc.SendResponse response) {
-        String error = response.getPaymentError();
+    private void handleFailedPayment(String error) {
         showFailedPaymentAlert(error);
     }
 
@@ -189,5 +208,27 @@ public class OfferFragment extends Fragment {
                 });
         alertDialog.show();
     }
+
+    private void showWalletNotReadyAlert() {
+        // setup the alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("No wallet found");
+        // Add the manage wallet button
+        builder.setNeutralButton("Create new wallet", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startWalletActivity();
+            }
+        });
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void startWalletActivity() {
+        Intent intent = new Intent(getActivity(), MoneyActivity.class);
+        startActivity(intent);
+    }
+
 
 }

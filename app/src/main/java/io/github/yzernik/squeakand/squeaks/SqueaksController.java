@@ -11,6 +11,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.OfferDao;
 import io.github.yzernik.squeakand.SqueakDao;
@@ -190,37 +191,38 @@ public class SqueaksController {
         offerDao.delete(offer);
     }
 
-    public Rpc.SendResponse payOffer(Offer offer) {
+    public DataResult<Rpc.SendResponse> payOffer(Offer offer) {
+        Rpc.SendResponse sendResponse = null;
         try {
-            Rpc.SendResponse sendResponse = lndSyncClient.sendPayment(offer.paymentRequest);
-            Log.e(getClass().getName(), "sendResponse.getPaymentPreimage: " + sendResponse.getPaymentPreimage());
-            if (sendResponse.getPaymentPreimage().isEmpty()) {
-                // Handle failed payment
-                Log.e(getClass().getName(), "Failed payment: " + sendResponse.getPaymentError());
-            } else{
-                // Handle successful payment
-                byte[] preimage = sendResponse.getPaymentPreimage().toByteArray();
-
-                // Set the offer as complete
-                offer.setPreimage(preimage);
-
-                // Set the squeak data key if valid
-                byte[] dataKey = CryptoUtil.xor(offer.nonce, preimage);
-                SqueakEntry squeakEntry = mSqueakDao.fetchSqueakByHash(offer.squeakHash);
-
-                Squeak squeak = squeakEntry.getSqueak();
-                if (isValidDataKey(squeak, dataKey)) {
-                    setOfferHasValidPreimage(offer, true);
-                    setDataKey(squeakEntry, dataKey);
-                } else {
-                    setOfferHasValidPreimage(offer, false);
-                }
-            }
-            return sendResponse;
+            sendResponse = lndSyncClient.sendPayment(offer.paymentRequest);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
-            return null;
+            return DataResult.ofFailure(e);
         }
+        Log.e(getClass().getName(), "sendResponse.getPaymentPreimage: " + sendResponse.getPaymentPreimage());
+        if (sendResponse.getPaymentPreimage().isEmpty()) {
+            // Handle failed payment
+            Log.e(getClass().getName(), "Failed payment: " + sendResponse.getPaymentError());
+        } else{
+            // Handle successful payment
+            byte[] preimage = sendResponse.getPaymentPreimage().toByteArray();
+
+            // Set the offer as complete
+            offer.setPreimage(preimage);
+
+            // Set the squeak data key if valid
+            byte[] dataKey = CryptoUtil.xor(offer.nonce, preimage);
+            SqueakEntry squeakEntry = mSqueakDao.fetchSqueakByHash(offer.squeakHash);
+
+            Squeak squeak = squeakEntry.getSqueak();
+            if (isValidDataKey(squeak, dataKey)) {
+                setOfferHasValidPreimage(offer, true);
+                setDataKey(squeakEntry, dataKey);
+            } else {
+                setOfferHasValidPreimage(offer, false);
+            }
+        }
+        return DataResult.ofSuccess(sendResponse);
     }
 
     private boolean isValidDataKey(Squeak squeak, byte[] dataKey) {

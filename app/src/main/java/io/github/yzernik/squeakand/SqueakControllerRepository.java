@@ -111,15 +111,15 @@ public class SqueakControllerRepository {
      * @param offerId Id of the offer to buy.
      * @return SendResponse
      */
-    public LiveData<Rpc.SendResponse> buyOffer(int offerId) {
+    public LiveData<DataResult<Rpc.SendResponse>> buyOffer(int offerId) {
         Log.i(getClass().getName(), "Buying offer...");
-        MutableLiveData<Rpc.SendResponse> liveSendResponse = new MutableLiveData<>();
+        MutableLiveData<DataResult<Rpc.SendResponse>> liveSendResponse = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
                 Offer offer = mOfferDao.fetchOfferById(offerId);
-                Rpc.SendResponse response = squeaksController.payOffer(offer);
-                liveSendResponse.postValue(response);
+                DataResult<Rpc.SendResponse> result = squeaksController.payOffer(offer);
+                liveSendResponse.postValue(result);
 
                 // TODO: this can be removed when SubscribeHtlcEvents is working.
                 lndRepository.updateChannels();
