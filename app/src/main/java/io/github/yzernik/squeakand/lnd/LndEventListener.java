@@ -25,6 +25,34 @@ public class LndEventListener {
         Log.i(getClass().getName(),"Starting to listen to subscription events.");
         listenPeerEvents();
         listenChannelEvents();
+        listenTransactions();
+    }
+
+    /**
+     * Handle a new peer event.
+     * @param peerEvent
+     */
+    protected void handlePeerEvent(Rpc.PeerEvent peerEvent) {
+        Log.i(getClass().getName(), "New peer event");
+        lndSubscriptionEventHandler.handlePeerEvent(peerEvent);
+    }
+
+    /**
+     * Handle a new channel update.
+     * @param channelEventUpdate
+     */
+    protected void handleChannelEvent(Rpc.ChannelEventUpdate channelEventUpdate) {
+        Log.i(getClass().getName(), "New peer event");
+        lndSubscriptionEventHandler.handleChannelEventUpdate(channelEventUpdate);
+    }
+
+    /**
+     * Handle a new transaction.
+     * @param transaction
+     */
+    protected void handleTransaction(Rpc.Transaction transaction) {
+        Log.i(getClass().getName(), "New transaction");
+        lndSubscriptionEventHandler.handleTransaction(transaction);
     }
 
     /**
@@ -52,14 +80,6 @@ public class LndEventListener {
         });
     }
 
-    /**
-     * Handle a new peer event.
-     * @param peerEvent
-     */
-    protected void handlePeerEvent(Rpc.PeerEvent peerEvent) {
-        Log.i(getClass().getName(), "New peer event");
-        lndSubscriptionEventHandler.handlePeerEvent(peerEvent);
-    }
 
     /**
      * Listen for channel events from the LND daemon.
@@ -88,12 +108,33 @@ public class LndEventListener {
     }
 
     /**
-     * Handle a new channel update.
-     * @param channelEventUpdate
+     * Listen for transactinos from the LND daemon.
      */
-    protected void handleChannelEvent(Rpc.ChannelEventUpdate channelEventUpdate) {
-        Log.i(getClass().getName(), "New peer event");
-        lndSubscriptionEventHandler.handleChannelEventUpdate(channelEventUpdate);
+    private void listenTransactions() {
+        int startHeight = 0;
+        int endHeight = -1;
+
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(getClass().getName(),"Starting listenTransactions thread.");
+                // Keep the set updated with the results from the updates.
+                lndClient.subscribeTransactions(startHeight, endHeight, new LndClient.SubscribeTransactionsRecvStream() {
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(getClass().getName(), "Failed to get transaction: " + e);
+                        System.exit(1);
+                    }
+
+                    @Override
+                    public void onUpdate(Rpc.Transaction transaction) {
+                        handleTransaction(transaction);
+                    }
+                });
+
+            }
+        });
     }
+
 
 }

@@ -546,6 +546,41 @@ public class LndClient {
         public void onUpdate(Rpc.ChannelEventUpdate update);
     }
 
+    public void subscribeTransactions(int startHeight, int endHeight, SubscribeTransactionsRecvStream callBack) {
+        Rpc.GetTransactionsRequest request = Rpc.GetTransactionsRequest.newBuilder()
+                .setStartHeight(startHeight)
+                .setEndHeight(endHeight)
+                .build();
+        Lndmobile.subscribeTransactions(request.toByteArray(), new RecvStream() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Error from subscribeChannelEvents RecvStream: " + e);
+                callBack.onError(e);
+            }
+
+            @Override
+            public void onResponse(byte[] bytes) {
+                if (bytes == null) {
+                    Rpc.Transaction update = Rpc.Transaction.getDefaultInstance();
+                    callBack.onUpdate(update);
+                    return;
+                }
+
+                try {
+                    Rpc.Transaction update = Rpc.Transaction.parseFrom(bytes);
+                    callBack.onUpdate(update);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface SubscribeTransactionsRecvStream {
+        public void onError(Exception e);
+        public void onUpdate(Rpc.Transaction update);
+    }
+
     public void closeChannel(Rpc.ChannelPoint channelPoint, boolean force, CloseChannelEventsRecvStream callBack) {
         Rpc.CloseChannelRequest request = Rpc.CloseChannelRequest.newBuilder()
                 .setChannelPoint(channelPoint)
