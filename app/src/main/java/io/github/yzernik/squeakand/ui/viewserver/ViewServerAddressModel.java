@@ -22,7 +22,7 @@ public class ViewServerAddressModel extends AndroidViewModel {
     private OfferRepository offerRepository;
 
     private LiveData<SqueakServer> liveSqueakServer;
-    private LiveData<List<Offer>> liveOffers;
+    private LiveData<List<Offer>> livePaidOffers;
 
     public ViewServerAddressModel(@NonNull Application application, SqueakServerAddress serverAddress) {
         super(application);
@@ -31,15 +31,15 @@ public class ViewServerAddressModel extends AndroidViewModel {
         offerRepository = OfferRepository.getRepository(application);
 
         liveSqueakServer = mRepository.getSqueakServerByAddress(serverAddress);
-        liveOffers = offerRepository.getOffersForServer(serverAddress);
+        livePaidOffers = offerRepository.getPaidOffersForServer(serverAddress);
     }
 
     LiveData<SqueakServer> getLiveSqueakServer() {
         return liveSqueakServer;
     }
 
-    LiveData<List<Offer>> getLiveOffers() {
-        return liveOffers;
+    LiveData<List<Offer>> getLivePaidOffers() {
+        return livePaidOffers;
     }
 
 }

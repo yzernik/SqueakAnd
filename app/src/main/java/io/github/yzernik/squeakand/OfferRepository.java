@@ -46,6 +46,10 @@ public class OfferRepository {
         return mOfferDao.fetchOffersByServerAddress(serverAddress);
     }
 
+    public LiveData<List<Offer>> getPaidOffersForServer(SqueakServerAddress serverAddress) {
+        return mOfferDao.fetchPaidOffersByServerAddress(serverAddress);
+    }
+
     public LiveData<Offer> getOffer(int offerId) {
         return mOfferDao.fetchLiveOfferById(offerId);
     }

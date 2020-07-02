@@ -158,6 +158,11 @@ public class Offer {
     }
 
     @Ignore
+    public boolean hasPreimage() {
+        return preimage != null;
+    }
+
+    @Ignore
     public void setHasValidPreimage(boolean hasValidPreimage) {
         this.hasValidPreimage = hasValidPreimage;
     }

@@ -48,8 +48,8 @@ public class SqueakServerController {
         Offer localOffer = squeaksController.getOfferForSqueakAndServer(hash, server.getAddress());
         if (localOffer != null) {
             Log.i(getClass().getName(), "Got offer: " + localOffer + " from local database.");
-            // TODO: If the offer is expired, delete it.
-            if (true) {
+            // TODO: If the offer is expired (and not already paid and valid), delete it.
+            if (!localOffer.getHasValidPreimage()) {
                 squeaksController.deleteOffer(localOffer);
             } else {
                 return localOffer;

@@ -15,6 +15,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakServer;
 import io.github.yzernik.squeakand.ViewServerActivity;
@@ -83,6 +87,26 @@ public class ViewServerAddressFragment extends Fragment {
                     });
                 }
 
+            }
+        });
+
+        viewServerAddressModel.getLivePaidOffers().observe(getViewLifecycleOwner(), new Observer<List<Offer>>() {
+            @Override
+            public void onChanged(@Nullable final List<Offer> paidOffers) {
+                List<Offer> validPaidOffers = paidOffers.stream()
+                        .filter(offer -> offer.getHasValidPreimage())
+                        .collect(Collectors.toList());
+                List<Offer> invalidPaidOffers = paidOffers.stream()
+                        .filter(offer -> !offer.getHasValidPreimage())
+                        .collect(Collectors.toList());
+
+                int paidOffersCount = paidOffers.size();
+                int validPaidOffersCount = validPaidOffers.size();
+                int invalidPaidOffersCount = invalidPaidOffers.size();
+
+                serverPaidOffersText.setText(Integer.toString(paidOffersCount));
+                serverValidPaidOffersText.setText(Integer.toString(validPaidOffersCount));
+                serverInvalidPaidOffersText.setText(Integer.toString(invalidPaidOffersCount));
             }
         });
 
