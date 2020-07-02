@@ -120,6 +120,9 @@ public class SqueakControllerRepository {
                 Offer offer = mOfferDao.fetchOfferById(offerId);
                 Rpc.SendResponse response = squeaksController.payOffer(offer);
                 liveSendResponse.postValue(response);
+
+                // TODO: this can be removed when SubscribeHtlcEvents is working.
+                lndRepository.updateChannels();
             }
         });
         return liveSendResponse;

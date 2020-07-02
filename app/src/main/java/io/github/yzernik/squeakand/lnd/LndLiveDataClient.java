@@ -156,6 +156,10 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         return liveCloseChannel;
     }
 
+    public void updateChannels() {
+        setLiveChannels();
+    }
+
     private void setLiveGetInfo() {
         Log.i(getClass().getName(), "Getting GetInfo...");
         executorService.execute(new Runnable() {
