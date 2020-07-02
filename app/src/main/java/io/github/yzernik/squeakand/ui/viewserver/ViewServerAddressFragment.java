@@ -28,6 +28,9 @@ public class ViewServerAddressFragment extends Fragment {
     private Button editServerButton;
     private FrameLayout missingServerBanner;
     private FrameLayout presentServerBanner;
+    private TextView serverPaidOffersText;
+    private TextView serverValidPaidOffersText;
+    private TextView serverInvalidPaidOffersText;
 
     private ViewServerAddressModel viewServerAddressModel;
 
@@ -44,6 +47,9 @@ public class ViewServerAddressFragment extends Fragment {
         serverNameTextView = root.findViewById(R.id.server_address_profile_name_text);
         createServerButton = root.findViewById(R.id.server_address_create_profile_button);
         editServerButton = root.findViewById(R.id.server_address_edit_profile_button);
+        serverPaidOffersText = root.findViewById(R.id.server_address_paid_offers_text);
+        serverValidPaidOffersText = root.findViewById(R.id.server_address_valid_paid_offers_text);
+        serverInvalidPaidOffersText = root.findViewById(R.id.server_address_invalid_paid_offers_text);
 
         viewServerAddressModel = ViewModelProviders.of(this,
                 new ViewServerAddressModelFactory(getActivity().getApplication(), squeakServerAddress))
