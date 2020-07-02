@@ -1,7 +1,7 @@
 package io.github.yzernik.squeakand.ui.viewserver;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +10,14 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import io.github.yzernik.squeakand.R;
+import io.github.yzernik.squeakand.SqueakServer;
+import io.github.yzernik.squeakand.ViewServerActivity;
 import io.github.yzernik.squeakand.server.SqueakServerAddress;
 
 public class ViewServerAddressFragment extends Fragment {
@@ -46,6 +50,35 @@ public class ViewServerAddressFragment extends Fragment {
                 .get(ViewServerAddressModel.class);
 
         serverAddressTextView.setText(squeakServerAddress.toString());
+
+        viewServerAddressModel.getLiveSqueakServer().observe(getViewLifecycleOwner(), new Observer<SqueakServer>() {
+            @Override
+            public void onChanged(@Nullable final SqueakServer squeakServer) {
+                if (squeakServer == null) {
+                    presentServerBanner.setVisibility(View.GONE);
+                    missingServerBanner.setVisibility(View.VISIBLE);
+                    createServerButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // TODO: create a new server database entry for server address.
+                            // startActivity(new Intent(getActivity(), NewServerActivity.class).putExtra("squeak_address", squeakAddress));
+                        }
+                    });
+
+                } else {
+                    missingServerBanner.setVisibility(View.GONE);
+                    presentServerBanner.setVisibility(View.VISIBLE);
+                    serverNameTextView.setText(squeakServer.getName());
+                    editServerButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(getActivity(), ViewServerActivity.class).putExtra("server_id", squeakServer.getId()));
+                        }
+                    });
+                }
+
+            }
+        });
 
         return root;
     }
