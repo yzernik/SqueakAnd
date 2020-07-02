@@ -17,49 +17,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/total_balance_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Is synced to chain:"
-                android:layout_gravity="left|center_vertical"/>
-
-            <TextView
-                android:id="@+id/synced_to_chain_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textIsSelectable="true"
-                android:layout_gravity="right|center_vertical"/>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Is synced to graph:"
-                android:layout_gravity="left|center_vertical"/>
-
-            <TextView
-                android:id="@+id/synced_to_graph_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textIsSelectable="true"
-                android:layout_gravity="right|center_vertical"/>
-
-        </FrameLayout>
+            android:text=""
+            android:textSize="24sp"
+            android:layout_gravity="center"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -104,7 +68,6 @@
                 android:layout_gravity="right|center_vertical"/>
 
         </FrameLayout>
-
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -203,11 +166,33 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total balance (satoshis):"
+                android:text="Is synced to chain:"
                 android:layout_gravity="left|center_vertical"/>
 
             <TextView
-                android:id="@+id/total_balance_text"
+                android:id="@+id/synced_to_chain_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textIsSelectable="true"
+                android:layout_gravity="right|center_vertical"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Is synced to graph:"
+                android:layout_gravity="left|center_vertical"/>
+
+            <TextView
+                android:id="@+id/synced_to_graph_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
@@ -229,7 +214,6 @@
                 android:text="Receive bitcoins" />
 
         </FrameLayout>
-
 
     </LinearLayout>
 
