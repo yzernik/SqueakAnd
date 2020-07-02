@@ -95,7 +95,7 @@ public class MoneyBalanceFragment extends Fragment {
             public void onChanged(Rpc.WalletBalanceResponse response) {
                 mUnconfirmedBalance.setText(Long.toString(response.getUnconfirmedBalance()));
                 mConfirmedBalance.setText(Long.toString(response.getConfirmedBalance()));
-                mTotalBalance.setText(Long.toString(response.getTotalBalance()));
+                mTotalBalance.setText(Long.toString(response.getTotalBalance()) + " satoshis");
             }
         });
 
@@ -123,57 +123,7 @@ public class MoneyBalanceFragment extends Fragment {
                 mPendingForceCloseChannelsCountText.setText(pendingForceCloseChannelsCountString);
             }
         });
-
-
-
-        /*
-        // Get channels
-        moneyViewModel.listChannels().observe(getViewLifecycleOwner(), new Observer<Rpc.ListChannelsResponse>() {
-            @Override
-            public void onChanged(Rpc.ListChannelsResponse response) {
-                if (response == null) {
-                    return;
-                }
-                // TODO: create a recyclerview with the channels.
-                Log.i(getTag(), "Got channels: " + response.getChannelsList());
-            }
-        });
-
-        // Get peers
-        moneyViewModel.listPeers().observe(getViewLifecycleOwner(), new Observer<Rpc.ListPeersResponse>() {
-            @Override
-            public void onChanged(Rpc.ListPeersResponse response) {
-                if (response == null) {
-                    return;
-                }
-                // TODO: create a recyclerview with the channels.
-                Log.i(getTag(), "Got number of peers: " + response.getPeersList());
-                for (Rpc.Peer peer: response.getPeersList()) {
-                    Log.i(getTag(), "Got peer: " + peer);
-                }
-            }
-        });*/
-
     }
-
-
-    /*
-    private void showReceiveAddressAlertDialog(LayoutInflater inflater, String receiveAddress) {
-        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-        alertDialog.setTitle("Receive bitcoins");
-        String msg = String.format("Receive address: %s", receiveAddress);
-        alertDialog.setMessage(msg);
-
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Done",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        alertDialog.show();
-    }*/
-
 
     private void showReceiveAddressAlertDialog(LayoutInflater inflater, String receiveAddress) {
         final View view = inflater.inflate(R.layout.dialog_receive_bitcoins, null);
