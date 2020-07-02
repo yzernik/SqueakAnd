@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.OfferRepository;
 import io.github.yzernik.squeakand.OfferWithSqueakServer;
@@ -33,7 +34,7 @@ public class OfferModel extends AndroidViewModel {
         return liveOffer;
     }
 
-    public LiveData<Rpc.SendResponse> sendPayment() {
+    public LiveData<DataResult<Rpc.SendResponse>> sendPayment() {
         return squeakControllerRepository.buyOffer(offerId);
     }
 

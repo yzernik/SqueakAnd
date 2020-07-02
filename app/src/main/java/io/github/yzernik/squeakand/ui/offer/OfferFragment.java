@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import org.bitcoinj.core.Sha256Hash;
 
+import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.LightningNodeActivity;
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.OfferWithSqueakServer;
@@ -121,13 +122,14 @@ public class OfferFragment extends Fragment {
     }
 
     private void sendPayment() {
-        offerModel.sendPayment().observe(getViewLifecycleOwner(), new Observer<Rpc.SendResponse>() {
+        offerModel.sendPayment().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.SendResponse>>() {
             @Override
-            public void onChanged(@Nullable Rpc.SendResponse response) {
-                if (response == null) {
+            public void onChanged(@Nullable DataResult<Rpc.SendResponse> result) {
+                if (result.isFailure()) {
+                    handleFailedPayment(result.getError().toString());
                     return;
                 }
-                handlePaymentResult(response);
+                handlePaymentResult(result.getResponse());
             }
         });
     }
@@ -155,7 +157,7 @@ public class OfferFragment extends Fragment {
         if (!response.getPaymentPreimage().isEmpty()) {
             handleSuccessfulPayment(response);
         } else {
-            handleFailedPayment(response);
+            handleFailedPayment(response.getPaymentError());
         }
     }
 
@@ -165,8 +167,7 @@ public class OfferFragment extends Fragment {
         getActivity().finish();
     }
 
-    private void handleFailedPayment(Rpc.SendResponse response) {
-        String error = response.getPaymentError();
+    private void handleFailedPayment(String error) {
         showFailedPaymentAlert(error);
     }
 
