@@ -94,8 +94,8 @@ public class LndRepository {
         return lndLiveDataClient.getLivePendingChannels();
     }
 
-    public LiveData<DataResult<Rpc.TransactionDetails>> getTransactions(int startHeight, int endHeight) {
-        return lndLiveDataClient.getTransactions(startHeight, endHeight);
+    public LiveData<Rpc.TransactionDetails> getTransactions() {
+        return lndLiveDataClient.getLiveTransactions();
     }
 
     public LiveData<DataResult<Rpc.NewAddressResponse>> newAddress() {

@@ -23,6 +23,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
     private MutableLiveData<Rpc.WalletBalanceResponse> liveWalletBalanceResponse;
     private MutableLiveData<Rpc.ListChannelsResponse> liveListChannelsResponse;
     private MutableLiveData<Rpc.PendingChannelsResponse> livePendingChannelsResponse;
+    private MutableLiveData<Rpc.TransactionDetails> liveTransactionDetails;
 
     public LndLiveDataClient(LndSyncClient lndSyncClient, ExecutorService executorService) {
         this.executorService = executorService;
@@ -32,6 +33,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         this.liveWalletBalanceResponse = new MutableLiveData<>();
         this.liveListChannelsResponse = new MutableLiveData<>();
         this.livePendingChannelsResponse = new MutableLiveData<>();
+        this.liveTransactionDetails = new MutableLiveData<>();
     }
 
     public LiveData<LndWalletStatus> getLndWalletStatus() {
@@ -54,21 +56,8 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         return livePendingChannelsResponse;
     }
 
-    public LiveData<DataResult<Rpc.TransactionDetails>> getTransactions(int startHeight, int endHeight) {
-        MutableLiveData<DataResult<Rpc.TransactionDetails>> liveDataResult = new MutableLiveData<>();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Rpc.TransactionDetails response = lndSyncClient.getTransactions(startHeight, endHeight);
-                    liveDataResult.postValue(DataResult.ofSuccess(response));
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
-                    liveDataResult.postValue(DataResult.ofFailure(e));
-                }
-            }
-        });
-        return liveDataResult;
+    public LiveData<Rpc.TransactionDetails> getLiveTransactions() {
+        return liveTransactionDetails;
     }
 
     public LiveData<DataResult<Rpc.NewAddressResponse>> newAddress() {
@@ -264,6 +253,22 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         });
     }
 
+    private void setLiveTransactionDetails() {
+        Log.i(getClass().getName(), "Getting transactions...");
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Rpc.TransactionDetails response = lndSyncClient.getTransactions(0, -1);
+                    Log.i(getClass().getName(), "Got TransactionDetails: " + response);
+                    liveTransactionDetails.postValue(response);
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     public LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannel(Rpc.ChannelPoint channelPoint, boolean force) {
         Log.i(getClass().getName(), "Getting closeChannel...");
         MutableLiveData<DataResult<Rpc.CloseStatusUpdate>> liveCloseChannel = new MutableLiveData<>();
@@ -315,6 +320,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
     public void handleTransaction(Rpc.Transaction transaction) {
         setLiveGetInfo();
         setLiveWalletBalance();
+        setLiveTransactionDetails();
     }
 
     @Override
@@ -333,5 +339,6 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         setLiveWalletBalance();
         setLiveChannels();
         setLivePendingChannels();
+        setLiveTransactionDetails();
     }
 }
