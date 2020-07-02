@@ -90,16 +90,12 @@ public class MoneyBalanceFragment extends Fragment {
         });
 
         // Get wallet balance
-        moneyViewModel.walletBalance().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.WalletBalanceResponse>>() {
+        moneyViewModel.walletBalance().observe(getViewLifecycleOwner(), new Observer<Rpc.WalletBalanceResponse>() {
             @Override
-            public void onChanged(DataResult<Rpc.WalletBalanceResponse> response) {
-                if (!response.isSuccess()) {
-                    return;
-                }
-                Rpc.WalletBalanceResponse walletBalanceResponse = response.getResponse();
-                mUnconfirmedBalance.setText(Long.toString(walletBalanceResponse.getUnconfirmedBalance()));
-                mConfirmedBalance.setText(Long.toString(walletBalanceResponse.getConfirmedBalance()));
-                mTotalBalance.setText(Long.toString(walletBalanceResponse.getTotalBalance()));
+            public void onChanged(Rpc.WalletBalanceResponse response) {
+                mUnconfirmedBalance.setText(Long.toString(response.getUnconfirmedBalance()));
+                mConfirmedBalance.setText(Long.toString(response.getConfirmedBalance()));
+                mTotalBalance.setText(Long.toString(response.getTotalBalance()));
             }
         });
 

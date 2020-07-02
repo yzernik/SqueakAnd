@@ -70,12 +70,9 @@ public class LightningNodeConnectionModel extends AndroidViewModel {
     }
 
     public LiveData<Long> liveConfirmedBalance() {
-        LiveData<DataResult<Rpc.WalletBalanceResponse>> liveWalletBalance = lndRepository.walletBalance();
-        return Transformations.map(liveWalletBalance, walletBalance -> {
-            if (!walletBalance.isSuccess()) {
-                return null;
-            }
-            return walletBalance.getResponse().getConfirmedBalance();
+        LiveData<Rpc.WalletBalanceResponse> liveWalletBalance = lndRepository.walletBalance();
+        return Transformations.map(liveWalletBalance, response -> {
+            return response.getConfirmedBalance();
         });
     }
 

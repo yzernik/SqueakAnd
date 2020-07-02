@@ -5,11 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -24,7 +20,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
     private ExecutorService executorService;
     private MutableLiveData<LndWalletStatus> liveLndWalletStatus;
     private MutableLiveData<Rpc.GetInfoResponse> liveGetInfoResponse;
-    private MutableLiveData<Rpc.WalletBalanceResponse> liveWalletBalance;
+    private MutableLiveData<Rpc.WalletBalanceResponse> liveWalletBalanceResponse;
     private MutableLiveData<Rpc.ListChannelsResponse> liveListChannelsResponse;
     private MutableLiveData<Rpc.PendingChannelsResponse> livePendingChannelsResponse;
 
@@ -33,7 +29,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         this.lndSyncClient = lndSyncClient;
         this.liveLndWalletStatus = new MutableLiveData<>();
         this.liveGetInfoResponse = new MutableLiveData<>();
-        this.liveWalletBalance = new MutableLiveData<>();
+        this.liveWalletBalanceResponse = new MutableLiveData<>();
         this.liveListChannelsResponse = new MutableLiveData<>();
         this.livePendingChannelsResponse = new MutableLiveData<>();
     }
@@ -47,7 +43,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
     }
 
     public LiveData<Rpc.WalletBalanceResponse> getLiveWalletBalance() {
-        return liveWalletBalance;
+        return liveWalletBalanceResponse;
     }
 
     public LiveData<Rpc.ListChannelsResponse> getLiveChannels() {
@@ -57,40 +53,6 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
     public LiveData<Rpc.PendingChannelsResponse> getLivePendingChannels() {
         return livePendingChannelsResponse;
     }
-
-    public LiveData<DataResult<Rpc.WalletBalanceResponse>> walletBalance() {
-        MutableLiveData<DataResult<Rpc.WalletBalanceResponse>> liveDataResult = new MutableLiveData<>();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Rpc.WalletBalanceResponse response = lndSyncClient.walletBalance();
-                    liveDataResult.postValue(DataResult.ofSuccess(response));
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
-                    liveDataResult.postValue(DataResult.ofFailure(e));
-                }
-            }
-        });
-        return liveDataResult;
-    }
-
-/*    public LiveData<DataResult<Rpc.ListChannelsResponse>> listChannels() {
-        MutableLiveData<DataResult<Rpc.ListChannelsResponse>> liveDataResult = new MutableLiveData<>();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Rpc.ListChannelsResponse response = lndSyncClient.listChannels();
-                    liveDataResult.postValue(DataResult.ofSuccess(response));
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
-                    liveDataResult.postValue(DataResult.ofFailure(e));
-                }
-            }
-        });
-        return liveDataResult;
-    }*/
 
     public LiveData<DataResult<Rpc.TransactionDetails>> getTransactions(int startHeight, int endHeight) {
         MutableLiveData<DataResult<Rpc.TransactionDetails>> liveDataResult = new MutableLiveData<>();
@@ -262,7 +224,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
                 try {
                     Rpc.WalletBalanceResponse response = lndSyncClient.walletBalance();
                     Log.i(getClass().getName(), "Got WalletBalanceResponse: " + response);
-                    liveWalletBalance.postValue(response);
+                    liveWalletBalanceResponse.postValue(response);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
                 }

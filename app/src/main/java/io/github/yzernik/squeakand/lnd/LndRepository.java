@@ -5,7 +5,6 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -63,12 +62,6 @@ public class LndRepository {
         return lndLiveDataClient.getLndWalletStatus();
     }
 
-/*
-    public boolean isWalletUnlocked() {
-        return lndController.isWalletUnlocked();
-    }
-*/
-
     public void waitForWalletUnlocked() throws InterruptedException {
         lndController.waitForWalletUnlocked();
     }
@@ -80,12 +73,6 @@ public class LndRepository {
     public void initWallet() throws InterruptedException {
         lndController.initWallet();
     }
-
-/*
-    public boolean hasWallet() {
-        return lndController.hasWallet();
-    }
-*/
 
     public String[] getWalletSeedWords() {
         return lndController.getSeedWords();
@@ -99,8 +86,8 @@ public class LndRepository {
         return lndLiveDataClient.getLiveGetInfo();
     }
 
-    public LiveData<DataResult<Rpc.WalletBalanceResponse>> walletBalance() {
-        return lndLiveDataClient.walletBalance();
+    public LiveData<Rpc.WalletBalanceResponse> walletBalance() {
+        return lndLiveDataClient.getLiveWalletBalance();
     }
 
     public LiveData<Rpc.PendingChannelsResponse> pendingChannels() {
