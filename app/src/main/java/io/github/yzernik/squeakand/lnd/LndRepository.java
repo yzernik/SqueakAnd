@@ -5,7 +5,6 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,18 +16,21 @@ public class LndRepository {
 
     private static volatile LndRepository INSTANCE;
 
-    // private LndClient lndClient;
+    private LndClient lndClient;
     private LndSyncClient lndSyncClient;
     private ExecutorService executorService;
     private LndLiveDataClient lndLiveDataClient;
+    private LndEventListener lndEventListener;
     private LndController lndController;
 
     private LndRepository(Application application) {
         // Singleton constructor, only called by static method.
+        this.lndClient = new LndClient();
         this.lndSyncClient = new LndSyncClient();
         this.executorService = Executors.newCachedThreadPool();
         this.lndLiveDataClient = new LndLiveDataClient(lndSyncClient, executorService);
-        this.lndController = new LndController(application, "testnet", lndLiveDataClient);
+        this.lndEventListener = new LndEventListener(lndClient, lndLiveDataClient, executorService);
+        this.lndController = new LndController(application, "testnet", lndLiveDataClient, lndEventListener);
     }
 
     public static LndRepository getRepository(Application application) {
@@ -60,12 +62,6 @@ public class LndRepository {
         return lndLiveDataClient.getLndWalletStatus();
     }
 
-/*
-    public boolean isWalletUnlocked() {
-        return lndController.isWalletUnlocked();
-    }
-*/
-
     public void waitForWalletUnlocked() throws InterruptedException {
         lndController.waitForWalletUnlocked();
     }
@@ -78,12 +74,6 @@ public class LndRepository {
         lndController.initWallet();
     }
 
-/*
-    public boolean hasWallet() {
-        return lndController.hasWallet();
-    }
-*/
-
     public String[] getWalletSeedWords() {
         return lndController.getSeedWords();
     }
@@ -92,24 +82,20 @@ public class LndRepository {
         lndController.deleteWallet();
     }
 
-    public LiveData<DataResult<Rpc.GetInfoResponse>> getInfo() {
-        return lndLiveDataClient.getInfo();
+    public LiveData<Rpc.GetInfoResponse> getInfo() {
+        return lndLiveDataClient.getLiveGetInfo();
     }
 
-    public LiveData<DataResult<Rpc.WalletBalanceResponse>> walletBalance() {
-        return lndLiveDataClient.walletBalance();
+    public LiveData<Rpc.WalletBalanceResponse> walletBalance() {
+        return lndLiveDataClient.getLiveWalletBalance();
     }
 
-    public LiveData<DataResult<Rpc.ListChannelsResponse>> listChannels() {
-        return lndLiveDataClient.listChannels();
+    public LiveData<Rpc.PendingChannelsResponse> pendingChannels() {
+        return lndLiveDataClient.getLivePendingChannels();
     }
 
-    public LiveData<DataResult<Rpc.PendingChannelsResponse>> pendingChannels() {
-        return lndLiveDataClient.pendingChannels();
-    }
-
-    public LiveData<DataResult<Rpc.TransactionDetails>> getTransactions(int startHeight, int endHeight) {
-        return lndLiveDataClient.getTransactions(startHeight, endHeight);
+    public LiveData<Rpc.TransactionDetails> getTransactions() {
+        return lndLiveDataClient.getLiveTransactions();
     }
 
     public LiveData<DataResult<Rpc.NewAddressResponse>> newAddress() {
@@ -124,8 +110,8 @@ public class LndRepository {
         return lndLiveDataClient.connectPeer(pubkey, host);
     }
 
-    public LiveData<DataResult<Rpc.ListPeersResponse>> listPeers() {
-        return lndLiveDataClient.listPeers();
+    public LiveData<Rpc.ListPeersResponse> listPeers() {
+        return lndLiveDataClient.getLivePeers();
     }
 
     public LiveData<DataResult<Rpc.ChannelPoint>> openChannel(String pubkey, long amount) {
@@ -147,11 +133,7 @@ public class LndRepository {
         return lndLiveDataClient.closeChannel(channelPoint, force);
     }
 
-    public LiveData<Set<String>> liveConnectedPeers() {
-        return lndLiveDataClient.liveConnectedPeers();
-    }
-
-    public LiveData<List<Rpc.Channel>> getLiveChannels() {
+    public LiveData<Rpc.ListChannelsResponse> getLiveChannels() {
         return lndLiveDataClient.getLiveChannels();
     }
 

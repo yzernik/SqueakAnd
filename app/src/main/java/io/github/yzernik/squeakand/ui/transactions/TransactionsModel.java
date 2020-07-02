@@ -23,12 +23,8 @@ public class TransactionsModel extends AndroidViewModel {
     }
 
     LiveData<List<Rpc.Transaction>> listTransactions() {
-        LiveData<DataResult<Rpc.TransactionDetails>> liveTransactionsResult = lndRepository.getTransactions(0, -1);
-        return Transformations.map(liveTransactionsResult, transactionsResult -> {
-            if (transactionsResult.isFailure()) {
-                return null;
-            }
-            Rpc.TransactionDetails transactionDetails = transactionsResult.getResponse();
+        LiveData<Rpc.TransactionDetails> liveTransactionsResult = lndRepository.getTransactions();
+        return Transformations.map(liveTransactionsResult, transactionDetails -> {
             return transactionDetails.getTransactionsList();
         });
     }

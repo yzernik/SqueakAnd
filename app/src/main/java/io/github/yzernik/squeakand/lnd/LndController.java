@@ -24,6 +24,7 @@ public class LndController {
     private final LndClient lndClient;
     private final Preferences preferences;
     private final LndSyncClient lndSyncClient;
+    private final LndEventListener lndEventListener;
 
     private CountDownLatch serverStartedLatch;
     private CountDownLatch walletUnlockedLatch;
@@ -31,7 +32,7 @@ public class LndController {
     private LndControllerUpdateHandler lndControllerUpdateHandler;
     private LndWalletStatus lndWalletStatus;
 
-    public LndController(Application application, String network, LndControllerUpdateHandler lndControllerUpdateHandler, String password) {
+    public LndController(Application application, String network, LndControllerUpdateHandler lndControllerUpdateHandler, LndEventListener lndEventListener, String password) {
         this.lndDir = Paths.get(application.getFilesDir().toString(), LND_DIR_RELATIVE_PATH).toString();
         this.network = network;
         this.password = password;
@@ -42,6 +43,8 @@ public class LndController {
         this.lndControllerUpdateHandler = lndControllerUpdateHandler;
         this.lndWalletStatus = new LndWalletStatus();
 
+        this.lndEventListener = lndEventListener;
+
         this.serverStartedLatch = new CountDownLatch(1);
         this.walletUnlockedLatch = new CountDownLatch(1);
 
@@ -49,8 +52,8 @@ public class LndController {
         updateWalletExists();
     }
 
-    public LndController(Application application, String network, LndControllerUpdateHandler lndControllerUpdateHandler) {
-        this(application, network, lndControllerUpdateHandler, DEFAULT_PASSWORD);
+    public LndController(Application application, String network, LndControllerUpdateHandler lndControllerUpdateHandler, LndEventListener lndEventListener) {
+        this(application, network, lndControllerUpdateHandler, lndEventListener, DEFAULT_PASSWORD);
     }
 
     /**
@@ -80,6 +83,7 @@ public class LndController {
             public void onResponse2() {
                 walletUnlockedLatch.countDown();
                 setRpcReady(true);
+                lndEventListener.listenSubscriptionEvents();
             }
         });
     }
@@ -252,7 +256,6 @@ public class LndController {
 
     public interface LndControllerUpdateHandler {
         void setWalletStatus(LndWalletStatus status);
-        void onRpcReady();
     }
 
 }

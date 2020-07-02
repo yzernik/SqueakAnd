@@ -38,13 +38,17 @@ public class LightningNodeConnectionModel extends AndroidViewModel {
         return host;
     }
 
-    private LiveData<Set<String>> liveConnectedPeers() {
-        return lndRepository.liveConnectedPeers();
+    private LiveData<Rpc.ListPeersResponse> livePeers() {
+        return lndRepository.listPeers();
     }
 
     public LiveData<Boolean> liveIsPeerConnected() {
-        return Transformations.map(liveConnectedPeers(), connectedPeers -> {
-            return connectedPeers.contains(pubkey);
+        return Transformations.map(livePeers(), response -> {
+            List<Rpc.Peer> peers = response.getPeersList();
+            List<String> pubkeys = peers.stream()
+                    .map(peer -> peer.getPubKey())
+                    .collect(Collectors.toList());
+            return pubkeys.contains(pubkey);
         });
     }
 
@@ -56,12 +60,13 @@ public class LightningNodeConnectionModel extends AndroidViewModel {
         return lndRepository.openChannel(pubkey, amount);
     }
 
-    private LiveData<List<Rpc.Channel>> listChannels() {
+    private LiveData<Rpc.ListChannelsResponse> listChannels() {
         return lndRepository.getLiveChannels();
     }
 
     public LiveData<List<Rpc.Channel>> listNodeChannels() {
-        return Transformations.map(listChannels(), channels -> {
+        return Transformations.map(listChannels(), response -> {
+            List<Rpc.Channel> channels = response.getChannelsList();
             return channels.stream()
                     .filter(channel -> channel.getRemotePubkey().equals(pubkey))
                     .collect(Collectors.toList());
@@ -69,12 +74,9 @@ public class LightningNodeConnectionModel extends AndroidViewModel {
     }
 
     public LiveData<Long> liveConfirmedBalance() {
-        LiveData<DataResult<Rpc.WalletBalanceResponse>> liveWalletBalance = lndRepository.walletBalance();
-        return Transformations.map(liveWalletBalance, walletBalance -> {
-            if (!walletBalance.isSuccess()) {
-                return null;
-            }
-            return walletBalance.getResponse().getConfirmedBalance();
+        LiveData<Rpc.WalletBalanceResponse> liveWalletBalance = lndRepository.walletBalance();
+        return Transformations.map(liveWalletBalance, response -> {
+            return response.getConfirmedBalance();
         });
     }
 

@@ -25,12 +25,13 @@ public class LightningNodeChannelsModel extends AndroidViewModel {
         this.lndRepository = LndRepository.getRepository(application);
     }
 
-    private LiveData<List<Rpc.Channel>> listChannels() {
+    private LiveData<Rpc.ListChannelsResponse> listChannels() {
         return lndRepository.getLiveChannels();
     }
 
     public LiveData<List<Rpc.Channel>> listNodeChannels() {
-        return Transformations.map(listChannels(), channels -> {
+        return Transformations.map(listChannels(), response -> {
+            List<Rpc.Channel> channels = response.getChannelsList();
             return channels.stream()
                     .filter(channel -> channel.getRemotePubkey().equals(pubkey))
                     .collect(Collectors.toList());
