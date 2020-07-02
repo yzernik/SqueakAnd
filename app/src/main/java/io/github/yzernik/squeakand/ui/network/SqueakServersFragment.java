@@ -25,6 +25,7 @@ import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.ServerListAdapter;
 import io.github.yzernik.squeakand.SqueakServer;
 import io.github.yzernik.squeakand.ViewServerActivity;
+import io.github.yzernik.squeakand.ViewServerAddressActivity;
 import io.github.yzernik.squeakand.server.SqueakServerAddress;
 
 public class SqueakServersFragment extends Fragment implements ServerListAdapter.ClickListener {
@@ -130,9 +131,12 @@ public class SqueakServersFragment extends Fragment implements ServerListAdapter
 
 
     @Override
-    public void handleItemClick(int id) {
-        Log.i(getTag(), "Clicked on server id: " + id);
-        startActivity(new Intent(getActivity(), ViewServerActivity.class).putExtra("server_id", id));
+    public void handleItemClick(SqueakServer squeakServer) {
+        Log.i(getTag(), "Clicked on server id: " + squeakServer.getId());
+        // startActivity(new Intent(getActivity(), ViewServerActivity.class).putExtra("server_id", id));
+
+        String squeakServerAddressString = squeakServer.getAddress().toString();
+        startActivity(new Intent(getActivity(), ViewServerAddressActivity.class).putExtra("squeak_server_address", squeakServerAddressString));
     }
 
 }

@@ -6,11 +6,15 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.TypeConverters;
 import androidx.room.Update;
 
 import java.util.List;
 
+import io.github.yzernik.squeakand.server.SqueakServerAddress;
+
 @Dao
+@TypeConverters({Converters.class})
 public interface SqueakServerDao {
 
     String getServersQuery = "SELECT * from " + SqueakRoomDatabase.TABLE_NAME_SERVER;
@@ -23,6 +27,9 @@ public interface SqueakServerDao {
 
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SERVER + " WHERE server_id = :serverId")
     LiveData<SqueakServer> fetchServerById(int serverId);
+
+    @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SERVER + " WHERE serverAddress = :serverAddress")
+    LiveData<SqueakServer> fetchServerByAddress(SqueakServerAddress serverAddress);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(SqueakServer squeakServer);

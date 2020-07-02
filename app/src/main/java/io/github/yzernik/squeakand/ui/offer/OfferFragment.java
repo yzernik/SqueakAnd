@@ -26,7 +26,9 @@ import io.github.yzernik.squeakand.OfferWithSqueakServer;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakServer;
 import io.github.yzernik.squeakand.ViewServerActivity;
+import io.github.yzernik.squeakand.ViewServerAddressActivity;
 import io.github.yzernik.squeakand.ViewSqueakActivity;
+import io.github.yzernik.squeakand.server.SqueakServerAddress;
 import lnrpc.Rpc;
 
 public class OfferFragment extends Fragment {
@@ -91,7 +93,7 @@ public class OfferFragment extends Fragment {
                 btnViewServer.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startViewSqueakServerActivity(squeakServer.server_id);
+                        startViewSqueakServerActivity(squeakServer.getAddress());
                     }
                 });
 
@@ -143,9 +145,9 @@ public class OfferFragment extends Fragment {
         );
     }
 
-    private void startViewSqueakServerActivity(int serverId) {
-        startActivity(new Intent(getActivity(), ViewServerActivity.class)
-                .putExtra("server_id", serverId)
+    private void startViewSqueakServerActivity(SqueakServerAddress serverAddress) {
+        startActivity(new Intent(getActivity(), ViewServerAddressActivity.class)
+                .putExtra("squeak_server_address", serverAddress.toString())
         );
     }
 

@@ -50,6 +50,10 @@
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_view_profile" />
         <activity
+            android:name=".ViewServerAddressActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/activity_view_server_address" />
+        <activity
             android:name=".ViewServerActivity"
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_view_server" />
