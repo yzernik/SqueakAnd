@@ -81,14 +81,11 @@ public class MoneyBalanceFragment extends Fragment {
     private void updateGetInfo () {
 
         // Get info
-        moneyViewModel.getInfo().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.GetInfoResponse>>() {
+        moneyViewModel.getInfo().observe(getViewLifecycleOwner(), new Observer<Rpc.GetInfoResponse>() {
             @Override
-            public void onChanged(DataResult<Rpc.GetInfoResponse> response) {
-                if (!response.isSuccess()) {
-                    return;
-                }
-                mSyncedToChainText.setText(Boolean.toString(response.getResponse().getSyncedToChain()));
-                mSyncedToGraphText.setText(Boolean.toString(response.getResponse().getSyncedToGraph()));
+            public void onChanged(Rpc.GetInfoResponse response) {
+                mSyncedToChainText.setText(Boolean.toString(response.getSyncedToChain()));
+                mSyncedToGraphText.setText(Boolean.toString(response.getSyncedToGraph()));
             }
         });
 
@@ -107,26 +104,20 @@ public class MoneyBalanceFragment extends Fragment {
         });
 
         // Get open channels
-        moneyViewModel.listChannels().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.ListChannelsResponse>>() {
+        moneyViewModel.listChannels().observe(getViewLifecycleOwner(), new Observer<Rpc.ListChannelsResponse>() {
             @Override
-            public void onChanged(DataResult<Rpc.ListChannelsResponse> responseResult) {
-                if (!responseResult.isSuccess()) {
-                    return;
-                }
-                Rpc.ListChannelsResponse response = responseResult.getResponse();
-                String openChannelsCountString = Integer.toString(response.getChannelsCount());
+            public void onChanged(Rpc.ListChannelsResponse response) {
+                List<Rpc.Channel> channels = response.getChannelsList();
+                int channelsCount = channels.size();
+                String openChannelsCountString = Integer.toString(channelsCount);
                 mOpenChannelsCountText.setText(openChannelsCountString);
             }
         });
 
         // Get pending channels
-        moneyViewModel.pendingChannels().observe(getViewLifecycleOwner(), new Observer<DataResult<Rpc.PendingChannelsResponse>>() {
+        moneyViewModel.pendingChannels().observe(getViewLifecycleOwner(), new Observer<Rpc.PendingChannelsResponse>() {
             @Override
-            public void onChanged(DataResult<Rpc.PendingChannelsResponse> responseResult) {
-                if (!responseResult.isSuccess()) {
-                    return;
-                }
-                Rpc.PendingChannelsResponse response = responseResult.getResponse();
+            public void onChanged(Rpc.PendingChannelsResponse response) {
                 Log.i(getTag(), "Got PendingChannelsResponse:" + response);
                 String pendingOpenChannelsCountString = Integer.toString(response.getPendingOpenChannelsCount());
                 String pendingCloseChannelsCountString = Integer.toString(response.getWaitingCloseChannelsCount());

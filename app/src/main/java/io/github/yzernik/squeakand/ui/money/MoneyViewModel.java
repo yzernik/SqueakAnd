@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import java.util.List;
+
 import io.github.yzernik.squeakand.lnd.LndRepository;
 import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.lnd.LndWalletStatus;
@@ -23,7 +25,7 @@ public class MoneyViewModel  extends AndroidViewModel {
         this.liveLndWalletStatus = lndRepository.getLndWalletStatus();
     }
 
-    LiveData<DataResult<Rpc.GetInfoResponse>> getInfo() {
+    LiveData<Rpc.GetInfoResponse> getInfo() {
         return lndRepository.getInfo();
     }
 
@@ -31,11 +33,11 @@ public class MoneyViewModel  extends AndroidViewModel {
         return lndRepository.walletBalance();
     }
 
-    LiveData<DataResult<Rpc.ListChannelsResponse>> listChannels() {
-        return lndRepository.listChannels();
+    LiveData<Rpc.ListChannelsResponse> listChannels() {
+        return lndRepository.getLiveChannels();
     }
 
-    LiveData<DataResult<Rpc.PendingChannelsResponse>> pendingChannels() {
+    LiveData<Rpc.PendingChannelsResponse> pendingChannels() {
         return lndRepository.pendingChannels();
     }
 

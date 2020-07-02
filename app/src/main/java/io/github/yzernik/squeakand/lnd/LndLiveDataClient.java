@@ -18,37 +18,44 @@ import java.util.concurrent.TimeoutException;
 import io.github.yzernik.squeakand.DataResult;
 import lnrpc.Rpc;
 
-public class LndLiveDataClient implements LndController.LndControllerUpdateHandler {
+public class LndLiveDataClient implements LndController.LndControllerUpdateHandler, LndSubscriptionEventHandler {
 
     private LndSyncClient lndSyncClient;
     private ExecutorService executorService;
     private MutableLiveData<LndWalletStatus> liveLndWalletStatus;
+    private MutableLiveData<Rpc.GetInfoResponse> liveGetInfoResponse;
+    private MutableLiveData<Rpc.WalletBalanceResponse> liveWalletBalance;
+    private MutableLiveData<Rpc.ListChannelsResponse> liveListChannelsResponse;
+    private MutableLiveData<Rpc.PendingChannelsResponse> livePendingChannelsResponse;
 
     public LndLiveDataClient(LndSyncClient lndSyncClient, ExecutorService executorService) {
         this.executorService = executorService;
         this.lndSyncClient = lndSyncClient;
         this.liveLndWalletStatus = new MutableLiveData<>();
+        this.liveGetInfoResponse = new MutableLiveData<>();
+        this.liveWalletBalance = new MutableLiveData<>();
+        this.liveListChannelsResponse = new MutableLiveData<>();
+        this.livePendingChannelsResponse = new MutableLiveData<>();
     }
 
     public LiveData<LndWalletStatus> getLndWalletStatus() {
         return liveLndWalletStatus;
     }
 
-    public LiveData<DataResult<Rpc.GetInfoResponse>> getInfo() {
-        MutableLiveData<DataResult<Rpc.GetInfoResponse>> liveDataResult = new MutableLiveData<>();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Rpc.GetInfoResponse response = lndSyncClient.getInfo();
-                    liveDataResult.postValue(DataResult.ofSuccess(response));
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
-                    liveDataResult.postValue(DataResult.ofFailure(e));
-                }
-            }
-        });
-        return liveDataResult;
+    public LiveData<Rpc.GetInfoResponse> getLiveGetInfo() {
+        return liveGetInfoResponse;
+    }
+
+    public LiveData<Rpc.WalletBalanceResponse> getLiveWalletBalance() {
+        return liveWalletBalance;
+    }
+
+    public LiveData<Rpc.ListChannelsResponse> getLiveChannels() {
+        return liveListChannelsResponse;
+    }
+
+    public LiveData<Rpc.PendingChannelsResponse> getLivePendingChannels() {
+        return livePendingChannelsResponse;
     }
 
     public LiveData<DataResult<Rpc.WalletBalanceResponse>> walletBalance() {
@@ -68,7 +75,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         return liveDataResult;
     }
 
-    public LiveData<DataResult<Rpc.ListChannelsResponse>> listChannels() {
+/*    public LiveData<DataResult<Rpc.ListChannelsResponse>> listChannels() {
         MutableLiveData<DataResult<Rpc.ListChannelsResponse>> liveDataResult = new MutableLiveData<>();
         executorService.execute(new Runnable() {
             @Override
@@ -83,24 +90,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
             }
         });
         return liveDataResult;
-    }
-
-    public LiveData<DataResult<Rpc.PendingChannelsResponse>> pendingChannels() {
-        MutableLiveData<DataResult<Rpc.PendingChannelsResponse>> liveDataResult = new MutableLiveData<>();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Rpc.PendingChannelsResponse response = lndSyncClient.pendingChannels();
-                    liveDataResult.postValue(DataResult.ofSuccess(response));
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
-                    liveDataResult.postValue(DataResult.ofFailure(e));
-                }
-            }
-        });
-        return liveDataResult;
-    }
+    }*/
 
     public LiveData<DataResult<Rpc.TransactionDetails>> getTransactions(int startHeight, int endHeight) {
         MutableLiveData<DataResult<Rpc.TransactionDetails>> liveDataResult = new MutableLiveData<>();
@@ -248,70 +238,68 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
         return livePeers;
     }
 
-    public LiveData<List<Rpc.Channel>> getLiveChannels() {
-        Log.i(getClass().getName(), "Getting channels...");
-        MutableLiveData<List<Rpc.Channel>> liveChannels = new MutableLiveData<>();
+    private void setLiveGetInfo() {
+        Log.i(getClass().getName(), "Getting GetInfo...");
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-
                 try {
-                    Rpc.ListChannelsResponse listChannelsResponse = lndSyncClient.listChannels();
-                    Log.i(getClass().getName(), "Got listChannelsResponse with size: " + listChannelsResponse.getChannelsList().size());
-                    Map<String, Rpc.Channel> channels = new HashMap<>();
-
-                    // Add the initial channels to the map.
-                    for (Rpc.Channel channel: listChannelsResponse.getChannelsList()) {
-                        channels.put(channel.getChannelPoint(), channel);
-                    }
-                    liveChannels.postValue(new ArrayList<>(channels.values()));
-
-                    // Keep the set updated with the results from the updates.
-                    lndSyncClient.subscribeChannelEvents(new LndClient.SubscribeChannelEventsRecvStream() {
-                        @Override
-                        public void onError(Exception e) {
-                            Log.e(getClass().getName(), "Failed to get peer event update: " + e);
-                        }
-
-                        @Override
-                        public void onUpdate(Rpc.ChannelEventUpdate update) {
-                            if (update.getType().equals(Rpc.ChannelEventUpdate.UpdateType.OPEN_CHANNEL)) {
-                                // Add the new channel to the map
-                                Rpc.Channel channel = update.getOpenChannel();
-                                channels.put(channel.getChannelPoint(), channel);
-                            } else if (update.getType().equals(Rpc.ChannelEventUpdate.UpdateType.CLOSED_CHANNEL)) {
-                                // Remove the existing channel from the map
-                                Rpc.ChannelCloseSummary channelCloseSummary = update.getClosedChannel();
-                                channels.remove(channelCloseSummary.getChannelPoint());
-                            } else if (update.getType().equals(Rpc.ChannelEventUpdate.UpdateType.ACTIVE_CHANNEL)) {
-                                // Replace the existing channel with a new one with active field set to true.
-                                Rpc.ChannelPoint channelPoint = update.getActiveChannel();
-                                String channelPointString = ChannelPointUtil.stringFromChannelPoint(channelPoint);
-                                Rpc.Channel curChannel = channels.get(channelPointString);
-                                Rpc.Channel newChannel = curChannel.toBuilder()
-                                        .setActive(true)
-                                        .build();
-                                channels.put(newChannel.getChannelPoint(), newChannel);
-                            } else if (update.getType().equals(Rpc.ChannelEventUpdate.UpdateType.INACTIVE_CHANNEL)) {
-                                // Replace the existing channel with a new one with active field set to false.
-                                Rpc.ChannelPoint channelPoint = update.getInactiveChannel();
-                                String channelPointString = ChannelPointUtil.stringFromChannelPoint(channelPoint);
-                                Rpc.Channel curChannel = channels.get(channelPointString);
-                                Rpc.Channel newChannel = curChannel.toBuilder()
-                                        .setActive(false)
-                                        .build();
-                                channels.put(newChannel.getChannelPoint(), newChannel);
-                            }
-                            liveChannels.postValue(new ArrayList<>(channels.values()));
-                        }
-                    });
-
+                    Rpc.GetInfoResponse response = lndSyncClient.getInfo();
+                    Log.i(getClass().getName(), "Got GetInfoResponse: " + response);
+                    liveGetInfoResponse.postValue(response);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
                 }
             }
         });
-        return liveChannels;
+    }
+
+    private void setLiveWalletBalance() {
+        Log.i(getClass().getName(), "Getting WalletBalance...");
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Rpc.WalletBalanceResponse response = lndSyncClient.walletBalance();
+                    Log.i(getClass().getName(), "Got WalletBalanceResponse: " + response);
+                    liveWalletBalance.postValue(response);
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void setLiveChannels() {
+        Log.i(getClass().getName(), "Getting channels...");
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Rpc.ListChannelsResponse response = lndSyncClient.listChannels();
+                    Log.i(getClass().getName(), "Got listChannelsResponse with size: " + response.getChannelsList().size());
+                    liveListChannelsResponse.postValue(response);
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void setLivePendingChannels() {
+        Log.i(getClass().getName(), "Getting pending channels...");
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Rpc.PendingChannelsResponse response = lndSyncClient.pendingChannels();
+                    Log.i(getClass().getName(), "Got PendingChannelsResponse: " + response);
+                    livePendingChannelsResponse.postValue(response);
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannel(Rpc.ChannelPoint channelPoint, boolean force) {
@@ -343,7 +331,45 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
     }
 
     @Override
-    public void onRpcReady() {
-        // TODO
+    public void handleChannelEventUpdate(Rpc.ChannelEventUpdate channelEventUpdate) {
+        setLiveGetInfo();
+        setLiveWalletBalance();
+        setLiveChannels();
+        setLivePendingChannels();
+    }
+
+    @Override
+    public void handlePeerEvent(Rpc.PeerEvent peerEvent) {
+        setLiveGetInfo();
+    }
+
+    @Override
+    public void handleInvoice(Rpc.Invoice invoice) {
+        setLiveGetInfo();
+        setLiveWalletBalance();
+    }
+
+    @Override
+    public void handleTransaction(Rpc.Transaction transaction) {
+        setLiveGetInfo();
+        setLiveWalletBalance();
+    }
+
+    @Override
+    public void handleChanBackupSnapshot(Rpc.ChanBackupSnapshot chanBackupSnapshot) {
+        setLiveGetInfo();
+    }
+
+    @Override
+    public void handleGraphTopologyUpdate(Rpc.GraphTopologyUpdate graphTopologyUpdate) {
+        setLiveGetInfo();
+    }
+
+    @Override
+    public void handleInitialize() {
+        setLiveGetInfo();
+        setLiveWalletBalance();
+        setLiveChannels();
+        setLivePendingChannels();
     }
 }

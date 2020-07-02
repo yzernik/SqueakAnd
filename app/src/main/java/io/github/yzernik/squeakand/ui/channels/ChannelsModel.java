@@ -21,7 +21,7 @@ public class ChannelsModel extends AndroidViewModel {
         this.lndRepository = LndRepository.getRepository(application);
     }
 
-    LiveData<List<Rpc.Channel>> listChannels() {
+    LiveData<Rpc.ListChannelsResponse> listChannels() {
         // return lndRepository.listChannels();
 
         return lndRepository.getLiveChannels();

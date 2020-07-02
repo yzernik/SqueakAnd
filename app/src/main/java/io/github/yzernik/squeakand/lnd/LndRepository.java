@@ -17,18 +17,21 @@ public class LndRepository {
 
     private static volatile LndRepository INSTANCE;
 
-    // private LndClient lndClient;
+    private LndClient lndClient;
     private LndSyncClient lndSyncClient;
     private ExecutorService executorService;
     private LndLiveDataClient lndLiveDataClient;
+    private LndEventListener lndEventListener;
     private LndController lndController;
 
     private LndRepository(Application application) {
         // Singleton constructor, only called by static method.
+        this.lndClient = new LndClient();
         this.lndSyncClient = new LndSyncClient();
         this.executorService = Executors.newCachedThreadPool();
         this.lndLiveDataClient = new LndLiveDataClient(lndSyncClient, executorService);
-        this.lndController = new LndController(application, "testnet", lndLiveDataClient);
+        this.lndEventListener = new LndEventListener(lndClient, lndLiveDataClient, executorService);
+        this.lndController = new LndController(application, "testnet", lndLiveDataClient, lndEventListener);
     }
 
     public static LndRepository getRepository(Application application) {
@@ -92,20 +95,16 @@ public class LndRepository {
         lndController.deleteWallet();
     }
 
-    public LiveData<DataResult<Rpc.GetInfoResponse>> getInfo() {
-        return lndLiveDataClient.getInfo();
+    public LiveData<Rpc.GetInfoResponse> getInfo() {
+        return lndLiveDataClient.getLiveGetInfo();
     }
 
     public LiveData<DataResult<Rpc.WalletBalanceResponse>> walletBalance() {
         return lndLiveDataClient.walletBalance();
     }
 
-    public LiveData<DataResult<Rpc.ListChannelsResponse>> listChannels() {
-        return lndLiveDataClient.listChannels();
-    }
-
-    public LiveData<DataResult<Rpc.PendingChannelsResponse>> pendingChannels() {
-        return lndLiveDataClient.pendingChannels();
+    public LiveData<Rpc.PendingChannelsResponse> pendingChannels() {
+        return lndLiveDataClient.getLivePendingChannels();
     }
 
     public LiveData<DataResult<Rpc.TransactionDetails>> getTransactions(int startHeight, int endHeight) {
@@ -151,7 +150,7 @@ public class LndRepository {
         return lndLiveDataClient.liveConnectedPeers();
     }
 
-    public LiveData<List<Rpc.Channel>> getLiveChannels() {
+    public LiveData<Rpc.ListChannelsResponse> getLiveChannels() {
         return lndLiveDataClient.getLiveChannels();
     }
 
