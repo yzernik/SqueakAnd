@@ -137,4 +137,8 @@ public class LndRepository {
         return lndLiveDataClient.getLiveChannels();
     }
 
+    public void updateChannels() {
+        lndLiveDataClient.updateChannels();
+    }
+
 }
