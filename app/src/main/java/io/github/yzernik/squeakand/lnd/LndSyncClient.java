@@ -271,11 +271,20 @@ public class LndSyncClient {
         }
     }
 
+
     /**
-     * Open channel async.
+     * Subscribe peer events async.
      */
-    public void subscribeChannelEvents(LndClient.SubscribeChannelEventsRecvStream recvStream) {
-        lndClient.subscribeChannelEvents(recvStream);
+    private Future<String> subscribePeerEventsAsync(LndClient.SubscribePeerEventsRecvStream subscribePeerEventsRecvStream) {
+        return SubscribePeerEventsTask.subscribePeerEvents(lndClient, subscribePeerEventsRecvStream);
+    }
+
+    /**
+     * Subscribe peer events.
+     */
+    public String subscribePeerEvents(LndClient.SubscribePeerEventsRecvStream subscribePeerEventsRecvStream) throws InterruptedException, ExecutionException, TimeoutException {
+        Future<String> responseFuture = subscribePeerEventsAsync(subscribePeerEventsRecvStream);
+        return responseFuture.get();
     }
 
     /**
@@ -283,13 +292,6 @@ public class LndSyncClient {
      */
     public void closeChannel(Rpc.ChannelPoint channelPoint, boolean force, LndClient.CloseChannelEventsRecvStream recvStream) {
         lndClient.closeChannel(channelPoint, force, recvStream);
-    }
-
-    /**
-     * Subscribe peer events.
-     */
-    public void subscribePeerEvents(LndClient.SubscribePeerEventsRecvStream recvStream) {
-        lndClient.subscribePeerEvents(recvStream);
     }
 
 }

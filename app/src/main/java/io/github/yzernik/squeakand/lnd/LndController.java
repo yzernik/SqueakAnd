@@ -83,7 +83,7 @@ public class LndController {
             public void onResponse2() {
                 walletUnlockedLatch.countDown();
                 setRpcReady(true);
-                lndEventListener.listenSubscriptionEvents();
+                lndEventListener.startListening();
             }
         });
     }

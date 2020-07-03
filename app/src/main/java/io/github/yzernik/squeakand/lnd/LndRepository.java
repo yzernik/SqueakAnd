@@ -29,7 +29,7 @@ public class LndRepository {
         this.lndSyncClient = new LndSyncClient();
         this.executorService = Executors.newCachedThreadPool();
         this.lndLiveDataClient = new LndLiveDataClient(lndSyncClient, executorService);
-        this.lndEventListener = new LndEventListener(lndClient, lndLiveDataClient, executorService);
+        this.lndEventListener =new LndEventListener(lndClient, lndSyncClient, lndLiveDataClient);
         this.lndController = new LndController(application, "testnet", lndLiveDataClient, lndEventListener);
     }
 
