@@ -5,7 +5,6 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,7 +15,6 @@ public class LndRepository {
 
     private static volatile LndRepository INSTANCE;
 
-    private LndClient lndClient;
     private LndSyncClient lndSyncClient;
     private ExecutorService executorService;
     private LndLiveDataClient lndLiveDataClient;
@@ -25,11 +23,10 @@ public class LndRepository {
 
     private LndRepository(Application application) {
         // Singleton constructor, only called by static method.
-        this.lndClient = new LndClient();
         this.lndSyncClient = new LndSyncClient();
         this.executorService = Executors.newCachedThreadPool();
         this.lndLiveDataClient = new LndLiveDataClient(lndSyncClient, executorService);
-        this.lndEventListener = new LndEventListener(lndClient, lndLiveDataClient, executorService);
+        this.lndEventListener =new LndEventListener(lndSyncClient, lndLiveDataClient);
         this.lndController = new LndController(application, "testnet", lndLiveDataClient, lndEventListener);
     }
 

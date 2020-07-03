@@ -271,11 +271,50 @@ public class LndSyncClient {
         }
     }
 
+
     /**
-     * Open channel async.
+     * Subscribe peer events async.
      */
-    public void subscribeChannelEvents(LndClient.SubscribeChannelEventsRecvStream recvStream) {
-        lndClient.subscribeChannelEvents(recvStream);
+    private Future<String> subscribePeerEventsAsync(LndClient.SubscribePeerEventsRecvStream subscribePeerEventsRecvStream) {
+        return SubscribePeerEventsTask.subscribePeerEvents(lndClient, subscribePeerEventsRecvStream);
+    }
+
+    /**
+     * Subscribe peer events.
+     */
+    public String subscribePeerEvents(LndClient.SubscribePeerEventsRecvStream subscribePeerEventsRecvStream) throws InterruptedException, ExecutionException {
+        Future<String> responseFuture = subscribePeerEventsAsync(subscribePeerEventsRecvStream);
+        return responseFuture.get();
+    }
+
+    /**
+     * Subscribe channel events async.
+     */
+    private Future<String> subscribeChannelEventsAsync(LndClient.SubscribeChannelEventsRecvStream subscribeChannelEventsRecvStream) {
+        return SubscribeChannelEventsTask.subscribeChannelEvents(lndClient, subscribeChannelEventsRecvStream);
+    }
+
+    /**
+     * Subscribe channel events.
+     */
+    public String subscribeChannelEvents(LndClient.SubscribeChannelEventsRecvStream subscribeChannelEventsRecvStream) throws InterruptedException, ExecutionException {
+        Future<String> responseFuture = subscribeChannelEventsAsync(subscribeChannelEventsRecvStream);
+        return responseFuture.get();
+    }
+
+    /**
+     * Subscribe transactions async.
+     */
+    private Future<String> subscribeTransactionsAsync(int startHeight, int endHeight, LndClient.SubscribeTransactionsRecvStream subscribeTransactionsRecvStream) {
+        return SubscribeTransactionsTask.subscribeTransactions(startHeight, endHeight, lndClient, subscribeTransactionsRecvStream);
+    }
+
+    /**
+     * Subscribe transactions.
+     */
+    public String subscribeTransactions(int startHeight, int endHeight, LndClient.SubscribeTransactionsRecvStream subscribeChannelEventsRecvStream) throws InterruptedException, ExecutionException {
+        Future<String> responseFuture = subscribeTransactionsAsync(startHeight, endHeight, subscribeChannelEventsRecvStream);
+        return responseFuture.get();
     }
 
     /**
@@ -283,13 +322,6 @@ public class LndSyncClient {
      */
     public void closeChannel(Rpc.ChannelPoint channelPoint, boolean force, LndClient.CloseChannelEventsRecvStream recvStream) {
         lndClient.closeChannel(channelPoint, force, recvStream);
-    }
-
-    /**
-     * Subscribe peer events.
-     */
-    public void subscribePeerEvents(LndClient.SubscribePeerEventsRecvStream recvStream) {
-        lndClient.subscribePeerEvents(recvStream);
     }
 
 }

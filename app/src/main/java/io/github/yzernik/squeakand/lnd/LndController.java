@@ -83,7 +83,7 @@ public class LndController {
             public void onResponse2() {
                 walletUnlockedLatch.countDown();
                 setRpcReady(true);
-                lndEventListener.listenSubscriptionEvents();
+                lndEventListener.startListening();
             }
         });
     }
@@ -146,7 +146,7 @@ public class LndController {
         rmLndDir();
         clearSeedWords();
         // TODO: fix this so that calling start on lnd doesn't crash when restarting.
-        // initialize();
+        initialize();
     }
 
     /**
