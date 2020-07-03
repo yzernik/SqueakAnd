@@ -11,7 +11,7 @@ import androidx.lifecycle.Transformations;
 import io.github.yzernik.squeakand.lnd.LndRepository;
 import io.github.yzernik.squeakand.lnd.LndWalletStatus;
 
-public class WaitingForWalletModel extends AndroidViewModel {
+public class WaitingForWalletModel extends AndroidViewModel implements WalletBackupAndDeleter {
 
     private LndRepository lndRepository;
     private LiveData<LndWalletStatus> liveLndWalletStatus;
@@ -28,6 +28,16 @@ public class WaitingForWalletModel extends AndroidViewModel {
         return Transformations.map(liveLndWalletStatus, lndWalletStatus -> {
             return lndWalletStatus.isRpcReady();
         });
+    }
+
+    @Override
+    public void deleteWallet() {
+        lndRepository.deleteWallet();
+    }
+
+    @Override
+    public String[] getWalletSeed() {
+        return lndRepository.getWalletSeedWords();
     }
 
 }

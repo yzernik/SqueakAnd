@@ -11,7 +11,7 @@ import io.github.yzernik.squeakand.lnd.LndRepository;
 import io.github.yzernik.squeakand.lnd.LndWalletStatus;
 import lnrpc.Rpc;
 
-public class MoneyViewModel  extends AndroidViewModel {
+public class MoneyViewModel extends AndroidViewModel implements WalletBackupAndDeleter {
 
     private LndRepository lndRepository;
     private LiveData<LndWalletStatus> liveLndWalletStatus;
@@ -51,10 +51,12 @@ public class MoneyViewModel  extends AndroidViewModel {
         return liveLndWalletStatus;
     }
 
+    @Override
     public String[] getWalletSeed() {
         return lndRepository.getWalletSeedWords();
     }
 
+    @Override
     public void deleteWallet() {
         lndRepository.deleteWallet();
     }

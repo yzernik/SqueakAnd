@@ -1,8 +1,6 @@
 package io.github.yzernik.squeakand.ui.money;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,7 +10,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
@@ -21,14 +18,14 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import io.github.yzernik.squeakand.R;
-import io.github.yzernik.squeakand.SqueakProfile;
-import lnrpc.Rpc;
 
 public class MoneyFragment extends Fragment {
     MoneyFragmentsAdapter moneyFragmentsAdapter;
     ViewPager2 viewPager;
 
     private MoneyViewModel moneyViewModel;
+    private WalletBackupAndDeleter walletBackupAndDeleter;
+    private MoneyMenuActions moneyMenuActions;
 
     @Nullable
     @Override
@@ -40,6 +37,8 @@ public class MoneyFragment extends Fragment {
         setHasOptionsMenu(true);
 
         moneyViewModel = new ViewModelProvider(this).get(MoneyViewModel.class);
+
+        moneyMenuActions = new MoneyMenuActions(moneyViewModel);
 
         return root;
     }
@@ -81,64 +80,14 @@ public class MoneyFragment extends Fragment {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.wallet_menu_backup:
-                showWalletBackupAlert();
+                moneyMenuActions.showWalletBackupAlert(getContext());
                 return true;
             case R.id.wallet_menu_delete:
-                showDeleteWalletAlertDialog();
+                moneyMenuActions.showDeleteWalletAlertDialog(getContext());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void showWalletBackupAlert() {
-        String[] seedWords = moneyViewModel.getWalletSeed();
-        String seedWordsString = String.join(", ", seedWords);
-
-        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-        alertDialog.setTitle("Wallet backup seed");
-        alertDialog.setMessage("Seed words: " + seedWordsString + ".");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
-    }
-
-    private void deleteWallet() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                moneyViewModel.deleteWallet();
-            }
-        }).start();
-    }
-
-    private void showDeleteWalletAlertDialog() {
-        android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(getContext()).create();
-        alertDialog.setTitle("Delete wallet?");
-        alertDialog.setMessage("Are you sure you want to delete this wallet? Make sure to backup the seed words first.");
-
-        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "Delete",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.i(getTag(), "Deleting wallet.");
-                        deleteWallet();
-                        dialog.dismiss();
-                    }
-                });
-
-
-        alertDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, "Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        alertDialog.show();
     }
 
 

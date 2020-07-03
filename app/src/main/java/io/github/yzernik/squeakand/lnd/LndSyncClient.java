@@ -282,8 +282,38 @@ public class LndSyncClient {
     /**
      * Subscribe peer events.
      */
-    public String subscribePeerEvents(LndClient.SubscribePeerEventsRecvStream subscribePeerEventsRecvStream) throws InterruptedException, ExecutionException, TimeoutException {
+    public String subscribePeerEvents(LndClient.SubscribePeerEventsRecvStream subscribePeerEventsRecvStream) throws InterruptedException, ExecutionException {
         Future<String> responseFuture = subscribePeerEventsAsync(subscribePeerEventsRecvStream);
+        return responseFuture.get();
+    }
+
+    /**
+     * Subscribe channel events async.
+     */
+    private Future<String> subscribeChannelEventsAsync(LndClient.SubscribeChannelEventsRecvStream subscribeChannelEventsRecvStream) {
+        return SubscribeChannelEventsTask.subscribeChannelEvents(lndClient, subscribeChannelEventsRecvStream);
+    }
+
+    /**
+     * Subscribe channel events.
+     */
+    public String subscribeChannelEvents(LndClient.SubscribeChannelEventsRecvStream subscribeChannelEventsRecvStream) throws InterruptedException, ExecutionException {
+        Future<String> responseFuture = subscribeChannelEventsAsync(subscribeChannelEventsRecvStream);
+        return responseFuture.get();
+    }
+
+    /**
+     * Subscribe transactions async.
+     */
+    private Future<String> subscribeTransactionsAsync(int startHeight, int endHeight, LndClient.SubscribeTransactionsRecvStream subscribeTransactionsRecvStream) {
+        return SubscribeTransactionsTask.subscribeTransactions(startHeight, endHeight, lndClient, subscribeTransactionsRecvStream);
+    }
+
+    /**
+     * Subscribe transactions.
+     */
+    public String subscribeTransactions(int startHeight, int endHeight, LndClient.SubscribeTransactionsRecvStream subscribeChannelEventsRecvStream) throws InterruptedException, ExecutionException {
+        Future<String> responseFuture = subscribeTransactionsAsync(startHeight, endHeight, subscribeChannelEventsRecvStream);
         return responseFuture.get();
     }
 

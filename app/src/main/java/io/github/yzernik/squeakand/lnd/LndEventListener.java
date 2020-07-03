@@ -5,7 +5,6 @@ import android.util.Log;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeoutException;
 
 import lnrpc.Rpc;
 
@@ -13,19 +12,19 @@ public class LndEventListener {
 
     private static final int NUM_THREADS = 3;
 
-    private LndClient lndClient;
     private LndSyncClient lndSyncClient;
     private LndSubscriptionEventHandler lndSubscriptionEventHandler;
     private ExecutorService executorService;
 
-    public LndEventListener(LndClient lndClient, LndSyncClient lndSyncClient, LndSubscriptionEventHandler lndSubscriptionEventHandler) {
-        this.lndClient = lndClient;
+    public LndEventListener(LndSyncClient lndSyncClient, LndSubscriptionEventHandler lndSubscriptionEventHandler) {
         this.lndSyncClient = lndSyncClient;
         this.lndSubscriptionEventHandler = lndSubscriptionEventHandler;
-        this.executorService = Executors.newFixedThreadPool(NUM_THREADS);
+        //this.executorService = Executors.newFixedThreadPool(NUM_THREADS);
     }
 
     public void startListening() {
+        this.executorService = Executors.newFixedThreadPool(NUM_THREADS);
+
         // Set up the initial state.
         lndSubscriptionEventHandler.handleInitialize();
 
@@ -76,19 +75,18 @@ public class LndEventListener {
                 // Keep the set updated with the results from the updates.
                 try {
                     listenPeerEvents();
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
 
-    private void listenPeerEvents() throws InterruptedException, ExecutionException, TimeoutException {
+    private void listenPeerEvents() throws InterruptedException, ExecutionException {
         lndSyncClient.subscribePeerEvents(new LndClient.SubscribePeerEventsRecvStream() {
             @Override
             public void onError(Exception e) {
                 Log.e(getClass().getName(), "Failed to get peer event update: " + e);
-                System.exit(1);
             }
 
             @Override
@@ -110,24 +108,31 @@ public class LndEventListener {
                 // Keep the set updated with the results from the updates.
                 try {
                     listenChannelEvents();
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
 
-    private void listenChannelEvents() throws InterruptedException, ExecutionException, TimeoutException {
-        // TODO
+    private void listenChannelEvents() throws InterruptedException, ExecutionException {
+        lndSyncClient.subscribeChannelEvents(new LndClient.SubscribeChannelEventsRecvStream() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Failed to get channel event update: " + e);
+            }
+
+            @Override
+            public void onUpdate(Rpc.ChannelEventUpdate channelEventUpdate) {
+                handleChannelEvent(channelEventUpdate);
+            }
+        });
     }
 
     /**
      * Listen for transactinos from the LND daemon.
      */
     private void startListenTransactions() {
-        int startHeight = 0;
-        int endHeight = -1;
-
         executorService.execute(new Runnable() {
             @Override
             public void run() {
@@ -135,15 +140,28 @@ public class LndEventListener {
                 // Keep the set updated with the results from the updates.
                 try {
                     listenTransactions();
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
 
-    public void listenTransactions() throws InterruptedException, ExecutionException, TimeoutException {
-        // TODO
+    public void listenTransactions() throws InterruptedException, ExecutionException {
+        int startHeight = 0;
+        int endHeight = -1;
+
+        lndSyncClient.subscribeTransactions(startHeight, endHeight, new LndClient.SubscribeTransactionsRecvStream() {
+            @Override
+            public void onError(Exception e) {
+                Log.e(getClass().getName(), "Failed to get transaction: " + e);
+            }
+
+            @Override
+            public void onUpdate(Rpc.Transaction transaction) {
+                handleTransaction(transaction);
+            }
+        });
     }
 
 }
