@@ -70,6 +70,7 @@ public class MoneyFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.wallet_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
