@@ -2,7 +2,6 @@ package io.github.yzernik.squeakand;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,7 +94,7 @@ abstract public class SqueakListAdapter extends RecyclerView.Adapter<SqueakListA
             }
 
             // Show buy button if data key is missing.
-            if (!currentEntry.squeakEntry.hasDataKey()) {
+            if (!currentEntry.squeakEntry.hasDecryptionKey()) {
                 holder.txtSqueakText.setVisibility(View.GONE);
                 holder.squeakCardView.setBackgroundColor(Color.parseColor("lightgray"));
             } else {

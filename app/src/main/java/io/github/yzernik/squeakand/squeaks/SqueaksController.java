@@ -22,6 +22,8 @@ import io.github.yzernik.squeakand.blockchain.ElectrumBlockchainRepository;
 import io.github.yzernik.squeakand.crypto.CryptoUtil;
 import io.github.yzernik.squeakand.lnd.LndSyncClient;
 import io.github.yzernik.squeakand.server.SqueakServerAddress;
+import io.github.yzernik.squeaklib.core.Encryption;
+import io.github.yzernik.squeaklib.core.EncryptionException;
 import io.github.yzernik.squeaklib.core.Squeak;
 import io.github.yzernik.squeaklib.core.VerificationException;
 import lnrpc.Rpc;
@@ -119,6 +121,7 @@ public class SqueaksController {
         SqueakEntry squeakEntry = new SqueakEntry(squeak);
         SqueakRoomDatabase.databaseWriteExecutor.execute(() -> {
             mSqueakDao.insert(squeakEntry);
+            Log.i(getClass().getName(), "Inserted squeak: " + squeak);
         });
 
         // Add the squeak to the block verification queue
@@ -144,13 +147,19 @@ public class SqueaksController {
         });
     }
 
-    public void setDataKey(SqueakEntry squeakEntry, byte[] preimage) {
+    public void setDecryptionKey(SqueakEntry squeakEntry, byte[] preimage) {
         Log.i(getClass().getName(), "Setting data key for squeak: " + squeakEntry.getSqueak().getHash());
         Squeak squeak = squeakEntry.getSqueak();
-        squeak.setDataKey(preimage);
-        squeak.verify();
-        SqueakEntry newSqueakEntry = new SqueakEntry(squeak, squeakEntry.block);
-        mSqueakDao.update(newSqueakEntry);
+
+        // TODO: set the actual decryption key, not the preimage.
+        squeak.setDecryptionKey(preimage);
+        try {
+            squeak.verify();
+            SqueakEntry newSqueakEntry = new SqueakEntry(squeak, squeakEntry.block);
+            mSqueakDao.update(newSqueakEntry);
+        } catch (VerificationException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setOfferHasValidPreimage(Offer offer, boolean hasValidPreimage) {
@@ -172,7 +181,7 @@ public class SqueaksController {
      * @throws VerificationException
      */
     private void validateSqueak(Squeak squeak) throws VerificationException {
-        if(squeak.hasDataKey()) {
+        if(squeak.hasDecryptionKey()) {
             squeak.verify(false);
         } else {
             squeak.verify(true);
@@ -211,22 +220,31 @@ public class SqueaksController {
             offer.setPreimage(preimage);
 
             // Set the squeak data key if valid
-            byte[] dataKey = CryptoUtil.xor(offer.nonce, preimage);
-            SqueakEntry squeakEntry = mSqueakDao.fetchSqueakByHash(offer.squeakHash);
+            byte[] keyCipherBytes = offer.keyCipher;
+            byte[] iv = offer.iv;
+            Encryption.EncryptedDecryptionKey encryptedDecryptionKey = Encryption.EncryptedDecryptionKey.fromBytes(keyCipherBytes);
 
-            Squeak squeak = squeakEntry.getSqueak();
-            if (isValidDataKey(squeak, dataKey)) {
-                setOfferHasValidPreimage(offer, true);
-                setDataKey(squeakEntry, dataKey);
-            } else {
-                setOfferHasValidPreimage(offer, false);
+            // Decrypt the decryption key
+            try {
+                Encryption.DecryptionKey decryptionKey = encryptedDecryptionKey.getDecryptionKey(preimage, iv);
+
+                SqueakEntry squeakEntry = mSqueakDao.fetchSqueakByHash(offer.squeakHash);
+
+                Squeak squeak = squeakEntry.getSqueak();
+                if (isValidDecryptionKey(squeak, decryptionKey.getBytes())) {
+                    setOfferHasValidPreimage(offer, true);
+                    setDecryptionKey(squeakEntry, decryptionKey.getBytes());
+                }
+            } catch (EncryptionException e) {
+                e.printStackTrace();
+                return DataResult.ofFailure(e);
             }
         }
         return DataResult.ofSuccess(sendResponse);
     }
 
-    private boolean isValidDataKey(Squeak squeak, byte[] dataKey) {
-        squeak.setDataKey(dataKey);
+    private boolean isValidDecryptionKey(Squeak squeak, byte[] decryptionKey) {
+        squeak.setDecryptionKey(decryptionKey);
         try {
             squeak.verify();
             return true;

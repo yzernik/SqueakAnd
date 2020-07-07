@@ -38,12 +38,10 @@ public class Converters {
         return HEX.encode(privKeyBytes);
     }
 
-    @TypeConverter
     public static byte[] bytesFromString(String s) {
         return HEX.decode(s);
     }
 
-    @TypeConverter
     public static String bytesToString(byte[] bytes) {
         return HEX.encode(bytes);
     }

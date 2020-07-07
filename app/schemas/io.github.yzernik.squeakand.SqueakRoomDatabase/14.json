@@ -1,0 +1,332 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 14,
+    "identityHash": "244911020ac06b8d4719888c4335ad6c",
+    "entities": [
+      {
+        "tableName": "profile",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`profile_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `keyPair` TEXT, `address` TEXT, `uploadEnabled` INTEGER NOT NULL, `downloadEnabled` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "profile_id",
+            "columnName": "profile_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "keyPair",
+            "columnName": "keyPair",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "uploadEnabled",
+            "columnName": "uploadEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "downloadEnabled",
+            "columnName": "downloadEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "profile_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_profile_address",
+            "unique": true,
+            "columnNames": [
+              "address"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_profile_address` ON `${TABLE_NAME}` (`address`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "squeak",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hash` TEXT NOT NULL, `hashEncContent` TEXT NOT NULL, `hashReplySqk` TEXT NOT NULL, `hashBlock` TEXT NOT NULL, `blockHeight` INTEGER NOT NULL, `scriptPubKeyBytes` BLOB NOT NULL, `encryptionKey` BLOB NOT NULL, `encDataKey` BLOB NOT NULL, `iv` BLOB NOT NULL, `time` INTEGER NOT NULL, `nonce` INTEGER NOT NULL, `encContent` BLOB NOT NULL, `scriptSigBytes` BLOB NOT NULL, `decryptionKey` BLOB, `decryptedContentStr` TEXT, `authorAddress` TEXT NOT NULL, `block` TEXT, PRIMARY KEY(`hash`))",
+        "fields": [
+          {
+            "fieldPath": "hash",
+            "columnName": "hash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hashEncContent",
+            "columnName": "hashEncContent",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hashReplySqk",
+            "columnName": "hashReplySqk",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hashBlock",
+            "columnName": "hashBlock",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "blockHeight",
+            "columnName": "blockHeight",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scriptPubKeyBytes",
+            "columnName": "scriptPubKeyBytes",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "encryptionKey",
+            "columnName": "encryptionKey",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "encDataKey",
+            "columnName": "encDataKey",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iv",
+            "columnName": "iv",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "time",
+            "columnName": "time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nonce",
+            "columnName": "nonce",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "encContent",
+            "columnName": "encContent",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scriptSigBytes",
+            "columnName": "scriptSigBytes",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "decryptionKey",
+            "columnName": "decryptionKey",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decryptedContentStr",
+            "columnName": "decryptedContentStr",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "authorAddress",
+            "columnName": "authorAddress",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "block",
+            "columnName": "block",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "hash"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "server",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`server_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `serverName` TEXT, `serverAddress` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "server_id",
+            "columnName": "server_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serverName",
+            "columnName": "serverName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "serverAddress",
+            "columnName": "serverAddress",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "server_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_server_serverAddress",
+            "unique": true,
+            "columnNames": [
+              "serverAddress"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_server_serverAddress` ON `${TABLE_NAME}` (`serverAddress`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "offer",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`offerId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `squeakHash` TEXT NOT NULL, `keyCipher` BLOB NOT NULL, `iv` BLOB NOT NULL, `preimageHash` TEXT NOT NULL, `amount` INTEGER NOT NULL, `paymentRequest` TEXT NOT NULL, `pubkey` TEXT NOT NULL, `host` TEXT NOT NULL, `port` INTEGER NOT NULL, `squeakServerAddress` TEXT NOT NULL, `hasValidPreimage` INTEGER NOT NULL, `preimage` BLOB)",
+        "fields": [
+          {
+            "fieldPath": "offerId",
+            "columnName": "offerId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "squeakHash",
+            "columnName": "squeakHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "keyCipher",
+            "columnName": "keyCipher",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iv",
+            "columnName": "iv",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "preimageHash",
+            "columnName": "preimageHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "amount",
+            "columnName": "amount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "paymentRequest",
+            "columnName": "paymentRequest",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pubkey",
+            "columnName": "pubkey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "host",
+            "columnName": "host",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "port",
+            "columnName": "port",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "squeakServerAddress",
+            "columnName": "squeakServerAddress",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasValidPreimage",
+            "columnName": "hasValidPreimage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "preimage",
+            "columnName": "preimage",
+            "affinity": "BLOB",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "offerId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_offer_squeakHash_squeakServerAddress",
+            "unique": true,
+            "columnNames": [
+              "squeakHash",
+              "squeakServerAddress"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_offer_squeakHash_squeakServerAddress` ON `${TABLE_NAME}` (`squeakHash`, `squeakServerAddress`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '244911020ac06b8d4719888c4335ad6c')"
+    ]
+  }
+}

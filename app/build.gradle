@@ -86,7 +86,7 @@ dependencies {
 
     // Squeak library
     // TODO: Use snapshot build
-    implementation('io.github.yzernik.squeaklib:squeaklib:1.0.2') {
+    implementation('io.github.yzernik.squeaklib:squeaklib:1.0.3-SNAPSHOT') {
         exclude group: 'com.google.protobuf', module: 'protobuf-java'
     }
 

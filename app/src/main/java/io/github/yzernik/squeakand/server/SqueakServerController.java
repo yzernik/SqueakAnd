@@ -101,7 +101,7 @@ public class SqueakServerController {
             // TODO: include block range in DAO method.
             List<SqueakEntry> squeakEntries = squeaksController.fetchSqueaksByAddress(address, minBlock, maxBlock);
             for (SqueakEntry squeakEntry: squeakEntries) {
-                if (!onlyUnlocked || squeakEntry.hasDataKey()) {
+                if (!onlyUnlocked || squeakEntry.hasDecryptionKey()) {
                     localHashes.add(squeakEntry.hash);
                 }
             }

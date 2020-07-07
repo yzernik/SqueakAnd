@@ -16,52 +16,6 @@ import io.github.yzernik.squeakand.server.SqueakServerAddress;
 @TypeConverters({Converters.class})
 public class Offer {
 
-    public Offer() {
-    }
-
-    @Ignore
-    public Offer(
-            Sha256Hash squeakHash,
-            byte[] nonce,
-            Sha256Hash preimageHash,
-            long amount,
-            String paymentRequest,
-            String pubkey,
-            String host,
-            int port,
-            SqueakServerAddress squeakServerAddress,
-            byte[] preimage) {
-        this.squeakHash = squeakHash;
-        this.nonce = nonce;
-        this.preimageHash = preimageHash;
-        this.amount = amount;
-        this.paymentRequest = paymentRequest;
-        this.pubkey = pubkey;
-        this.host = host;
-        this.port = port;
-        this.squeakServerAddress = squeakServerAddress;
-        this.preimage = preimage;
-    }
-
-    @Ignore
-    public Offer(
-            Sha256Hash squeakHash,
-            byte[] nonce,
-            Sha256Hash preimageHash,
-            long amount,
-            String paymentRequest,
-            String pubkey,
-            String host,
-            int port,
-            SqueakServerAddress squeakServerAddress) {
-        this(squeakHash, nonce, preimageHash, amount, paymentRequest, pubkey, host, port, squeakServerAddress, null);
-    }
-
-    @Ignore
-    public void setSqueakServerAddress(SqueakServerAddress squeakServerAddress) {
-        this.squeakServerAddress = squeakServerAddress;
-    }
-
     @PrimaryKey(autoGenerate = true)
     public int offerId;
 
@@ -69,7 +23,10 @@ public class Offer {
     public Sha256Hash squeakHash;
 
     @NonNull
-    public byte[] nonce;
+    public byte[] keyCipher;
+
+    @NonNull
+    public byte[] iv;
 
     @NonNull
     public Sha256Hash preimageHash;
@@ -101,7 +58,8 @@ public class Offer {
     public String toString() {
         return "Offer("
                 + "squeakHash: " + squeakHash + ", "
-                + "nonce: " + nonce + ", "
+                + "keyCipher: " + keyCipher + ", "
+                + "iv: " + iv + ", "
                 + "preimageHash: " + preimageHash + ", "
                 + "amount: " + amount + ", "
                 + "paymentRequest: " + paymentRequest + ", "
@@ -112,6 +70,55 @@ public class Offer {
                 + "hasValidPreimage: " + hasValidPreimage + ", "
                 + "preimage: " + preimage
                 + ")";
+    }
+
+    public Offer() {
+    }
+
+    @Ignore
+    public Offer(
+            Sha256Hash squeakHash,
+            byte[] keyCipher,
+            byte[] iv,
+            Sha256Hash preimageHash,
+            long amount,
+            String paymentRequest,
+            String pubkey,
+            String host,
+            int port,
+            SqueakServerAddress squeakServerAddress,
+            byte[] preimage) {
+        this.squeakHash = squeakHash;
+        this.keyCipher = keyCipher;
+        this.iv = iv;
+        this.preimageHash = preimageHash;
+        this.amount = amount;
+        this.paymentRequest = paymentRequest;
+        this.pubkey = pubkey;
+        this.host = host;
+        this.port = port;
+        this.squeakServerAddress = squeakServerAddress;
+        this.preimage = preimage;
+    }
+
+    @Ignore
+    public Offer(
+            Sha256Hash squeakHash,
+            byte[] keyCipher,
+            byte[] iv,
+            Sha256Hash preimageHash,
+            long amount,
+            String paymentRequest,
+            String pubkey,
+            String host,
+            int port,
+            SqueakServerAddress squeakServerAddress) {
+        this(squeakHash, keyCipher, iv, preimageHash, amount, paymentRequest, pubkey, host, port, squeakServerAddress, null);
+    }
+
+    @Ignore
+    public void setSqueakServerAddress(SqueakServerAddress squeakServerAddress) {
+        this.squeakServerAddress = squeakServerAddress;
     }
 
     @Ignore

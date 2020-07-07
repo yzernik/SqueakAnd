@@ -142,7 +142,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
                 });
 
                 // Show buy button if data key is missing.
-                if (!squeakEntryWithProfile.squeakEntry.hasDataKey()) {
+                if (!squeakEntryWithProfile.squeakEntry.hasDecryptionKey()) {
                     txtSqueakText.setVisibility(View.GONE);
                     buyButton.setVisibility(View.VISIBLE);
                     squeakCardView.setBackgroundColor(Color.parseColor("lightgray"));
