@@ -63,7 +63,7 @@ public interface SqueakDao {
     @Query("SELECT * FROM " + SqueakRoomDatabase.TABLE_NAME_SQUEAK + " WHERE block IS NULL")
     List<SqueakEntry> fetchUnverifiedSqueaks();
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(SqueakEntry squeakEntry);
 
     @Update
