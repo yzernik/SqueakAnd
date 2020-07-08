@@ -59,11 +59,11 @@ public class SqueakRPCClient {
         }
     }
 
-    public Offer buySqueak(Sha256Hash hash) {
+    public GetOfferResponse buySqueak(Sha256Hash hash, byte[] challenge) {
         ManagedChannel channel = getChannel();
         try {
             SqueakServerClient client = new SqueakServerClient(channel);
-            return client.buySqueak(hash);
+            return client.buySqueak(hash, challenge);
         } finally {
             channel.shutdown();
         }

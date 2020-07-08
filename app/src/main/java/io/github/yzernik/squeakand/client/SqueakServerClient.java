@@ -25,6 +25,8 @@ import io.github.yzernik.squeakserver.SqueakBuyOffer;
 import io.github.yzernik.squeakserver.SqueakServerGrpc;
 import io.grpc.Channel;
 
+import static org.bitcoinj.core.Utils.HEX;
+
 public class SqueakServerClient {
     private static final Logger logger = Logger.getLogger(SqueakServerClient.class.getName());
 
@@ -99,12 +101,14 @@ public class SqueakServerClient {
         return;
     }
 
-    public Offer buySqueak(Sha256Hash hash) {
-        logger.info("*** BuySqueak: hash: " + hash);
+    public GetOfferResponse buySqueak(Sha256Hash hash, byte[] challenge) {
+        logger.info("*** BuySqueak: hash: " + hash + ", challenge: " + HEX.encode(challenge));
 
         ByteString squeakHashBytes = ByteString.copyFrom(hash.getBytes());
+        ByteString challengeBytes = ByteString.copyFrom(challenge);
         BuySqueakRequest request = BuySqueakRequest.newBuilder()
                 .setHash(squeakHashBytes)
+                .setChallenge(challengeBytes)
                 .build();
 
         BuySqueakReply reply = blockingStub
@@ -122,7 +126,7 @@ public class SqueakServerClient {
         String host = buyOfferMessage.getHost();
         int port = buyOfferMessage.getPort();
 
-        return new Offer(
+        Offer offer = new Offer(
                 squeakHash,
                 keyCipher,
                 iv,
@@ -134,6 +138,8 @@ public class SqueakServerClient {
                 port,
                 null
         );
+
+        return new GetOfferResponse(offer, buyOfferMessage.getProof().toByteArray());
     }
 
 }
