@@ -167,7 +167,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
             public void run() {
                 try {
                     Rpc.GetInfoResponse response = lndSyncClient.getInfo();
-                    Log.i(getClass().getName(), "Got GetInfoResponse: " + response);
+                    // Log.i(getClass().getName(), "Got GetInfoResponse: " + response);
                     liveGetInfoResponse.postValue(response);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
@@ -183,7 +183,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
             public void run() {
                 try {
                     Rpc.WalletBalanceResponse response = lndSyncClient.walletBalance();
-                    Log.i(getClass().getName(), "Got WalletBalanceResponse: " + response);
+                    // Log.i(getClass().getName(), "Got WalletBalanceResponse: " + response);
                     liveWalletBalanceResponse.postValue(response);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
@@ -199,7 +199,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
             public void run() {
                 try {
                     Rpc.ListChannelsResponse response = lndSyncClient.listChannels();
-                    Log.i(getClass().getName(), "Got listChannelsResponse with size: " + response.getChannelsList().size());
+                    // Log.i(getClass().getName(), "Got listChannelsResponse with size: " + response.getChannelsList().size());
                     liveListChannelsResponse.postValue(response);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
@@ -215,7 +215,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
             public void run() {
                 try {
                     Rpc.PendingChannelsResponse response = lndSyncClient.pendingChannels();
-                    Log.i(getClass().getName(), "Got PendingChannelsResponse: " + response);
+                    // Log.i(getClass().getName(), "Got PendingChannelsResponse: " + response);
                     livePendingChannelsResponse.postValue(response);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
@@ -231,7 +231,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
             public void run() {
                 try {
                     Rpc.TransactionDetails response = lndSyncClient.getTransactions(0, -1);
-                    Log.i(getClass().getName(), "Got TransactionDetails: " + response);
+                    // Log.i(getClass().getName(), "Got TransactionDetails: " + response);
                     liveTransactionDetails.postValue(response);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
@@ -247,7 +247,7 @@ public class LndLiveDataClient implements LndController.LndControllerUpdateHandl
             public void run() {
                 try {
                     Rpc.ListPeersResponse response = lndSyncClient.listPeers();
-                    Log.i(getClass().getName(), "Got ListPeersResponse: " + response);
+                    // Log.i(getClass().getName(), "Got ListPeersResponse: " + response);
                     liveListPeersResponse.postValue(response);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
