@@ -114,7 +114,7 @@ public class MoneyBalanceFragment extends Fragment {
         moneyViewModel.pendingChannels().observe(getViewLifecycleOwner(), new Observer<Rpc.PendingChannelsResponse>() {
             @Override
             public void onChanged(Rpc.PendingChannelsResponse response) {
-                Log.i(getTag(), "Got PendingChannelsResponse:" + response);
+                // Log.i(getTag(), "Got PendingChannelsResponse:" + response);
                 String pendingOpenChannelsCountString = Integer.toString(response.getPendingOpenChannelsCount());
                 String pendingCloseChannelsCountString = Integer.toString(response.getWaitingCloseChannelsCount());
                 String pendingForceCloseChannelsCountString = Integer.toString(response.getPendingForceClosingChannelsCount());
