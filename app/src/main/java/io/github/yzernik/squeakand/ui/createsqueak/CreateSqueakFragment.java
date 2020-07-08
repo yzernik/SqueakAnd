@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -172,7 +171,7 @@ public class CreateSqueakFragment extends Fragment {
         }
 
         // Show buy button if data key is missing.
-        if (!squeakEntryWithProfile.squeakEntry.hasDataKey()) {
+        if (!squeakEntryWithProfile.squeakEntry.hasDecryptionKey()) {
             txtSqueakText.setVisibility(View.GONE);
             squeakCardView.setBackgroundColor(Color.parseColor("lightgray"));
         }

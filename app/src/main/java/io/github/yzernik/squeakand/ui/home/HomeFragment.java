@@ -69,6 +69,7 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
             @Override
             public void onChanged(@Nullable final List<SqueakEntryWithProfile> squeakEntriesWithProfile) {
                 // Update the cached copy of the squeaks in the adapter.
+                Log.i(getTag(), "Number of timeline squeaks: " + squeakEntriesWithProfile.size());
                 adapter.setSqueaks(squeakEntriesWithProfile);
             }
         });

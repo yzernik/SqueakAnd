@@ -23,20 +23,49 @@ public class SqueakEntry implements Serializable {
     @NonNull
     public Sha256Hash hash;
 
+    @NonNull
     public Sha256Hash hashEncContent;
+
+    @NonNull
     public Sha256Hash hashReplySqk;
+
+    @NonNull
     public Sha256Hash hashBlock;
+
+    @NonNull
     public long blockHeight;
+
+    @NonNull
     public byte[] scriptPubKeyBytes;
-    public Sha256Hash hashDataKey;
+
+    @NonNull
+    public byte[] encryptionKey;
+
+    @NonNull
+    public byte[] encDataKey;
+
+    @NonNull
     public byte[] iv;
+
+    @NonNull
     public long time;
+
+    @NonNull
     public long nonce;
+
+    @NonNull
     public byte[] encContent;
+
+    @NonNull
     public byte[] scriptSigBytes;
-    public byte[] dataKey;
+
+    public byte[] decryptionKey;
+
     public String decryptedContentStr;
+
+    @NonNull
     public String authorAddress;
+
     public Block block;
 
     public SqueakEntry() {
@@ -55,13 +84,14 @@ public class SqueakEntry implements Serializable {
         this.hashBlock = squeak.getHashBlock();
         this.blockHeight = squeak.getBlockHeight();
         this.scriptPubKeyBytes = squeak.getScriptPubKeyBytes();
-        this.hashDataKey = squeak.getHashDataKey();
+        this.encryptionKey = squeak.getEncryptionKey().getBytes();
+        this.encDataKey = squeak.getEncDataKeyBytes();
         this.iv = squeak.getVchIv();
         this.time = squeak.getTime();
         this.nonce = squeak.getNonce();
         this.encContent = squeak.getEncContent();
         this.scriptSigBytes = squeak.getScriptSigBytes();
-        this.dataKey = squeak.getDataKey();
+        this.decryptionKey = squeak.hasDecryptionKey() ? squeak.getDecryptionKey().getBytes() : null;
         this.decryptedContentStr = getDecryptedContentStr(squeak);
         this.authorAddress = squeak.getAddress().toString();
         this.block = block;
@@ -76,13 +106,14 @@ public class SqueakEntry implements Serializable {
                 hashBlock,
                 blockHeight,
                 scriptPubKeyBytes,
-                hashDataKey,
+                encryptionKey,
+                encDataKey,
                 iv,
                 time,
                 nonce,
                 encContent,
                 scriptSigBytes,
-                dataKey
+                decryptionKey
         );
     }
 
@@ -111,8 +142,8 @@ public class SqueakEntry implements Serializable {
     }
 
     @Ignore
-    public boolean hasDataKey() {
-        return dataKey != null;
+    public boolean hasDecryptionKey() {
+        return decryptionKey != null;
     }
 
 }

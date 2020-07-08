@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
  * app, consider exporting the schema to help you with migrations.
  */
 
-@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class, Offer.class}, version = 11)
+@Database(entities = {SqueakProfile.class, SqueakEntry.class, SqueakServer.class, Offer.class}, version = 14)
 public abstract class SqueakRoomDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "app_db";
@@ -48,7 +48,7 @@ public abstract class SqueakRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             SqueakRoomDatabase.class, DB_NAME)
                             //.addCallback(sRoomDatabaseCallback)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14)
                             .build();
                 }
             }
@@ -342,4 +342,127 @@ public abstract class SqueakRoomDatabase extends RoomDatabase {
                     "CREATE UNIQUE INDEX index_offer_squeakHash_squeakServerAddress ON offer (squeakHash, squeakServerAddress)");
         }
     };
+
+    @VisibleForTesting
+    static final Migration MIGRATION_11_12 = new Migration(11, 12) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Drop the existing squeak table
+            database.execSQL(
+                    "DROP TABLE squeak");
+
+            // Drop the existing offer table
+            database.execSQL(
+                    "DROP TABLE offer");
+            // Drop the existing offer indices
+            database.execSQL(
+                    "DROP INDEX IF EXISTS index_offer_squeakHash_squeakServerAddress");
+
+
+            // Create the squeak table again
+            database.execSQL(
+                    "CREATE TABLE squeak (" +
+                            "hash TEXT PRIMARY KEY NOT NULL," +
+                            "hashEncContent TEXT NOT NULL," +
+                            "hashReplySqk TEXT NOT NULL," +
+                            "hashBlock TEXT NOT NULL," +
+                            "blockHeight INTEGER NOT NULL," +
+                            "scriptPubKeyBytes BLOB NOT NULL," +
+                            "encryptionKey BLOB NOT NULL," +
+                            "encDataKey BLOB NOT NULL," +
+                            "iv BLOB NOT NULL," +
+                            "time INTEGER NOT NULL," +
+                            "nonce INTEGER NOT NULL," +
+                            "encContent BLOB NOT NULL," +
+                            "scriptSigBytes BLOB NOT NULL," +
+                            "decryptionKey BLOB NOT NULL," +
+                            "decryptedContentStr TEXT NOT NULL," +
+                            "authorAddress TEXT NOT NULL," +
+                            "block TEXT)");
+
+            // Create the table again
+            database.execSQL(
+                    "CREATE TABLE offer (" +
+                            "offerId INTEGER PRIMARY KEY NOT NULL," +
+                            "squeakHash TEXT NOT NULL," +
+                            "keyCipher BLOB NOT NULL," +
+                            "iv BLOB NOT NULL," +
+                            "preimageHash TEXT NOT NULL," +
+                            "amount INTEGER NOT NULL," +
+                            "paymentRequest TEXT NOT NULL," +
+                            "pubkey TEXT NOT NULL," +
+                            "host TEXT NOT NULL," +
+                            "port INTEGER NOT NULL," +
+                            "squeakServerAddress TEXT NOT NULL," +
+                            "hasValidPreimage INTEGER NOT NULL," +
+                            "preimage BLOB)");
+            // Create the new offer index
+            database.execSQL(
+                    "CREATE UNIQUE INDEX index_offer_squeakHash_squeakServerAddress ON offer (squeakHash, squeakServerAddress)");
+
+        }
+    };
+
+    @VisibleForTesting
+    static final Migration MIGRATION_12_13 = new Migration(12, 13) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Drop the existing squeak table
+            database.execSQL(
+                    "DROP TABLE squeak");
+
+            // Create the squeak table again
+            database.execSQL(
+                    "CREATE TABLE squeak (" +
+                            "hash TEXT PRIMARY KEY NOT NULL," +
+                            "hashEncContent TEXT NOT NULL," +
+                            "hashReplySqk TEXT NOT NULL," +
+                            "hashBlock TEXT NOT NULL," +
+                            "blockHeight INTEGER NOT NULL," +
+                            "scriptPubKeyBytes BLOB NOT NULL," +
+                            "encryptionKey BLOB NOT NULL," +
+                            "encDataKey BLOB NOT NULL," +
+                            "iv BLOB NOT NULL," +
+                            "time INTEGER NOT NULL," +
+                            "nonce INTEGER NOT NULL," +
+                            "encContent BLOB NOT NULL," +
+                            "scriptSigBytes BLOB NOT NULL," +
+                            "decryptionKey BLOB," +
+                            "decryptedContentStr TEXT NOT NULL," +
+                            "authorAddress TEXT NOT NULL," +
+                            "block TEXT)");
+        }
+    };
+
+    @VisibleForTesting
+    static final Migration MIGRATION_13_14 = new Migration(13, 14) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Drop the existing squeak table
+            database.execSQL(
+                    "DROP TABLE squeak");
+
+            // Create the squeak table again
+            database.execSQL(
+                    "CREATE TABLE squeak (" +
+                            "hash TEXT PRIMARY KEY NOT NULL," +
+                            "hashEncContent TEXT NOT NULL," +
+                            "hashReplySqk TEXT NOT NULL," +
+                            "hashBlock TEXT NOT NULL," +
+                            "blockHeight INTEGER NOT NULL," +
+                            "scriptPubKeyBytes BLOB NOT NULL," +
+                            "encryptionKey BLOB NOT NULL," +
+                            "encDataKey BLOB NOT NULL," +
+                            "iv BLOB NOT NULL," +
+                            "time INTEGER NOT NULL," +
+                            "nonce INTEGER NOT NULL," +
+                            "encContent BLOB NOT NULL," +
+                            "scriptSigBytes BLOB NOT NULL," +
+                            "decryptionKey BLOB," +
+                            "decryptedContentStr TEXT," +
+                            "authorAddress TEXT NOT NULL," +
+                            "block TEXT)");
+        }
+    };
+
 }

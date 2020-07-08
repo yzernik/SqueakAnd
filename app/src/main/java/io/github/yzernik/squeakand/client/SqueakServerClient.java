@@ -113,7 +113,8 @@ public class SqueakServerClient {
         SqueakBuyOffer buyOfferMessage = reply.getOffer();
 
         Sha256Hash squeakHash = Sha256Hash.wrap(buyOfferMessage.getSqueakHash().toByteArray());
-        byte[] nonce = buyOfferMessage.getNonce().toByteArray();
+        byte[] keyCipher = buyOfferMessage.getKeyCipher().toByteArray();
+        byte[] iv = buyOfferMessage.getIv().toByteArray();
         Sha256Hash preimageHash = Sha256Hash.wrap(buyOfferMessage.getPreimageHash().toByteArray());
         long amount = buyOfferMessage.getAmount();
         String paymentRequest = buyOfferMessage.getPaymentRequest();
@@ -123,7 +124,8 @@ public class SqueakServerClient {
 
         return new Offer(
                 squeakHash,
-                nonce,
+                keyCipher,
+                iv,
                 preimageHash,
                 amount,
                 paymentRequest,
