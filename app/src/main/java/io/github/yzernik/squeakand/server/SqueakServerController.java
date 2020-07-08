@@ -4,15 +4,20 @@ import android.util.Log;
 
 import org.bitcoinj.core.Sha256Hash;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import io.github.yzernik.squeakand.Offer;
 import io.github.yzernik.squeakand.SqueakEntry;
+import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakServer;
+import io.github.yzernik.squeakand.client.GetOfferResponse;
 import io.github.yzernik.squeakand.client.SqueakRPCClient;
 import io.github.yzernik.squeakand.squeaks.SqueaksController;
+import io.github.yzernik.squeaklib.core.Encryption;
+import io.github.yzernik.squeaklib.core.EncryptionException;
 import io.github.yzernik.squeaklib.core.Squeak;
 
 public class SqueakServerController {
@@ -56,12 +61,37 @@ public class SqueakServerController {
             }
         }
 
-        // Download the buy offer to the server.
-        Offer offer = client.buySqueak(hash);
-        offer.setSqueakServerAddress(server.getAddress());
-        Log.i(getClass().getName(), "Got offer: " + offer + " from server: " + server.serverAddress);
-        squeaksController.saveOffer(offer);
-        return offer;
+        // Get the squeak to unlock
+        SqueakEntryWithProfile squeakEntryWithProfile = squeaksController.fetchSqueakWithProfileByHash(hash);
+        Squeak squeak = squeakEntryWithProfile.squeakEntry.getSqueak();
+
+        // Get the squeak encryption key
+        Encryption.EncryptionKey encryptionKey = squeak.getEncryptionKey();
+
+        // Create a new challenge
+        byte[] challengeProof = Encryption.generateDataKey();
+        try {
+            byte[] challenge = encryptionKey.encrypt(challengeProof);
+
+            // Download the buy offer to the server.
+            GetOfferResponse getOfferResponse = client.buySqueak(hash, challenge);
+            Offer offer = getOfferResponse.getOffer();
+            offer.setSqueakServerAddress(server.getAddress());
+
+            // If proof is valid, save the offer.
+            byte[] proof = getOfferResponse.getProof();
+            if (!Arrays.equals(proof, challengeProof)) {
+                Log.i(getClass().getName(), "Invalid proof from: " + server.serverAddress);
+                return null;
+            }
+
+            Log.i(getClass().getName(), "Got offer: " + offer + " from server: " + server.serverAddress);
+            squeaksController.saveOffer(offer);
+            return offer;
+        } catch (EncryptionException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public void uploadSync(List<String> uploadAddresses, int minBlock, int maxBlock) {
