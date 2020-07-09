@@ -113,7 +113,7 @@ public class SqueakEntry implements Serializable {
                 nonce,
                 encContent,
                 scriptSigBytes,
-                decryptionKey
+                decryptionKey == null ? new byte[0] : decryptionKey
         );
     }
 

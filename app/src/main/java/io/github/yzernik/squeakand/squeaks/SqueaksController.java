@@ -86,6 +86,11 @@ public class SqueaksController {
         Block block = null;
         try {
             block = getBlockHeader(blockHeight);
+            if (block == null) {
+                Log.i(getClass().getName(), "Failed to get block header for block height : " + blockHeight);
+                return;
+            }
+
             Log.i(getClass().getName(), "Local block hash : " + squeak.getHashBlock());
             Log.i(getClass().getName(), "Electrum block hash : " + block.getHash());
             if (block.getHash().equals(squeak.getHashBlock())) {
@@ -94,6 +99,9 @@ public class SqueaksController {
         } catch (ExecutionException | TimeoutException e) {
             e.printStackTrace();
             Log.e(getClass().getName(), "Failed to get block header for squeak: " + squeak);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(getClass().getName(), "Failed in verifyBlock: " + e);
         }
 
     }
