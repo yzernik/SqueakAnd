@@ -60,7 +60,7 @@ public class SqueakBlockVerifier {
                     Log.i(getClass().getName(), "Calling VerifyOldSqueaksTask.");
                     squeaksController.verifyOldSqueaks();
                 } catch (Exception e) {
-                    Log.e(getClass().getName(), "Failed in calling VerifyOldSqueaksTask: " + e);
+                    Log.e(getClass().getName(), "Failed in calling VerifyOldSqueaksTask: " + e.getStackTrace());
                 }
                 // Sleep until the next verify.
                 Thread.sleep(DEFAULT_VERIFY_SLEEP_INTERVAL_MS);
