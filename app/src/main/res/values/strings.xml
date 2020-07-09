@@ -8,6 +8,7 @@
     <string name="activity_view_squeak_label">Squeak</string>
     <string name="activity_select_profile">Select Profile</string>
     <string name="activity_manage_profiles">Manage Profiles</string>
+    <string name="activity_manage_contacts">Manage Contacts</string>
     <string name="activity_create_profile">Create Profile</string>
     <string name="activity_add_contact">Add contact</string>
     <string name="activity_view_profile">Profile</string>
@@ -31,4 +32,6 @@
     <string name="create_profile_import_private_key_button">Import Key Pair</string>
     <string name="create_profile_complete_button_text">Create Profile</string>
     <string name="create_squeak_button">Create Squeak</string>
+    <string name="home_empty_timeline_welcome_text">You have no squeaks in your timeline.</string>
+    <string name="home_empty_timeline_suggestion_text">Connect to a squeak server, and add some contacts to fill in your timeline.</string>
 </resources>

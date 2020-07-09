@@ -34,6 +34,10 @@
             android:parentActivityName=".CreateSqueakActivity"
             android:label="@string/activity_manage_profiles" />
         <activity
+            android:name=".ManageContactsActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/activity_manage_contacts" />
+        <activity
             android:name=".NewProfileActivity"
             android:parentActivityName=".ManageProfilesActivity"
             android:label="@string/activity_create_profile" />

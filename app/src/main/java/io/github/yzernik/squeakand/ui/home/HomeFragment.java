@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +31,7 @@ import java.util.List;
 import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.ElectrumActivity;
+import io.github.yzernik.squeakand.ManageContactsActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
@@ -41,6 +43,8 @@ import io.github.yzernik.squeakand.ViewSqueakActivity;
 public class HomeFragment extends Fragment implements SqueakListAdapter.ClickListener {
 
     private SwipeRefreshLayout swipeContainer;
+    private View emptyTimelineWelcomeView;
+    private Button manageContactsButton;
 
     private HomeViewModel homeViewModel;
 
@@ -58,6 +62,8 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
         swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainer);
+        emptyTimelineWelcomeView = root.findViewById(R.id.home_empty_timeline_welcome_view);
+        manageContactsButton = root.findViewById(R.id.home_empty_timeline_manage_contacts_button);
 
         // Get a new or existing ViewModel from the ViewModelProvider.
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
@@ -71,6 +77,14 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
                 // Update the cached copy of the squeaks in the adapter.
                 Log.i(getTag(), "Number of timeline squeaks: " + squeakEntriesWithProfile.size());
                 adapter.setSqueaks(squeakEntriesWithProfile);
+
+                if (squeakEntriesWithProfile.size() == 0) {
+                    recyclerView.setVisibility(View.GONE);
+                    emptyTimelineWelcomeView.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    emptyTimelineWelcomeView.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -91,6 +105,13 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CreateSqueakActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        manageContactsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startManageContacts();
             }
         });
 
@@ -177,6 +198,11 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
 
     public void startManageElectrum() {
         Intent intent = new Intent(getActivity(), ElectrumActivity.class);
+        startActivity(intent);
+    }
+
+    private void startManageContacts() {
+        Intent intent = new Intent(getActivity(), ManageContactsActivity.class);
         startActivity(intent);
     }
 
