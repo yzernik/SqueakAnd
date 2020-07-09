@@ -30,6 +30,10 @@
             android:parentActivityName=".MainActivity"
             android:label="@string/activity_view_squeak_label" />
         <activity
+            android:name=".ManageSqueakServersActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/activity_manage_squeak_servers" />
+        <activity
             android:name=".ManageProfilesActivity"
             android:parentActivityName=".CreateSqueakActivity"
             android:label="@string/activity_manage_profiles" />

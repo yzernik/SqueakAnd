@@ -32,6 +32,7 @@ import io.github.yzernik.squeakand.CreateSqueakActivity;
 import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.ElectrumActivity;
 import io.github.yzernik.squeakand.ManageContactsActivity;
+import io.github.yzernik.squeakand.ManageSqueakServersActivity;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.SqueakEntryWithProfile;
 import io.github.yzernik.squeakand.SqueakListAdapter;
@@ -44,6 +45,7 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
 
     private SwipeRefreshLayout swipeContainer;
     private View emptyTimelineWelcomeView;
+    private Button manageSqueakServersButton;
     private Button manageContactsButton;
 
     private HomeViewModel homeViewModel;
@@ -63,6 +65,7 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
 
         swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainer);
         emptyTimelineWelcomeView = root.findViewById(R.id.home_empty_timeline_welcome_view);
+        manageSqueakServersButton = root.findViewById(R.id.home_empty_timeline_manage_squeak_servers_button);
         manageContactsButton = root.findViewById(R.id.home_empty_timeline_manage_contacts_button);
 
         // Get a new or existing ViewModel from the ViewModelProvider.
@@ -105,6 +108,13 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CreateSqueakActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        manageSqueakServersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startManageSqueakServers();
             }
         });
 
@@ -206,5 +216,9 @@ public class HomeFragment extends Fragment implements SqueakListAdapter.ClickLis
         startActivity(intent);
     }
 
+    private void startManageSqueakServers() {
+        Intent intent = new Intent(getActivity(), ManageSqueakServersActivity.class);
+        startActivity(intent);
+    }
 
 }
