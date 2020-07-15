@@ -86,13 +86,13 @@ dependencies {
 
     // Squeak library
     // TODO: Use snapshot build
-    implementation('io.github.yzernik.squeaklib:squeaklib:1.0.3') {
+    implementation('io.github.yzernik.squeaklib:squeaklib:1.0.4') {
         exclude group: 'com.google.protobuf', module: 'protobuf-java'
     }
 
     // Electrum client library
     // TODO: Use snapshot build
-    implementation 'io.github.yzernik.electrumclient:electrumclient:1.0.3'
+    implementation 'io.github.yzernik.electrumclient:electrumclient:1.0.4'
 
     // Lnd
     implementation project(":Lndmobile")
