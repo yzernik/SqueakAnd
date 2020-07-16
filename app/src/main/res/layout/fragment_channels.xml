@@ -36,9 +36,6 @@
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
-
-
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

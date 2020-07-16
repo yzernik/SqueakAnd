@@ -59,7 +59,7 @@ public class ChannelsFragment extends Fragment implements ChannelListAdapter.Cli
             public void onChanged(@Nullable final Rpc.ListChannelsResponse response) {
                 List<Rpc.Channel> channels = response.getChannelsList();
                 // Update the cached copy of the channels in the adapter.
-                adapter.setProfiles(channels);
+                adapter.setChannels(channels);
             }
         });
 

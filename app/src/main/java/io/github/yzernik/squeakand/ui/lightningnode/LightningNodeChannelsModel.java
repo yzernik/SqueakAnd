@@ -29,11 +29,24 @@ public class LightningNodeChannelsModel extends AndroidViewModel {
         return lndRepository.getLiveChannels();
     }
 
+    private LiveData<Rpc.PendingChannelsResponse> pendingChannels() {
+        return lndRepository.pendingChannels();
+    }
+
     public LiveData<List<Rpc.Channel>> listNodeChannels() {
         return Transformations.map(listChannels(), response -> {
             List<Rpc.Channel> channels = response.getChannelsList();
             return channels.stream()
                     .filter(channel -> channel.getRemotePubkey().equals(pubkey))
+                    .collect(Collectors.toList());
+        });
+    }
+
+    public LiveData<List<Rpc.PendingChannelsResponse.PendingOpenChannel>> pendingNodeChannels() {
+        return Transformations.map(pendingChannels(), response -> {
+            List<Rpc.PendingChannelsResponse.PendingOpenChannel> pendingOpenChannels = response.getPendingOpenChannelsList();
+            return pendingOpenChannels.stream()
+                    .filter(channel -> channel.getChannel().getRemoteNodePub().equals(pubkey))
                     .collect(Collectors.toList());
         });
     }
