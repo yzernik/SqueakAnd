@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.bitcoinj.core.Sha256Hash;
 
@@ -31,6 +32,7 @@ public class BuySqueakFragment extends Fragment implements OfferListAdapter.Clic
     int LAUNCH_OFFER_ACTIVITY = 1;
 
     private TextView txtOfferCount;
+    private SwipeRefreshLayout swipeContainer;
 
     private BuySqueakModel buySqueakModel;
 
@@ -64,6 +66,7 @@ public class BuySqueakFragment extends Fragment implements OfferListAdapter.Clic
                 .get(BuySqueakModel.class);
 
         txtOfferCount = root.findViewById(R.id.buy_squeak_offers_count_text);
+        swipeContainer = root.findViewById(R.id.buy_squeak_swipe_container);
 
         final RecyclerView recyclerView = root.findViewById(R.id.buy_squeak_offers_recycler_view);
         final OfferListAdapter adapter = new OfferListAdapter(root.getContext(), this);
@@ -76,22 +79,21 @@ public class BuySqueakFragment extends Fragment implements OfferListAdapter.Clic
                 if (offers == null) {
                     return;
                 }
-
                 Log.i(getTag(), "Got offers: " + offers);
-
                 // Set the offers list adapter.
                 adapter.setOffers(offers);
-
-                // TODO: remove this after implementing the ActivityResultLauncher
-                /*                // Finish the activity if any offer is already completed.
-                for (Offer offer: offers) {
-                    Log.i(getTag(), "Checking offer for valid preimage: " + offer);
-                    if (offer.getHasValidPreimage()) {
-                        getActivity().finish();
-                    }
-                }*/
-
                 txtOfferCount.setText("Number of offers: " + offers.size());
+            }
+        });
+
+        // Set the swipe action
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                getOffersAsync();
             }
         });
 
@@ -109,14 +111,13 @@ public class BuySqueakFragment extends Fragment implements OfferListAdapter.Clic
             @Override
             public void onSuccess() {
                 Log.i(getTag(), "Finished getting offers with success.");
-
-                // TODO: show the progress has finished
-                // swipeContainer.setRefreshing(false);
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Throwable e) {
                 Log.d("DEBUG", "Get offers error: " + e.toString());
+                swipeContainer.setRefreshing(false);
             }
         });
     }
