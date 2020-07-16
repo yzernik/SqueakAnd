@@ -8,7 +8,7 @@
     android:padding="6dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/channelCardView"
+        android:id="@+id/pending_open_channel_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -20,42 +20,36 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/open_channel_title"
+                android:id="@+id/pending_open_channel_title"
                 android:textStyle="bold"
-                android:text="Open Channel"
+                android:text="Pending Open Channel"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent" />
 
             <TextView
-                android:id="@+id/channel_item_pubkey_text"
+                android:id="@+id/pending_open_channel_item_pubkey_text"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent" />
 
             <TextView
-                android:id="@+id/channel_item_is_active_text"
+                android:id="@+id/pending_open_channel_confirmation_height"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent" />
 
             <TextView
-                android:id="@+id/channel_item_capacity_text"
+                android:id="@+id/pending_open_channel_item_capacity_text"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent" />
 
             <TextView
-                android:id="@+id/channel_item_local_balance_text"
+                android:id="@+id/pending_open_channel_item_local_balance_text"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent" />
 
             <TextView
-                android:id="@+id/channel_item_remote_balance_text"
+                android:id="@+id/pending_open_channel_item_remote_balance_text"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent" />
-
-            <Button
-                android:id="@+id/channel_item_close_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Close channel" />
 
         </LinearLayout>
 

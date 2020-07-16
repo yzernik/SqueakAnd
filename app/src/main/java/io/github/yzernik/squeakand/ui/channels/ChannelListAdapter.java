@@ -84,7 +84,7 @@ public class ChannelListAdapter extends RecyclerView.Adapter<ChannelListAdapter.
         }
     }
 
-    public void setProfiles(List<Rpc.Channel> channels) {
+    public void setChannels(List<Rpc.Channel> channels) {
         mChannels = channels;
         notifyDataSetChanged();
     }

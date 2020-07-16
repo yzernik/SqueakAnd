@@ -22,9 +22,10 @@ import java.util.List;
 import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.R;
 import io.github.yzernik.squeakand.ui.channels.ChannelListAdapter;
+import io.github.yzernik.squeakand.ui.channels.PendingOpenChannelListAdapter;
 import lnrpc.Rpc;
 
-public class LightningNodeChannelsFragment extends Fragment implements ChannelListAdapter.ClickListener{
+public class LightningNodeChannelsFragment extends Fragment implements ChannelListAdapter.ClickListener, PendingOpenChannelListAdapter.ClickListener {
 
     private LightningNodeChannelsModel lightningNodeChannelsModel;
 
@@ -42,10 +43,27 @@ public class LightningNodeChannelsFragment extends Fragment implements ChannelLi
                 new LightningNodeChannelsModelFactory(getActivity().getApplication(), pubkey))
                 .get(LightningNodeChannelsModel.class);
 
+        // Set up the pending open channels recycler view
+        final RecyclerView pendingOpenChannelsRecyclerView = root.findViewById(R.id.lightning_node_pending_open_channels_recycler_view);
+        final PendingOpenChannelListAdapter pendingOpenChannelsAdapter = new PendingOpenChannelListAdapter(root.getContext(), this);
+        pendingOpenChannelsRecyclerView.setAdapter(pendingOpenChannelsAdapter);
+        pendingOpenChannelsRecyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+
+        // Set up the channels recycler view
         final RecyclerView recyclerView = root.findViewById(R.id.lightning_node_channels_recycler_view);
         final ChannelListAdapter adapter = new ChannelListAdapter(root.getContext(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+
+        lightningNodeChannelsModel.pendingNodeChannels().observe(getViewLifecycleOwner(), new Observer<List<Rpc.PendingChannelsResponse.PendingOpenChannel>>() {
+            @Override
+            public void onChanged(@Nullable final List<Rpc.PendingChannelsResponse.PendingOpenChannel> pendingOpenChannels) {
+                if (pendingOpenChannels == null) {
+                    return;
+                }
+                pendingOpenChannelsAdapter.setPendingOpenChannels(pendingOpenChannels);
+            }
+        });
 
         lightningNodeChannelsModel.listNodeChannels().observe(getViewLifecycleOwner(), new Observer<List<Rpc.Channel>>() {
             @Override
@@ -53,7 +71,7 @@ public class LightningNodeChannelsFragment extends Fragment implements ChannelLi
                 if (channels == null) {
                     return;
                 }
-                adapter.setProfiles(channels);
+                adapter.setChannels(channels);
             }
         });
 
@@ -140,5 +158,10 @@ public class LightningNodeChannelsFragment extends Fragment implements ChannelLi
     public void handleItemCloseClick(Rpc.Channel channel) {
         Log.i(getTag(), "Closing channel: " + channel);
         showConfirmCloseChannelAlert(channel);
+    }
+
+    @Override
+    public void handleItemClick(Rpc.PendingChannelsResponse.PendingOpenChannel pendingOpenChannel) {
+        // TODO: nothing.
     }
 }

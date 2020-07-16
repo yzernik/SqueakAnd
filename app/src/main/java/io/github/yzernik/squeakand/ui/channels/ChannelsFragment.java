@@ -23,7 +23,7 @@ import io.github.yzernik.squeakand.DataResult;
 import io.github.yzernik.squeakand.R;
 import lnrpc.Rpc;
 
-public class ChannelsFragment extends Fragment implements ChannelListAdapter.ClickListener {
+public class ChannelsFragment extends Fragment implements ChannelListAdapter.ClickListener, PendingOpenChannelListAdapter.ClickListener {
 
     private ChannelsModel channelsViewModel;
 
@@ -33,17 +33,33 @@ public class ChannelsFragment extends Fragment implements ChannelListAdapter.Cli
 
         channelsViewModel = new ViewModelProvider(this).get(ChannelsModel.class);
 
+        // Set up the pending open channels recycler view.
+        final RecyclerView pendingOpenChannelsRecyclerView = root.findViewById(R.id.pending_open_channels_recycler_view);
+        final PendingOpenChannelListAdapter pendingOpenChannelListAdapter = new PendingOpenChannelListAdapter(root.getContext(), this);
+        pendingOpenChannelsRecyclerView.setAdapter(pendingOpenChannelListAdapter);
+        pendingOpenChannelsRecyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+
+        // Set up the channels recycler view.
         final RecyclerView recyclerView = root.findViewById(R.id.channelsRecyclerView);
         final ChannelListAdapter adapter = new ChannelListAdapter(root.getContext(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+
+        channelsViewModel.pendingChannels().observe(getViewLifecycleOwner(), new Observer<Rpc.PendingChannelsResponse>() {
+            @Override
+            public void onChanged(@Nullable final Rpc.PendingChannelsResponse pendingChannelsResponse) {
+                List<Rpc.PendingChannelsResponse.PendingOpenChannel> pendingOpenChannels = pendingChannelsResponse.getPendingOpenChannelsList();
+                // Update the cached copy of the channels in the adapter.
+                pendingOpenChannelListAdapter.setPendingOpenChannels(pendingOpenChannels);
+            }
+        });
 
         channelsViewModel.listChannels().observe(getViewLifecycleOwner(), new Observer<Rpc.ListChannelsResponse>() {
             @Override
             public void onChanged(@Nullable final Rpc.ListChannelsResponse response) {
                 List<Rpc.Channel> channels = response.getChannelsList();
                 // Update the cached copy of the channels in the adapter.
-                adapter.setProfiles(channels);
+                adapter.setChannels(channels);
             }
         });
 
@@ -127,6 +143,11 @@ public class ChannelsFragment extends Fragment implements ChannelListAdapter.Cli
     @Override
     public void handleItemCloseClick(Rpc.Channel channel) {
         showConfirmCloseChannelAlert(channel);
+    }
+
+    @Override
+    public void handleItemClick(Rpc.PendingChannelsResponse.PendingOpenChannel pendingOpenChannel) {
+        // TODO: go to view channel activity
     }
 
 }
