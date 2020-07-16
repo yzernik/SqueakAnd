@@ -22,9 +22,11 @@ public class ChannelsModel extends AndroidViewModel {
     }
 
     LiveData<Rpc.ListChannelsResponse> listChannels() {
-        // return lndRepository.listChannels();
-
         return lndRepository.getLiveChannels();
+    }
+
+    LiveData<Rpc.PendingChannelsResponse> pendingChannels() {
+        return lndRepository.pendingChannels();
     }
 
     LiveData<DataResult<Rpc.CloseStatusUpdate>> closeChannel(String channelPoint) {
