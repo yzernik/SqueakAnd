@@ -51,7 +51,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
     private Button buyButton;
 
     // private EditText mEditTodoView;
-    private ViewSqueakModel todoViewModel;
+    private ViewSqueakModel viewSqueakModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -66,7 +66,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
 
         // Get a new or existing ViewModel from the ViewModelProvider.
         // todoViewModel = new ViewModelProvider(this).get(ViewSqueakModel.class);
-        todoViewModel = ViewModelProviders.of(this,
+        viewSqueakModel = ViewModelProviders.of(this,
                 new ViewSqueakModelFactory(getActivity().getApplication(), squeakHash))
                 .get(ViewSqueakModel.class);
 
@@ -88,7 +88,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
 
-        todoViewModel.getSqueak().observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
+        viewSqueakModel.getSqueak().observe(getViewLifecycleOwner(), new Observer<SqueakEntryWithProfile>() {
             @Override
             public void onChanged(@Nullable SqueakEntryWithProfile squeakEntryWithProfile) {
                 if (squeakEntryWithProfile == null) {
@@ -163,7 +163,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
             }
         });
 
-        todoViewModel.getThreadAncestorSqueaks().observe(getViewLifecycleOwner(), new Observer<List<SqueakEntryWithProfile>>() {
+        viewSqueakModel.getThreadAncestorSqueaks().observe(getViewLifecycleOwner(), new Observer<List<SqueakEntryWithProfile>>() {
             @Override
             public void onChanged(@Nullable List<SqueakEntryWithProfile> threadAncestorSqueaks) {
                 // Set the swipe down action
@@ -211,7 +211,7 @@ public class ViewSqueakFragment extends Fragment implements SqueakListAdapter.Cl
     }
 
     public void fetchThreadAsync(Sha256Hash squeakHash) {
-        SqueakNetworkAsyncClient asyncClient = todoViewModel.getAsyncClient();
+        SqueakNetworkAsyncClient asyncClient = viewSqueakModel.getAsyncClient();
         asyncClient.fetchThreadAncestors(squeakHash, new SqueakNetworkAsyncClient.SqueakServerResponseHandler() {
             @Override
             public void onSuccess() {
